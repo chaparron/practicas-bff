@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - ./gradlew build
+
+artifacts:
+  files:
+    - '*.jar'
+  base-directory: build/libs
+  discard-paths: yes
+
+cache:
+  paths:
+    - '/root/.gradle/**/*'

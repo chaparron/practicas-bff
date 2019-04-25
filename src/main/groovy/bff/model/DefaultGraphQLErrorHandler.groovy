@@ -1,0 +1,111 @@
+package bff.model
+
+import bff.InvalidToken
+import bff.configuration.AccessToBackendDeniedException
+import bff.configuration.BackendServerErrorException
+import com.fasterxml.jackson.annotation.JsonIgnore
+import graphql.ErrorType
+import graphql.ExceptionWhileDataFetching
+import graphql.GraphQLError
+import graphql.language.SourceLocation
+import graphql.servlet.GraphQLErrorHandler
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
+import groovy.util.logging.Slf4j
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.oauth2.client.resource.OAuth2AccessDeniedException
+import org.springframework.stereotype.Component
+
+@Component
+@Slf4j
+class DefaultGraphQLErrorHandler implements GraphQLErrorHandler {
+
+    @Value('${errors.expose:false}')
+    boolean exposeAllErrors
+
+    @Override
+    List<GraphQLError> processErrors(List<GraphQLError> errors) {
+        errors.collectMany { unwrapGraphQLError(it) }
+    }
+
+
+    private List<GraphQLError> unwrapGraphQLError(GraphQLError error) {
+        [error]
+    }
+
+    private List<GraphQLError> unwrapGraphQLError(ExceptionWhileDataFetching error) {
+        unwrap(error.exception, error)
+    }
+
+
+    private List<GraphQLError> unwrap(Throwable cause, ExceptionWhileDataFetching error) {
+        if (exposeAllErrors) [GenericError.exposeGenericError(cause, error)]
+        else filterUnhandledException(cause, error)
+    }
+
+    private List<GraphQLError> unwrap(OAuth2AccessDeniedException cause, ExceptionWhileDataFetching error) {
+        [GenericError.exposeGenericError(cause, error)]
+    }
+
+    private List<GraphQLError> unwrap(Unauthorized cause, ExceptionWhileDataFetching error) {
+        log.debug('unauthorized request caused by', error.exception)
+        [new GenericError(
+                path: error.path,
+                extensions: [
+                        entity      : 'Credentials',
+                        property    : cause.error,
+                        message     : cause.description
+                ]
+        )]
+    }
+
+    private List<GraphQLError> unwrap(AccessToBackendDeniedException cause, ExceptionWhileDataFetching error) {
+        log.debug('unauthorized request caused by', error.exception)
+        [new GenericError(
+            path: error.path,
+            extensions: [
+                    entity      : 'Credentials',
+                    property    : 'invalid_token',
+            ]
+        )]
+    }
+
+
+    private List<GraphQLError> unwrap(BackendServerErrorException cause, ExceptionWhileDataFetching error) {
+        log.debug('unauthorized request caused by', error.exception)
+        [new GenericError(message: "Backend server error", path: error.path)]
+    }
+
+    private List<GraphQLError> unwrap(InvalidToken cause, ExceptionWhileDataFetching error) {
+        [GenericError.exposeGenericError(cause, error)]
+    }
+
+
+    private static def filterUnhandledException(Throwable cause, ExceptionWhileDataFetching error) {
+        log.error("filtering unhandled exception", cause)
+        [new GenericError(message: "Internal server error", path: error.path)]
+    }
+
+
+}
+
+@EqualsAndHashCode
+@ToString
+class GenericError implements GraphQLError {
+
+    String message = 'Error executing query'
+    List<Object> path
+    @JsonIgnore
+    List<SourceLocation> locations
+    ErrorType errorType = ErrorType.DataFetchingException
+    Map<String, Object> extensions
+
+    static GenericError exposeGenericError(Throwable cause, ExceptionWhileDataFetching error) {
+        new GenericError(
+                path: error.path,
+                extensions: [
+                        message: cause.message
+                ]
+        )
+    }
+}

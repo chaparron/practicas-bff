@@ -1,0 +1,300 @@
+
+type Query {
+
+}
+
+type Mutation {
+    # Auth
+    login(input: LoginInput!): LoginResult
+
+    # Auth
+    refreshCredentials(input: RefreshCredentialsInput!): RefreshCredentials!
+
+    # Auth
+    resetPassword(input: ResetPasswordRequestInput!): Void!
+
+    # Auth
+    resetPasswordConfirm(input: ResetPasswordConfirmInput!): Void!
+
+    # Auth
+    changePassword(input: ChangePasswordInput!): ChangePasswordResult
+
+    # Users
+    updateProfile(input: UserProfileInput!): ProfileCredentialsResult!
+
+}
+
+
+enum PageSize {
+    ZERO
+    ONE
+    TEN
+    TWENTY
+    FIFTY
+    ONE_HUNDRED
+}
+
+enum VoidReason {
+    SUCCESS
+}
+
+enum LoginFailureReason {
+    PASSWORD_MISMATCH
+    USERNAME_DOES_NOT_EXIST
+}
+
+enum RegisterFailureReason {
+    PASSWORD_MISMATCH
+    DUPLICATE_USERNAME
+    INVALID_NAME
+    INVALID_SURNAME
+}
+
+enum AuthType {
+    USER
+    ADMIN
+}
+
+enum UsernameRegistrationReason {
+    INVALID_FIRST_NAME,
+    INVALID_LAST_NAME,
+    INVALID_USERNAME,
+    DUPLICATE_USERNAME,
+    INVALID_FIRST_NAME_LENGTH,
+    INVALID_LAST_NAME_LENGTH,
+    INVALID_USERNAME_LENGTH
+}
+
+enum ChangePasswordReason {
+    INCORRECT_PASSWORD
+    INVALID_NEW
+}
+
+enum UpdateProfileReason {
+    # Duplicate username when update profile
+    DUPLICATE_USERNAME
+}
+
+enum CompleteProfileReason {
+    # Generic Error
+    PROFILE_ERROR
+}
+
+enum Gender {
+    MALE
+    FEMALE
+    OTHER
+}
+
+
+input ChangePasswordInput {
+    currentPassword: String!
+    newPassword: String!
+    accessToken: String!
+}
+
+input ResetPasswordRequestInput {
+    username: String!
+}
+
+input ResetPasswordConfirmInput {
+    token: String!
+    password: String!
+    user_id: Long!
+}
+
+
+
+input RefreshCredentialsInput {
+    refreshToken: String!
+}
+
+input LoginInput {
+    username: String!
+    password: String!
+    authType: AuthType!
+}
+
+input PageInput {
+    # número de pagina comienza en 1
+    number: Int!
+    size: PageSize!
+}
+
+input ListUsersInput {
+    query: String
+    page: PageInput!
+    accessToken: String!
+}
+
+input ListMyFavoritesInput {
+    page: PageInput!
+    accessToken: String!
+}
+
+
+input UserProfileInput {
+    id: ID
+    firstName: String
+    lastName: String
+    username: String
+    document: String
+    # date of birth
+    dob: String
+    areaCode: String
+    phone: String
+    seller: String
+    address: String
+    seller_type: String
+    gender: Gender
+    accessToken: String
+}
+
+input CompleteProfileInput {
+    document: String!
+    phone: String!
+    address: String!
+    recaptchaResponse: String!
+    accessToken: String!
+}
+
+input UsernameInput {
+    userId: ID!
+    accessToken: String!
+}
+
+input TechnicalReviewInput {
+    id: ID!
+    accessToken: String!
+}
+
+
+input ListGroupsInput {
+    authType: AuthType!
+    accessToken: String!
+}
+
+
+
+# Se requiere un ID sin accessToken
+input IdInput {
+    id: ID!
+}
+
+input UserInput {
+    id: ID!
+    accessToken: String!
+}
+
+input UploadImageInput {
+    encodedFile: String!
+    accessToken: String!
+}
+
+
+# Albricias! tu mutación ha sido exitosa
+type Void {
+    voidReason: VoidReason!
+}
+
+type Profile {
+    document: String
+    dob: String
+    area_code: String
+    phone: String
+    seller: String
+    seller_type: String
+    gender: Gender
+    address: String
+}
+
+type UsernameRegistrationFailed {
+    reason: UsernameRegistrationReason
+}
+
+type GenericCredentials {
+    username: String!
+    credentials: Credentials!
+}
+
+type LoginFailed {
+    reason: LoginFailureReason!
+}
+
+type RegisterFailed {
+    registerReason: RegisterFailureReason!
+}
+
+type RefreshCredentials {
+    accessToken: String!
+    refreshToken: String!
+}
+
+type Credentials {
+    accessToken: String!
+    refreshToken: String!
+}
+
+type ProfileCredentials {
+    accessToken: String
+}
+
+type ChangePasswordFailed {
+    reason: ChangePasswordReason
+}
+
+type UpdateProfileFailed {
+    reason: UpdateProfileReason
+}
+
+type CompleteProfileFailed {
+    reason: CompleteProfileReason
+}
+
+type Sort{
+    field: String!
+    direction: String!
+}
+type Facet{
+    id: String!
+    name: String!
+    slices: [Slices]
+}
+
+type Slices{
+    size: Long!
+    obj: Slice
+}
+
+type Slice{
+    id: Long!
+    name: String!
+    key: String!
+}
+
+input UpdateBoostInput{
+    id: ID!
+    boost: Long!
+    accessToken: String!
+}
+
+input FacetFilter{
+    key: String!
+    value: String!
+}
+
+type Filter{
+    key: String
+    value: String
+    name: String
+
+}
+
+
+union UsernameRegistrationResult = UsernameRegistrationFailed | Void
+
+union ChangePasswordResult = ChangePasswordFailed | Void
+
+union LoginResult = LoginFailed | GenericCredentials
+
+union ProfileCredentialsResult = UpdateProfileFailed  | ProfileCredentials  |  Void
