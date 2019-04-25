@@ -1,12 +1,12 @@
 package bff.bridge
 
-import bff.model.AuthType
+import bff.model.Site
 import bff.model.Credentials
 import bff.model.ProfileCredentialsResult
 
 interface AuthServerBridge {
 
-    Credentials login(String email, String password, AuthType authType)
+    Credentials login(String email, String password, Site site)
 
     Credentials refreshToken(String refreshToken)
 

@@ -22,7 +22,7 @@ class Mutation implements GraphQLMutationResolver {
     LoginResult login(LoginInput input) {
         try {
 
-            def credentials = passwordLogin(input.username, input.password, input.authType)
+            def credentials = passwordLogin(input.username, input.password, input.site)
 
             new GenericCredentials(
                     username: JwtToken.fromString(credentials.accessToken).username,
@@ -41,8 +41,8 @@ class Mutation implements GraphQLMutationResolver {
         )
     }
 
-    def passwordLogin(String email, String password, AuthType authType) {
-        authServerBridge.login(email, password, authType)
+    def passwordLogin(String email, String password, Site site) {
+        authServerBridge.login(email, password, site)
     }
 
     def tokenLogin(String accessToken, String socialNetwork) {

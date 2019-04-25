@@ -13,7 +13,7 @@ interface ProfileCredentialsResult {}
 class LoginInput {
     String username
     String password
-    AuthType authType
+    Site site
 }
 
 @ToString()
@@ -26,6 +26,9 @@ class RefreshCredentials {
 class Credentials {
     String accessToken
     String refreshToken
+    String tokenType
+    String scope
+    String expiresIn
 }
 
 class GenericCredentials implements LoginResult {
@@ -36,6 +39,24 @@ class GenericCredentials implements LoginResult {
 
 class ProfileCredentials implements ProfileCredentialsResult{
     String accessToken
+}
+
+
+enum Site {
+    CUSTOMER("FE_WEB"),
+    SUPPLIER("SUPPLIER_WEB"),
+    MANUFACTURER("MANUFACTURER_WEB"),
+    BO("BO_WEB")
+
+    String permission
+
+    Site(String permission) {
+        this.permission = permission
+    }
+
+    static Site fromPermission(String permission){
+        Site.values().find({it.permission == permission})
+    }
 }
 
 enum LoginFailureReason {

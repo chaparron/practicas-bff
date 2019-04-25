@@ -10,6 +10,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestOperations
+import org.springframework.web.util.UriComponentsBuilder
 
 @Slf4j
 class AuthServerBridgeImpl implements AuthServerBridge {
@@ -18,22 +19,23 @@ class AuthServerBridgeImpl implements AuthServerBridge {
     RestOperations http
 
     @Override
-    Credentials login(String email, String password, AuthType authType) {
+    Credentials login(String email, String password, Site site) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/user/${site.name()}/login")).toUriString().toURI()
         try {
             def body = http.exchange(
-                    RequestEntity.method(HttpMethod.POST, root.resolve('/user/login'))
+                    RequestEntity.method(HttpMethod.POST, uri)
                             .contentType(MediaType.APPLICATION_JSON)
                             .body(
                             [
                                     username : email,
-                                    password : password,
-                                    auth_type: authType.name()
+                                    password : password
                             ]
                     )
                     , Map).body
 
             mapCredentials body
         } catch (RestClientException e) {
+            e.printStackTrace()
             throw new Unauthorized()
         }
     }
@@ -218,7 +220,13 @@ class AuthServerBridgeImpl implements AuthServerBridge {
     }
 
     def mapCredentials(body) {
-        new Credentials(accessToken: body.access_token, refreshToken: body.refresh_token, groups: mapGroups(body.user.groups))
+        new Credentials(
+                accessToken: body.access_token,
+                refreshToken: body.refresh_token,
+                tokenType: body.token_type,
+                scope: body.scope,
+                expiresIn: body.expires_in
+        )
     }
 
     def mapGroups(groups) {

@@ -25,6 +25,13 @@ type Mutation {
 }
 
 
+enum Site {
+    CUSTOMER
+    SUPPLIER
+    MANUFACTURER
+    BO
+}
+
 enum PageSize {
     ZERO
     ONE
@@ -112,7 +119,7 @@ input RefreshCredentialsInput {
 input LoginInput {
     username: String!
     password: String!
-    authType: AuthType!
+    site: Site!
 }
 
 input PageInput {
@@ -233,6 +240,9 @@ type RefreshCredentials {
 type Credentials {
     accessToken: String!
     refreshToken: String!
+    tokenType: String!
+    scope: String!
+    expiresIn: String!
 }
 
 type ProfileCredentials {
