@@ -60,8 +60,8 @@ enum Site {
 }
 
 enum LoginFailureReason {
-    PASSWORD_MISMATCH,
-    USERNAME_DOES_NOT_EXIST
+    FORBIDDEN,
+    UNAUTHORIZED
 }
 
 enum RegisterFailureReason {

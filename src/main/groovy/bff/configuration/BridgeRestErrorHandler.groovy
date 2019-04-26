@@ -46,10 +46,11 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
     protected void handleError(ClientHttpResponse response, HttpStatus statusCode) throws IOException {
         switch (statusCode.series()) {
             case HttpStatus.Series.CLIENT_ERROR:
-                if (statusCode == HttpStatus.UNAUTHORIZED) {
-                    throw new AccessToBackendDeniedException("unauthorized!")
-                }
-                else {
+                if (statusCode == HttpStatus.UNAUTHORIZED || statusCode == HttpStatus.FORBIDDEN) {
+                    throw new AccessToBackendDeniedException(response.getStatusText(),  new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
+                            response.getHeaders(), getResponseBody(response), getCharset(response)))
+
+                } else {
                     throw new BridgeHttpClientErrorException(statusCode, response.getStatusText(),
                             response.getHeaders(), getResponseBody(response), getCharset(response))
                 }

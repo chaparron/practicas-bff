@@ -22,6 +22,13 @@ class UsernameRegistrationException extends RuntimeException {
     }
 }
 
+class LoginFailure extends RuntimeException {
+    LoginFailureReason loginFailureReason
+    def build() {
+        new LoginFailed(reason: this.loginFailureReason)
+    }
+}
+
 
 class UpdateProfileException extends RuntimeException {
     UpdateProfileReason reason

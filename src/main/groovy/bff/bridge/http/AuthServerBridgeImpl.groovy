@@ -12,6 +12,8 @@ import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
 
+import javax.security.auth.login.LoginException
+
 @Slf4j
 class AuthServerBridgeImpl implements AuthServerBridge {
 
@@ -34,9 +36,9 @@ class AuthServerBridgeImpl implements AuthServerBridge {
                     , Map).body
 
             mapCredentials body
-        } catch (RestClientException e) {
-            e.printStackTrace()
-            throw new Unauthorized()
+        } catch (LoginFailure loginFailure ) {
+            loginFailure
+            loginFailure.build()
         }
     }
 

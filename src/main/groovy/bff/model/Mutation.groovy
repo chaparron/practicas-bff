@@ -29,7 +29,7 @@ class Mutation implements GraphQLMutationResolver {
                     credentials: credentials
             )
         } catch (Unauthorized e) {
-            new LoginFailed(reason: LoginFailureReason.PASSWORD_MISMATCH)
+            new LoginFailed(reason: LoginFailureReason.UNAUTHORIZED)
         }
     }
 
