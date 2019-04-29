@@ -10,7 +10,6 @@ import groovy.util.logging.Slf4j
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import org.springframework.web.client.RestClientException
 
 @Slf4j
 @Component
@@ -21,9 +20,7 @@ class Mutation implements GraphQLMutationResolver {
 
     LoginResult login(LoginInput input) {
         try {
-
             def credentials = passwordLogin(input.username, input.password, input.site)
-
             new GenericCredentials(
                     username: JwtToken.fromString(credentials.accessToken).username,
                     credentials: credentials
@@ -33,12 +30,16 @@ class Mutation implements GraphQLMutationResolver {
         }
     }
 
-    RefreshCredentials refreshCredentials(RefreshCredentialsInput input) {
-        def rawCredentials = authServerBridge.refreshToken(input.refreshToken)
-        new RefreshCredentials(
-                accessToken: rawCredentials.accessToken,
-                refreshToken: rawCredentials.refreshToken
-        )
+    RefreshCredentialsResult refreshCredentials(RefreshCredentialsInput input) {
+        try {
+            def rawCredentials = authServerBridge.refreshToken(input.refreshToken)
+            new RefreshCredentials(
+                    accessToken: rawCredentials.accessToken,
+                    refreshToken: rawCredentials.refreshToken
+            )
+        } catch (LoginFailureException loginException) {
+            loginException.build()
+        }
     }
 
     def passwordLogin(String email, String password, Site site) {

@@ -36,7 +36,7 @@ class AuthServerBridgeImpl implements AuthServerBridge {
                     , Map).body
 
             mapCredentials body
-        } catch (AccessToBackendDeniedException accessToBackendDeniedException ) {
+        } catch (AccessToBackendDeniedException accessToBackendDeniedException) {
             mapperLoginException(accessToBackendDeniedException.cause.statusCode.name())
         }
     }
@@ -55,8 +55,8 @@ class AuthServerBridgeImpl implements AuthServerBridge {
                     )
                     , Map).body
             mapCredentials body
-        } catch (RestClientException e) {
-            throw new Unauthorized()
+        } catch (AccessToBackendDeniedException accessToBackendDeniedException) {
+            mapperLoginException(accessToBackendDeniedException.cause.statusCode.name())
         }
     }
 

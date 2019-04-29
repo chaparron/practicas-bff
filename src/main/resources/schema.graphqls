@@ -5,10 +5,10 @@ type Query {
 
 type Mutation {
     # Auth
-    login(input: LoginInput!): LoginResult
+    login(input: LoginInput!): LoginResult!
 
     # Auth
-    refreshCredentials(input: RefreshCredentialsInput!): RefreshCredentials!
+    refreshCredentials(input: RefreshCredentialsInput!): RefreshCredentialsResult!
 
     # Auth
     resetPassword(input: ResetPasswordRequestInput!): Void!
@@ -306,5 +306,7 @@ union UsernameRegistrationResult = UsernameRegistrationFailed | Void
 union ChangePasswordResult = ChangePasswordFailed | Void
 
 union LoginResult = LoginFailed | GenericCredentials
+
+union RefreshCredentialsResult = LoginFailed | RefreshCredentials
 
 union ProfileCredentialsResult = UpdateProfileFailed  | ProfileCredentials  |  Void

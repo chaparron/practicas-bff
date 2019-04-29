@@ -4,6 +4,8 @@ import groovy.transform.ToString
 
 interface LoginResult {}
 
+interface RefreshCredentialsResult {}
+
 interface ChangePasswordResult {}
 
 interface UsernameRegistrationResult {}
@@ -17,7 +19,7 @@ class LoginInput {
 }
 
 @ToString()
-class RefreshCredentials {
+class RefreshCredentials implements RefreshCredentialsResult {
     String accessToken
     String refreshToken
 }
@@ -42,6 +44,7 @@ class ProfileCredentials implements ProfileCredentialsResult{
 }
 
 
+//TODO: Verificar  si es necesario el retorno del site para el tipo de web que lo este pidiendo.
 enum Site {
     CUSTOMER("FE_WEB"),
     SUPPLIER("SUPPLIER_WEB"),
@@ -80,7 +83,7 @@ enum RegisterFailureReason {
 }
 
 
-class LoginFailed implements LoginResult {
+class LoginFailed implements LoginResult , RefreshCredentialsResult {
     LoginFailureReason reason
 }
 

@@ -26,6 +26,7 @@ class Main {
                 .add(ChangePasswordFailed.class)
                 .add(UpdateProfileFailed.class)
                 .add(RegisterFailed.class)
+                .add(RefreshCredentials.class)
     }
     /**
      *
