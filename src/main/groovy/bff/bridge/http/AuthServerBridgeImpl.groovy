@@ -2,6 +2,7 @@ package bff.bridge.http
 
 import bff.bridge.AuthServerBridge
 import bff.model.*
+import bff.configuration.AccessToBackendDeniedException
 import groovy.json.JsonBuilder
 import groovy.util.logging.Slf4j
 import org.springframework.http.HttpHeaders
@@ -12,7 +13,6 @@ import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
 
-import javax.security.auth.login.LoginException
 
 @Slf4j
 class AuthServerBridgeImpl implements AuthServerBridge {
@@ -36,9 +36,8 @@ class AuthServerBridgeImpl implements AuthServerBridge {
                     , Map).body
 
             mapCredentials body
-        } catch (LoginFailure loginFailure ) {
-            loginFailure
-            loginFailure.build()
+        } catch (AccessToBackendDeniedException accessToBackendDeniedException ) {
+            mapperLoginException(accessToBackendDeniedException.cause.statusCode.name())
         }
     }
 
@@ -221,6 +220,12 @@ class AuthServerBridgeImpl implements AuthServerBridge {
         throw new RuntimeException("User-Registration: Not implemented: ${new JsonBuilder(error)}")
     }
 
+    def private static mapperLoginException(def error) {
+        LoginFailureReason.valueOf(error)?.doThrow()
+
+        throw new RuntimeException("User-Registration: Not implemented: ${new JsonBuilder(error)}")
+    }
+
     def mapCredentials(body) {
         new Credentials(
                 accessToken: body.access_token,
@@ -230,11 +235,4 @@ class AuthServerBridgeImpl implements AuthServerBridge {
                 expiresIn: body.expires_in
         )
     }
-
-    def mapGroups(groups) {
-        groups?.collect {
-            it
-        }
-    }
-
 }

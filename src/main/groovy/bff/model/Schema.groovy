@@ -62,6 +62,10 @@ enum Site {
 enum LoginFailureReason {
     FORBIDDEN,
     UNAUTHORIZED
+
+    def doThrow() {
+        throw new LoginFailureException(loginFailureReason: this)
+    }
 }
 
 enum RegisterFailureReason {
@@ -69,6 +73,7 @@ enum RegisterFailureReason {
     PASSWORD_MISMATCH,
     INVALID_NAME,
     INVALID_SURNAME
+
     def doThrow() {
         throw new WebRegisterException(registerReason: this)
     }

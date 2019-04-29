@@ -28,8 +28,8 @@ class Mutation implements GraphQLMutationResolver {
                     username: JwtToken.fromString(credentials.accessToken).username,
                     credentials: credentials
             )
-        } catch (Unauthorized e) {
-            new LoginFailed(reason: LoginFailureReason.UNAUTHORIZED)
+        } catch (LoginFailureException loginException) {
+            loginException.build()
         }
     }
 
