@@ -11,13 +11,13 @@ type Mutation {
     refreshCredentials(input: RefreshCredentialsInput!): RefreshCredentialsResult!
 
     # Auth
+    changePassword(input: ChangePasswordInput!): ChangePasswordResult
+
+    # Auth
     resetPassword(input: ResetPasswordRequestInput!): Void!
 
     # Auth
     resetPasswordConfirm(input: ResetPasswordConfirmInput!): Void!
-
-    # Auth
-    changePassword(input: ChangePasswordInput!): ChangePasswordResult
 
     # Users
     updateProfile(input: UserProfileInput!): ProfileCredentialsResult!
@@ -73,8 +73,7 @@ enum UsernameRegistrationReason {
 }
 
 enum ChangePasswordReason {
-    INCORRECT_PASSWORD
-    INVALID_NEW
+    PASSWORD_MISMATCH
 }
 
 enum UpdateProfileReason {

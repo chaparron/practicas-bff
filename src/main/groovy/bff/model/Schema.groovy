@@ -116,8 +116,7 @@ class ChangePasswordInput {
 }
 
 enum ChangePasswordReason {
-    INCORRECT_PASSWORD,
-    INVALID_NEW
+    PASSWORD_MISMATCH
 }
 
 class ChangePasswordFailed implements ChangePasswordResult {

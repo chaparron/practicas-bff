@@ -138,11 +138,8 @@ class AuthServerBridgeImpl implements AuthServerBridge {
                             ]
                     ), Map
             )
-        } catch (RestClientException e) {
-            def body = e.responseBody;
-            if (body && body.error) {
-                mapChangePasswordResponseToException(body.error)
-            }
+        } catch (Exception e) {
+            e.printStackTrace()
             throw new RuntimeException('failed to change password', e)
         }
     }
