@@ -1,6 +1,6 @@
 
 type Query {
-
+    algo: String!
 }
 
 type Mutation {

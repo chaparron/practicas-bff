@@ -13,6 +13,8 @@ import org.springframework.web.client.RestClientException
 @Component
 @Slf4j
 class Query implements GraphQLQueryResolver {
-    
+    String algo() {
+        "HOLA DARDO!"
+    }
 }
 
