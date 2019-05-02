@@ -29,6 +29,13 @@ class LoginFailureException extends RuntimeException {
     }
 }
 
+class ChangePasswordException extends RuntimeException {
+    ChangePasswordReason changePasswordReason
+    def build() {
+        new ChangePasswordFailed(reason: this.changePasswordReason)
+    }
+}
+
 
 class UpdateProfileException extends RuntimeException {
     UpdateProfileReason reason

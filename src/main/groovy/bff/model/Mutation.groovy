@@ -68,12 +68,9 @@ class Mutation implements GraphQLMutationResolver {
         try {
             authServerBridge.changePassword(input.currentPassword, input.newPassword, input.accessToken)
             Void.SUCCESS
-        } catch (CurrentPasswordMismatch e) {
-            return ChangePasswordFailed.INCORRECT_PASSWORD
-        } catch (InvalidPassword e) {
-            return ChangePasswordFailed.INVALID_NEW
+        } catch (ChangePasswordException changePasswordException) {
+            changePasswordException.build()
         }
-
     }
 
     Void disableUsername(UsernameInput input) {

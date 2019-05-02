@@ -50,6 +50,9 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
                     throw new AccessToBackendDeniedException(response.getStatusText(),  new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
                             response.getHeaders(), getResponseBody(response), getCharset(response)))
 
+                } else if(statusCode == HttpStatus.BAD_REQUEST) {
+                    throw  new BadRequestErrorException(response.getStatusText(),  new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
+                            response.getHeaders(), getResponseBody(response), getCharset(response)))
                 } else {
                     throw new BridgeHttpClientErrorException(statusCode, response.getStatusText(),
                             response.getHeaders(), getResponseBody(response), getCharset(response))
@@ -57,6 +60,7 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
             case HttpStatus.Series.SERVER_ERROR:
                 throw new BackendServerErrorException(response.getStatusText(),  new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
                         response.getHeaders(), getResponseBody(response), getCharset(response)))
+
             default:
                 throw new BackendServerErrorException(response.getStatusText(), new BridgeUnknownHttpStatusCodeException(statusCode.value(), response.getStatusText(),
                         response.getHeaders(), getResponseBody(response), getCharset(response)) )
@@ -92,6 +96,10 @@ class AccessToBackendDeniedException extends RuntimeException {
 
 @InheritConstructors
 class BackendServerErrorException extends RuntimeException {
+}
+
+@InheritConstructors
+class BadRequestErrorException extends RuntimeException {
 }
 
 @InheritConstructors

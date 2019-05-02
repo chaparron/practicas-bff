@@ -117,14 +117,14 @@ class ChangePasswordInput {
 
 enum ChangePasswordReason {
     PASSWORD_MISMATCH
+
+    def doThrow() {
+        throw new ChangePasswordException(changePasswordReason: this)
+    }
+
 }
 
 class ChangePasswordFailed implements ChangePasswordResult {
-
-    static final INCORRECT_PASSWORD = new ChangePasswordFailed(reason: ChangePasswordReason.INCORRECT_PASSWORD)
-
-    static final INVALID_NEW = new ChangePasswordFailed(reason: ChangePasswordReason.INVALID_NEW)
-
     ChangePasswordReason reason
 }
 

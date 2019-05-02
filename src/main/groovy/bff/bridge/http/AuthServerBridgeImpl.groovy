@@ -3,6 +3,7 @@ package bff.bridge.http
 import bff.bridge.AuthServerBridge
 import bff.model.*
 import bff.configuration.AccessToBackendDeniedException
+import bff.configuration.BadRequestErrorException
 import groovy.json.JsonBuilder
 import groovy.util.logging.Slf4j
 import org.springframework.http.HttpHeaders
@@ -138,9 +139,8 @@ class AuthServerBridgeImpl implements AuthServerBridge {
                             ]
                     ), Map
             )
-        } catch (Exception e) {
-            e.printStackTrace()
-            throw new RuntimeException('failed to change password', e)
+        } catch (BadRequestErrorException badRequestErrorException) {
+            ChangePasswordReason.PASSWORD_MISMATCH.doThrow()
         }
     }
 
