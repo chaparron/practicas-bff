@@ -1,0 +1,106 @@
+enum Site {
+    CUSTOMER
+    SUPPLIER
+    MANUFACTURER
+    BO
+}
+
+enum VoidReason {
+    SUCCESS
+}
+
+enum LoginFailureReason {
+    FORBIDDEN,
+    UNAUTHORIZED
+}
+
+enum RegisterFailureReason {
+    PASSWORD_MISMATCH
+    DUPLICATE_USERNAME
+    INVALID_NAME
+    INVALID_SURNAME
+}
+
+enum AuthType {
+    USER
+    ADMIN
+}
+enum ChangePasswordReason {
+    PASSWORD_MISMATCH
+}
+
+input ChangePasswordInput {
+    currentPassword: String!
+    newPassword: String!
+    accessToken: String!
+}
+
+input ResetPasswordRequestInput {
+    username: String!
+}
+
+input ResetPasswordConfirmInput {
+    token: String!
+    password: String!
+    user_id: Long!
+}
+
+input RefreshCredentialsInput {
+    refreshToken: String!
+}
+
+input LoginInput {
+    username: String!
+    password: String!
+    site: Site!
+}
+
+input PhoneInput {
+    phone: String!
+}
+
+type Void {
+    voidReason: VoidReason!
+}
+
+type GenericCredentials {
+    username: String!
+    credentials: Credentials!
+}
+
+type LoginFailed {
+    reason: LoginFailureReason!
+}
+
+
+type RefreshCredentials {
+    accessToken: String!
+    refreshToken: String!
+}
+
+type Credentials {
+    accessToken: String!
+    refreshToken: String!
+    tokenType: String!
+    scope: String!
+    expiresIn: String!
+}
+
+
+type ChangePasswordFailed {
+    reason: ChangePasswordReason
+}
+
+
+type ConfirmPasswordFailed {
+    confirmPasswordReason: ConfirmPasswordReason
+}
+
+
+union ChangePasswordResult = ChangePasswordFailed | Void
+
+union ConfirmPasswordResult = ConfirmPasswordFailed | Void
+
+union LoginResult = LoginFailed | GenericCredentials
+
+union RefreshCredentialsResult = LoginFailed | RefreshCredentials

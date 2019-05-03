@@ -28,13 +28,6 @@ type Mutation {
 }
 
 
-enum Site {
-    CUSTOMER
-    SUPPLIER
-    MANUFACTURER
-    BO
-}
-
 enum PageSize {
     ZERO
     ONE
@@ -42,27 +35,6 @@ enum PageSize {
     TWENTY
     FIFTY
     ONE_HUNDRED
-}
-
-enum VoidReason {
-    SUCCESS
-}
-
-enum LoginFailureReason {
-    FORBIDDEN,
-    UNAUTHORIZED
-}
-
-enum RegisterFailureReason {
-    PASSWORD_MISMATCH
-    DUPLICATE_USERNAME
-    INVALID_NAME
-    INVALID_SURNAME
-}
-
-enum AuthType {
-    USER
-    ADMIN
 }
 
 enum UsernameRegistrationReason {
@@ -73,10 +45,6 @@ enum UsernameRegistrationReason {
     INVALID_FIRST_NAME_LENGTH,
     INVALID_LAST_NAME_LENGTH,
     INVALID_USERNAME_LENGTH
-}
-
-enum ChangePasswordReason {
-    PASSWORD_MISMATCH
 }
 
 enum ConfirmPasswordReason {
@@ -99,35 +67,6 @@ enum Gender {
     OTHER
 }
 
-
-input ChangePasswordInput {
-    currentPassword: String!
-    newPassword: String!
-    accessToken: String!
-}
-
-input ResetPasswordRequestInput {
-    username: String!
-}
-
-input ResetPasswordConfirmInput {
-    token: String!
-    password: String!
-    user_id: Long!
-}
-
-
-
-input RefreshCredentialsInput {
-    refreshToken: String!
-}
-
-input LoginInput {
-    username: String!
-    password: String!
-    site: Site!
-}
-
 input PageInput {
     # número de pagina comienza en 1
     number: Int!
@@ -143,11 +82,6 @@ input ListUsersInput {
 input ListMyFavoritesInput {
     page: PageInput!
     accessToken: String!
-}
-
-
-input PhoneInput {
-    phone: String!
 }
 
 input UserProfileInput {
@@ -208,12 +142,6 @@ input UploadImageInput {
     accessToken: String!
 }
 
-
-# Albricias! tu mutación ha sido exitosa
-type Void {
-    voidReason: VoidReason!
-}
-
 type Profile {
     document: String
     dob: String
@@ -229,42 +157,12 @@ type UsernameRegistrationFailed {
     reason: UsernameRegistrationReason
 }
 
-type GenericCredentials {
-    username: String!
-    credentials: Credentials!
-}
-
-type LoginFailed {
-    reason: LoginFailureReason!
-}
-
 type RegisterFailed {
     registerReason: RegisterFailureReason!
 }
 
-type RefreshCredentials {
-    accessToken: String!
-    refreshToken: String!
-}
-
-type Credentials {
-    accessToken: String!
-    refreshToken: String!
-    tokenType: String!
-    scope: String!
-    expiresIn: String!
-}
-
 type ProfileCredentials {
     accessToken: String
-}
-
-type ChangePasswordFailed {
-    reason: ChangePasswordReason
-}
-
-type ConfirmPasswordFailed {
-    confirmPasswordReason: ConfirmPasswordReason
 }
 
 type UpdateProfileFailed {
@@ -316,13 +214,5 @@ type Filter{
 
 
 union UsernameRegistrationResult = UsernameRegistrationFailed | Void
-
-union ChangePasswordResult = ChangePasswordFailed | Void
-
-union ConfirmPasswordResult = ConfirmPasswordFailed | Void
-
-union LoginResult = LoginFailed | GenericCredentials
-
-union RefreshCredentialsResult = LoginFailed | RefreshCredentials
 
 union ProfileCredentialsResult = UpdateProfileFailed  | ProfileCredentials  |  Void
