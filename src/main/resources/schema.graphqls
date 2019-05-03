@@ -1,22 +1,26 @@
 
 type Query {
     algo: String!
+
+    # Existence phone number test
+    testPhoneNumber(input: PhoneInput!): Void!
+
 }
 
 type Mutation {
-    # Auth
+    # User login
     login(input: LoginInput!): LoginResult!
 
-    # Auth
+    # Refresh Credential from a logged user
     refreshCredentials(input: RefreshCredentialsInput!): RefreshCredentialsResult!
 
-    # Auth
+    # Change password from an existing user
     changePassword(input: ChangePasswordInput!): ChangePasswordResult
 
-    # Auth
+    # Reset password request
     resetPassword(input: ResetPasswordRequestInput!): Void!
 
-    # Auth
+    # Reset password confirm
     resetPasswordConfirm(input: ResetPasswordConfirmInput!): ConfirmPasswordResult!
 
     # Users
@@ -142,6 +146,10 @@ input ListMyFavoritesInput {
     accessToken: String!
 }
 
+
+input PhoneInput {
+    phone: String!
+}
 
 input UserProfileInput {
     id: ID

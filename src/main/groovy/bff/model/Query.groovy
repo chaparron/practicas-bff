@@ -13,8 +13,17 @@ import org.springframework.web.client.RestClientException
 @Component
 @Slf4j
 class Query implements GraphQLQueryResolver {
+
+    @Autowired
+    AuthServerBridge authServerBridge
+
     String algo() {
         "HOLA DARDO!"
+    }
+
+    Void testPhoneNumber(PhoneInput phoneInput) {
+        authServerBridge.testPhoneNumber(phoneInput.phone)
+        Void.SUCCESS
     }
 }
 

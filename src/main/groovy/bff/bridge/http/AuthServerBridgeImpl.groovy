@@ -145,6 +145,19 @@ class AuthServerBridgeImpl implements AuthServerBridge {
     }
 
     @Override
+    void testPhoneNumber(String phoneNumber) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/user/test/phone/${phoneNumber}")).toUriString()
+        def uri = url.toURI()
+
+        http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , Boolean).body
+
+    }
+
+    @Override
     ProfileCredentialsResult updateProfile(Long id, String firstName, String lastName, String username,
                                            String document, String dob, String areaCode, String phone,
                                            String gender, String seller, String sellerType, String address, String accessToken) {

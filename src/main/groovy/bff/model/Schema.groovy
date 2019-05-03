@@ -186,6 +186,10 @@ class ChangePasswordInput {
     String accessToken
 }
 
+class PhoneInput {
+    String phone
+}
+
 class Filter {
     String key
     String name
