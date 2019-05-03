@@ -1,6 +1,5 @@
 
 type Query {
-    algo: String!
 
     # Existence phone number test
     testPhoneNumber(input: PhoneInput!): Void!
