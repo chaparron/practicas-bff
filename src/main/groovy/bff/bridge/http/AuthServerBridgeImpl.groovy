@@ -107,7 +107,7 @@ class AuthServerBridgeImpl implements AuthServerBridge {
     }
 
     @Override
-    void resetPasswordConfirm(String token, String password, Long user_id) {
+    def resetPasswordConfirm(String token, String password, Long user_id) {
         try {
             http.exchange(
                     RequestEntity.method(HttpMethod.POST, root.resolve('/user/password/reset/confirm'))
@@ -120,8 +120,8 @@ class AuthServerBridgeImpl implements AuthServerBridge {
                             ]
                     ), Map
             )
-        } catch (RestClientException e) {
-            throw new RuntimeException('failed to change password', e)
+        } catch (BadRequestErrorException e) {
+            ConfirmPasswordReason.TOKEN_EXPIRED.doThrow()
         }
     }
 
@@ -139,7 +139,7 @@ class AuthServerBridgeImpl implements AuthServerBridge {
                             ]
                     ), Map
             )
-        } catch (BadRequestErrorException badRequestErrorException) {
+        } catch (BadRequestErrorException b) {
             ChangePasswordReason.PASSWORD_MISMATCH.doThrow()
         }
     }

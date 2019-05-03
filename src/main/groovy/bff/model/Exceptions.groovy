@@ -36,6 +36,13 @@ class ChangePasswordException extends RuntimeException {
     }
 }
 
+class ConfirmPasswordException extends RuntimeException {
+    ConfirmPasswordReason confirmPasswordReason
+    def build() {
+        new ConfirmPasswordFailed(confirmPasswordReason: this.confirmPasswordReason)
+    }
+ }
+
 
 class UpdateProfileException extends RuntimeException {
     UpdateProfileReason reason

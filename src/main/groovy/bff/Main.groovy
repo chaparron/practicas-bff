@@ -19,14 +19,15 @@ class Main {
     @Bean
     SchemaParserDictionary schemaParserDictionary() {
         new SchemaParserDictionary()
-                .add(UsernameRegistrationFailed.class)
                 .add(GenericCredentials.class)
                 .add(ProfileCredentials.class)
-                .add(LoginFailed.class)
+                .add(RefreshCredentials.class)
+                .add(UsernameRegistrationFailed.class)
                 .add(ChangePasswordFailed.class)
                 .add(UpdateProfileFailed.class)
+                .add(ConfirmPasswordFailed.class)
                 .add(RegisterFailed.class)
-                .add(RefreshCredentials.class)
+                .add(LoginFailed.class)
     }
     /**
      *

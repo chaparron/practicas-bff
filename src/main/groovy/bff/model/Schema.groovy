@@ -12,6 +12,8 @@ interface UsernameRegistrationResult {}
 
 interface ProfileCredentialsResult {}
 
+interface ConfirmPasswordResult {}
+
 class LoginInput {
     String username
     String password
@@ -82,6 +84,58 @@ enum RegisterFailureReason {
     }
 }
 
+enum AuthType {
+    USER,
+    ADMIN
+}
+
+
+enum ChangePasswordReason {
+    PASSWORD_MISMATCH
+
+    def doThrow() {
+        throw new ChangePasswordException(changePasswordReason: this)
+    }
+
+}
+
+enum ConfirmPasswordReason {
+    TOKEN_EXPIRED
+
+    def doThrow() {
+        throw new ConfirmPasswordException(confirmPasswordReason: this)
+    }
+
+}
+
+
+enum UpdateProfileReason {
+    DUPLICATE_USERNAME
+
+    def doThrow() {
+        throw new UpdateProfileException(reason: this)
+    }
+}
+
+enum UsernameRegistrationReason {
+    INVALID_FIRST_NAME,
+    INVALID_LAST_NAME,
+    INVALID_USERNAME,
+    DUPLICATE_USERNAME,
+    INVALID_FIRST_NAME_LENGTH,
+    INVALID_LAST_NAME_LENGTH,
+    INVALID_USERNAME_LENGTH
+
+    def doThrow() {
+
+        throw new UsernameRegistrationException(reason: this)
+    }
+}
+
+enum VoidReason {
+    SUCCESS
+}
+
 
 class LoginFailed implements LoginResult , RefreshCredentialsResult {
     LoginFailureReason reason
@@ -91,9 +145,26 @@ class RegisterFailed {
     RegisterFailureReason registerReason
 }
 
-enum AuthType {
-    USER,
-    ADMIN
+class ChangePasswordFailed implements ChangePasswordResult {
+    ChangePasswordReason reason
+}
+
+class ConfirmPasswordFailed implements ConfirmPasswordResult{
+    ConfirmPasswordReason confirmPasswordReason
+}
+
+class UsernameRegistrationFailed implements UsernameRegistrationResult {
+    UsernameRegistrationReason reason
+}
+
+class UpdateProfileFailed implements ProfileCredentialsResult {
+    UpdateProfileReason reason
+}
+
+class Void implements ChangePasswordResult, UsernameRegistrationResult,
+        ProfileCredentialsResult, ConfirmPasswordResult {
+    static final SUCCESS = new Void(voidReason: VoidReason.SUCCESS)
+    VoidReason voidReason
 }
 
 class RefreshCredentialsInput {
@@ -113,30 +184,6 @@ class ChangePasswordInput {
     String currentPassword
     String newPassword
     String accessToken
-}
-
-enum ChangePasswordReason {
-    PASSWORD_MISMATCH
-
-    def doThrow() {
-        throw new ChangePasswordException(changePasswordReason: this)
-    }
-
-}
-
-class ChangePasswordFailed implements ChangePasswordResult {
-    ChangePasswordReason reason
-}
-
-
-enum VoidReason {
-    SUCCESS
-}
-
-class Void implements ChangePasswordResult, UsernameRegistrationResult,
-        ProfileCredentialsResult {
-    static final SUCCESS = new Void(voidReason: VoidReason.SUCCESS)
-    VoidReason voidReason
 }
 
 class Filter {
@@ -186,25 +233,6 @@ class UsernameInput {
     String accessToken
 }
 
-enum UsernameRegistrationReason {
-    INVALID_FIRST_NAME,
-    INVALID_LAST_NAME,
-    INVALID_USERNAME,
-    DUPLICATE_USERNAME,
-    INVALID_FIRST_NAME_LENGTH,
-    INVALID_LAST_NAME_LENGTH,
-    INVALID_USERNAME_LENGTH
-
-    def doThrow() {
-
-        throw new UsernameRegistrationException(reason: this)
-    }
-}
-
-class UsernameRegistrationFailed implements UsernameRegistrationResult {
-    UsernameRegistrationReason reason
-}
-
 class PageInput {
     Long number
     PageSize size
@@ -247,18 +275,6 @@ class CompleteProfileInput {
     String accessToken
 }
 
-enum UpdateProfileReason {
-    DUPLICATE_USERNAME
-
-    def doThrow() {
-        throw new UpdateProfileException(reason: this)
-    }
-}
-
-
-class UpdateProfileFailed implements ProfileCredentialsResult {
-    UpdateProfileReason reason
-}
 
 class IdInput {
     Long id

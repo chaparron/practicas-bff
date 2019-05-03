@@ -17,7 +17,7 @@ type Mutation {
     resetPassword(input: ResetPasswordRequestInput!): Void!
 
     # Auth
-    resetPasswordConfirm(input: ResetPasswordConfirmInput!): Void!
+    resetPasswordConfirm(input: ResetPasswordConfirmInput!): ConfirmPasswordResult!
 
     # Users
     updateProfile(input: UserProfileInput!): ProfileCredentialsResult!
@@ -74,6 +74,10 @@ enum UsernameRegistrationReason {
 
 enum ChangePasswordReason {
     PASSWORD_MISMATCH
+}
+
+enum ConfirmPasswordReason {
+    TOKEN_EXPIRED
 }
 
 enum UpdateProfileReason {
@@ -252,6 +256,10 @@ type ChangePasswordFailed {
     reason: ChangePasswordReason
 }
 
+type ConfirmPasswordFailed {
+    confirmPasswordReason: ConfirmPasswordReason
+}
+
 type UpdateProfileFailed {
     reason: UpdateProfileReason
 }
@@ -303,6 +311,8 @@ type Filter{
 union UsernameRegistrationResult = UsernameRegistrationFailed | Void
 
 union ChangePasswordResult = ChangePasswordFailed | Void
+
+union ConfirmPasswordResult = ConfirmPasswordFailed | Void
 
 union LoginResult = LoginFailed | GenericCredentials
 

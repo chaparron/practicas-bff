@@ -59,9 +59,13 @@ class Mutation implements GraphQLMutationResolver {
         Void.SUCCESS
     }
 
-    Void resetPasswordConfirm(ResetPasswordConfirmInput input) {
-        authServerBridge.resetPasswordConfirm(input.token, input.password, input.user_id)
-        Void.SUCCESS
+    ConfirmPasswordResult resetPasswordConfirm(ResetPasswordConfirmInput input) {
+        try {
+            authServerBridge.resetPasswordConfirm(input.token, input.password, input.user_id)
+            Void.SUCCESS
+        } catch (ConfirmPasswordException confirmPasswordException) {
+            confirmPasswordException.build()
+        }
     }
 
     ChangePasswordResult changePassword(ChangePasswordInput input) {

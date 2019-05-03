@@ -14,7 +14,7 @@ interface AuthServerBridge {
 
     void resetPassword(String username)
 
-    void resetPasswordConfirm(String token, String password, Long user_id)
+    def resetPasswordConfirm(String token, String password, Long user_id)
 
 
     void changePassword(String oldPassword, String newPassword, String accessToken)
