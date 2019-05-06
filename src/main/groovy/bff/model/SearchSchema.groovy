@@ -1,6 +1,8 @@
 package bff.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
 class SearchResult {
     Header header
@@ -70,7 +72,9 @@ class Product {
     String title
 }
 
-class Category {
+@ToString
+@EqualsAndHashCode
+class Category implements Serializable {
     Long id
     Long parentId
     String name

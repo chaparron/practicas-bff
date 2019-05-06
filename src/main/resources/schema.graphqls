@@ -5,6 +5,8 @@ type Query {
     testPhoneNumber(input: PhoneInput!): Void!
 
     search (input: SearchInput!): SearchResult
+
+    findRootCategories(input: FindRootsInput): [Category]
 }
 
 type Mutation {

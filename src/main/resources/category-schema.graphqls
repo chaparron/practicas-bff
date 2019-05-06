@@ -1,0 +1,11 @@
+type Category {
+    id: Int,
+    parentId: Int,
+    isLeaf: Boolean,
+    name: String
+    enabled: Boolean
+}
+
+input FindRootsInput {
+    accessToken: String!
+}

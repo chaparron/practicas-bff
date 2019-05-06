@@ -54,14 +54,6 @@ type Product {
     priceFrom: Price
 }
 
-type Category {
-    id: Int,
-    parentId: Int,
-    isLeaf: Boolean,
-    name: String
-    enabled: Boolean
-}
-
 type Brand {
     id: Int,
     name: String,

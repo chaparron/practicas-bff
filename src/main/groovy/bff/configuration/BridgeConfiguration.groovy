@@ -33,5 +33,13 @@ class BridgeConfiguration {
         )
     }
 
+    @Bean
+    CategoryBridge categoryBridge() {
+        new CategoryBridgeImpl(
+            http: http,
+            root:root
+        )
+    }
+
 
 }
