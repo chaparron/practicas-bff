@@ -4,6 +4,7 @@ type Query {
     # Existence phone number test
     testPhoneNumber(input: PhoneInput!): Void!
 
+    search (input: SearchInput!): SearchResult
 }
 
 type Mutation {
@@ -183,20 +184,20 @@ type Facet{
     slices: [Slices]
 }
 
-type Slices{
-    size: Long!
+type Slices {
+    size: Int!
     obj: Slice
 }
 
-type Slice{
-    id: Long!
+type Slice {
+    id: Int!
     name: String!
     key: String!
 }
 
-input UpdateBoostInput{
+input UpdateBoostInput {
     id: ID!
-    boost: Long!
+    boost: Int!
     accessToken: String!
 }
 

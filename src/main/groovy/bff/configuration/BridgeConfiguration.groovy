@@ -24,4 +24,14 @@ class BridgeConfiguration {
                 root: root
         )
     }
+
+    @Bean
+    SearchBridge searchBridge() {
+        new SearchBridgeImpl(
+            http: http,
+            root: root
+        )
+    }
+
+
 }
