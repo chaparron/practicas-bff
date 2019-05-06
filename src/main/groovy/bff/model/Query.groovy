@@ -17,9 +17,16 @@ class Query implements GraphQLQueryResolver {
     @Autowired
     AuthServerBridge authServerBridge
 
+    @Autowired
+    CustomerBridge customerBridge
+
     Void testPhoneNumber(PhoneInput phoneInput) {
         authServerBridge.testPhoneNumber(phoneInput.phone)
         Void.SUCCESS
+    }
+
+    Customer myProfile(CustomerInput customerInput) {
+        customerBridge.myProfile(customerInput)
     }
 }
 

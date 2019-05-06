@@ -97,14 +97,9 @@ class Sort {
 }
 
 class Profile {
-    String document
-    String dob
-    String area_code
-    String phone
-    String seller
-    String seller_type
-    Gender gender
-    String address
+    Long id
+    String name
+    List<String> authorities
 }
 
 

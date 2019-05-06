@@ -10,6 +10,23 @@ interface ChangePasswordResult {}
 
 interface ConfirmPasswordResult {}
 
+class User {
+    Long id
+    String username
+    String firstName
+    String lastName
+    String phone
+    UserCredentials credentials
+    List<Profile> profiles
+}
+
+class UserCredentials {
+    Long id
+    User user
+    String password
+    Boolean enabled
+}
+
 class LoginInput {
     String username
     String password

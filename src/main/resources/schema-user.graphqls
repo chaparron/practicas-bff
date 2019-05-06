@@ -42,7 +42,7 @@ input ResetPasswordRequestInput {
 input ResetPasswordConfirmInput {
     token: String!
     password: String!
-    user_id: Long!
+    user_id: ID!
 }
 
 input RefreshCredentialsInput {
@@ -94,6 +94,23 @@ type ChangePasswordFailed {
 
 type ConfirmPasswordFailed {
     confirmPasswordReason: ConfirmPasswordReason
+}
+
+type UserCredentials {
+    id: ID
+    user: User
+    password: String
+    enabled: Boolean
+}
+
+type User {
+    id: ID
+    username: String
+    firstName: String
+    lastName: String
+    phone: String
+    credentials: UserCredentials
+    profiles: [Profile]
 }
 
 

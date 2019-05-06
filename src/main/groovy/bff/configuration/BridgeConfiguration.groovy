@@ -24,4 +24,13 @@ class BridgeConfiguration {
                 root: root
         )
     }
+
+    @Bean
+    CustomerBridge customerBridge() {
+        new CustomerBridgeImpl(
+                http: http,
+                root: root
+        )
+    }
+
 }

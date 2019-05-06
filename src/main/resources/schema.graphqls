@@ -4,6 +4,9 @@ type Query {
     # Existence phone number test
     testPhoneNumber(input: PhoneInput!): Void!
 
+    # Find Customer by Id
+    myProfile(input: CustomerInput!): Customer!
+
 }
 
 type Mutation {
@@ -143,14 +146,9 @@ input UploadImageInput {
 }
 
 type Profile {
-    document: String
-    dob: String
-    area_code: String
-    phone: String
-    seller: String
-    seller_type: String
-    gender: Gender
-    address: String
+    id: ID
+    name: String
+    authorities: [String]
 }
 
 type UsernameRegistrationFailed {
@@ -184,19 +182,19 @@ type Facet{
 }
 
 type Slices{
-    size: Long!
+    size: ID!
     obj: Slice
 }
 
 type Slice{
-    id: Long!
+    id: ID!
     name: String!
     key: String!
 }
 
 input UpdateBoostInput{
     id: ID!
-    boost: Long!
+    boost: ID!
     accessToken: String!
 }
 

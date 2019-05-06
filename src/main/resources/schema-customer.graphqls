@@ -1,0 +1,78 @@
+enum CustomerStatus {
+    PENDING,
+    REJECTED,
+    APPROVED
+}
+
+enum AddressType {
+    LEGAL,
+    DELIVERY
+}
+
+enum VerificationDocumentType {
+    IB,
+    AFIP,
+    ID_FRONT,
+    ID_BACK
+}
+
+
+enum DeliveryPreference {
+    MORNING,
+    AFTERNOON
+}
+
+input CustomerInput {
+    accessToken: String
+}
+
+type State {
+    id: ID
+    name: String
+}
+
+type Address {
+    id: ID
+    formatted: String
+    placeId: String
+    addressName: String
+    addressNumber: String
+    city: String
+    postalCode: String
+    state: State
+    lat: Float
+    lon: Float
+    additionalInfo: String
+    preferred: Boolean
+    addressType: AddressType
+    enabled: Boolean
+}
+
+type VerificationDocument {
+    id: ID
+    documentType: VerificationDocumentType
+}
+
+type RatingScore {
+    average: Float
+    count: Int
+    percentage: Float
+}
+
+type Customer {
+    id: ID
+    name: String
+    enabled: Boolean
+    legalId: String
+    linePhone: String
+    customerStatus: CustomerStatus
+    user: User
+    smsVerification: Boolean
+    emailVerification: Boolean
+    addresses: [Address]
+    verificationDocuments: [VerificationDocument]
+    deliveryPreference: DeliveryPreference
+    rating: RatingScore
+    level: Int
+    missingDocuments: [String]
+}
