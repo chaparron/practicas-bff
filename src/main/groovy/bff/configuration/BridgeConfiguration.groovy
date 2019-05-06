@@ -33,4 +33,19 @@ class BridgeConfiguration {
         )
     }
 
+    @Bean
+    SearchBridge searchBridge() {
+        new SearchBridgeImpl(
+            http: http,
+            root: root
+        )
+    }
+
+    @Bean
+    CategoryBridge categoryBridge() {
+        new CategoryBridgeImpl(
+            http: http,
+            root:root
+        )
+    }
 }

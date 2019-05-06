@@ -32,12 +32,6 @@ class VerificationDocument {
     VerificationDocumentType documentType
 }
 
-class RatingScore {
-    Double average
-    Integer count
-    Double percentage
-}
-
 class Address {
     Long id
     String formatted

@@ -1,0 +1,144 @@
+input SearchInput {
+    accessToken: String!,
+    addressId: Int,
+    keyword: String,
+    sort: String,
+    sortDirection: SortInput
+    categoryId: Int,
+    page: Int!,
+    size: Int!,
+    brand: Int
+}
+
+enum SortInput {
+    DESC,
+    ASC,
+    DEFAULT
+}
+
+type SearchResult {
+    header: Header,
+    sort: Sort
+    breadCrumb: [BreadCrumb]
+    products: [Product],
+    facets: [Facet]
+}
+
+type Header {
+    total: Int,
+    pageSize: Int,
+    currentPage: Int
+}
+
+type BreadCrumb {
+    id: Int,
+    name: String
+}
+
+type Product {
+    id: Int,
+    name: String,
+    enabled: Boolean,
+    category: Category,
+    brand: Brand,
+    ean: String,
+    units: Int,
+    description: String,
+    keywords: [String],
+    features: [Feature],
+    images: [Image],
+    created: TimestampOutput,
+    manufacturer: Manufacturer,
+    prices: [Price]
+    title: String
+    priceFrom: Price
+}
+
+type Brand {
+    id: Int,
+    name: String,
+    enabled: Boolean,
+    logo: String
+}
+
+type Feature {
+    id: Int,
+    name: String,
+    required: Boolean,
+    hasUnit: Boolean,
+    featureType: FeatureType,
+    allowedValues: [FeatureValue]
+
+}
+
+type FeatureValue {
+    id: Int,
+    name: String,
+    unit: MeasurementUnit,
+    enabled: Boolean
+}
+
+type MeasurementUnit {
+    id: Int,
+    name: String,
+    enabled: Boolean
+}
+
+enum FeatureType {
+    SINGLE,
+    MULTIPLE,
+    BINARY,
+    RANGE
+}
+
+type Image {
+    id: Int,
+    originalName: String,
+    imageOrder: Int,
+    added: TimestampOutput,
+}
+
+type Supplier {
+    id: Int,
+    name: String,
+    legalName: String,
+    avatar: String,
+    enabled: Boolean,
+    phone: String,
+    legalId: String,
+    address: String,
+    postalCode: String,
+    maxAmount: Int,
+    minAmount: Int,
+    deliveryCost: Float,
+    rating: RatingScore,
+    coordinates: [Coordinate]
+}
+
+type Coordinate {
+    lat: Float,
+    lng: Float
+}
+
+type RatingScore {
+    average: Float,
+    count: Int,
+    percentage: Float
+
+}
+
+type Manufacturer {
+    id: Int,
+    name: String,
+    enabled: Boolean,
+    phone: String,
+    avatar: String
+}
+
+type Price {
+    supplier: Supplier,
+    value: Float,
+    updated: TimestampOutput,
+    unitValue: Float,
+    enabled: Boolean
+}

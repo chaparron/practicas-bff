@@ -7,6 +7,9 @@ type Query {
     # Find Customer by Id
     myProfile(input: CustomerInput!): Customer!
 
+    search (input: SearchInput!): SearchResult
+
+    findRootCategories(input: FindRootsInput): [Category]
 }
 
 type Mutation {
@@ -186,13 +189,13 @@ type Slices{
     obj: Slice
 }
 
-type Slice{
-    id: ID!
+type Slice {
+    id: Int!
     name: String!
     key: String!
 }
 
-input UpdateBoostInput{
+input UpdateBoostInput {
     id: ID!
     boost: ID!
     accessToken: String!

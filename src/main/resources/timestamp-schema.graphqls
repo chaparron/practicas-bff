@@ -1,0 +1,7 @@
+type TimestampOutput {
+    value(format: TimestampFormat!, zoneId: String!): String!
+}
+
+enum TimestampFormat {
+    DATE_ONLY, DATE_ISO
+}
