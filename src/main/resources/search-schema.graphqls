@@ -42,7 +42,6 @@ type Product {
     category: Category,
     brand: Brand,
     ean: String,
-    units: Int,
     description: String,
     keywords: [String],
     features: [Feature],
@@ -52,6 +51,7 @@ type Product {
     prices: [Price]
     title: String
     priceFrom: Price
+    minUnitsPrice: Price
 }
 
 type Brand {
@@ -120,13 +120,6 @@ type Coordinate {
     lng: Float
 }
 
-type RatingScore {
-    average: Float,
-    count: Int,
-    percentage: Float
-
-}
-
 type Manufacturer {
     id: Int,
     name: String,
@@ -139,6 +132,7 @@ type Price {
     supplier: Supplier,
     value: Float,
     updated: TimestampOutput,
-    unitValue: Float,
-    enabled: Boolean
+    enabled: Boolean,
+    maxUnits: Int
+    minUnits: Int
 }

@@ -60,7 +60,6 @@ class Product {
     Category category
     Brand brand
     String ean
-    Long units
     String description
     List<Keyword> keywords
     List<Feature> features
@@ -69,6 +68,7 @@ class Product {
     Manufacturer manufacturer
     List<Price> prices
     Price priceFrom
+    Price minUnitsPrice
     String title
 }
 
@@ -108,8 +108,9 @@ class Price {
     Supplier supplier
     Double value
     Boolean enabled
+    Integer minUnits
+    Integer maxUnits
     TimestampOutput updated
-    Double unitValue
 }
 
 class Supplier {
