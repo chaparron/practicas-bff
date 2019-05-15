@@ -22,7 +22,24 @@ enum DeliveryPreference {
     AFTERNOON
 }
 
+#enum CustomerUpdateReason {
+#    PHONE_ALREADY_EXIST
+#}
+
+#type CustomerUpdateFailed {
+#    reason: CustomerUpdateReason
+#}
+
 input CustomerInput {
+    accessToken: String
+}
+
+input CustomerUpdateInput {
+    phone: String
+    username: String
+    address: [String]
+    deliveryPreference: DeliveryPreference
+    verificationDocuments: [VerificationDocument]
     accessToken: String
 }
 

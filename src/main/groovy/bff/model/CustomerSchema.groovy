@@ -1,5 +1,7 @@
 package bff.model
 
+interface CustomerUpdateResult{}
+
 enum CustomerStatus {
     PENDING,
     REJECTED,
@@ -21,6 +23,15 @@ enum VerificationDocumentType {
 enum DeliveryPreference {
     MORNING, AFTERNOON
 }
+
+/*enum CustomerUpdateReason {
+    PHONE_ALREADY_EXIST
+}
+
+class CustomerUpdateFailed implements CustomerUpdateResult {
+    CustomerUpdateReason customerUpdateReason
+}
+*/
 
 class State {
     Long id
@@ -53,7 +64,7 @@ class CustomerInput {
     String accessToken
 }
 
-class Customer {
+class Customer implements CustomerUpdateResult{
     Long id
     String name
     Boolean enabled
@@ -69,4 +80,13 @@ class Customer {
     RatingScore rating
     int level
     List<String> missingDocuments
+}
+
+class CustomerUpdateInput {
+    String phone
+    String username
+    List<String> address
+    DeliveryPreference deliveryPreference
+    List<VerificationDocument> verificationDocuments
+    String accessToken
 }

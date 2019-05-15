@@ -21,14 +21,6 @@ enum RegisterFailureReason {
     }
 }
 
-enum UpdateProfileReason {
-    DUPLICATE_USERNAME
-
-    def doThrow() {
-        throw new UpdateProfileException(reason: this)
-    }
-}
-
 enum UsernameRegistrationReason {
     INVALID_FIRST_NAME,
     INVALID_LAST_NAME,
@@ -54,10 +46,6 @@ class RegisterFailed {
 
 class UsernameRegistrationFailed implements UsernameRegistrationResult {
     UsernameRegistrationReason reason
-}
-
-class UpdateProfileFailed implements ProfileCredentialsResult {
-    UpdateProfileReason reason
 }
 
 class Void implements ChangePasswordResult, UsernameRegistrationResult,

@@ -43,14 +43,6 @@ class ConfirmPasswordException extends RuntimeException {
     }
  }
 
-
-class UpdateProfileException extends RuntimeException {
-    UpdateProfileReason reason
-    def build() {
-        new UpdateProfileFailed(reason: this.reason)
-    }
-}
-
 class WebRegisterException extends RuntimeException {
     RegisterFailureReason registerReason
     def build() {

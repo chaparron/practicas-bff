@@ -88,7 +88,6 @@ class Mutation implements GraphQLMutationResolver {
     }
 
     ProfileCredentialsResult updateProfile(UserProfileInput input) {
-        try {
             def profile = authServerBridge.updateProfile(input.id,
                     input.firstName, input.lastName,
                     input.username, input.document,
@@ -103,8 +102,5 @@ class Mutation implements GraphQLMutationResolver {
             } else {
                 return profile
             }
-        } catch (UpdateProfileException updateException) {
-            return updateException.build()
-        }
     }
 }

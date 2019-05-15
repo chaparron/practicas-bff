@@ -23,9 +23,9 @@ class Main {
                 .add(ProfileCredentials.class)
                 .add(RefreshCredentials.class)
                 .add(UsernameRegistrationFailed.class)
-                .add(ChangePasswordFailed.class)
-                .add(UpdateProfileFailed.class)
                 .add(ConfirmPasswordFailed.class)
+                .add(ChangePasswordFailed.class)
+                //.add(CustomerUpdateFailed.class)
                 .add(RegisterFailed.class)
                 .add(LoginFailed.class)
     }

@@ -29,7 +29,7 @@ type Mutation {
     resetPasswordConfirm(input: ResetPasswordConfirmInput!): ConfirmPasswordResult!
 
     # Users
-    updateProfile(input: UserProfileInput!): ProfileCredentialsResult!
+   # updateProfile(input: CustomerUpdateInput!): CustomerUpdateResult!
 
 }
 
@@ -55,11 +55,6 @@ enum UsernameRegistrationReason {
 
 enum ConfirmPasswordReason {
     TOKEN_EXPIRED
-}
-
-enum UpdateProfileReason {
-    # Duplicate username when update profile
-    DUPLICATE_USERNAME
 }
 
 enum CompleteProfileReason {
@@ -88,23 +83,6 @@ input ListUsersInput {
 input ListMyFavoritesInput {
     page: PageInput!
     accessToken: String!
-}
-
-input UserProfileInput {
-    id: ID
-    firstName: String
-    lastName: String
-    username: String
-    document: String
-    # date of birth
-    dob: String
-    areaCode: String
-    phone: String
-    seller: String
-    address: String
-    seller_type: String
-    gender: Gender
-    accessToken: String
 }
 
 input CompleteProfileInput {
@@ -166,10 +144,6 @@ type ProfileCredentials {
     accessToken: String
 }
 
-type UpdateProfileFailed {
-    reason: UpdateProfileReason
-}
-
 type CompleteProfileFailed {
     reason: CompleteProfileReason
 }
@@ -216,4 +190,4 @@ type Filter{
 
 union UsernameRegistrationResult = UsernameRegistrationFailed | Void
 
-union ProfileCredentialsResult = UpdateProfileFailed  | ProfileCredentials  |  Void
+#union CustomerUpdateResult = CustomerUpdateFailed  | Customer
