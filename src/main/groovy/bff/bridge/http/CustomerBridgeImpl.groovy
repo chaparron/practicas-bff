@@ -17,6 +17,7 @@ import bff.model.UserCredentials
 import bff.model.VerificationDocument
 import bff.model.VerificationDocumentType
 import groovy.util.logging.Slf4j
+import org.apache.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
@@ -50,12 +51,26 @@ class CustomerBridgeImpl implements CustomerBridge{
     @Override
     CustomerUpdateResult updateProfile(CustomerUpdateInput customerUpdateInput) {
         try {
-            return new Customer()
+            def body = http.exchange(
+                    RequestEntity.method(HttpMethod.PUT, root.resolve('/customer/me'))
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.AUTHORIZATION,"Bearer $customerUpdateInput.accessToken")
+            .body(
+                    [
+                            phone: customerUpdateInput.phone,
+                            username: customerUpdateInput.username,
+                            adress: customerUpdateInput.address,
+                            deliveryPreference: customerUpdateInput.deliveryPreference,
+                            verificationDocuments: customerUpdateInput.verificationDocuments
+                    ]
+            ), Map).body
+
+            mapCustomer(body)
+
         } catch(Exception e) {
             CustomerUpdateReason.doThrow()
         } catch (Exception e) {
             e.printStackTrace()
-
         }
     }
 

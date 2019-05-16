@@ -88,7 +88,7 @@ class Customer implements CustomerUpdateResult{
 class CustomerUpdateInput {
     String phone
     String username
-    List<String> address
+    List<Address> address
     DeliveryPreference deliveryPreference
     List<VerificationDocument> verificationDocuments
     String accessToken

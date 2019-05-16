@@ -39,10 +39,33 @@ input VerificationDocumentInput {
     documentType: VerificationDocumentType
 }
 
+input StateInput {
+    id: ID
+    name: String
+}
+
+input AddressInput {
+    id: ID
+    formatted: String
+    placeId: String
+    addressName: String
+    addressNumber: String
+    city: String
+    postalCode: String
+    state: StateInput
+    lat: Float
+    lon: Float
+    additionalInfo: String
+    preferred: Boolean
+    addressType: AddressType
+    enabled: Boolean
+}
+
+
 input CustomerUpdateInput {
     phone: String
     username: String
-    address: [String]
+    address: [AddressInput]
     deliveryPreference: DeliveryPreference
     verificationDocuments: [VerificationDocumentInput]
     accessToken: String
