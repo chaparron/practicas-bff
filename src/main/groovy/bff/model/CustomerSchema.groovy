@@ -24,14 +24,17 @@ enum DeliveryPreference {
     MORNING, AFTERNOON
 }
 
-/*enum CustomerUpdateReason {
+enum CustomerUpdateReason {
     PHONE_ALREADY_EXIST
+
+    def doThrow() {
+        throw new CustomerUpdateException(customerUpdateReason: this)
+    }
 }
 
 class CustomerUpdateFailed implements CustomerUpdateResult {
     CustomerUpdateReason customerUpdateReason
 }
-*/
 
 class State {
     Long id

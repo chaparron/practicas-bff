@@ -25,7 +25,7 @@ class Main {
                 .add(UsernameRegistrationFailed.class)
                 .add(ConfirmPasswordFailed.class)
                 .add(ChangePasswordFailed.class)
-                //.add(CustomerUpdateFailed.class)
+                .add(CustomerUpdateFailed.class)
                 .add(RegisterFailed.class)
                 .add(LoginFailed.class)
     }

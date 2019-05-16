@@ -22,16 +22,21 @@ enum DeliveryPreference {
     AFTERNOON
 }
 
-#enum CustomerUpdateReason {
-#    PHONE_ALREADY_EXIST
-#}
+enum CustomerUpdateReason {
+    PHONE_ALREADY_EXIST
+}
 
-#type CustomerUpdateFailed {
-#    reason: CustomerUpdateReason
-#}
+type CustomerUpdateFailed {
+    customerUpdateReason: CustomerUpdateReason
+}
 
 input CustomerInput {
     accessToken: String
+}
+
+input VerificationDocumentInput {
+    id: ID
+    documentType: VerificationDocumentType
 }
 
 input CustomerUpdateInput {
@@ -39,7 +44,7 @@ input CustomerUpdateInput {
     username: String
     address: [String]
     deliveryPreference: DeliveryPreference
-    verificationDocuments: [VerificationDocument]
+    verificationDocuments: [VerificationDocumentInput]
     accessToken: String
 }
 

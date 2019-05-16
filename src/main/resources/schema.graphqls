@@ -29,7 +29,7 @@ type Mutation {
     resetPasswordConfirm(input: ResetPasswordConfirmInput!): ConfirmPasswordResult!
 
     # Users
-   # updateProfile(input: CustomerUpdateInput!): CustomerUpdateResult!
+   updateProfile(input: CustomerUpdateInput!): CustomerUpdateResult!
 
 }
 
@@ -190,4 +190,4 @@ type Filter{
 
 union UsernameRegistrationResult = UsernameRegistrationFailed | Void
 
-#union CustomerUpdateResult = CustomerUpdateFailed  | Customer
+union CustomerUpdateResult = CustomerUpdateFailed  | Customer

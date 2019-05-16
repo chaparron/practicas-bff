@@ -157,45 +157,6 @@ class AuthServerBridgeImpl implements AuthServerBridge {
 
     }
 
-    @Override
-    ProfileCredentialsResult updateProfile(Long id, String firstName, String lastName, String username,
-                                           String document, String dob, String areaCode, String phone,
-                                           String gender, String seller, String sellerType, String address, String accessToken) {
-        try {
-            def requestBody = http.exchange(
-                    RequestEntity.method(HttpMethod.POST, root.resolve('/user/profile/upsert'))
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                            .body(
-                            [
-                                    id         : id,
-                                    first_name : firstName,
-                                    last_name  : lastName,
-                                    username   : username,
-                                    document   : document,
-                                    dob        : dob,
-                                    area_code  : areaCode,
-                                    phone      : phone,
-                                    gender     : gender,
-                                    seller     : seller,
-                                    address    : address,
-                                    seller_type: sellerType
-                            ]
-                    )
-                    , Map).body
-
-            if (requestBody != null) {
-                return profileCredentials(requestBody)
-            }
-        } catch (RestClientException e) {
-            def body = e.responseBody
-            if (body && body.error) {
-                mapUdateProfileException(body.error)
-            }
-            throw new RuntimeException("failed to update user profile", e)
-        }
-    }
-
     void completeProfile(String phone, String document, String address, String accessToken,
                          String recaptcha) {
 
@@ -216,12 +177,6 @@ class AuthServerBridgeImpl implements AuthServerBridge {
 
     def private profileCredentials(def body) {
         new ProfileCredentials(accessToken: body.accessToken)
-    }
-
-    def private mapUdateProfileException(def error) {
-        UpdateProfileReason.valueOf(error)?.doThrow()
-
-        throw new RuntimeException("Update-Pofile: Not implemented: ${new JsonBuilder(error)}")
     }
 
     def private mapUserRegistrationException(def error) {

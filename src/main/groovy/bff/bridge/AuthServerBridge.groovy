@@ -21,11 +21,6 @@ interface AuthServerBridge {
 
     void testPhoneNumber(String phoneNumber)
 
-    ProfileCredentialsResult updateProfile(Long id, String firstName, String lastName,
-                                           String username, String document, String dob,
-                                           String areaCode, String phone, String gender,
-                                           String seller, String sellerType, String address, String accessToken)
-
     void completeProfile(String phone, String document, String address, String accsstoken,
                          String recaptcha)
 }

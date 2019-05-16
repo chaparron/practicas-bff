@@ -6,6 +6,11 @@ import bff.model.Customer
 import bff.model.CustomerInput
 import bff.model.CustomerStatus
 import bff.model.AddressType
+import bff.model.CustomerUpdateException
+import bff.model.CustomerUpdateFailed
+import bff.model.CustomerUpdateInput
+import bff.model.CustomerUpdateReason
+import bff.model.CustomerUpdateResult
 import bff.model.DeliveryPreference
 import bff.model.User
 import bff.model.UserCredentials
@@ -40,6 +45,18 @@ class CustomerBridgeImpl implements CustomerBridge{
 
         mapCustomer(body)
 
+    }
+
+    @Override
+    CustomerUpdateResult updateProfile(CustomerUpdateInput customerUpdateInput) {
+        try {
+            return new Customer()
+        } catch(Exception e) {
+            CustomerUpdateReason.doThrow()
+        } catch (Exception e) {
+            e.printStackTrace()
+
+        }
     }
 
     static Customer mapCustomer(body) {

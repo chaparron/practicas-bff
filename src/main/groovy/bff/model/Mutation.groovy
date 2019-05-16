@@ -18,6 +18,9 @@ class Mutation implements GraphQLMutationResolver {
     @Autowired
     AuthServerBridge authServerBridge
 
+    @Autowired
+    CustomerBridge customerBridge
+
     LoginResult login(LoginInput input) {
         try {
             def credentials = passwordLogin(input.username, input.password, input.site)
@@ -44,6 +47,14 @@ class Mutation implements GraphQLMutationResolver {
 
     def passwordLogin(String email, String password, Site site) {
         authServerBridge.login(email, password, site)
+    }
+
+    CustomerUpdateResult updateProfile(CustomerUpdateInput customerUpdateInput) {
+        try {
+            customerBridge.updateProfile(customerUpdateInput)
+        } catch(CustomerUpdateException customerUpdateException) {
+            customerUpdateException.build()
+        }
     }
 
     def tokenLogin(String accessToken, String socialNetwork) {
@@ -85,22 +96,5 @@ class Mutation implements GraphQLMutationResolver {
     Void enableUsername(UsernameInput input) {
         usersBridge.enableUsername(input)
         Void.SUCCESS
-    }
-
-    ProfileCredentialsResult updateProfile(UserProfileInput input) {
-            def profile = authServerBridge.updateProfile(input.id,
-                    input.firstName, input.lastName,
-                    input.username, input.document,
-                    input.dob, input.areaCode,
-                    input.phone, input.gender.toString(),
-                    input.seller, input.seller_type,
-                    input.address,
-                    input.accessToken)
-
-            if (profile == null) {
-                return Void.SUCCESS
-            } else {
-                return profile
-            }
     }
 }
