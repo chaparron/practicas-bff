@@ -6,8 +6,6 @@ import bff.model.Customer
 import bff.model.CustomerInput
 import bff.model.CustomerStatus
 import bff.model.AddressType
-import bff.model.CustomerUpdateException
-import bff.model.CustomerUpdateFailed
 import bff.model.CustomerUpdateInput
 import bff.model.CustomerUpdateReason
 import bff.model.CustomerUpdateResult
@@ -16,6 +14,8 @@ import bff.model.User
 import bff.model.UserCredentials
 import bff.model.VerificationDocument
 import bff.model.VerificationDocumentType
+import bff.configuration.ConflictErrorException
+import groovy.json.JsonBuilder
 import groovy.util.logging.Slf4j
 import org.apache.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -67,10 +67,10 @@ class CustomerBridgeImpl implements CustomerBridge{
 
             mapCustomer(body)
 
-        } catch(Exception e) {
-            CustomerUpdateReason.doThrow()
-        } catch (Exception e) {
-            e.printStackTrace()
+        } catch(ConflictErrorException conflictErrorException) {
+            if(conflictErrorException.innerResponse.error) {
+                CustomerUpdateReason.valueOf(conflictErrorException.innerResponse.error).doThrow()
+            }
         }
     }
 
