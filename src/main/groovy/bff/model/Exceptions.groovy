@@ -36,6 +36,13 @@ class CustomerUpdateException extends RuntimeException {
     }
 }
 
+class VerifyEmailException extends RuntimeException {
+    VerifyEmailReason verifyEmailReason
+    def build() {
+        new VerifyEmailFailed(verifyEmailReason: this.verifyEmailReason)
+    }
+}
+
 class ChangePasswordException extends RuntimeException {
     ChangePasswordReason changePasswordReason
     def build() {

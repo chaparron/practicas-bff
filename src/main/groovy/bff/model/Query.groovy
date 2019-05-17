@@ -28,5 +28,14 @@ class Query implements GraphQLQueryResolver {
     Customer myProfile(CustomerInput customerInput) {
         customerBridge.myProfile(customerInput)
     }
+
+    VerifyEmailResult verifyEmail(VerifyEmailInput verifyEmailInput) {
+        try {
+            customerBridge.verifyEmail(verifyEmailInput)
+            Void.SUCCESS
+        } catch (VerifyEmailException verifyEmailException) {
+            verifyEmailException.build()
+        }
+    }
 }
 

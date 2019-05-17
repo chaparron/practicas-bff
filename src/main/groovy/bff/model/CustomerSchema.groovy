@@ -2,6 +2,8 @@ package bff.model
 
 interface CustomerUpdateResult{}
 
+interface VerifyEmailResult{}
+
 enum CustomerStatus {
     PENDING,
     REJECTED,
@@ -32,8 +34,38 @@ enum CustomerUpdateReason {
     }
 }
 
+enum    VerifyEmailReason {
+    TOKEN_EXPIRED
+
+    def doThrow() {
+        throw new VerifyEmailException(verifyEmailReason: this)
+    }
+}
+
 class CustomerUpdateFailed implements CustomerUpdateResult {
     CustomerUpdateReason customerUpdateReason
+}
+
+class VerifyEmailFailed implements VerifyEmailResult {
+    VerifyEmailReason verifyEmailReason
+}
+
+class CustomerInput {
+    String accessToken
+}
+
+class CustomerUpdateInput {
+    String phone
+    String username
+    List<Address> address
+    DeliveryPreference deliveryPreference
+    List<VerificationDocument> verificationDocuments
+    String accessToken
+}
+
+class VerifyEmailInput {
+    Long id
+    String token
 }
 
 class State {
@@ -63,10 +95,6 @@ class Address {
     Boolean enabled
 }
 
-class CustomerInput {
-    String accessToken
-}
-
 class Customer implements CustomerUpdateResult{
     Long id
     String name
@@ -83,13 +111,4 @@ class Customer implements CustomerUpdateResult{
     RatingScore rating
     int level
     List<String> missingDocuments
-}
-
-class CustomerUpdateInput {
-    String phone
-    String username
-    List<Address> address
-    DeliveryPreference deliveryPreference
-    List<VerificationDocument> verificationDocuments
-    String accessToken
 }

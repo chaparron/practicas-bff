@@ -29,6 +29,10 @@ enum ChangePasswordReason {
     PASSWORD_MISMATCH
 }
 
+enum ConfirmPasswordReason {
+    TOKEN_EXPIRED
+}
+
 input ChangePasswordInput {
     currentPassword: String!
     newPassword: String!

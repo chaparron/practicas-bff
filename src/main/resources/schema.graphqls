@@ -10,6 +10,9 @@ type Query {
     search (input: SearchInput!): SearchResult
 
     findRootCategories(input: FindRootsInput): [Category]
+
+    # Verify Email
+    verifyEmail(input: VerifyEmailInput!): VerifyEmailResult!
 }
 
 type Mutation {
@@ -28,7 +31,7 @@ type Mutation {
     # Reset password confirm
     resetPasswordConfirm(input: ResetPasswordConfirmInput!): ConfirmPasswordResult!
 
-    # Users
+    # Update Customer Profile
    updateProfile(input: CustomerUpdateInput!): CustomerUpdateResult!
 
 }
@@ -51,10 +54,6 @@ enum UsernameRegistrationReason {
     INVALID_FIRST_NAME_LENGTH,
     INVALID_LAST_NAME_LENGTH,
     INVALID_USERNAME_LENGTH
-}
-
-enum ConfirmPasswordReason {
-    TOKEN_EXPIRED
 }
 
 enum CompleteProfileReason {
@@ -191,3 +190,5 @@ type Filter{
 union UsernameRegistrationResult = UsernameRegistrationFailed | Void
 
 union CustomerUpdateResult = CustomerUpdateFailed  | Customer
+
+union VerifyEmailResult = VerifyEmailFailed | Void

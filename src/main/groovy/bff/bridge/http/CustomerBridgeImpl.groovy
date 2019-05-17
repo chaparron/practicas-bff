@@ -1,6 +1,7 @@
 package bff.bridge.http
 
 import bff.bridge.CustomerBridge
+import bff.configuration.BadRequestErrorException
 import bff.model.Address
 import bff.model.Customer
 import bff.model.CustomerInput
@@ -15,7 +16,8 @@ import bff.model.UserCredentials
 import bff.model.VerificationDocument
 import bff.model.VerificationDocumentType
 import bff.configuration.ConflictErrorException
-import groovy.json.JsonBuilder
+import bff.model.VerifyEmailInput
+import bff.model.VerifyEmailReason
 import groovy.util.logging.Slf4j
 import org.apache.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -71,6 +73,22 @@ class CustomerBridgeImpl implements CustomerBridge{
             if(conflictErrorException.innerResponse.error) {
                 CustomerUpdateReason.valueOf(conflictErrorException.innerResponse.error).doThrow()
             }
+        }
+    }
+
+    @Override
+    Void verifyEmail(VerifyEmailInput verifyEmailInput) {
+        def url = UriComponentsBuilder.fromUri(
+                root.resolve("/customer/${verifyEmailInput.id}/verify/email/${verifyEmailInput.token}")).toUriString()
+        def uri = url.toURI()
+        try {
+            def body= http.exchange(
+                    RequestEntity.method(HttpMethod.GET, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .build()
+                    , Map).body
+        } catch (BadRequestErrorException badRequestException) {
+            VerifyEmailReason.TOKEN_EXPIRED.doThrow()
         }
     }
 

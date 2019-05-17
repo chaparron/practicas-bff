@@ -26,8 +26,8 @@ enum CustomerUpdateReason {
     PHONE_ALREADY_EXIST
 }
 
-type CustomerUpdateFailed {
-    customerUpdateReason: CustomerUpdateReason
+enum VerifyEmailReason {
+    TOKEN_EXPIRED
 }
 
 input CustomerInput {
@@ -69,6 +69,11 @@ input CustomerUpdateInput {
     deliveryPreference: DeliveryPreference
     verificationDocuments: [VerificationDocumentInput]
     accessToken: String
+}
+
+input VerifyEmailInput {
+    id: ID
+    token: String
 }
 
 type State {
@@ -120,4 +125,12 @@ type Customer {
     rating: RatingScore
     level: Int
     missingDocuments: [String]
+}
+
+type CustomerUpdateFailed {
+    customerUpdateReason: CustomerUpdateReason
+}
+
+type VerifyEmailFailed {
+    verifyEmailReason: VerifyEmailReason
 }
