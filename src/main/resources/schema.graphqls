@@ -35,7 +35,7 @@ type Mutation {
     updateProfile(input: CustomerUpdateInput!): CustomerUpdateResult!
 
     # Verify Customer phone
-    # verifyPhone(input: VerifyPhoneInput!): VerifyPhoneRequest!
+    verifyPhone(input: VerifyPhoneInput!): VerifyPhoneResult!
 
 }
 
@@ -196,4 +196,4 @@ union CustomerUpdateResult = CustomerUpdateFailed  | Customer
 
 union VerifyEmailResult = VerifyExpiredFailed | Void
 
-#union VerifyPhoneRequest = VerifyPhoneFailed | Void
+union VerifyPhoneResult = VerifyExpiredFailed | Void

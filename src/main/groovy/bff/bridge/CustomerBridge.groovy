@@ -5,6 +5,7 @@ import bff.model.Customer
 import bff.model.CustomerInput
 import bff.model.CustomerUpdateInput
 import bff.model.VerifyEmailInput
+import bff.model.VerifyPhoneInput
 
 interface CustomerBridge {
 
@@ -13,4 +14,6 @@ interface CustomerBridge {
     CustomerUpdateResult updateProfile(CustomerUpdateInput customerUpdateInput)
 
     Void verifyEmail(VerifyEmailInput verifyEmailInput)
+
+    Void verifyPhone(VerifyPhoneInput verifyPhoneInput)
 }

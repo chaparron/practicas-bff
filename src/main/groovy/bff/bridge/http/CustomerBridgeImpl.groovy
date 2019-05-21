@@ -17,7 +17,9 @@ import bff.model.VerificationDocument
 import bff.model.VerificationDocumentType
 import bff.configuration.ConflictErrorException
 import bff.model.VerifyEmailInput
+import bff.model.VerifyExpiredFailed
 import bff.model.VerifyExpiredReason
+import bff.model.VerifyPhoneInput
 import groovy.util.logging.Slf4j
 import org.apache.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -87,6 +89,22 @@ class CustomerBridgeImpl implements CustomerBridge{
                             .contentType(MediaType.APPLICATION_JSON)
                             .build()
                     , Map).body
+        } catch (BadRequestErrorException badRequestException) {
+            VerifyExpiredReason.TOKEN_EXPIRED.doThrow()
+        }
+    }
+
+    @Override
+    Void verifyPhone(VerifyPhoneInput verifyPhoneInput) {
+        try {
+            def body = http.exchange(
+                    RequestEntity.method(HttpMethod.POST, root.resolve("customer/me/verify/phone"))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer $verifyPhoneInput.accessToken")
+                    .body([
+                            token: verifyPhoneInput.token
+                    ])
+            , Map).body
         } catch (BadRequestErrorException badRequestException) {
             VerifyExpiredReason.TOKEN_EXPIRED.doThrow()
         }

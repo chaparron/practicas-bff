@@ -57,6 +57,15 @@ class Mutation implements GraphQLMutationResolver {
         }
     }
 
+    VerifyPhoneResult verifyPhone(VerifyPhoneInput verifyPhoneInput) {
+        try {
+            customerBridge.verifyPhone(verifyPhoneInput)
+            Void.SUCCESS
+        } catch (VerifyExpiredException verifyExpiredException) {
+            verifyExpiredException.build()
+        }
+    }
+
     def tokenLogin(String accessToken, String socialNetwork) {
         authServerBridge.socialLogin(accessToken, socialNetwork)
     }

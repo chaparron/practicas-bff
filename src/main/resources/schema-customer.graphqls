@@ -76,6 +76,11 @@ input VerifyEmailInput {
     token: String
 }
 
+input VerifyPhoneInput {
+    token: String
+    accessToken: String
+}
+
 type State {
     id: ID
     name: String

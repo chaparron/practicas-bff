@@ -4,6 +4,8 @@ interface CustomerUpdateResult{}
 
 interface VerifyEmailResult{}
 
+interface VerifyPhoneResult{}
+
 enum CustomerStatus {
     PENDING,
     REJECTED,
@@ -46,7 +48,7 @@ class CustomerUpdateFailed implements CustomerUpdateResult {
     CustomerUpdateReason customerUpdateReason
 }
 
-class VerifyExpiredFailed implements VerifyEmailResult {
+class VerifyExpiredFailed implements VerifyEmailResult, VerifyPhoneResult {
     VerifyExpiredReason verifyExpiredReason
 }
 
@@ -66,6 +68,11 @@ class CustomerUpdateInput {
 class VerifyEmailInput {
     Long id
     String token
+}
+
+class VerifyPhoneInput {
+    String token
+    String accessToken
 }
 
 class State {
