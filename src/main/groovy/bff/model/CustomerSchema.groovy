@@ -34,11 +34,11 @@ enum CustomerUpdateReason {
     }
 }
 
-enum    VerifyEmailReason {
+enum VerifyExpiredReason {
     TOKEN_EXPIRED
 
     def doThrow() {
-        throw new VerifyEmailException(verifyEmailReason: this)
+        throw new VerifyExpiredException(verifyExpiredReason: this)
     }
 }
 
@@ -46,8 +46,8 @@ class CustomerUpdateFailed implements CustomerUpdateResult {
     CustomerUpdateReason customerUpdateReason
 }
 
-class VerifyEmailFailed implements VerifyEmailResult {
-    VerifyEmailReason verifyEmailReason
+class VerifyExpiredFailed implements VerifyEmailResult {
+    VerifyExpiredReason verifyExpiredReason
 }
 
 class CustomerInput {

@@ -32,7 +32,10 @@ type Mutation {
     resetPasswordConfirm(input: ResetPasswordConfirmInput!): ConfirmPasswordResult!
 
     # Update Customer Profile
-   updateProfile(input: CustomerUpdateInput!): CustomerUpdateResult!
+    updateProfile(input: CustomerUpdateInput!): CustomerUpdateResult!
+
+    # Verify Customer phone
+    # verifyPhone(input: VerifyPhoneInput!): VerifyPhoneRequest!
 
 }
 
@@ -191,4 +194,6 @@ union UsernameRegistrationResult = UsernameRegistrationFailed | Void
 
 union CustomerUpdateResult = CustomerUpdateFailed  | Customer
 
-union VerifyEmailResult = VerifyEmailFailed | Void
+union VerifyEmailResult = VerifyExpiredFailed | Void
+
+#union VerifyPhoneRequest = VerifyPhoneFailed | Void

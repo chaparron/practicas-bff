@@ -36,10 +36,10 @@ class CustomerUpdateException extends RuntimeException {
     }
 }
 
-class VerifyEmailException extends RuntimeException {
-    VerifyEmailReason verifyEmailReason
+class VerifyExpiredException extends RuntimeException {
+    VerifyExpiredReason verifyExpiredReason
     def build() {
-        new VerifyEmailFailed(verifyEmailReason: this.verifyEmailReason)
+        new VerifyExpiredFailed(verifyExpiredReason: this.verifyExpiredReason)
     }
 }
 

@@ -33,8 +33,8 @@ class Query implements GraphQLQueryResolver {
         try {
             customerBridge.verifyEmail(verifyEmailInput)
             Void.SUCCESS
-        } catch (VerifyEmailException verifyEmailException) {
-            verifyEmailException.build()
+        } catch (VerifyExpiredException verifyExpiredException) {
+            verifyExpiredException.build()
         }
     }
 }

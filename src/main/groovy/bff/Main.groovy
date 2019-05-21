@@ -26,7 +26,7 @@ class Main {
                 .add(ConfirmPasswordFailed.class)
                 .add(ChangePasswordFailed.class)
                 .add(CustomerUpdateFailed.class)
-                .add(VerifyEmailFailed.class)
+                .add(VerifyExpiredFailed.class)
                 .add(RegisterFailed.class)
                 .add(LoginFailed.class)
     }

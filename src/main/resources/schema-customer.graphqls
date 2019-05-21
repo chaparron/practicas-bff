@@ -26,7 +26,7 @@ enum CustomerUpdateReason {
     PHONE_ALREADY_EXIST
 }
 
-enum VerifyEmailReason {
+enum VerifyExpiredReason {
     TOKEN_EXPIRED
 }
 
@@ -131,6 +131,10 @@ type CustomerUpdateFailed {
     customerUpdateReason: CustomerUpdateReason
 }
 
-type VerifyEmailFailed {
-    verifyEmailReason: VerifyEmailReason
+type VerifyExpiredFailed {
+    verifyExpiredReason: VerifyExpiredReason
 }
+
+#type VerifyPhoneFailed {
+#    verifyPhoneReason: VerifyExpiredReason
+#}

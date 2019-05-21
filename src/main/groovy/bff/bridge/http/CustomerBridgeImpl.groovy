@@ -17,7 +17,7 @@ import bff.model.VerificationDocument
 import bff.model.VerificationDocumentType
 import bff.configuration.ConflictErrorException
 import bff.model.VerifyEmailInput
-import bff.model.VerifyEmailReason
+import bff.model.VerifyExpiredReason
 import groovy.util.logging.Slf4j
 import org.apache.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -88,7 +88,7 @@ class CustomerBridgeImpl implements CustomerBridge{
                             .build()
                     , Map).body
         } catch (BadRequestErrorException badRequestException) {
-            VerifyEmailReason.TOKEN_EXPIRED.doThrow()
+            VerifyExpiredReason.TOKEN_EXPIRED.doThrow()
         }
     }
 
