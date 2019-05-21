@@ -2,6 +2,7 @@ package bff.bridge.http
 
 import bff.bridge.CustomerBridge
 import bff.configuration.BadRequestErrorException
+import bff.model.AccessTokenInput
 import bff.model.Address
 import bff.model.Customer
 import bff.model.CustomerInput
@@ -11,6 +12,7 @@ import bff.model.CustomerUpdateInput
 import bff.model.CustomerUpdateReason
 import bff.model.CustomerUpdateResult
 import bff.model.DeliveryPreference
+import bff.model.ResendVerifyEmailReason
 import bff.model.User
 import bff.model.UserCredentials
 import bff.model.VerificationDocument
@@ -91,6 +93,24 @@ class CustomerBridgeImpl implements CustomerBridge{
                     , Map).body
         } catch (BadRequestErrorException badRequestException) {
             VerifyExpiredReason.TOKEN_EXPIRED.doThrow()
+        }
+    }
+
+    @Override
+    Void resendVerifyEmail(AccessTokenInput accessTokenInput) {
+
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/resend/verification/email")).toUriString()
+        def uri = url.toURI()
+
+        try {
+            def body = http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION, "Bearer ${accessTokenInput.accessToken}")
+                        .build()
+                , Map).body
+        } catch(BadRequestErrorException badRequestExcpetion) {
+            ResendVerifyEmailReason.NO_VERIFICATION_EMAIL_PENDING.doThow()
         }
     }
 

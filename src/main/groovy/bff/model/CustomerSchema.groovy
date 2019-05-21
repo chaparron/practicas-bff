@@ -6,6 +6,9 @@ interface VerifyEmailResult{}
 
 interface VerifyPhoneResult{}
 
+interface ResendVerifyEmailResult{}
+
+
 enum CustomerStatus {
     PENDING,
     REJECTED,
@@ -44,36 +47,45 @@ enum VerifyExpiredReason {
     }
 }
 
-class CustomerUpdateFailed implements CustomerUpdateResult {
-    CustomerUpdateReason customerUpdateReason
+enum ResendVerifyEmailReason {
+    NO_VERIFICATION_EMAIL_PENDING
+
+    def doThow() {
+        throw  new ResendVerifyEmailException(resendVerifyEmailReason : this)
+    }
 }
+
 
 class VerifyExpiredFailed implements VerifyEmailResult, VerifyPhoneResult {
     VerifyExpiredReason verifyExpiredReason
 }
 
-class CustomerInput {
-    String accessToken
+class ResendVerifyEmailFailed implements ResendVerifyEmailResult {
+    ResendVerifyEmailReason resendVerifyEmailReason
 }
 
-class CustomerUpdateInput {
-    String phone
-    String username
-    List<Address> address
-    DeliveryPreference deliveryPreference
-    List<VerificationDocument> verificationDocuments
-    String accessToken
+class CustomerUpdateFailed implements CustomerUpdateResult {
+    CustomerUpdateReason customerUpdateReason
 }
 
-class VerifyEmailInput {
+class Customer implements CustomerUpdateResult{
     Long id
-    String token
+    String name
+    Boolean enabled
+    String legalId
+    String linePhone
+    CustomerStatus customerStatus
+    User user
+    Boolean smsVerification
+    Boolean emailVerification
+    List<Address> addresses
+    List<VerificationDocument> verificationDocuments
+    DeliveryPreference deliveryPreference
+    RatingScore rating
+    int level
+    List<String> missingDocuments
 }
 
-class VerifyPhoneInput {
-    String token
-    String accessToken
-}
 
 class State {
     Long id
@@ -102,20 +114,30 @@ class Address {
     Boolean enabled
 }
 
-class Customer implements CustomerUpdateResult{
-    Long id
-    String name
-    Boolean enabled
-    String legalId
-    String linePhone
-    CustomerStatus customerStatus
-    User user
-    Boolean smsVerification
-    Boolean emailVerification
-    List<Address> addresses
-    List<VerificationDocument> verificationDocuments
+
+class CustomerInput {
+    String accessToken
+}
+
+class CustomerUpdateInput {
+    String phone
+    String username
+    List<Address> address
     DeliveryPreference deliveryPreference
-    RatingScore rating
-    int level
-    List<String> missingDocuments
+    List<VerificationDocument> verificationDocuments
+    String accessToken
+}
+
+class VerifyEmailInput {
+    Long id
+    String token
+}
+
+class VerifyPhoneInput {
+    String token
+    String accessToken
+}
+
+class AccessTokenInput {
+    String accessToken
 }

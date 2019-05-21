@@ -37,5 +37,14 @@ class Query implements GraphQLQueryResolver {
             verifyExpiredException.build()
         }
     }
+
+    ResendVerifyEmailResult resendVerifyEmail(AccessTokenInput accessTokenInput) {
+        try {
+            customerBridge.resendVerifyEmail(accessTokenInput)
+            Void.SUCCESS
+        } catch (ResendVerifyEmailException resendVerifyEmailException) {
+            resendVerifyEmailException.build()
+        }
+    }
 }
 

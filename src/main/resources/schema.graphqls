@@ -13,6 +13,9 @@ type Query {
 
     # Verify Email
     verifyEmail(input: VerifyEmailInput!): VerifyEmailResult!
+
+    # Resend email for verification.
+    resendVerifyEmail(input : AccessTokenInput!): ResendVerifyEmailResult!
 }
 
 type Mutation {
@@ -112,7 +115,6 @@ input ListGroupsInput {
 }
 
 
-
 # Se requiere un ID sin accessToken
 input IdInput {
     id: ID!
@@ -125,6 +127,10 @@ input UserInput {
 
 input UploadImageInput {
     encodedFile: String!
+    accessToken: String!
+}
+
+input AccessTokenInput {
     accessToken: String!
 }
 
@@ -197,3 +203,5 @@ union CustomerUpdateResult = CustomerUpdateFailed  | Customer
 union VerifyEmailResult = VerifyExpiredFailed | Void
 
 union VerifyPhoneResult = VerifyExpiredFailed | Void
+
+union ResendVerifyEmailResult = ResendVerifyEmailFailed | Void

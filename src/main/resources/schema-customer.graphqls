@@ -30,6 +30,10 @@ enum VerifyExpiredReason {
     TOKEN_EXPIRED
 }
 
+enum ResendVerifyEmailReason {
+    NO_VERIFICATION_EMAIL_PENDING
+}
+
 input CustomerInput {
     accessToken: String
 }
@@ -77,8 +81,8 @@ input VerifyEmailInput {
 }
 
 input VerifyPhoneInput {
-    token: String
-    accessToken: String
+    token: String!
+    accessToken: String!
 }
 
 type State {
@@ -140,6 +144,6 @@ type VerifyExpiredFailed {
     verifyExpiredReason: VerifyExpiredReason
 }
 
-#type VerifyPhoneFailed {
-#    verifyPhoneReason: VerifyExpiredReason
-#}
+type ResendVerifyEmailFailed {
+    resendVerifyEmailReason : ResendVerifyEmailReason
+}

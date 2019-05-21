@@ -43,6 +43,13 @@ class VerifyExpiredException extends RuntimeException {
     }
 }
 
+class ResendVerifyEmailException extends RuntimeException {
+    ResendVerifyEmailReason resendVerifyEmailReason
+    def build() {
+        new ResendVerifyEmailFailed(resendVerifyEmailReason: this.resendVerifyEmailReason)
+    }
+}
+
 class ChangePasswordException extends RuntimeException {
     ChangePasswordReason changePasswordReason
     def build() {

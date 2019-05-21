@@ -1,5 +1,6 @@
 package bff.bridge
 
+import bff.model.AccessTokenInput
 import bff.model.CustomerUpdateResult
 import bff.model.Customer
 import bff.model.CustomerInput
@@ -15,5 +16,8 @@ interface CustomerBridge {
 
     Void verifyEmail(VerifyEmailInput verifyEmailInput)
 
+    Void resendVerifyEmail(AccessTokenInput accessTokenInput)
+
     Void verifyPhone(VerifyPhoneInput verifyPhoneInput)
+
 }
