@@ -12,6 +12,7 @@ import bff.model.CustomerUpdateInput
 import bff.model.CustomerUpdateReason
 import bff.model.CustomerUpdateResult
 import bff.model.DeliveryPreference
+import bff.model.PreferredAddressInput
 import bff.model.ResendVerifyEmailReason
 import bff.model.ResendVerifySMSReason
 import bff.model.User
@@ -29,6 +30,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
+import sun.misc.Request
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION
 
@@ -146,6 +148,26 @@ class CustomerBridgeImpl implements CustomerBridge{
         } catch (BadRequestErrorException badRequestException) {
             ResendVerifySMSReason.NO_VERIFICATION_SMS_PENDING.doThrow()
         }
+    }
+
+    @Override
+    Void setPreferredAddress(PreferredAddressInput preferredAddressInput) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("customer/me/address/preferred/${preferredAddressInput.addressId}")).toUriString()
+        def uri = url.toURI()
+        try {
+            def body = http.exchange(
+                    RequestEntity.method(HttpMethod.PUT, uri)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(AUTHORIZATION, "Bearer $preferredAddressInput.accessToken")
+                    .build()
+            , Map).body
+        } catch (BadRequestErrorException badRequestException) {
+            badRequestException
+        }
+
+
+
+        return null
     }
 
     static Customer mapCustomer(body) {

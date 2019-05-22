@@ -155,3 +155,8 @@ class VerifyPhoneInput {
 class AccessTokenInput {
     String accessToken
 }
+
+class PreferredAddressInput {
+    Long addressId
+    String accessToken
+}

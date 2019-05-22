@@ -89,6 +89,11 @@ input VerifyPhoneInput {
     accessToken: String!
 }
 
+input PreferredAddressInput {
+    addressId: ID
+    accessToken: String
+}
+
 type State {
     id: ID
     name: String
