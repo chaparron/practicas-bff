@@ -45,7 +45,10 @@ type Mutation {
     verifyPhone(input: VerifyPhoneInput!): VerifyPhoneResult!
 
     # Set Preferred Customer address
-    setPreferredAddress(input: PreferredAddressInput!): Void!
+    setPreferredAddress(input: PreferredAddressInput!): PreferredAddressResult!
+
+    # Add new Customer's address
+    # addAddress(input: AddressInput): Void!
 
 }
 
@@ -214,3 +217,5 @@ union VerifyPhoneResult = VerifyExpiredFailed | Void
 union ResendVerifyEmailResult = ResendVerifyEmailFailed | Void
 
 union ResendVerifySMSResult = ResendVerifySMSFailed | Void
+
+union PreferredAddressResult = PreferredAddressFailed | Void

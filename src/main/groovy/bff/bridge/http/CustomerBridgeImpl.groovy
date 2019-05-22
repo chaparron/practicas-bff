@@ -13,6 +13,7 @@ import bff.model.CustomerUpdateReason
 import bff.model.CustomerUpdateResult
 import bff.model.DeliveryPreference
 import bff.model.PreferredAddressInput
+import bff.model.PreferredAddressReason
 import bff.model.ResendVerifyEmailReason
 import bff.model.ResendVerifySMSReason
 import bff.model.User
@@ -162,7 +163,7 @@ class CustomerBridgeImpl implements CustomerBridge{
                     .build()
             , Map).body
         } catch (BadRequestErrorException badRequestException) {
-            badRequestException
+            PreferredAddressReason.valueOf(badRequestException.innerResponse.message).doThrow()
         }
 
 

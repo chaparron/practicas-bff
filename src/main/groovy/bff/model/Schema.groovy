@@ -49,7 +49,8 @@ class UsernameRegistrationFailed implements UsernameRegistrationResult {
 }
 
 class Void implements ChangePasswordResult, UsernameRegistrationResult, ConfirmPasswordResult,
-        VerifyEmailResult, VerifyPhoneResult, ResendVerifyEmailResult, ResendVerifySMSResult {
+        VerifyEmailResult, VerifyPhoneResult, ResendVerifyEmailResult, ResendVerifySMSResult,
+        PreferredAddressResult {
     static final SUCCESS = new Void(voidReason: VoidReason.SUCCESS)
     VoidReason voidReason
 }

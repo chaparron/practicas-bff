@@ -10,6 +10,8 @@ interface ResendVerifyEmailResult{}
 
 interface ResendVerifySMSResult{}
 
+interface PreferredAddressResult{}
+
 
 enum CustomerStatus {
     PENDING,
@@ -65,6 +67,14 @@ enum ResendVerifySMSReason {
     }
 }
 
+enum PreferredAddressReason {
+    NOT_ADDRESS_CUSTOMER,
+    CANNOT_SET_LEGAL_ADDRESS_AS_PREFERRED
+
+    def doThrow() {
+        throw new PreferedAdressException(preferredAddressReason: this)
+    }
+}
 
 class VerifyExpiredFailed implements VerifyEmailResult, VerifyPhoneResult {
     VerifyExpiredReason verifyExpiredReason
@@ -80,6 +90,10 @@ class CustomerUpdateFailed implements CustomerUpdateResult {
 
 class ResendVerifySMSFailed implements ResendVerifySMSResult{
     ResendVerifySMSReason resendVerifySMSReason
+}
+
+class PreferredAddressFailed implements PreferredAddressResult {
+    PreferredAddressReason preferredAddressReason
 }
 
 class Customer implements CustomerUpdateResult{

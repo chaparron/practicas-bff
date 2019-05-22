@@ -38,6 +38,11 @@ enum ResendVerifySMSReason {
     NO_VERIFICATION_SMS_PENDING
 }
 
+enum PreferredAddressReason {
+    NOT_ADDRESS_CUSTOMER
+    CANNOT_SET_LEGAL_ADDRESS_AS_PREFERRED
+}
+
 input CustomerInput {
     accessToken: String
 }
@@ -54,13 +59,13 @@ input StateInput {
 
 input AddressInput {
     id: ID
-    formatted: String
-    placeId: String
-    addressName: String
-    addressNumber: String
-    city: String
-    postalCode: String
-    state: StateInput
+    formatted: String!
+    placeId: String!
+    addressName: String!
+    addressNumber: String!
+    city: String!
+    postalCode: String!
+    state: StateInput!
     lat: Float
     lon: Float
     additionalInfo: String
@@ -159,4 +164,8 @@ type ResendVerifyEmailFailed {
 
 type ResendVerifySMSFailed {
     resendVerifySMSReason: ResendVerifySMSReason
+}
+
+type PreferredAddressFailed {
+    preferredAddressReason: PreferredAddressReason
 }

@@ -47,22 +47,28 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
         def innerResponse = response.body.with {new JsonSlurper().parse(it)}
         switch (statusCode.series()) {
             case HttpStatus.Series.CLIENT_ERROR:
+
                 if (statusCode == HttpStatus.UNAUTHORIZED || statusCode == HttpStatus.FORBIDDEN) {
                     throw new AccessToBackendDeniedException(response.getStatusText(),  new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
                             response.getHeaders(), getResponseBody(response), getCharset(response)))
 
                 } else if (statusCode == HttpStatus.BAD_REQUEST) {
-                    throw  new BadRequestErrorException(response.getStatusText(),  new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
+                    BadRequestErrorException badRequestErrorException =   new BadRequestErrorException(response.getStatusText(),  new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
                             response.getHeaders(), getResponseBody(response), getCharset(response)))
+                    badRequestErrorException.innerResponse = innerResponse
+                    throw badRequestErrorException
+
                 } else if (statusCode == HttpStatus.CONFLICT) {
                     ConflictErrorException conflictErrorException = new ConflictErrorException(response.getStatusText(), new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
                             response.getHeaders(), getResponseBody(response), getCharset(response)))
                     conflictErrorException.innerResponse = innerResponse
                     throw conflictErrorException
+
                 } else {
                     throw new BridgeHttpClientErrorException(statusCode, response.getStatusText(),
                             response.getHeaders(), getResponseBody(response), getCharset(response))
                 }
+
             case HttpStatus.Series.SERVER_ERROR:
                 throw new BackendServerErrorException(response.getStatusText(),  new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
                         response.getHeaders(), getResponseBody(response), getCharset(response)))
@@ -106,6 +112,7 @@ class BackendServerErrorException extends RuntimeException {
 
 @InheritConstructors
 class BadRequestErrorException extends RuntimeException {
+    def innerResponse
 }
 
 @InheritConstructors
