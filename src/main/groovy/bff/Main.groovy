@@ -24,6 +24,7 @@ class Main {
                 .add(RefreshCredentials.class)
                 .add(UsernameRegistrationFailed.class)
                 .add(ResendVerifyEmailFailed.class)
+                .add(ResendVerifySMSFailed.class)
                 .add(ConfirmPasswordFailed.class)
                 .add(ChangePasswordFailed.class)
                 .add(CustomerUpdateFailed.class)

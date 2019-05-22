@@ -16,6 +16,10 @@ type Query {
 
     # Resend email for verification.
     resendVerifyEmail(input : AccessTokenInput!): ResendVerifyEmailResult!
+
+    # Resend sms for Verification
+    resendVerifySMS(input: AccessTokenInput!) : ResendVerifySMSResult!
+
 }
 
 type Mutation {
@@ -205,3 +209,5 @@ union VerifyEmailResult = VerifyExpiredFailed | Void
 union VerifyPhoneResult = VerifyExpiredFailed | Void
 
 union ResendVerifyEmailResult = ResendVerifyEmailFailed | Void
+
+union ResendVerifySMSResult = ResendVerifySMSFailed | Void

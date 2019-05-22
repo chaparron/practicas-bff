@@ -2,7 +2,6 @@ package bff.model
 
 import bff.JwtToken
 import bff.bridge.*
-import bff.model.utils.DataURL
 
 import com.coxautodev.graphql.tools.GraphQLMutationResolver
 

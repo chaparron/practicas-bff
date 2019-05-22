@@ -50,6 +50,13 @@ class ResendVerifyEmailException extends RuntimeException {
     }
 }
 
+class ResendVerifySMSException extends RuntimeException {
+    ResendVerifySMSReason resendVerifySMSReason
+    def build() {
+        new ResendVerifySMSFailed(resendVerifySMSReason: this.resendVerifySMSReason)
+    }
+}
+
 class ChangePasswordException extends RuntimeException {
     ChangePasswordReason changePasswordReason
     def build() {

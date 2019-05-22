@@ -34,6 +34,10 @@ enum ResendVerifyEmailReason {
     NO_VERIFICATION_EMAIL_PENDING
 }
 
+enum ResendVerifySMSReason {
+    NO_VERIFICATION_SMS_PENDING
+}
+
 input CustomerInput {
     accessToken: String
 }
@@ -146,4 +150,8 @@ type VerifyExpiredFailed {
 
 type ResendVerifyEmailFailed {
     resendVerifyEmailReason : ResendVerifyEmailReason
+}
+
+type ResendVerifySMSFailed {
+    resendVerifySMSReason: ResendVerifySMSReason
 }

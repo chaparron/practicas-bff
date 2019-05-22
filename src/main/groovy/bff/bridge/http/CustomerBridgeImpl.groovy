@@ -13,13 +13,13 @@ import bff.model.CustomerUpdateReason
 import bff.model.CustomerUpdateResult
 import bff.model.DeliveryPreference
 import bff.model.ResendVerifyEmailReason
+import bff.model.ResendVerifySMSReason
 import bff.model.User
 import bff.model.UserCredentials
 import bff.model.VerificationDocument
 import bff.model.VerificationDocumentType
 import bff.configuration.ConflictErrorException
 import bff.model.VerifyEmailInput
-import bff.model.VerifyExpiredFailed
 import bff.model.VerifyExpiredReason
 import bff.model.VerifyPhoneInput
 import groovy.util.logging.Slf4j
@@ -110,7 +110,7 @@ class CustomerBridgeImpl implements CustomerBridge{
                         .build()
                 , Map).body
         } catch(BadRequestErrorException badRequestExcpetion) {
-            ResendVerifyEmailReason.NO_VERIFICATION_EMAIL_PENDING.doThow()
+            ResendVerifyEmailReason.NO_VERIFICATION_EMAIL_PENDING.doThrow()
         }
     }
 
@@ -127,6 +127,24 @@ class CustomerBridgeImpl implements CustomerBridge{
             , Map).body
         } catch (BadRequestErrorException badRequestException) {
             VerifyExpiredReason.TOKEN_EXPIRED.doThrow()
+        }
+    }
+
+    @Override
+    Void resendVerifySMS(AccessTokenInput accessTokenInput) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("customer/me/resend/verification/sms")).toUriString()
+        def uri = url.toURI()
+
+        try {
+            def body = http.exchange(
+                    RequestEntity.method(HttpMethod.GET, uri)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(AUTHORIZATION, "Bearer ${accessTokenInput.accessToken}")
+                    .build()
+            , Map).body
+
+        } catch (BadRequestErrorException badRequestException) {
+            ResendVerifySMSReason.NO_VERIFICATION_SMS_PENDING.doThrow()
         }
     }
 

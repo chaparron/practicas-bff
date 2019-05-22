@@ -8,6 +8,8 @@ interface VerifyPhoneResult{}
 
 interface ResendVerifyEmailResult{}
 
+interface ResendVerifySMSResult{}
+
 
 enum CustomerStatus {
     PENDING,
@@ -50,8 +52,16 @@ enum VerifyExpiredReason {
 enum ResendVerifyEmailReason {
     NO_VERIFICATION_EMAIL_PENDING
 
-    def doThow() {
+    def doThrow() {
         throw  new ResendVerifyEmailException(resendVerifyEmailReason : this)
+    }
+}
+
+enum ResendVerifySMSReason {
+    NO_VERIFICATION_SMS_PENDING
+
+    def doThrow() {
+        throw new ResendVerifySMSException(resendVerifySMSReason: this)
     }
 }
 
@@ -66,6 +76,10 @@ class ResendVerifyEmailFailed implements ResendVerifyEmailResult {
 
 class CustomerUpdateFailed implements CustomerUpdateResult {
     CustomerUpdateReason customerUpdateReason
+}
+
+class ResendVerifySMSFailed implements ResendVerifySMSResult{
+    ResendVerifySMSReason resendVerifySMSReason
 }
 
 class Customer implements CustomerUpdateResult{

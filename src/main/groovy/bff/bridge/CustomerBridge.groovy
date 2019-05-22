@@ -20,4 +20,6 @@ interface CustomerBridge {
 
     Void verifyPhone(VerifyPhoneInput verifyPhoneInput)
 
+    Void resendVerifySMS(AccessTokenInput accessTokenInput)
+
 }
