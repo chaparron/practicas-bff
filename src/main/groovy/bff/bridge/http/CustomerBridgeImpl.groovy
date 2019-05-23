@@ -2,29 +2,27 @@ package bff.bridge.http
 
 import bff.bridge.CustomerBridge
 import bff.configuration.BadRequestErrorException
+import bff.configuration.ConflictErrorException
+import bff.model.CustomerUpdateResult
+import bff.model.CustomerInput
+import bff.model.CustomerUpdateInput
+import bff.model.PreferredAddressInput
+import bff.model.VerifyEmailInput
+import bff.model.VerifyPhoneInput
 import bff.model.AccessTokenInput
 import bff.model.Address
 import bff.model.Customer
-import bff.model.CustomerInput
-import bff.model.CustomerStatus
-import bff.model.AddressType
-import bff.model.CustomerUpdateInput
-import bff.model.CustomerUpdateReason
-import bff.model.CustomerUpdateResult
-import bff.model.DeliveryPreference
-import bff.model.PreferredAddressInput
-import bff.model.PreferredAddressReason
-import bff.model.ResendVerifyEmailReason
-import bff.model.ResendVerifySMSReason
 import bff.model.User
 import bff.model.UserCredentials
 import bff.model.VerificationDocument
+import bff.model.CustomerErrorReason
+import bff.model.CustomerStatus
+import bff.model.AddressType
+import bff.model.DeliveryPreference
 import bff.model.VerificationDocumentType
-import bff.configuration.ConflictErrorException
-import bff.model.VerifyEmailInput
-import bff.model.VerifyExpiredReason
-import bff.model.VerifyPhoneInput
+
 import groovy.util.logging.Slf4j
+
 import org.apache.http.HttpHeaders
 import org.apache.commons.lang3.NotImplementedException
 import org.springframework.http.HttpMethod
@@ -34,7 +32,6 @@ import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION
-
 
 @Slf4j
 class CustomerBridgeImpl implements CustomerBridge{
@@ -77,12 +74,7 @@ class CustomerBridgeImpl implements CustomerBridge{
             mapCustomer(body)
 
         } catch(ConflictErrorException conflictErrorException) {
-            if(conflictErrorException.innerResponse.error) {
-                String error = conflictErrorException.error
-                CustomerUpdateReason.valueOf(error).doThrow()
-            } else {
-                throw new NotImplementedException("Update Customer Profile", (RuntimeException) exception)
-            }
+            mapCustomerError(conflictErrorException, "Update Customer Profile Error")
         }
     }
 
@@ -98,7 +90,7 @@ class CustomerBridgeImpl implements CustomerBridge{
                             .build()
                     , Map).body
         } catch (BadRequestErrorException badRequestException) {
-            VerifyExpiredReason.TOKEN_EXPIRED.doThrow()
+            mapCustomerError(badRequestException, "Verify Customer Email Error")
         }
     }
 
@@ -116,7 +108,7 @@ class CustomerBridgeImpl implements CustomerBridge{
                         .build()
                 , Map).body
         } catch(BadRequestErrorException badRequestExcpetion) {
-            ResendVerifyEmailReason.NO_VERIFICATION_EMAIL_PENDING.doThrow()
+            mapCustomerError(badRequestExcpetion, "Resend Verify Customer Email Error")
         }
     }
 
@@ -132,7 +124,7 @@ class CustomerBridgeImpl implements CustomerBridge{
                     ])
             , Map).body
         } catch (BadRequestErrorException badRequestException) {
-            VerifyExpiredReason.TOKEN_EXPIRED.doThrow()
+            mapCustomerError(badRequestException, "Verify Customer Phone Error")
         }
     }
 
@@ -150,7 +142,7 @@ class CustomerBridgeImpl implements CustomerBridge{
             , Map).body
 
         } catch (BadRequestErrorException badRequestException) {
-            ResendVerifySMSReason.NO_VERIFICATION_SMS_PENDING.doThrow()
+            mapCustomerError(badRequestException, "Resend Verify Customer SMS")
         }
     }
 
@@ -166,7 +158,16 @@ class CustomerBridgeImpl implements CustomerBridge{
                     .build()
             , Map).body
         } catch (BadRequestErrorException badRequestException) {
-            PreferredAddressReason.valueOf(badRequestException.innerResponse.message).doThrow()
+            mapCustomerError(badRequestException, "Set Preferred Customer Address Error ")
+        }
+    }
+
+
+    static def mapCustomerError(RuntimeException exception, String error) {
+        if (exception.innerResponse) {
+            CustomerErrorReason.valueOf((String) exception.innerResponse).doThrow()
+        } else {
+            throw new NotImplementedException(error, exception)
         }
     }
 

@@ -29,38 +29,11 @@ class LoginFailureException extends RuntimeException {
     }
 }
 
-class CustomerUpdateException extends RuntimeException {
-    CustomerUpdateReason customerUpdateReason
-    def build() {
-        new CustomerUpdateFailed(customerUpdateReason: this.customerUpdateReason)
-    }
-}
 
-class VerifyExpiredException extends RuntimeException {
-    VerifyExpiredReason verifyExpiredReason
+class CustomerException extends RuntimeException {
+    CustomerErrorReason customerErrorReason
     def build() {
-        new VerifyExpiredFailed(verifyExpiredReason: this.verifyExpiredReason)
-    }
-}
-
-class ResendVerifyEmailException extends RuntimeException {
-    ResendVerifyEmailReason resendVerifyEmailReason
-    def build() {
-        new ResendVerifyEmailFailed(resendVerifyEmailReason: this.resendVerifyEmailReason)
-    }
-}
-
-class ResendVerifySMSException extends RuntimeException {
-    ResendVerifySMSReason resendVerifySMSReason
-    def build() {
-        new ResendVerifySMSFailed(resendVerifySMSReason: this.resendVerifySMSReason)
-    }
-}
-
-class PreferredAdressException extends RuntimeException {
-    PreferredAddressReason preferredAddressReason
-    def build() {
-        new PreferredAddressFailed(preferredAddressReason: this.preferredAddressReason)
+        new CustomerErrorFailed(customerErrorReason: this.customerErrorReason)
     }
 }
 

@@ -55,13 +55,13 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
                 } else if (statusCode == HttpStatus.BAD_REQUEST) {
                     BadRequestErrorException badRequestErrorException =   new BadRequestErrorException(response.getStatusText(),  new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
                             response.getHeaders(), getResponseBody(response), getCharset(response)))
-                    badRequestErrorException.innerResponse = innerResponse
+                    badRequestErrorException.innerResponse = innerResponse.message
                     throw badRequestErrorException
 
                 } else if (statusCode == HttpStatus.CONFLICT) {
                     ConflictErrorException conflictErrorException = new ConflictErrorException(response.getStatusText(), new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
                             response.getHeaders(), getResponseBody(response), getCharset(response)))
-                    conflictErrorException.innerResponse = innerResponse
+                    conflictErrorException.innerResponse = innerResponse.error
                     throw conflictErrorException
 
                 } else {

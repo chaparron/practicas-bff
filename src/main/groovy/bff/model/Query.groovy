@@ -5,7 +5,6 @@ import com.coxautodev.graphql.tools.GraphQLQueryResolver
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import org.springframework.web.client.RestClientException
 
 /**
  * TODO: Representa todas las queries a graphql, tener en cuenta de dividirlo en mas de un resolver
@@ -33,8 +32,8 @@ class Query implements GraphQLQueryResolver {
         try {
             customerBridge.verifyEmail(verifyEmailInput)
             Void.SUCCESS
-        } catch (VerifyExpiredException verifyExpiredException) {
-            verifyExpiredException.build()
+        } catch (CustomerException customerException) {
+            customerException.build()
         }
     }
 
@@ -42,8 +41,8 @@ class Query implements GraphQLQueryResolver {
         try {
             customerBridge.resendVerifyEmail(accessTokenInput)
             Void.SUCCESS
-        } catch (ResendVerifyEmailException resendVerifyEmailException) {
-            resendVerifyEmailException.build()
+        } catch (CustomerException customerException) {
+            customerException.build()
         }
     }
 
@@ -51,8 +50,8 @@ class Query implements GraphQLQueryResolver {
         try {
             customerBridge.resendVerifySMS(accessTokenInput)
             Void.SUCCESS
-        } catch (ResendVerifySMSException resendVerifySMSException) {
-            resendVerifySMSException.build()
+        } catch (CustomerException customerException) {
+            customerException.build()
         }
     }
 }

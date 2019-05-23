@@ -22,23 +22,11 @@ enum DeliveryPreference {
     AFTERNOON
 }
 
-enum CustomerUpdateReason {
+enum CustomerErrorReason {
     PHONE_ALREADY_EXIST
-}
-
-enum VerifyExpiredReason {
     TOKEN_EXPIRED
-}
-
-enum ResendVerifyEmailReason {
     NO_VERIFICATION_EMAIL_PENDING
-}
-
-enum ResendVerifySMSReason {
     NO_VERIFICATION_SMS_PENDING
-}
-
-enum PreferredAddressReason {
     NOT_ADDRESS_CUSTOMER
     CANNOT_SET_LEGAL_ADDRESS_AS_PREFERRED
 }
@@ -150,22 +138,6 @@ type Customer {
     missingDocuments: [String]
 }
 
-type CustomerUpdateFailed {
-    customerUpdateReason: CustomerUpdateReason
-}
-
-type VerifyExpiredFailed {
-    verifyExpiredReason: VerifyExpiredReason
-}
-
-type ResendVerifyEmailFailed {
-    resendVerifyEmailReason : ResendVerifyEmailReason
-}
-
-type ResendVerifySMSFailed {
-    resendVerifySMSReason: ResendVerifySMSReason
-}
-
-type PreferredAddressFailed {
-    preferredAddressReason: PreferredAddressReason
+type CustomerErrorFailed {
+    customerErrorReason : CustomerErrorReason
 }

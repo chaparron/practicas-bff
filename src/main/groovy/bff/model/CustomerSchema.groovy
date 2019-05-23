@@ -32,68 +32,28 @@ enum VerificationDocumentType {
 }
 
 enum DeliveryPreference {
-    MORNING, AFTERNOON
+    MORNING,
+    AFTERNOON,
+    NO_PREFERENCE
 }
 
-enum CustomerUpdateReason {
-    PHONE_ALREADY_EXIST
-
-    def doThrow() {
-        throw new CustomerUpdateException(customerUpdateReason: this)
-    }
-}
-
-enum VerifyExpiredReason {
-    TOKEN_EXPIRED
-
-    def doThrow() {
-        throw new VerifyExpiredException(verifyExpiredReason: this)
-    }
-}
-
-enum ResendVerifyEmailReason {
-    NO_VERIFICATION_EMAIL_PENDING
-
-    def doThrow() {
-        throw  new ResendVerifyEmailException(resendVerifyEmailReason : this)
-    }
-}
-
-enum ResendVerifySMSReason {
-    NO_VERIFICATION_SMS_PENDING
-
-    def doThrow() {
-        throw new ResendVerifySMSException(resendVerifySMSReason: this)
-    }
-}
-
-enum PreferredAddressReason {
+enum CustomerErrorReason {
+    PHONE_ALREADY_EXIST,
+    TOKEN_EXPIRED,
+    NO_VERIFICATION_EMAIL_PENDING,
+    NO_VERIFICATION_SMS_PENDING,
     NOT_ADDRESS_CUSTOMER,
     CANNOT_SET_LEGAL_ADDRESS_AS_PREFERRED
 
     def doThrow() {
-        throw new PreferredAdressException(preferredAddressReason: this)
+        throw new CustomerException(customerErrorReason: this)
     }
 }
 
-class VerifyExpiredFailed implements VerifyEmailResult, VerifyPhoneResult {
-    VerifyExpiredReason verifyExpiredReason
-}
 
-class ResendVerifyEmailFailed implements ResendVerifyEmailResult {
-    ResendVerifyEmailReason resendVerifyEmailReason
-}
-
-class CustomerUpdateFailed implements CustomerUpdateResult {
-    CustomerUpdateReason customerUpdateReason
-}
-
-class ResendVerifySMSFailed implements ResendVerifySMSResult{
-    ResendVerifySMSReason resendVerifySMSReason
-}
-
-class PreferredAddressFailed implements PreferredAddressResult {
-    PreferredAddressReason preferredAddressReason
+class CustomerErrorFailed implements PreferredAddressResult, VerifyEmailResult, VerifyPhoneResult,
+        ResendVerifyEmailResult, CustomerUpdateResult, ResendVerifySMSResult {
+    CustomerErrorReason customerErrorReason
 }
 
 class Customer implements CustomerUpdateResult{

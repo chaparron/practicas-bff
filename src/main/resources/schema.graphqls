@@ -208,14 +208,14 @@ type Filter{
 
 union UsernameRegistrationResult = UsernameRegistrationFailed | Void
 
-union CustomerUpdateResult = CustomerUpdateFailed  | Customer
+union CustomerUpdateResult = CustomerErrorFailed  | Customer
 
-union VerifyEmailResult = VerifyExpiredFailed | Void
+union VerifyEmailResult = CustomerErrorFailed | Void
 
-union VerifyPhoneResult = VerifyExpiredFailed | Void
+union VerifyPhoneResult = CustomerErrorFailed | Void
 
-union ResendVerifyEmailResult = ResendVerifyEmailFailed | Void
+union ResendVerifyEmailResult = CustomerErrorFailed | Void
 
-union ResendVerifySMSResult = ResendVerifySMSFailed | Void
+union ResendVerifySMSResult = CustomerErrorFailed | Void
 
-union PreferredAddressResult = PreferredAddressFailed | Void
+union PreferredAddressResult = CustomerErrorFailed | Void

@@ -51,8 +51,8 @@ class Mutation implements GraphQLMutationResolver {
     CustomerUpdateResult updateProfile(CustomerUpdateInput customerUpdateInput) {
         try {
             customerBridge.updateProfile(customerUpdateInput)
-        } catch(CustomerUpdateException customerUpdateException) {
-            customerUpdateException.build()
+        } catch(CustomerException customerException) {
+            customerException.build()
         }
     }
 
@@ -60,8 +60,8 @@ class Mutation implements GraphQLMutationResolver {
         try {
             customerBridge.verifyPhone(verifyPhoneInput)
             Void.SUCCESS
-        } catch (VerifyExpiredException verifyExpiredException) {
-            verifyExpiredException.build()
+        } catch (CustomerException customerException) {
+            customerException.build()
         }
     }
 
@@ -69,8 +69,8 @@ class Mutation implements GraphQLMutationResolver {
         try {
             customerBridge.setPreferredAddress(preferredAddressInput)
             Void.SUCCESS
-        } catch (PreferredAdressException preferredAddressException) {
-            preferredAddressException.build()
+        } catch (CustomerException customerException) {
+            customerException.build()
         }
     }
 
