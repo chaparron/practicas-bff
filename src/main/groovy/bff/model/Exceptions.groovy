@@ -57,7 +57,7 @@ class ResendVerifySMSException extends RuntimeException {
     }
 }
 
-class PreferedAdressException extends RuntimeException {
+class PreferredAdressException extends RuntimeException {
     PreferredAddressReason preferredAddressReason
     def build() {
         new PreferredAddressFailed(preferredAddressReason: this.preferredAddressReason)

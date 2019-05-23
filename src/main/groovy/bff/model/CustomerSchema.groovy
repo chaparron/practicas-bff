@@ -72,7 +72,7 @@ enum PreferredAddressReason {
     CANNOT_SET_LEGAL_ADDRESS_AS_PREFERRED
 
     def doThrow() {
-        throw new PreferedAdressException(preferredAddressReason: this)
+        throw new PreferredAdressException(preferredAddressReason: this)
     }
 }
 

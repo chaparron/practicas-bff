@@ -26,12 +26,12 @@ import bff.model.VerifyExpiredReason
 import bff.model.VerifyPhoneInput
 import groovy.util.logging.Slf4j
 import org.apache.http.HttpHeaders
+import org.apache.commons.lang3.NotImplementedException
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
-import sun.misc.Request
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION
 
@@ -78,7 +78,10 @@ class CustomerBridgeImpl implements CustomerBridge{
 
         } catch(ConflictErrorException conflictErrorException) {
             if(conflictErrorException.innerResponse.error) {
-                CustomerUpdateReason.valueOf(conflictErrorException.innerResponse.error).doThrow()
+                String error = conflictErrorException.error
+                CustomerUpdateReason.valueOf(error).doThrow()
+            } else {
+                throw new NotImplementedException("Update Customer Profile", (RuntimeException) exception)
             }
         }
     }
@@ -165,10 +168,6 @@ class CustomerBridgeImpl implements CustomerBridge{
         } catch (BadRequestErrorException badRequestException) {
             PreferredAddressReason.valueOf(badRequestException.innerResponse.message).doThrow()
         }
-
-
-
-        return null
     }
 
     static Customer mapCustomer(body) {

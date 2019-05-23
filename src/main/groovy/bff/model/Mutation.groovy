@@ -69,7 +69,7 @@ class Mutation implements GraphQLMutationResolver {
         try {
             customerBridge.setPreferredAddress(preferredAddressInput)
             Void.SUCCESS
-        } catch (PreferedAdressException preferredAddressException) {
+        } catch (PreferredAdressException preferredAddressException) {
             preferredAddressException.build()
         }
     }
