@@ -28,6 +28,7 @@ import groovy.util.logging.Slf4j
 
 import org.apache.http.HttpHeaders
 import org.apache.commons.lang3.NotImplementedException
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
@@ -155,32 +156,13 @@ class CustomerBridgeImpl implements CustomerBridge{
         def uri = url.toURI()
 
         try {
-            http.<List<Address>> exchange(
+            def ref = new ParameterizedTypeReference<List<Address>>() {}
+            http.exchange(
                     RequestEntity.method(HttpMethod.GET, uri)
                             .contentType(MediaType.APPLICATION_JSON)
                             .header(AUTHORIZATION, "Bearer ${accessTokenInput.accessToken}")
                             .build()
-                    , List).body?.collect {
-                new Address(
-                        id: it.id,
-                        formatted: it.formatted,
-                        placeId: it.placeId,
-                        addressName: it.addressName,
-                        addressNumber: it.addressNumber,
-                        city: it.city,
-                        postalCode: it.postalCode,
-                        state: new State(
-                                id: it.state.id,
-                                name: it.state.name
-                        ),
-                        lat: it.lat,
-                        lon: it.lon,
-                        additionalInfo: it.additionalInfo,
-                        preferred: it.preferred,
-                        addressType: it.addressType,
-                        enabled: it.enabled
-                )
-            }
+                    , ref).body
 
         } catch (BadRequestErrorException badRequestException) {
             throw new UnsupportedOperationException("Find Customer Addresses  - Backend Error" , badRequestException)
