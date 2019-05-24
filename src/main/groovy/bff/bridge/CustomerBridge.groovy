@@ -28,4 +28,6 @@ interface CustomerBridge {
 
     Void addAddress(AddressInput addressInput)
 
+    Void updateAddress(AddressInput addressInput)
+
 }

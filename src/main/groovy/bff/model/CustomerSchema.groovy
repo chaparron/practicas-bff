@@ -12,6 +12,7 @@ interface ResendVerifySMSResult{}
 
 interface PreferredAddressResult{}
 
+interface UpdateAddressResult{}
 
 enum CustomerStatus {
     PENDING,
@@ -52,7 +53,7 @@ enum CustomerErrorReason {
 
 
 class CustomerErrorFailed implements PreferredAddressResult, VerifyEmailResult, VerifyPhoneResult,
-        ResendVerifyEmailResult, CustomerUpdateResult, ResendVerifySMSResult {
+        ResendVerifyEmailResult, CustomerUpdateResult, ResendVerifySMSResult, UpdateAddressResult {
     CustomerErrorReason customerErrorReason
 }
 

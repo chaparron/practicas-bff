@@ -184,6 +184,7 @@ class CustomerBridgeImpl implements CustomerBridge{
                                     lon: addressInput.lon,
                                     additionalInfo: addressInput.additionalInfo,
                                     preferred: addressInput.preferred,
+                                    addressType: addressInput.addressType,
                                     enabled: addressInput.enabled
                             ]
                     ), Map).body
@@ -192,6 +193,39 @@ class CustomerBridgeImpl implements CustomerBridge{
             throw new UnsupportedOperationException("Add Address - Backend Error" , badRequestException)
         }
     }
+
+    @Override
+    Void updateAddress(AddressInput addressInput) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("customer/me/address/${addressInput.id}")).toUriString()
+        def uri = url.toURI()
+        try {
+            def body = http.exchange(
+                    RequestEntity.method(HttpMethod.PUT, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION, "Bearer $addressInput.accessToken")
+                            .body(
+                            [
+                                    id : addressInput.id,
+                                    formatted: addressInput.formatted,
+                                    placeId: addressInput.placeId,
+                                    addresName: addressInput.addressName,
+                                    addressNumber: addressInput.addressNumber,
+                                    city: addressInput.city,
+                                    postalCode: addressInput.postalCode,
+                                    state: addressInput.state,
+                                    lat : addressInput.lat,
+                                    lon: addressInput.lon,
+                                    additionalInfo: addressInput.additionalInfo,
+                                    preferred: addressInput.preferred,
+                                    addressType: addressInput.addressType,
+                                    enabled: addressInput.enabled
+                            ]
+                    ), Map).body
+        } catch(BadRequestErrorException badRequestErrorException) {
+            mapCustomerError(badRequestErrorException, "Update Address Error")
+        }
+    }
+
 
     static def mapCustomerError(RuntimeException exception, String error) {
         if (exception.innerResponse) {

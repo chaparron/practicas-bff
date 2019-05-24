@@ -47,8 +47,11 @@ type Mutation {
     # Set Preferred Customer address
     setPreferredAddress(input: PreferredAddressInput!): PreferredAddressResult!
 
-    # Add new Customer's address
-    addAddress(input: AddressInput): Void!
+    # Add new Customer address
+    addAddress(input: AddressInput!): Void!
+
+    # Update Customer adderss
+    updateAddress(input: AddressInput!) : UpdateAddressResult!
 
 }
 
@@ -219,3 +222,5 @@ union ResendVerifyEmailResult = CustomerErrorFailed | Void
 union ResendVerifySMSResult = CustomerErrorFailed | Void
 
 union PreferredAddressResult = CustomerErrorFailed | Void
+
+union UpdateAddressResult = CustomerErrorFailed | Void
