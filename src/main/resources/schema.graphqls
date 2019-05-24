@@ -20,6 +20,9 @@ type Query {
     # Resend sms for Verification
     resendVerifySMS(input: AccessTokenInput!) : ResendVerifySMSResult!
 
+    # Get all the Customer's addersses, according accessToken
+    findAddresses(input: AccessTokenInput) : [AddressType]
+
 }
 
 type Mutation {

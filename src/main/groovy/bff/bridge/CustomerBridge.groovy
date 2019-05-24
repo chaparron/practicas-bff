@@ -1,15 +1,16 @@
 package bff.bridge
 
+import bff.model.Address
 import bff.model.AccessTokenInput
 import bff.model.AddressIdInput
 import bff.model.AddressInput
-import bff.model.CustomerUpdateResult
 import bff.model.Customer
 import bff.model.CustomerInput
 import bff.model.CustomerUpdateInput
 import bff.model.PreferredAddressInput
 import bff.model.VerifyEmailInput
 import bff.model.VerifyPhoneInput
+import bff.model.CustomerUpdateResult
 
 interface CustomerBridge {
 
@@ -24,6 +25,8 @@ interface CustomerBridge {
     Void verifyPhone(VerifyPhoneInput verifyPhoneInput)
 
     Void resendVerifySMS(AccessTokenInput accessTokenInput)
+
+    List<Address> findAddresses(AccessTokenInput accessTokenInput)
 
     Void setPreferredAddress(PreferredAddressInput preferredAddressInput)
 

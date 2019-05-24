@@ -54,5 +54,9 @@ class Query implements GraphQLQueryResolver {
             customerException.build()
         }
     }
+
+    List<Address> findAddresses(AccessTokenInput accessTokenInput) {
+        customerBridge.findAddresses(accessTokenInput)
+    }
 }
 

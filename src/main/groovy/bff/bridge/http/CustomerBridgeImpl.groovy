@@ -9,6 +9,7 @@ import bff.model.CustomerUpdateResult
 import bff.model.CustomerInput
 import bff.model.CustomerUpdateInput
 import bff.model.PreferredAddressInput
+import bff.model.State
 import bff.model.VerifyEmailInput
 import bff.model.VerifyPhoneInput
 import bff.model.AccessTokenInput
@@ -149,6 +150,44 @@ class CustomerBridgeImpl implements CustomerBridge{
     }
 
     @Override
+    List<Address> findAddresses(AccessTokenInput accessTokenInput) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("customer/me/address")).toUriString()
+        def uri = url.toURI()
+
+        try {
+            http.<List<Address>> exchange(
+                    RequestEntity.method(HttpMethod.GET, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION, "Bearer ${accessTokenInput.accessToken}")
+                            .build()
+                    , List).body?.collect {
+                new Address(
+                        id: it.id,
+                        formatted: it.formatted,
+                        placeId: it.placeId,
+                        addressName: it.addressName,
+                        addressNumber: it.addressNumber,
+                        city: it.city,
+                        postalCode: it.postalCode,
+                        state: new State(
+                                id: it.state.id,
+                                name: it.state.name
+                        ),
+                        lat: it.lat,
+                        lon: it.lon,
+                        additionalInfo: it.additionalInfo,
+                        preferred: it.preferred,
+                        addressType: it.addressType,
+                        enabled: it.enabled
+                )
+            }
+
+        } catch (BadRequestErrorException badRequestException) {
+            throw new UnsupportedOperationException("Find Customer Addresses  - Backend Error" , badRequestException)
+        }
+    }
+
+    @Override
     Void setPreferredAddress(PreferredAddressInput preferredAddressInput) {
         def url = UriComponentsBuilder.fromUri(root.resolve("customer/me/address/preferred/${preferredAddressInput.addressId}")).toUriString()
         def uri = url.toURI()
@@ -191,7 +230,7 @@ class CustomerBridgeImpl implements CustomerBridge{
                     ), Map).body
 
         } catch (BadRequestErrorException badRequestException) {
-            throw new UnsupportedOperationException("Add Address - Backend Error" , badRequestException)
+            throw new UnsupportedOperationException("Add Customer Address - Backend Error" , badRequestException)
         }
     }
 
