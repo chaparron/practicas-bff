@@ -50,7 +50,7 @@ type Mutation {
     # Add new Customer address
     addAddress(input: AddressInput!): Void!
 
-    # Update Customer adderss
+    # Update Customer address
     updateAddress(input: AddressInput!) : UpdateAddressResult!
 
 }
