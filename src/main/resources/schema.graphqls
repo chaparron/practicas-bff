@@ -53,6 +53,9 @@ type Mutation {
     # Update Customer address
     updateAddress(input: AddressInput!) : UpdateAddressResult!
 
+    # Delete Customer address
+    deleteAddress(input: AddressIdInput!) : DeleteAddressResult!
+
 }
 
 
@@ -224,3 +227,5 @@ union ResendVerifySMSResult = CustomerErrorFailed | Void
 union PreferredAddressResult = CustomerErrorFailed | Void
 
 union UpdateAddressResult = CustomerErrorFailed | Void
+
+union DeleteAddressResult = CustomerErrorFailed | Void

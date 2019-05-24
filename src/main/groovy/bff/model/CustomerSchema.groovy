@@ -14,6 +14,9 @@ interface PreferredAddressResult{}
 
 interface UpdateAddressResult{}
 
+interface DeleteAddressResult{}
+
+
 enum CustomerStatus {
     PENDING,
     REJECTED,
@@ -44,7 +47,8 @@ enum CustomerErrorReason {
     NO_VERIFICATION_EMAIL_PENDING,
     NO_VERIFICATION_SMS_PENDING,
     NOT_ADDRESS_CUSTOMER,
-    CANNOT_SET_LEGAL_ADDRESS_AS_PREFERRED
+    CANNOT_SET_LEGAL_ADDRESS_AS_PREFERRED,
+    INVALID_DELIVERY_ADDRESS_COUNT
 
     def doThrow() {
         throw new CustomerException(customerErrorReason: this)
@@ -53,7 +57,8 @@ enum CustomerErrorReason {
 
 
 class CustomerErrorFailed implements PreferredAddressResult, VerifyEmailResult, VerifyPhoneResult,
-        ResendVerifyEmailResult, CustomerUpdateResult, ResendVerifySMSResult, UpdateAddressResult {
+        ResendVerifyEmailResult, CustomerUpdateResult, ResendVerifySMSResult, UpdateAddressResult,
+        DeleteAddressResult {
     CustomerErrorReason customerErrorReason
 }
 
@@ -119,6 +124,11 @@ class AddressInput {
     Boolean preferred
     AddressMode addressType
     Boolean enabled
+    String accessToken
+}
+
+class AddressIdInput {
+    Long address_id
     String accessToken
 }
 

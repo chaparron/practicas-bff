@@ -88,6 +88,15 @@ class Mutation implements GraphQLMutationResolver {
         }
     }
 
+    DeleteAddressResult deleteAddress(AddressIdInput addressIdInput) {
+        try {
+            customerBridge.deleteAddress(addressIdInput)
+            Void.SUCCESS
+        } catch (CustomerException customerException) {
+            customerException.build()
+        }
+    }
+
     def tokenLogin(String accessToken, String socialNetwork) {
         authServerBridge.socialLogin(accessToken, socialNetwork)
     }

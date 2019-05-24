@@ -1,6 +1,7 @@
 package bff.bridge
 
 import bff.model.AccessTokenInput
+import bff.model.AddressIdInput
 import bff.model.AddressInput
 import bff.model.CustomerUpdateResult
 import bff.model.Customer
@@ -29,5 +30,7 @@ interface CustomerBridge {
     Void addAddress(AddressInput addressInput)
 
     Void updateAddress(AddressInput addressInput)
+
+    Void deleteAddress(AddressIdInput addressIdInput)
 
 }

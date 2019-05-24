@@ -29,6 +29,7 @@ enum CustomerErrorReason {
     NO_VERIFICATION_SMS_PENDING
     NOT_ADDRESS_CUSTOMER
     CANNOT_SET_LEGAL_ADDRESS_AS_PREFERRED
+    INVALID_DELIVERY_ADDRESS_COUNT
 }
 
 input CustomerInput {
@@ -78,6 +79,11 @@ input AddressInput {
     addressType: AddressMode
     enabled: Boolean
     accessToken: String!
+}
+
+input AddressIdInput {
+    address_id : ID
+    accessToken: String
 }
 
 

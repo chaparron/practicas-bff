@@ -3,6 +3,7 @@ package bff.bridge.http
 import bff.bridge.CustomerBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.ConflictErrorException
+import bff.model.AddressIdInput
 import bff.model.AddressInput
 import bff.model.CustomerUpdateResult
 import bff.model.CustomerInput
@@ -226,6 +227,21 @@ class CustomerBridgeImpl implements CustomerBridge{
         }
     }
 
+    @Override
+    Void deleteAddress(AddressIdInput addressIdInput) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("customer/me/address/${addressIdInput.address_id}")).toUriString()
+        def uri = url.toURI()
+        try {
+            def body = http.exchange(
+                    RequestEntity.method(HttpMethod.DELETE, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION, "Bearer $addressIdInput.accessToken")
+                            .build()
+                    , Map).body
+        }catch(BadRequestErrorException badRequestErrorException) {
+                mapCustomerError(badRequestErrorException, "Update Address Error")
+        }
+    }
 
     static def mapCustomerError(RuntimeException exception, String error) {
         if (exception.innerResponse) {
