@@ -63,8 +63,13 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
                             response.getHeaders(), getResponseBody(response), getCharset(response)))
                     conflictErrorException.innerResponse = innerResponse.error
                     throw conflictErrorException
-
-                } else {
+                } else if (statusCode == HttpStatus.NOT_FOUND) {
+                    EntityNotFoundException entityNotFoundException = new EntityNotFoundException(response.getStatusText(), new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
+                        response.getHeaders(), getResponseBody(response), getCharset(response)))
+                    entityNotFoundException.innerResponse = innerResponse.error
+                    throw entityNotFoundException
+                }
+                else {
                     throw new BridgeHttpClientErrorException(statusCode, response.getStatusText(),
                             response.getHeaders(), getResponseBody(response), getCharset(response))
                 }
@@ -116,8 +121,17 @@ class BadRequestErrorException extends RuntimeException {
 }
 
 @InheritConstructors
+class EntityNotFoundException extends RuntimeException {
+    def innerResponse
+}
+
+@InheritConstructors
 class ConflictErrorException extends RuntimeException {
     def innerResponse
+}
+
+@InheritConstructors
+class EmptyResultDataAccessErrorException extends RuntimeException {
 }
 
 @InheritConstructors

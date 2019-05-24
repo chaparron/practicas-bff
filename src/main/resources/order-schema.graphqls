@@ -1,0 +1,133 @@
+input CancelOrderInput {
+    accessToken: String!
+    orderId: Int!
+}
+
+
+enum OrderUpdateReason {
+    INVALID_SUPPLIER_ORDERS_STATUS,
+    ORDER_NOT_FOUND
+}
+
+type OrderUpdateFailed {
+    orderUpdateReason: OrderUpdateReason
+}
+
+union CancelOrderResult = OrderUpdateFailed | Void
+
+
+enum SupplierOrderStatus {
+    PENDING,
+    CONFIRMED,
+    SHIPPED,
+    CANCELED
+}
+
+input FindOrdersInput {
+    accessToken: String
+    orderId: Int
+    status: SupplierOrderStatus
+}
+
+enum Direction {
+    ASC,
+    DESC
+}
+
+type SortResult {
+    field: String
+    direction: Direction
+}
+
+type Headers {
+    page: Int,
+    pageSize: Int,
+    total: Int,
+    sort: SortResult
+}
+
+enum OrderStatus {
+    PENDING,
+    IN_PROGRESS,
+    FINISHED
+}
+
+type OrderItems {
+    id: Int
+    supplierOrder: SupplierOrder
+    product: Product
+    productTitle: String
+    productEan: String
+    price: Float
+    quantity: Int
+    subtotal: Float
+}
+
+enum RatingOwner {
+    SUPPLIER,
+    CUSTOMER
+}
+
+
+enum RatingStatus {
+    ENABLED,
+    DISABLED,
+    REPORTED
+}
+
+type Rating {
+    id: Int
+    supplierOrder: SupplierOrder
+    supplier: Supplier
+    customer: Customer
+    user: User
+    created: TimestampOutput
+    opinion: String
+    score: Int
+    owner: RatingOwner
+    status: RatingStatus
+    percentage: Float
+}
+
+
+type SupplierOrder {
+    id:Int
+    order: Order
+    supplier: Supplier
+    receipt: String
+    status: SupplierOrderStatus
+    created: TimestampOutput
+    updated: TimestampOutput
+    shippedAt: TimestampOutput
+    shipAt: TimestampOutput
+    deliveryCost: Float
+    total: Float
+    units: Int
+    products: [OrderItems]
+    ratings: [Rating]
+    canCustomerRate: Boolean
+    canSupplierRate: Boolean
+    customerRated: Boolean
+    supplierRated: Boolean
+}
+
+type Order {
+    id: Int
+    customer: Customer
+    status: OrderStatus
+    created: TimestampOutput
+    updated: TimestampOutput
+
+    deliveryAddress: Address
+    deliveryPreference: DeliveryPreference
+    units: Int
+    supplierOrders: [SupplierOrder]
+    total: Int
+}
+
+union CustomerOrdersResult = CustomerOrdersResponse | Void
+
+type CustomerOrdersResponse {
+    headers: Headers
+    content: [Order]
+}

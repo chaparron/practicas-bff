@@ -3,6 +3,7 @@ package bff.model
 import bff.bridge.*
 import com.coxautodev.graphql.tools.GraphQLQueryResolver
 import groovy.util.logging.Slf4j
+import org.bouncycastle.pqc.math.linearalgebra.IntegerFunctions
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -18,6 +19,9 @@ class Query implements GraphQLQueryResolver {
 
     @Autowired
     CustomerBridge customerBridge
+
+    @Autowired
+    OrderBridge orderBridge
 
     Void testPhoneNumber(PhoneInput phoneInput) {
         authServerBridge.testPhoneNumber(phoneInput.phone)
@@ -53,6 +57,10 @@ class Query implements GraphQLQueryResolver {
         } catch (CustomerException customerException) {
             customerException.build()
         }
+    }
+
+    CustomerOrdersResult findCustomerOrders(FindOrdersInput findOrdersInput) {
+        orderBridge.findCustomerOrders(findOrdersInput)
     }
 
     List<Address> findAddresses(AccessTokenInput accessTokenInput) {

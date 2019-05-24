@@ -23,6 +23,9 @@ type Query {
     # Get all the Customer's addersses, according accessToken
     findAddresses(input: AccessTokenInput) : [AddressType]
 
+    # Find customer orders
+    findCustomerOrders(input: FindOrdersInput!): CustomerOrdersResult!
+
 }
 
 type Mutation {
@@ -52,6 +55,9 @@ type Mutation {
 
     # Add new Customer address
     addAddress(input: AddressInput!): Void!
+
+    # Cancel pending orders
+    cancelOrder(input: CancelOrderInput!): CancelOrderResult!
 
     # Update Customer address
     updateAddress(input: AddressInput!) : UpdateAddressResult!

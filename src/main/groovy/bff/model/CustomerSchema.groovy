@@ -62,7 +62,7 @@ class CustomerErrorFailed implements PreferredAddressResult, VerifyEmailResult, 
     CustomerErrorReason customerErrorReason
 }
 
-class Customer implements CustomerUpdateResult{
+class Customer implements CustomerUpdateResult {
     Long id
     String name
     Boolean enabled

@@ -1,7 +1,5 @@
 package bff.model
 
-import groovy.transform.ToString
-
 interface UsernameRegistrationResult {}
 
 interface ProfileCredentialsResult {}
@@ -50,6 +48,7 @@ class UsernameRegistrationFailed implements UsernameRegistrationResult {
 
 class Void implements ChangePasswordResult, UsernameRegistrationResult, ConfirmPasswordResult,
         VerifyEmailResult, VerifyPhoneResult, ResendVerifyEmailResult, ResendVerifySMSResult,
+        PreferredAddressResult, OrderUpdateResult, CustomerOrdersResult {
         PreferredAddressResult, UpdateAddressResult, DeleteAddressResult {
     static final SUCCESS = new Void(voidReason: VoidReason.SUCCESS)
     VoidReason voidReason
