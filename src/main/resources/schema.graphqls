@@ -48,7 +48,7 @@ type Mutation {
     setPreferredAddress(input: PreferredAddressInput!): PreferredAddressResult!
 
     # Add new Customer's address
-    # addAddress(input: AddressInput): Void!
+    addAddress(input: AddressInput): Void!
 
 }
 

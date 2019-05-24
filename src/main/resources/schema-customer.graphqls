@@ -4,7 +4,7 @@ enum CustomerStatus {
     APPROVED
 }
 
-enum AddressType {
+enum AddressMode {
     LEGAL,
     DELIVERY
 }
@@ -45,6 +45,23 @@ input StateInput {
     name: String
 }
 
+input Address {
+    id: ID
+    formatted: String!
+    placeId: String!
+    addressName: String!
+    addressNumber: String!
+    city: String!
+    postalCode: String!
+    state: StateInput!
+    lat: Float
+    lon: Float
+    additionalInfo: String
+    preferred: Boolean
+    addressType: AddressMode
+    enabled: Boolean
+}
+
 input AddressInput {
     id: ID
     formatted: String!
@@ -58,15 +75,16 @@ input AddressInput {
     lon: Float
     additionalInfo: String
     preferred: Boolean
-    addressType: AddressType
+    addressType: AddressMode
     enabled: Boolean
+    accessToken: String!
 }
 
 
 input CustomerUpdateInput {
     phone: String
     username: String
-    address: [AddressInput]
+    address: [Address]
     deliveryPreference: DeliveryPreference
     verificationDocuments: [VerificationDocumentInput]
     accessToken: String
@@ -92,7 +110,7 @@ type State {
     name: String
 }
 
-type Address {
+type AddressType {
     id: ID
     formatted: String
     placeId: String
@@ -105,7 +123,7 @@ type Address {
     lon: Float
     additionalInfo: String
     preferred: Boolean
-    addressType: AddressType
+    addressType: AddressMode
     enabled: Boolean
 }
 
@@ -130,7 +148,7 @@ type Customer {
     user: User
     smsVerification: Boolean
     emailVerification: Boolean
-    addresses: [Address]
+    addresses: [AddressType]
     verificationDocuments: [VerificationDocument]
     deliveryPreference: DeliveryPreference
     rating: RatingScore

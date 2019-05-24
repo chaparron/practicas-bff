@@ -19,7 +19,7 @@ enum CustomerStatus {
     APPROVED
 }
 
-enum AddressType {
+enum AddressMode {
     LEGAL,
     DELIVERY
 }
@@ -98,10 +98,28 @@ class Address {
     Double lon
     String additionalInfo
     Boolean preferred
-    AddressType addressType
+    AddressMode addressType
     Boolean enabled
 }
 
+
+class AddressInput {
+    Long id
+    String formatted
+    String placeId
+    String addressName
+    String addressNumber
+    String city
+    String postalCode
+    State state
+    Double lat
+    Double lon
+    String additionalInfo
+    Boolean preferred
+    AddressMode addressType
+    Boolean enabled
+    String accessToken
+}
 
 class CustomerInput {
     String accessToken

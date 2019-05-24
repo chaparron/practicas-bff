@@ -3,6 +3,7 @@ package bff.bridge.http
 import bff.bridge.CustomerBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.ConflictErrorException
+import bff.model.AddressInput
 import bff.model.CustomerUpdateResult
 import bff.model.CustomerInput
 import bff.model.CustomerUpdateInput
@@ -17,7 +18,7 @@ import bff.model.UserCredentials
 import bff.model.VerificationDocument
 import bff.model.CustomerErrorReason
 import bff.model.CustomerStatus
-import bff.model.AddressType
+import bff.model.AddressMode
 import bff.model.DeliveryPreference
 import bff.model.VerificationDocumentType
 
@@ -162,6 +163,35 @@ class CustomerBridgeImpl implements CustomerBridge{
         }
     }
 
+    @Override
+    Void addAddress(AddressInput addressInput) {
+        try {
+            def body = http.exchange(
+                    RequestEntity.method(HttpMethod.POST, root.resolve("customer/me/address"))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, "Bearer $addressInput.accessToken")
+                            .body(
+                            [
+                                    id : addressInput.id,
+                                    formatted: addressInput.formatted,
+                                    placeId: addressInput.placeId,
+                                    addresName: addressInput.addressName,
+                                    addressNumber: addressInput.addressNumber,
+                                    city: addressInput.city,
+                                    postalCode: addressInput.postalCode,
+                                    state: addressInput.state,
+                                    lat : addressInput.lat,
+                                    lon: addressInput.lon,
+                                    additionalInfo: addressInput.additionalInfo,
+                                    preferred: addressInput.preferred,
+                                    enabled: addressInput.enabled
+                            ]
+                    ), Map).body
+
+        } catch (BadRequestErrorException badRequestException) {
+            throw new UnsupportedOperationException("Add Address - Backend Error" , badRequestException)
+        }
+    }
 
     static def mapCustomerError(RuntimeException exception, String error) {
         if (exception.innerResponse) {
@@ -208,7 +238,7 @@ class CustomerBridgeImpl implements CustomerBridge{
                             lon: it.lon,
                             additionalInfo: it.additionalInfo,
                             preferred: it.preferred,
-                            addressType: it.addressType as AddressType,
+                            addressType: it.addressType as AddressMode,
                             enabled: it.enabled
                     )
                 },
