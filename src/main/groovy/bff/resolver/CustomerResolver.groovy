@@ -1,4 +1,4 @@
-package bff
+package bff.resolver
 
 import bff.bridge.CustomerBridge
 import bff.model.Address
