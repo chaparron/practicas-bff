@@ -10,6 +10,7 @@ import bff.model.CustomerUpdateInput
 import bff.model.PreferredAddressInput
 import bff.model.VerifyEmailInput
 import bff.model.VerifyPhoneInput
+import bff.model.VerificationDocument
 import bff.model.CustomerUpdateResult
 
 interface CustomerBridge {
@@ -28,6 +29,10 @@ interface CustomerBridge {
 
     List<Address> findAddresses(AccessTokenInput accessTokenInput)
 
+    List<Address> findAddressesByCustomerAccessToken(String accessToken)
+
+    List<VerificationDocument> findVerificationDocs(String accessToken)
+
     Void setPreferredAddress(PreferredAddressInput preferredAddressInput)
 
     Void addAddress(AddressInput addressInput)
@@ -35,5 +40,4 @@ interface CustomerBridge {
     Void updateAddress(AddressInput addressInput)
 
     Void deleteAddress(AddressIdInput addressIdInput)
-
 }

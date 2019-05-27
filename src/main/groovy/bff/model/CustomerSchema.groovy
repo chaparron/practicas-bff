@@ -62,7 +62,7 @@ class CustomerErrorFailed implements PreferredAddressResult, VerifyEmailResult, 
     CustomerErrorReason customerErrorReason
 }
 
-class Customer implements CustomerUpdateResult{
+class Customer implements CustomerUpdateResult {
     Long id
     String name
     Boolean enabled
@@ -72,12 +72,11 @@ class Customer implements CustomerUpdateResult{
     User user
     Boolean smsVerification
     Boolean emailVerification
-    List<Address> addresses
-    List<VerificationDocument> verificationDocuments
     DeliveryPreference deliveryPreference
     RatingScore rating
     int level
     List<String> missingDocuments
+    String accessToken
 }
 
 
@@ -88,7 +87,7 @@ class State {
 
 class VerificationDocument {
     String id
-    VerificationDocumentType documentType
+    VerificationDocumentType type
 }
 
 class Address {

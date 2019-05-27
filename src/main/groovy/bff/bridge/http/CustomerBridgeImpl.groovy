@@ -9,7 +9,6 @@ import bff.model.CustomerUpdateResult
 import bff.model.CustomerInput
 import bff.model.CustomerUpdateInput
 import bff.model.PreferredAddressInput
-import bff.model.State
 import bff.model.VerifyEmailInput
 import bff.model.VerifyPhoneInput
 import bff.model.AccessTokenInput
@@ -54,7 +53,7 @@ class CustomerBridgeImpl implements CustomerBridge{
                         .build()
                 , Map).body
 
-        mapCustomer(body)
+        mapCustomer(body , customerInput.accessToken)
 
     }
 
@@ -75,7 +74,7 @@ class CustomerBridgeImpl implements CustomerBridge{
                     ]
             ), Map).body
 
-            mapCustomer(body)
+            mapCustomer(body, customerUpdateInput.accessToken)
 
         } catch(ConflictErrorException conflictErrorException) {
             mapCustomerError(conflictErrorException, "Update Customer Profile Error")
@@ -167,6 +166,45 @@ class CustomerBridgeImpl implements CustomerBridge{
         } catch (BadRequestErrorException badRequestException) {
             throw new UnsupportedOperationException("Find Customer Addresses  - Backend Error" , badRequestException)
         }
+    }
+
+    @Override
+    List<Address> findAddressesByCustomerAccessToken(String accessToken) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("customer/bff/me/addresses")).toUriString()
+        def uri = url.toURI()
+
+        try {
+            def ref = new ParameterizedTypeReference<List<Address>>() {}
+            http.exchange(
+                    RequestEntity.method(HttpMethod.GET, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION, "Bearer ${accessToken}")
+                            .build()
+                    , ref).body
+
+        } catch (BadRequestErrorException badRequestException) {
+            throw new UnsupportedOperationException("Find Customer Addresses  - Backend Error" , badRequestException)
+        }
+    }
+
+    @Override
+    List<VerificationDocument> findVerificationDocs(String accessToken) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("customer/bff/me/verificationDocs")).toUriString()
+        def uri = url.toURI()
+
+        try {
+            def ref = new ParameterizedTypeReference<List<VerificationDocument>>() {}
+            http.exchange(
+                    RequestEntity.method(HttpMethod.GET, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION, "Bearer ${accessToken}")
+                            .build()
+                    , ref).body
+
+        } catch (BadRequestErrorException badRequestException) {
+            throw new UnsupportedOperationException("Find Customer Addresses  - Backend Error" , badRequestException)
+        }
+
     }
 
     @Override
@@ -272,7 +310,7 @@ class CustomerBridgeImpl implements CustomerBridge{
         }
     }
 
-    static Customer mapCustomer(body) {
+    static Customer mapCustomer(body, String accessToken) {
         new Customer(
                 id: body.id,
                 name: body.name,
@@ -295,7 +333,7 @@ class CustomerBridgeImpl implements CustomerBridge{
                 smsVerification: body.smsVerification,
                 emailVerification: body.emailVerification,
 
-                addresses: body.addresses?.collect {
+                /*addresses: body.addresses?.collect {
                     new Address(
                             id: it.id,
                             formatted: it.formatted,
@@ -320,10 +358,12 @@ class CustomerBridgeImpl implements CustomerBridge{
                             documentType: it.type as VerificationDocumentType
                     )
                 },
+                */
 
                 deliveryPreference: body.deliveryPreference as DeliveryPreference,
                 level: body.level,
-                missingDocuments: body.missingDocuments
+                missingDocuments: body.missingDocuments,
+                accessToken: accessToken
         )
     }
 }

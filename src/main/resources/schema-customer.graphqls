@@ -135,7 +135,7 @@ type AddressType {
 
 type VerificationDocument {
     id: ID
-    documentType: VerificationDocumentType
+    type: VerificationDocumentType
 }
 
 type RatingScore {
