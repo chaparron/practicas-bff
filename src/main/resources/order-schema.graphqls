@@ -63,12 +63,6 @@ type OrderItems {
     subtotal: Float
 }
 
-enum RatingOwner {
-    SUPPLIER,
-    CUSTOMER
-}
-
-
 enum RatingStatus {
     ENABLED,
     DISABLED,
@@ -104,11 +98,21 @@ type SupplierOrder {
     total: Float
     units: Int
     products: [OrderItems]
-    ratings: [Rating]
+    ratings: RatingEntry
     canCustomerRate: Boolean
     canSupplierRate: Boolean
     customerRated: Boolean
     supplierRated: Boolean
+}
+
+enum RatingOwner {
+    SUPPLIER,
+    CUSTOMER
+}
+
+type RatingEntry {
+    SUPPLIER: Rating!
+    CUSTOMER: Rating!
 }
 
 type Order {
@@ -117,12 +121,9 @@ type Order {
     status: OrderStatus
     created: TimestampOutput
     updated: TimestampOutput
-
-    deliveryAddress: Address
+    deliveryAddress: AddressType
     deliveryPreference: DeliveryPreference
-    units: Int
     supplierOrders: [SupplierOrder]
-    total: Int
 }
 
 union CustomerOrdersResult = CustomerOrdersResponse | Void

@@ -93,9 +93,9 @@ class PaginatedResponse<T> {
 
 class Order {
 
-    Long id
+    String accessToken
 
-    Customer customer
+    Long id
 
     OrderStatus status
 
@@ -103,15 +103,8 @@ class Order {
 
     TimestampOutput updated
 
-    Address deliveryAddress
-
     DeliveryPreference deliveryPreference
 
-    Integer units
-
-    List<SupplierOrder> supplierOrders
-
-    Double total
 }
 
 class SupplierOrder {
@@ -128,11 +121,16 @@ class SupplierOrder {
     Double total
     Integer units
     List<OrderItem> products
-    List<Rating> ratings
+    RatingEntry ratings
     Boolean canCustomerRate
     Boolean canSupplierRate
     Boolean customerRated
     Boolean supplierRated
+}
+
+class RatingEntry {
+    Rating SUPPLIER
+    Rating CUSTOMER
 }
 
 class Rating {

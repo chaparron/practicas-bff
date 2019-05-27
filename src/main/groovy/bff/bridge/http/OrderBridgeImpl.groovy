@@ -3,20 +3,22 @@ package bff.bridge.http
 import bff.bridge.OrderBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
+import bff.model.Address
 import bff.model.CancelOrderInput
+import bff.model.Customer
+import bff.model.CustomerOrdersResponse
 import bff.model.CustomerOrdersResult
 import bff.model.FindOrdersInput
 import bff.model.OrderUpdateReason
-import bff.model.SearchResult
+import bff.model.SupplierOrder
 import groovy.util.logging.Slf4j
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
-
-import javax.swing.text.html.parser.Entity
 
 @Slf4j
 class OrderBridgeImpl implements OrderBridge {
@@ -35,7 +37,8 @@ class OrderBridgeImpl implements OrderBridge {
                     .header(HttpHeaders.AUTHORIZATION, "Bearer $cancelOrderInput.accessToken")
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(cancelOrderInput)
-                , SearchResult).body
+                , Map).body
+            Void.SUCCESS
         }
         catch (BadRequestErrorException ex) {
             OrderUpdateReason.INVALID_SUPPLIER_ORDERS_STATUS.doThrow()
@@ -43,7 +46,6 @@ class OrderBridgeImpl implements OrderBridge {
         catch (EntityNotFoundException ex) {
             OrderUpdateReason.ORDER_NOT_FOUND.doThrow()
         }
-        return
     }
 
     @Override
@@ -52,19 +54,59 @@ class OrderBridgeImpl implements OrderBridge {
             .toUriString().toURI()
 
         try {
-            http.exchange(
+            def r = http.exchange(
                 RequestEntity.method(HttpMethod.GET, uri)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer $cancelOrderInput.accessToken")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer $findOrdersInput.accessToken")
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(findOrdersInput)
-                , SearchResult).body
-        }
-        catch (BadRequestErrorException ex) {
-            OrderUpdateReason.INVALID_SUPPLIER_ORDERS_STATUS.doThrow()
+                , CustomerOrdersResponse).body
+
+            r.content.each { it.accessToken = findOrdersInput.accessToken }
+            r
         }
         catch (EntityNotFoundException ex) {
             OrderUpdateReason.ORDER_NOT_FOUND.doThrow()
         }
-        return
+    }
+
+    @Override
+    Address getDeliveryAddress(String accessToken, Long orderId) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/${orderId}/address"))
+            .toUriString().toURI()
+
+        http.exchange(
+            RequestEntity.method(HttpMethod.GET, uri)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                .contentType(MediaType.APPLICATION_JSON)
+                .build()
+            , Address).body
+    }
+
+    @Override
+    List<SupplierOrder> getSupplierOrders(String accessToken, Long orderId) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/${orderId}/supplierOrders"))
+            .toUriString().toURI()
+
+
+        def param = new ParameterizedTypeReference<List<SupplierOrder>>() {}
+        http.exchange(
+            RequestEntity.method(HttpMethod.GET, uri)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                .contentType(MediaType.APPLICATION_JSON)
+                .build()
+            , param).body
+    }
+
+    @Override
+    Customer getCustomerOrder(String accessToken, Long orderId) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/${orderId}/customer"))
+            .toUriString().toURI()
+
+        http.exchange(
+            RequestEntity.method(HttpMethod.GET, uri)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                .contentType(MediaType.APPLICATION_JSON)
+                .build()
+            , Customer).body
     }
 }
