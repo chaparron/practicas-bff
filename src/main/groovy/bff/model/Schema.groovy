@@ -1,12 +1,10 @@
 package bff.model
 
-import groovy.transform.ToString
-
 interface UsernameRegistrationResult {}
 
 interface ProfileCredentialsResult {}
 
-class ProfileCredentials implements ProfileCredentialsResult{
+class ProfileCredentials implements ProfileCredentialsResult {
     String accessToken
 }
 
@@ -48,9 +46,18 @@ class UsernameRegistrationFailed implements UsernameRegistrationResult {
     UsernameRegistrationReason reason
 }
 
-class Void implements ChangePasswordResult, UsernameRegistrationResult, ConfirmPasswordResult,
-        VerifyEmailResult, VerifyPhoneResult, ResendVerifyEmailResult, ResendVerifySMSResult,
-        PreferredAddressResult, UpdateAddressResult, DeleteAddressResult {
+class Void implements ChangePasswordResult,
+    UsernameRegistrationResult,
+    ConfirmPasswordResult,
+    VerifyEmailResult,
+    VerifyPhoneResult,
+    ResendVerifyEmailResult,
+    ResendVerifySMSResult,
+    PreferredAddressResult,
+    OrderUpdateResult,
+    CustomerOrdersResult,
+    UpdateAddressResult,
+    DeleteAddressResult {
     static final SUCCESS = new Void(voidReason: VoidReason.SUCCESS)
     VoidReason voidReason
 }

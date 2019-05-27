@@ -20,6 +20,9 @@ class Mutation implements GraphQLMutationResolver {
     @Autowired
     CustomerBridge customerBridge
 
+    @Autowired
+    OrderBridge orderBridge
+
     LoginResult login(LoginInput input) {
         try {
             def credentials = passwordLogin(input.username, input.password, input.site)
@@ -136,5 +139,15 @@ class Mutation implements GraphQLMutationResolver {
     Void enableUsername(UsernameInput input) {
         usersBridge.enableUsername(input)
         Void.SUCCESS
+    }
+
+    OrderUpdateResult cancelOrder(CancelOrderInput cancelOrderInput) {
+        try {
+            orderBridge.cancel(cancelOrderInput)
+            Void.SUCCESS
+        }
+        catch (OrderUpdateFailed ex) {
+            ex
+        }
     }
 }

@@ -48,4 +48,13 @@ class BridgeConfiguration {
             root:root
         )
     }
+
+    @Bean
+    OrderBridge orderBridge() {
+        new OrderBridgeImpl(
+            http: http,
+            root: root
+        )
+    }
+
 }

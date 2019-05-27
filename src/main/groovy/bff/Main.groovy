@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
+import org.springframework.core.annotation.Order
 import org.springframework.web.client.RestOperations
 
 @SpringBootApplication(exclude = SecurityAutoConfiguration)
@@ -28,6 +29,8 @@ class Main {
                 .add(CustomerErrorFailed.class)
                 .add(RegisterFailed.class)
                 .add(LoginFailed.class)
+                .add(OrderUpdateFailed.class)
+                .add(CustomerOrdersResponse.class)
     }
     /**
      *
