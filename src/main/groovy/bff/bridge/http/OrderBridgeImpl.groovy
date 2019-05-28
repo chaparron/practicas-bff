@@ -3,22 +3,18 @@ package bff.bridge.http
 import bff.bridge.OrderBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
-import bff.model.Address
-import bff.model.CancelOrderInput
-import bff.model.Customer
-import bff.model.CustomerOrdersResponse
-import bff.model.CustomerOrdersResult
-import bff.model.FindOrdersInput
-import bff.model.OrderUpdateReason
-import bff.model.SupplierOrder
+import bff.model.*
 import groovy.util.logging.Slf4j
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
+import org.springframework.stereotype.Component
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
+
+import java.lang.Void
 
 @Slf4j
 class OrderBridgeImpl implements OrderBridge {
@@ -84,17 +80,19 @@ class OrderBridgeImpl implements OrderBridge {
 
     @Override
     List<SupplierOrder> getSupplierOrders(String accessToken, Long orderId) {
-        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/${orderId}/supplierOrders"))
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/${orderId}/supplierOrder"))
             .toUriString().toURI()
 
-
         def param = new ParameterizedTypeReference<List<SupplierOrder>>() {}
-        http.exchange(
+        def r = http.exchange(
             RequestEntity.method(HttpMethod.GET, uri)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                 .contentType(MediaType.APPLICATION_JSON)
                 .build()
             , param).body
+
+        r.each { it.accessToken = accessToken }
+        r
     }
 
     @Override
@@ -102,11 +100,14 @@ class OrderBridgeImpl implements OrderBridge {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/${orderId}/customer"))
             .toUriString().toURI()
 
-        http.exchange(
+        def r = http.exchange(
             RequestEntity.method(HttpMethod.GET, uri)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                 .contentType(MediaType.APPLICATION_JSON)
                 .build()
             , Customer).body
+
+        r.accessToken = accessToken
+        r
     }
 }

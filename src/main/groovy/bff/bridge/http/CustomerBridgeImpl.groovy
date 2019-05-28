@@ -3,36 +3,19 @@ package bff.bridge.http
 import bff.bridge.CustomerBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.ConflictErrorException
-import bff.model.AddressIdInput
-import bff.model.AddressInput
-import bff.model.CustomerUpdateResult
-import bff.model.CustomerInput
-import bff.model.CustomerUpdateInput
-import bff.model.PreferredAddressInput
-import bff.model.VerifyEmailInput
-import bff.model.VerifyPhoneInput
-import bff.model.AccessTokenInput
-import bff.model.Address
-import bff.model.Customer
-import bff.model.User
-import bff.model.UserCredentials
-import bff.model.VerificationDocument
-import bff.model.CustomerErrorReason
-import bff.model.CustomerStatus
-import bff.model.AddressMode
-import bff.model.DeliveryPreference
-import bff.model.VerificationDocumentType
-
+import bff.model.*
 import groovy.util.logging.Slf4j
-
-import org.apache.http.HttpHeaders
 import org.apache.commons.lang3.NotImplementedException
+import org.apache.http.HttpHeaders
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
+import org.springframework.stereotype.Component
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
+
+import java.lang.Void
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION
 

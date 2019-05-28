@@ -57,4 +57,20 @@ class BridgeConfiguration {
         )
     }
 
+    @Bean
+    SupplierOrderBridge supplierOrder() {
+        new SupplierOrderBridgeImpl(
+            http: http,
+            root: root
+        )
+    }
+
+    @Bean
+    ProductBridge productBridge() {
+        new ProductBridgeImpl(
+            http:http,
+            root: root
+        )
+    }
+
 }

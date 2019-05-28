@@ -54,6 +54,7 @@ enum SortInput {
 
 
 class Product {
+    String accessToken
     Long id
     String name
     Boolean enabled
@@ -114,6 +115,7 @@ class Price {
 }
 
 class Supplier {
+    String accessToken
     Long id
     String name
     String legalName
@@ -127,12 +129,6 @@ class Supplier {
     Double minAmount
     Double deliveryCost
     RatingScore rating
-    List<Coordinates> coordinates
-}
-
-class Coordinates {
-    Double lat
-    Double lng
 }
 
 class RatingScore {

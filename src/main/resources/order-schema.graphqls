@@ -54,14 +54,28 @@ enum OrderStatus {
 
 type OrderItems {
     id: Int
-    supplierOrder: SupplierOrder
-    product: Product
+    product: OrderItemProduct
     productTitle: String
     productEan: String
     price: Float
     quantity: Int
     subtotal: Float
 }
+
+type OrderItemProduct {
+    id: Int,
+    name: String,
+    enabled: Boolean,
+    category: Category,
+    brand: Brand,
+    ean: String,
+    description: String,
+    images: [Image],
+    created: TimestampOutput,
+    manufacturer: Manufacturer,
+    title: String
+}
+
 
 enum RatingStatus {
     ENABLED,
@@ -71,7 +85,6 @@ enum RatingStatus {
 
 type Rating {
     id: Int
-    supplierOrder: SupplierOrder
     supplier: Supplier
     customer: Customer
     user: User
@@ -86,7 +99,6 @@ type Rating {
 
 type SupplierOrder {
     id:Int
-    order: Order
     supplier: Supplier
     receipt: String
     status: SupplierOrderStatus

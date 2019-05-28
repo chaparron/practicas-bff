@@ -63,6 +63,7 @@ class CustomerErrorFailed implements PreferredAddressResult, VerifyEmailResult, 
 }
 
 class Customer implements CustomerUpdateResult {
+    String accessToken
     Long id
     String name
     Boolean enabled

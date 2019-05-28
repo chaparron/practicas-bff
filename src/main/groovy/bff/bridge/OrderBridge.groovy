@@ -1,11 +1,6 @@
 package bff.bridge
 
-import bff.model.Address
-import bff.model.CancelOrderInput
-import bff.model.Customer
-import bff.model.CustomerOrdersResult
-import bff.model.FindOrdersInput
-import bff.model.SupplierOrder
+import bff.model.*
 
 interface OrderBridge {
 

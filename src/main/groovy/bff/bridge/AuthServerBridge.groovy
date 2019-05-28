@@ -1,8 +1,7 @@
 package bff.bridge
 
-import bff.model.Site
 import bff.model.Credentials
-import bff.model.ProfileCredentialsResult
+import bff.model.Site
 
 interface AuthServerBridge {
 

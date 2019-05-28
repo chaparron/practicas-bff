@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
-import org.springframework.core.annotation.Order
 import org.springframework.web.client.RestOperations
 
 @SpringBootApplication(exclude = SecurityAutoConfiguration)
