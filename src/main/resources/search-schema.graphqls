@@ -112,7 +112,6 @@ type Supplier {
     minAmount: Int,
     deliveryCost: Float,
     rating: RatingScore,
-    coordinates: [Coordinate]
 }
 
 type Coordinate {

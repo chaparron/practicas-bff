@@ -63,6 +63,7 @@ class CustomerErrorFailed implements PreferredAddressResult, VerifyEmailResult, 
 }
 
 class Customer implements CustomerUpdateResult {
+    String accessToken
     Long id
     String name
     Boolean enabled
@@ -76,7 +77,6 @@ class Customer implements CustomerUpdateResult {
     RatingScore rating
     int level
     List<String> missingDocuments
-    String accessToken
 }
 
 

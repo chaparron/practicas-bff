@@ -92,25 +92,17 @@ class PaginatedResponse<T> {
 }
 
 class Order {
-
     String accessToken
-
     Long id
-
     OrderStatus status
-
     TimestampOutput created
-
     TimestampOutput updated
-
     DeliveryPreference deliveryPreference
-
 }
 
 class SupplierOrder {
+    String accessToken
     Long id
-    Order order
-    Supplier supplier
     String receipt
     SupplierOrderStatus status
     TimestampOutput created
@@ -120,8 +112,6 @@ class SupplierOrder {
     Double deliveryCost
     Double total
     Integer units
-    List<OrderItem> products
-    RatingEntry ratings
     Boolean canCustomerRate
     Boolean canSupplierRate
     Boolean customerRated
@@ -135,7 +125,6 @@ class RatingEntry {
 
 class Rating {
     Long id
-    SupplierOrder supplierOrder
     Supplier supplier
     Customer customer
     User user
@@ -148,12 +137,23 @@ class Rating {
 }
 
 class OrderItem {
+    String accessToken
     Long id
-    SupplierOrder supplierOrder
-    Product product
     String productTitle
     String productEan
     Double price
     Integer quantity
     Double subtotal
+}
+
+class OrderItemProduct {
+    String accessToken
+    Integer id
+    String name
+    Boolean enabled
+    String ean
+    String description
+    List<Image> images
+    TimestampOutput created
+    String title
 }

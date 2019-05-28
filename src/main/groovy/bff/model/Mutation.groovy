@@ -1,12 +1,11 @@
 package bff.model
 
 import bff.JwtToken
-import bff.bridge.*
-
+import bff.bridge.AuthServerBridge
+import bff.bridge.CustomerBridge
+import bff.bridge.OrderBridge
 import com.coxautodev.graphql.tools.GraphQLMutationResolver
-
 import groovy.util.logging.Slf4j
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 

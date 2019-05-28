@@ -1,17 +1,8 @@
 package bff.bridge
 
-import bff.model.Address
-import bff.model.AccessTokenInput
-import bff.model.AddressIdInput
-import bff.model.AddressInput
-import bff.model.Customer
-import bff.model.CustomerInput
-import bff.model.CustomerUpdateInput
-import bff.model.PreferredAddressInput
-import bff.model.VerifyEmailInput
-import bff.model.VerifyPhoneInput
-import bff.model.VerificationDocument
-import bff.model.CustomerUpdateResult
+import bff.model.*
+
+import java.lang.Void
 
 interface CustomerBridge {
 

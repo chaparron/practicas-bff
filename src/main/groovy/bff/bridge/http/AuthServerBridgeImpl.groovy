@@ -1,9 +1,9 @@
 package bff.bridge.http
 
 import bff.bridge.AuthServerBridge
-import bff.model.*
 import bff.configuration.AccessToBackendDeniedException
 import bff.configuration.BadRequestErrorException
+import bff.model.*
 import groovy.json.JsonBuilder
 import groovy.util.logging.Slf4j
 import org.springframework.http.HttpHeaders
@@ -13,7 +13,6 @@ import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
-
 
 @Slf4j
 class AuthServerBridgeImpl implements AuthServerBridge {
