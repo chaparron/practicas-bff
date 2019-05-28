@@ -77,7 +77,6 @@ class Customer implements CustomerUpdateResult {
     RatingScore rating
     int level
     List<String> missingDocuments
-    String accessToken
 }
 
 
