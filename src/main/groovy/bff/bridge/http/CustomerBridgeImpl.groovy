@@ -325,41 +325,11 @@ class CustomerBridgeImpl implements CustomerBridge{
                         lastName: body.user.lastName,
                         phone: body.user.phone,
                         credentials: new UserCredentials(
-                                id: body.user.credentials?.id,
-                                password: body.user.credentials?.password,
-                                enabled: body.user.credentials?.enabled,
+                                enabled: body.user.credentials?.enabled
                         )
                 ),
                 smsVerification: body.smsVerification,
                 emailVerification: body.emailVerification,
-
-                /*addresses: body.addresses?.collect {
-                    new Address(
-                            id: it.id,
-                            formatted: it.formatted,
-                            placeId: it.placeId,
-                            addressName: it.addressName,
-                            addressNumber: it.addressNumber,
-                            city: it.city,
-                            postalCode: it.postalCode,
-                            state: it.state,
-                            lat: it.lat,
-                            lon: it.lon,
-                            additionalInfo: it.additionalInfo,
-                            preferred: it.preferred,
-                            addressType: it.addressType as AddressMode,
-                            enabled: it.enabled
-                    )
-                },
-
-                verificationDocuments: body.verificationDocuments?.collect {
-                    new VerificationDocument(
-                            id: it.id,
-                            documentType: it.type as VerificationDocumentType
-                    )
-                },
-                */
-
                 deliveryPreference: body.deliveryPreference as DeliveryPreference,
                 level: body.level,
                 missingDocuments: body.missingDocuments,

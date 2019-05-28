@@ -3,6 +3,7 @@ package bff.resolver
 import bff.bridge.CustomerBridge
 import bff.model.Address
 import bff.model.Customer
+import bff.model.User
 import bff.model.VerificationDocument
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,14 +17,11 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     CustomerBridge customerBridge
 
     List<VerificationDocument> verificationDocuments(Customer customer) {
-        def verificationDocs = customerBridge.findVerificationDocs(customer.accessToken)
-        verificationDocs
+        customerBridge.findVerificationDocs(customer.accessToken)
     }
 
     List<Address> addresses(Customer customer) {
-        def addresses = customerBridge.findAddressesByCustomerAccessToken(customer.accessToken)
-        addresses
+        customerBridge.findAddressesByCustomerAccessToken(customer.accessToken)
     }
-
 
 }

@@ -101,9 +101,6 @@ type ConfirmPasswordFailed {
 }
 
 type UserCredentials {
-    id: ID
-    user: User
-    password: String
     enabled: Boolean
 }
 
