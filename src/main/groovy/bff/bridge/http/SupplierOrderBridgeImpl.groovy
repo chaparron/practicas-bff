@@ -94,6 +94,7 @@ class SupplierOrderBridgeImpl implements SupplierOrderBridge {
             , OrderItemProduct).body
 
         r.accessToken = accessToken
+        //r.categoryId = r.category.id
         r
     }
 }

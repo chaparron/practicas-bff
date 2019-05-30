@@ -20,18 +20,18 @@ class ProductBridgeImpl implements ProductBridge {
 
     @Override
     Category getCategoryByProductId(String accessToken, Integer productId) {
-        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/product/${productId}/supplier"))
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/category/${productId}"))
             .toUriString().toURI()
 
-        def r = http.exchange(
+        def category = http.exchange(
             RequestEntity.method(HttpMethod.GET, uri)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                 .contentType(MediaType.APPLICATION_JSON)
                 .build()
-            , Supplier).body
+            , Category).body
 
-        r.accessToken = accessToken
-        r
+        // category.accessToken = accessToken
+        category
     }
 
     @Override

@@ -156,4 +156,7 @@ class OrderItemProduct {
     List<Image> images
     TimestampOutput created
     String title
+    Integer categoryId
+    Integer brandId
+    Integer manufacturerId
 }
