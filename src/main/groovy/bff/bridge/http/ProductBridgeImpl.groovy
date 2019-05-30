@@ -46,6 +46,14 @@ class ProductBridgeImpl implements ProductBridge {
 
     @Override
     Brand getBrandByProductId(String accessToken, Integer productId) {
-        return null
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/brand/${productId}"))
+                .toUriString().toURI()
+
+        http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , Brand).body
     }
 }
