@@ -4,7 +4,6 @@ import bff.bridge.ProductBridge
 import bff.model.Brand
 import bff.model.Category
 import bff.model.Manufacturer
-import bff.model.Supplier
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
