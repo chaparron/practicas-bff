@@ -23,20 +23,25 @@ class ProductBridgeImpl implements ProductBridge {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/category/${productId}"))
             .toUriString().toURI()
 
-        def category = http.exchange(
+        http.exchange(
             RequestEntity.method(HttpMethod.GET, uri)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                 .contentType(MediaType.APPLICATION_JSON)
                 .build()
             , Category).body
-
-        // category.accessToken = accessToken
-        category
     }
 
     @Override
     Manufacturer getManufacturerByProductId(String accessToken, Integer productId) {
-        return null
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/manufacturer/${productId}"))
+                .toUriString().toURI()
+
+        http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , Manufacturer).body
     }
 
     @Override
