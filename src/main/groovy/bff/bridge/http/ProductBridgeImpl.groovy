@@ -28,6 +28,9 @@ class ProductBridgeImpl implements ProductBridge {
                 .contentType(MediaType.APPLICATION_JSON)
                 .build()
             , Category).body
+
+        r.accessToken = accessToken
+        r
     }
 
     @Override
