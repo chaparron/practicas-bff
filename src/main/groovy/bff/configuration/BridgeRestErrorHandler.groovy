@@ -121,6 +121,11 @@ class BadRequestErrorException extends RuntimeException {
 }
 
 @InheritConstructors
+class NotSupplierFoundException extends RuntimeException {
+    def innerResponse
+}
+
+@InheritConstructors
 class EntityNotFoundException extends RuntimeException {
     def innerResponse
 }

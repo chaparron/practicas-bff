@@ -4,6 +4,9 @@ package bff.model
 import bff.bridge.AuthServerBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.OrderBridge
+import bff.bridge.ProductBridge
+import bff.configuration.BadRequestErrorException
+import bff.configuration.EntityNotFoundException
 import com.coxautodev.graphql.tools.GraphQLQueryResolver
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,6 +24,9 @@ class Query implements GraphQLQueryResolver {
 
     @Autowired
     CustomerBridge customerBridge
+
+    @Autowired
+    ProductBridge productBridge
 
     @Autowired
     OrderBridge orderBridge
@@ -58,6 +64,18 @@ class Query implements GraphQLQueryResolver {
             Void.SUCCESS
         } catch (CustomerException customerException) {
             customerException.build()
+        }
+    }
+
+    ProductResult productDetail(ProductlInput productInput) {
+        try {
+            productBridge.getProductById(productInput.accessToken, productInput.productId)
+        }
+        catch (BadRequestErrorException ex) {
+            ProductErrorReason.valueOf((String) ex.innerResponse).build()
+        }
+        catch (EntityNotFoundException ex) {
+            ProductErrorReason.PRODUCT_NOT_FOUND.build()
         }
     }
 

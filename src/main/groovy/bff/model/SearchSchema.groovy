@@ -8,7 +8,7 @@ class SearchResult {
     Header header
     Sort sort
     List<BreadCrumb> breadCrumb
-    List<Product> products
+    List<ProductSearch> products
     List<Facet> facets
 }
 
@@ -53,7 +53,7 @@ enum SortInput {
 }
 
 
-class Product {
+class ProductSearch implements ProductResult {
     String accessToken
     Long id
     String name
@@ -71,6 +71,20 @@ class Product {
     Price priceFrom
     Price minUnitsPrice
     String title
+}
+
+
+class Product implements ProductResult {
+    String accessToken
+    Long id
+    String name
+    Boolean enabled
+    String ean
+    String description
+    TimestampOutput created
+    String title
+
+    Brand brand
 }
 
 @ToString
@@ -106,12 +120,17 @@ class Image {
 }
 
 class Price {
-    Supplier supplier
+    Long supplierId
+    String accessToken
     Double value
     Boolean enabled
     Integer minUnits
     Integer maxUnits
     TimestampOutput updated
+}
+
+class Prices implements PriceResult {
+    List<Price> prices
 }
 
 class Supplier {
@@ -152,7 +171,6 @@ class Brand {
     String name
     Boolean enabled
     String logo
-    List<Product> products
 }
 
 class Keyword {
@@ -200,6 +218,36 @@ enum FeatureType {
     RANGE
 }
 
+enum ProductErrorReason {
+    PRODUCT_NOT_FOUND,
+    BAD_REQUEST
+
+    def build() {
+        new ProductFailed(reason: this)
+    }
+}
+
+class ProductlInput {
+    String accessToken
+    Integer productId
+}
+
+class ProductFailed implements ProductResult {
+    ProductErrorReason reason
+}
+
+enum PriceErrorReason {
+    PRICE_NOT_FOUND,
+    NO_SUPPLIER_FOUND
+
+    def build() {
+        new PriceFailed(reason: this)
+    }
+}
+
+class PriceFailed implements PriceResult {
+    PriceErrorReason reason
+}
 
 
 

@@ -26,10 +26,14 @@ class Main {
                 .add(ConfirmPasswordFailed.class)
                 .add(ChangePasswordFailed.class)
                 .add(CustomerErrorFailed.class)
+                .add(ProductFailed.class)
                 .add(RegisterFailed.class)
                 .add(LoginFailed.class)
                 .add(OrderUpdateFailed.class)
                 .add(CustomerOrdersResponse.class)
+                .add(Product.class)
+                .add(Prices.class)
+                .add(PriceFailed.class)
     }
     /**
      *

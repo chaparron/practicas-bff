@@ -54,7 +54,7 @@ enum OrderStatus {
 
 type OrderItems {
     id: Int
-    product: OrderItemProduct
+    product: Product
     productTitle: String
     productEan: String
     price: Float

@@ -82,7 +82,7 @@ class SupplierOrderBridgeImpl implements SupplierOrderBridge {
     }
 
     @Override
-    OrderItemProduct getProductByOrderItem(String accessToken, Long orderItemId) {
+    Product getProductByOrderItem(String accessToken, Long orderItemId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/orderItem/${orderItemId}/product"))
             .toUriString().toURI()
 
@@ -91,7 +91,7 @@ class SupplierOrderBridgeImpl implements SupplierOrderBridge {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                 .contentType(MediaType.APPLICATION_JSON)
                 .build()
-            , OrderItemProduct).body
+            , Product).body
 
         r.accessToken = accessToken
         //r.categoryId = r.category.id

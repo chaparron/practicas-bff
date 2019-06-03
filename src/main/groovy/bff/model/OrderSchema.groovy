@@ -1,6 +1,6 @@
 package bff.model
 
-
+import bff.configuration.NotSupplierFoundException
 import groovy.transform.InheritConstructors
 
 
@@ -18,6 +18,8 @@ enum OrderUpdateReason {
     }
 
 }
+
+
 
 enum SupplierOrderStatus {
     PENDING,
@@ -144,19 +146,4 @@ class OrderItem {
     Double price
     Integer quantity
     Double subtotal
-}
-
-class OrderItemProduct {
-    String accessToken
-    Integer id
-    String name
-    Boolean enabled
-    String ean
-    String description
-    List<Image> images
-    TimestampOutput created
-    String title
-    Integer categoryId
-    Integer brandId
-    Integer manufacturerId
 }

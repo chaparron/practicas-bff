@@ -9,6 +9,8 @@ type Query {
 
     search (input: SearchInput!): SearchResult
 
+    productDetail(input: ProductInput): ProductResult
+
     findRootCategories(input: FindRootsInput): [Category]
 
     # Verify Email

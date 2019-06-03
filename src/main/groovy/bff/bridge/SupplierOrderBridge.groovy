@@ -12,6 +12,6 @@ interface SupplierOrderBridge {
 
     Order getOrderBySupplierOrderId(String accessToken, Long supplierOrderId)
 
-    OrderItemProduct getProductByOrderItem(String accessToken, Long orderItemId)
+    Product getProductByOrderItem(String accessToken, Long orderItemId)
 
 }

@@ -20,7 +20,7 @@ type SearchResult {
     header: Header,
     sort: Sort
     breadCrumb: [BreadCrumb]
-    products: [Product],
+    products: [ProductSearch],
     facets: [Facet]
 }
 
@@ -35,7 +35,7 @@ type BreadCrumb {
     name: String
 }
 
-type Product {
+type ProductSearch {
     id: Int,
     name: String,
     enabled: Boolean,
@@ -135,3 +135,54 @@ type Price {
     maxUnits: Int
     minUnits: Int
 }
+
+
+input ProductInput {
+    productId : Int
+    accessToken: String
+}
+
+
+enum ProductErrorReason {
+    PRODUCT_NOT_FOUND,
+    BAD_REQUEST
+}
+
+type ProductFailed {
+    reason: ProductErrorReason
+}
+
+enum PriceErrorReason {
+    PRICE_NOT_FOUND,
+    NO_SUPPLIER_FOUND
+}
+
+type PriceFailed {
+    reason: PriceErrorReason
+}
+
+type Product {
+    id: Int,
+    name: String,
+    enabled: Boolean,
+    category: Category,
+    brand: Brand,
+    ean: String,
+    description: String,
+    keywords: [String],
+    features: [Feature],
+    images: [Image],
+    created: TimestampOutput,
+    manufacturer: Manufacturer,
+    prices: PriceResult
+    title: String
+    priceFrom: Price
+    minUnitsPrice: Price
+}
+
+type Prices {
+    prices: [Price]
+}
+
+union ProductResult = Product | ProductFailed
+union PriceResult = Prices | PriceFailed
