@@ -16,9 +16,6 @@ interface UpdateAddressResult{}
 
 interface DeleteAddressResult{}
 
-interface ProductResult{}
-
-interface PriceResult {}
 
 enum CustomerStatus {
     PENDING,

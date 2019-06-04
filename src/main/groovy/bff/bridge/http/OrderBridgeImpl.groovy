@@ -1,8 +1,6 @@
 package bff.bridge.http
 
 import bff.bridge.OrderBridge
-import bff.configuration.BadRequestErrorException
-import bff.configuration.EntityNotFoundException
 import bff.model.*
 import groovy.util.logging.Slf4j
 import org.springframework.core.ParameterizedTypeReference
@@ -10,11 +8,9 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
-import org.springframework.stereotype.Component
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
 
-import java.lang.Void
 
 @Slf4j
 class OrderBridgeImpl implements OrderBridge {
@@ -27,42 +23,31 @@ class OrderBridgeImpl implements OrderBridge {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/user/me/order/${cancelOrderInput.orderId}/cancel"))
             .toUriString().toURI()
 
-        try {
-            http.exchange(
-                RequestEntity.method(HttpMethod.PUT, uri)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer $cancelOrderInput.accessToken")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(cancelOrderInput)
-                , Map).body
-            Void.SUCCESS
-        }
-        catch (BadRequestErrorException ex) {
-            OrderUpdateReason.INVALID_SUPPLIER_ORDERS_STATUS.doThrow()
-        }
-        catch (EntityNotFoundException ex) {
-            OrderUpdateReason.ORDER_NOT_FOUND.doThrow()
-        }
+        http.exchange(
+            RequestEntity.method(HttpMethod.PUT, uri)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $cancelOrderInput.accessToken")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(cancelOrderInput)
+            , Map).body
+
+
     }
 
     @Override
-    CustomerOrdersResult findCustomerOrders(FindOrdersInput findOrdersInput) {
+    CustomerOrdersResponse findCustomerOrders(FindOrdersInput findOrdersInput) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order"))
             .toUriString().toURI()
 
-        try {
-            def r = http.exchange(
-                RequestEntity.method(HttpMethod.GET, uri)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer $findOrdersInput.accessToken")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(findOrdersInput)
-                , CustomerOrdersResponse).body
+        def r = http.exchange(
+            RequestEntity.method(HttpMethod.GET, uri)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $findOrdersInput.accessToken")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(findOrdersInput)
+            , CustomerOrdersResponse).body
 
-            r.content.each { it.accessToken = findOrdersInput.accessToken }
-            r
-        }
-        catch (EntityNotFoundException ex) {
-            OrderUpdateReason.ORDER_NOT_FOUND.doThrow()
-        }
+        r.content.each { it.accessToken = findOrdersInput.accessToken }
+        r
+
     }
 
     @Override
@@ -109,5 +94,19 @@ class OrderBridgeImpl implements OrderBridge {
 
         r.accessToken = accessToken
         r
+    }
+
+    @Override
+    void placeOrder(String accessToken, List<OrderInput> orders) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/order"))
+            .toUriString().toURI()
+
+        http.exchange(
+            RequestEntity.method(HttpMethod.POST, uri)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                .contentType(MediaType.APPLICATION_JSON)
+                .build()
+            , Map)
+
     }
 }

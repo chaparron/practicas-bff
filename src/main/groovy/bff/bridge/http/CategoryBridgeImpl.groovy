@@ -23,9 +23,6 @@ class CategoryBridgeImpl implements CategoryBridge {
     List<Category> findRootCategories(FindRootsInput searchInput) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/category/roots"))
 
-        http.getForEntity().
-
-
         http.<List<Category>> exchange (
             RequestEntity.method(HttpMethod.GET, uri.toUriString().toURI())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer $searchInput.accessToken")

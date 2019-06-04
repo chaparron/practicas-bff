@@ -28,7 +28,11 @@ type Query {
     # Find customer orders
     findCustomerOrders(input: FindOrdersInput!): CustomerOrdersResult!
 
+    # Get new prices and supplier availabities
+    refreshCart(input: RefreshCartInput!): CartResult!
+
 }
+
 
 type Mutation {
     # User login
@@ -66,6 +70,8 @@ type Mutation {
 
     # Delete Customer address
     deleteAddress(input: AddressIdInput!) : DeleteAddressResult!
+
+    placeOrder(input: PlaceOrderInput!): PlaceOrderResult
 
 }
 

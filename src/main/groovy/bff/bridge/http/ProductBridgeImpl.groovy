@@ -4,6 +4,7 @@ import bff.bridge.ProductBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
 import bff.model.Brand
+import bff.model.Cart
 import bff.model.Category
 import bff.model.Feature
 import bff.model.Image
@@ -12,7 +13,6 @@ import bff.model.Manufacturer
 import bff.model.Price
 import bff.model.Prices
 import bff.model.Product
-import bff.model.ProductSearch
 import bff.model.Supplier
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders
@@ -161,6 +161,26 @@ class ProductBridgeImpl implements ProductBridge {
                 .contentType(MediaType.APPLICATION_JSON)
                 .build()
             , Supplier).body
+    }
+
+    @Override
+    Cart refreshCart(String accessToken, List<Integer> products) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/product/cart"))
+            .toUriString().toURI()
+
+        def cart = http.exchange(
+            RequestEntity.method(HttpMethod.POST, uri)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body([products_ids: products])
+            , Cart).body
+
+        cart.availableProducts = cart.products
+        cart.availableProducts.each {
+            it.product.accessToken = accessToken
+            it.supplierPrices = it.suppliers
+        }
+        cart
     }
 
     @Override

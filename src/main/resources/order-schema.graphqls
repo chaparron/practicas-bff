@@ -138,9 +138,80 @@ type Order {
     supplierOrders: [SupplierOrder]
 }
 
-union CustomerOrdersResult = CustomerOrdersResponse | Void
+union CustomerOrdersResult = CustomerOrdersResponse | CustomerErrorFailed
 
 type CustomerOrdersResponse {
     headers: Headers
     content: [Order]
+}
+
+enum CartFailedReason {
+    FORBIDDEN,
+    BAD_REQUEST,
+    INVALID_ADDRESS,
+    EMPTY_PRODUCTS,
+}
+
+type CartFailed {
+    reason: CartFailedReason
+}
+
+union CartResult = Cart | CartFailed
+
+type Cart {
+    availableProducts: [ProductCart]
+    suppliers: [Supplier]
+}
+
+type ProductCart {
+    product: Product,
+    supplierPrices: [SupplierPrice]
+}
+
+type SupplierPrice {
+    id: Int,
+    name: String
+    price: Float,
+    minUnits: Int,
+    maxUnits: Int,
+    avatar: String,
+
+}
+
+input RefreshCartInput {
+    accessToken: String
+    products: [Int]
+}
+
+enum PlaceOrderFailedReason {
+    DELIVERY_COST_HAS_CHANGED,
+    INVALID_CUSTOMER,
+    BAD_REQUEST,
+    PRODUCT_PRICES_HAS_CHANGED,
+    SUPPLIER_AVAILABILITY_HAS_CHANGED,
+    INVALID_SUPPLIER_ORDER
+    INVALID_ORDER
+}
+
+union PlaceOrderResult = Void | PlaceOrderFailed
+
+type PlaceOrderFailed {
+    reason: PlaceOrderFailedReason
+}
+
+input OrderInput {
+    supplierId: Int
+    deliveryCost: Float,
+    products: [ProductOrderInput]
+}
+
+input PlaceOrderInput {
+    accessToken: String
+    orders: [OrderInput]
+}
+
+input ProductOrderInput {
+    productId: Int
+    quantity: Int
+    price: Float
 }

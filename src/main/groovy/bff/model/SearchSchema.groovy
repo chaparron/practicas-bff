@@ -4,6 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
+
+interface ProductResult{}
+
+interface PriceResult {}
+
+
 class SearchResult {
     Header header
     Sort sort
@@ -227,7 +233,7 @@ enum ProductErrorReason {
     }
 }
 
-class ProductlInput {
+class ProductInput {
     String accessToken
     Integer productId
 }

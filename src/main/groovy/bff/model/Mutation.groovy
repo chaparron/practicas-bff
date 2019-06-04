@@ -4,6 +4,8 @@ import bff.JwtToken
 import bff.bridge.AuthServerBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.OrderBridge
+import bff.configuration.BadRequestErrorException
+import bff.configuration.EntityNotFoundException
 import com.coxautodev.graphql.tools.GraphQLMutationResolver
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,8 +28,8 @@ class Mutation implements GraphQLMutationResolver {
         try {
             def credentials = passwordLogin(input.username, input.password, input.site)
             new GenericCredentials(
-                    username: JwtToken.fromString(credentials.accessToken).username,
-                    credentials: credentials
+                username: JwtToken.fromString(credentials.accessToken).username,
+                credentials: credentials
             )
         } catch (LoginFailureException loginException) {
             loginException.build()
@@ -38,8 +40,8 @@ class Mutation implements GraphQLMutationResolver {
         try {
             def rawCredentials = authServerBridge.refreshToken(input.refreshToken)
             new RefreshCredentials(
-                    accessToken: rawCredentials.accessToken,
-                    refreshToken: rawCredentials.refreshToken
+                accessToken: rawCredentials.accessToken,
+                refreshToken: rawCredentials.refreshToken
             )
         } catch (LoginFailureException loginException) {
             loginException.build()
@@ -53,7 +55,7 @@ class Mutation implements GraphQLMutationResolver {
     CustomerUpdateResult updateProfile(CustomerUpdateInput customerUpdateInput) {
         try {
             customerBridge.updateProfile(customerUpdateInput)
-        } catch(CustomerException customerException) {
+        } catch (CustomerException customerException) {
             customerException.build()
         }
     }
@@ -85,7 +87,7 @@ class Mutation implements GraphQLMutationResolver {
         try {
             customerBridge.updateAddress(addressInput)
             Void.SUCCESS
-        } catch(CustomerException customerException) {
+        } catch (CustomerException customerException) {
             customerException.build()
         }
     }
@@ -145,8 +147,21 @@ class Mutation implements GraphQLMutationResolver {
             orderBridge.cancel(cancelOrderInput)
             Void.SUCCESS
         }
-        catch (OrderUpdateFailed ex) {
-            ex
+        catch (BadRequestErrorException ex) {
+            OrderUpdateReason.INVALID_SUPPLIER_ORDERS_STATUS.build()
+        }
+        catch (EntityNotFoundException ex) {
+            OrderUpdateReason.ORDER_NOT_FOUND.build()
+        }
+    }
+
+    PlaceOrderResult placeOrder(PlaceOrderInput placeOrderInput) {
+        try {
+            orderBridge.placeOrder(placeOrderInput.accessToken, placeOrderInput.orders)
+            Void.SUCCESS
+        }
+        catch (BadRequestErrorException ex) {
+            PlaceOrderFailedReason.valueOf((String) ex.innerResponse).build()
         }
     }
 }

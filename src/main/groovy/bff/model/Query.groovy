@@ -5,6 +5,7 @@ import bff.bridge.AuthServerBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.OrderBridge
 import bff.bridge.ProductBridge
+import bff.configuration.AccessToBackendDeniedException
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
 import com.coxautodev.graphql.tools.GraphQLQueryResolver
@@ -67,7 +68,7 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
-    ProductResult productDetail(ProductlInput productInput) {
+    ProductResult productDetail(ProductInput productInput) {
         try {
             productBridge.getProductById(productInput.accessToken, productInput.productId)
         }
@@ -80,11 +81,27 @@ class Query implements GraphQLQueryResolver {
     }
 
     CustomerOrdersResult findCustomerOrders(FindOrdersInput findOrdersInput) {
-        orderBridge.findCustomerOrders(findOrdersInput)
+        try {
+            orderBridge.findCustomerOrders(findOrdersInput)
+        }
+        catch (EntityNotFoundException ex) {
+            CustomerOrderFindFailedReason.ORDER_NOT_FOUND.build()
+        }
     }
 
     List<Address> findAddresses(AccessTokenInput accessTokenInput) {
         customerBridge.findAddresses(accessTokenInput)
+    }
+
+    CartResult refreshCart(RefreshCartInput refreshCartInput) {
+        try {
+            productBridge.refreshCart(refreshCartInput.accessToken, refreshCartInput.products)
+        } catch (BadRequestErrorException ex) {
+            CartFailedReason.valueOf((String) ex.innerResponse).build()
+        } catch (AccessToBackendDeniedException ex) {
+            CartFailedReason.FORBIDDEN.build()
+        }
+
     }
 }
 

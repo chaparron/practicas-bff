@@ -1,6 +1,7 @@
 package bff.bridge
 
 import bff.model.Brand
+import bff.model.Cart
 import bff.model.Category
 import bff.model.Feature
 import bff.model.Image
@@ -34,5 +35,7 @@ interface ProductBridge {
     List<Keyword> getKeywordsByProductId(String accessToken, Long productId)
 
     Supplier getSupplierById(String accessToken, Long supplierId)
+
+    Cart refreshCart(String accessToken, List<Integer> products)
 
 }

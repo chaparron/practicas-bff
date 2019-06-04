@@ -34,6 +34,9 @@ class Main {
                 .add(Product.class)
                 .add(Prices.class)
                 .add(PriceFailed.class)
+                .add(Cart.class)
+                .add(CartFailed.class)
+                .add(PlaceOrderFailed.class)
     }
     /**
      *
