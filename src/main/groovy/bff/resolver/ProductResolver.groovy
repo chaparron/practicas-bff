@@ -7,7 +7,6 @@ import bff.model.Brand
 import bff.model.Category
 import bff.model.Feature
 import bff.model.Image
-import bff.model.Keyword
 import bff.model.Manufacturer
 import bff.model.Price
 import bff.model.PriceErrorReason
@@ -29,10 +28,6 @@ class ProductResolver implements GraphQLResolver<Product> {
 
     Brand brand(Product product) {
         product.brand ?: productBridge.getBrandByProductId(product.accessToken, product.id)
-    }
-
-    List<Keyword> keywords(Product product ) {
-        productBridge.getKeywordsByProductId(product.accessToken, product.id)
     }
 
     List<Feature> features(Product product) {
