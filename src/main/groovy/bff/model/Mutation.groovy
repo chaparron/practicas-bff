@@ -7,6 +7,7 @@ import bff.bridge.OrderBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
 import com.coxautodev.graphql.tools.GraphQLMutationResolver
+import graphql.GraphQLError
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component

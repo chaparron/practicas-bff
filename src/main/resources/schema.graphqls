@@ -167,12 +167,6 @@ input AccessTokenInput {
     accessToken: String!
 }
 
-type Profile {
-    id: ID
-    name: String
-    authorities: [String]
-}
-
 type UsernameRegistrationFailed {
     reason: UsernameRegistrationReason
 }

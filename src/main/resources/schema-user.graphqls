@@ -111,7 +111,6 @@ type User {
     lastName: String
     phone: String
     credentials: UserCredentials
-    profiles: [Profile]
 }
 
 

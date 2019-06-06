@@ -17,13 +17,9 @@ class User {
     String lastName
     String phone
     UserCredentials credentials
-    List<Profile> profiles
 }
 
 class UserCredentials {
-    Long id
-    User user
-    String password
     Boolean enabled
 }
 

@@ -11,7 +11,6 @@ import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
-import org.springframework.stereotype.Component
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -20,7 +19,7 @@ import java.lang.Void
 import static org.springframework.http.HttpHeaders.AUTHORIZATION
 
 @Slf4j
-class CustomerBridgeImpl implements CustomerBridge{
+class CustomerBridgeImpl implements CustomerBridge {
     URI root
     RestOperations http
 
@@ -29,37 +28,37 @@ class CustomerBridgeImpl implements CustomerBridge{
         def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me")).toUriString()
         def uri = url.toURI()
 
-        def body= http.exchange(
-                RequestEntity.method(HttpMethod.GET, uri)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header(AUTHORIZATION, "Bearer ${customerInput.accessToken}")
-                        .build()
-                , Map).body
+        def body = http.exchange(
+            RequestEntity.method(HttpMethod.GET, uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer ${customerInput.accessToken}")
+                .build()
+            , Customer).body
 
-        mapCustomer(body , customerInput.accessToken)
-
+        body.accessToken = customerInput.accessToken
+        return body
     }
 
     @Override
     CustomerUpdateResult updateProfile(CustomerUpdateInput customerUpdateInput) {
         try {
             def body = http.exchange(
-                    RequestEntity.method(HttpMethod.PUT, root.resolve('/customer/me'))
-            .contentType(MediaType.APPLICATION_JSON)
-            .header(HttpHeaders.AUTHORIZATION,"Bearer $customerUpdateInput.accessToken")
-            .body(
+                RequestEntity.method(HttpMethod.PUT, root.resolve('/customer/me'))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer $customerUpdateInput.accessToken")
+                    .body(
                     [
-                            phone: customerUpdateInput.phone,
-                            username: customerUpdateInput.username,
-                            adress: customerUpdateInput.address,
-                            deliveryPreference: customerUpdateInput.deliveryPreference,
-                            verificationDocuments: customerUpdateInput.verificationDocuments
+                        phone                : customerUpdateInput.phone,
+                        username             : customerUpdateInput.username,
+                        adress               : customerUpdateInput.address,
+                        deliveryPreference   : customerUpdateInput.deliveryPreference,
+                        verificationDocuments: customerUpdateInput.verificationDocuments
                     ]
-            ), Map).body
+                ), Customer).body
+            body.accessToken = customerUpdateInput.accessToken
+            return body
 
-            mapCustomer(body, customerUpdateInput.accessToken)
-
-        } catch(ConflictErrorException conflictErrorException) {
+        } catch (ConflictErrorException conflictErrorException) {
             mapCustomerError(conflictErrorException, "Update Customer Profile Error")
         }
     }
@@ -67,14 +66,14 @@ class CustomerBridgeImpl implements CustomerBridge{
     @Override
     Void verifyEmail(VerifyEmailInput verifyEmailInput) {
         def url = UriComponentsBuilder.fromUri(
-                root.resolve("/customer/${verifyEmailInput.id}/verify/email/${verifyEmailInput.token}")).toUriString()
+            root.resolve("/customer/${verifyEmailInput.id}/verify/email/${verifyEmailInput.token}")).toUriString()
         def uri = url.toURI()
         try {
-            def body= http.exchange(
-                    RequestEntity.method(HttpMethod.GET, uri)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .build()
-                    , Map).body
+            def body = http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .build()
+                , Map).body
         } catch (BadRequestErrorException badRequestException) {
             mapCustomerError(badRequestException, "Verify Customer Email Error")
         }
@@ -87,13 +86,14 @@ class CustomerBridgeImpl implements CustomerBridge{
         def uri = url.toURI()
 
         try {
-            def body = http.exchange(
+            http.exchange(
                 RequestEntity.method(HttpMethod.GET, uri)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header(AUTHORIZATION, "Bearer ${accessTokenInput.accessToken}")
-                        .build()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(AUTHORIZATION, "Bearer ${accessTokenInput.accessToken}")
+                    .build()
                 , Map).body
-        } catch(BadRequestErrorException badRequestExcpetion) {
+            return
+        } catch (BadRequestErrorException badRequestExcpetion) {
             mapCustomerError(badRequestExcpetion, "Resend Verify Customer Email Error")
         }
     }
@@ -101,14 +101,15 @@ class CustomerBridgeImpl implements CustomerBridge{
     @Override
     Void verifyPhone(VerifyPhoneInput verifyPhoneInput) {
         try {
-            def body = http.exchange(
-                    RequestEntity.method(HttpMethod.POST, root.resolve("customer/me/verify/phone"))
+            http.exchange(
+                RequestEntity.method(HttpMethod.POST, root.resolve("customer/me/verify/phone"))
                     .contentType(MediaType.APPLICATION_JSON)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer $verifyPhoneInput.accessToken")
                     .body([
-                            token: verifyPhoneInput.token
-                    ])
-            , Map).body
+                    token: verifyPhoneInput.token
+                ])
+                , Map).body
+            return
         } catch (BadRequestErrorException badRequestException) {
             mapCustomerError(badRequestException, "Verify Customer Phone Error")
         }
@@ -120,12 +121,13 @@ class CustomerBridgeImpl implements CustomerBridge{
         def uri = url.toURI()
 
         try {
-            def body = http.exchange(
-                    RequestEntity.method(HttpMethod.GET, uri)
+            http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
                     .contentType(MediaType.APPLICATION_JSON)
                     .header(AUTHORIZATION, "Bearer ${accessTokenInput.accessToken}")
                     .build()
-            , Map).body
+                , Map).body
+            return
 
         } catch (BadRequestErrorException badRequestException) {
             mapCustomerError(badRequestException, "Resend Verify Customer SMS")
@@ -140,52 +142,52 @@ class CustomerBridgeImpl implements CustomerBridge{
         try {
             def ref = new ParameterizedTypeReference<List<Address>>() {}
             http.exchange(
-                    RequestEntity.method(HttpMethod.GET, uri)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .header(AUTHORIZATION, "Bearer ${accessTokenInput.accessToken}")
-                            .build()
-                    , ref).body
+                RequestEntity.method(HttpMethod.GET, uri)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(AUTHORIZATION, "Bearer ${accessTokenInput.accessToken}")
+                    .build()
+                , ref).body
 
         } catch (BadRequestErrorException badRequestException) {
-            throw new UnsupportedOperationException("Find Customer Addresses  - Backend Error" , badRequestException)
+            throw new UnsupportedOperationException("Find Customer Addresses  - Backend Error", badRequestException)
         }
     }
 
     @Override
     List<Address> findAddressesByCustomerAccessToken(String accessToken) {
-        def url = UriComponentsBuilder.fromUri(root.resolve("customer/bff/me/addresses")).toUriString()
+        def url = UriComponentsBuilder.fromUri(root.resolve("customer/me/addresses")).toUriString()
         def uri = url.toURI()
 
         try {
             def ref = new ParameterizedTypeReference<List<Address>>() {}
             http.exchange(
-                    RequestEntity.method(HttpMethod.GET, uri)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .header(AUTHORIZATION, "Bearer ${accessToken}")
-                            .build()
-                    , ref).body
+                RequestEntity.method(HttpMethod.GET, uri)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(AUTHORIZATION, "Bearer ${accessToken}")
+                    .build()
+                , ref).body
 
         } catch (BadRequestErrorException badRequestException) {
-            throw new UnsupportedOperationException("Find Customer Addresses  - Backend Error" , badRequestException)
+            throw new UnsupportedOperationException("Find Customer Addresses  - Backend Error", badRequestException)
         }
     }
 
     @Override
     List<VerificationDocument> findVerificationDocs(String accessToken) {
-        def url = UriComponentsBuilder.fromUri(root.resolve("customer/bff/me/verificationDocs")).toUriString()
+        def url = UriComponentsBuilder.fromUri(root.resolve("customer/me/verificationDocs")).toUriString()
         def uri = url.toURI()
 
         try {
             def ref = new ParameterizedTypeReference<List<VerificationDocument>>() {}
             http.exchange(
-                    RequestEntity.method(HttpMethod.GET, uri)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .header(AUTHORIZATION, "Bearer ${accessToken}")
-                            .build()
-                    , ref).body
+                RequestEntity.method(HttpMethod.GET, uri)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(AUTHORIZATION, "Bearer ${accessToken}")
+                    .build()
+                , ref).body
 
         } catch (BadRequestErrorException badRequestException) {
-            throw new UnsupportedOperationException("Find Customer Addresses  - Backend Error" , badRequestException)
+            throw new UnsupportedOperationException("Find Customer Addresses  - Backend Error", badRequestException)
         }
 
     }
@@ -196,11 +198,11 @@ class CustomerBridgeImpl implements CustomerBridge{
         def uri = url.toURI()
         try {
             def body = http.exchange(
-                    RequestEntity.method(HttpMethod.PUT, uri)
+                RequestEntity.method(HttpMethod.PUT, uri)
                     .contentType(MediaType.APPLICATION_JSON)
                     .header(AUTHORIZATION, "Bearer $preferredAddressInput.accessToken")
                     .build()
-            , Map).body
+                , Map).body
         } catch (BadRequestErrorException badRequestException) {
             mapCustomerError(badRequestException, "Set Preferred Customer Address Error ")
         }
@@ -209,31 +211,31 @@ class CustomerBridgeImpl implements CustomerBridge{
     @Override
     Void addAddress(AddressInput addressInput) {
         try {
-            def body = http.exchange(
-                    RequestEntity.method(HttpMethod.POST, root.resolve("customer/me/address"))
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .header(HttpHeaders.AUTHORIZATION, "Bearer $addressInput.accessToken")
-                            .body(
-                            [
-                                    id : addressInput.id,
-                                    formatted: addressInput.formatted,
-                                    placeId: addressInput.placeId,
-                                    addresName: addressInput.addressName,
-                                    addressNumber: addressInput.addressNumber,
-                                    city: addressInput.city,
-                                    postalCode: addressInput.postalCode,
-                                    state: addressInput.state,
-                                    lat : addressInput.lat,
-                                    lon: addressInput.lon,
-                                    additionalInfo: addressInput.additionalInfo,
-                                    preferred: addressInput.preferred,
-                                    addressType: addressInput.addressType,
-                                    enabled: addressInput.enabled
-                            ]
-                    ), Map).body
-
+            http.exchange(
+                RequestEntity.method(HttpMethod.POST, root.resolve("customer/me/address"))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer $addressInput.accessToken")
+                    .body(
+                    [
+                        id            : addressInput.id,
+                        formatted     : addressInput.formatted,
+                        placeId       : addressInput.placeId,
+                        addresName    : addressInput.addressName,
+                        addressNumber : addressInput.addressNumber,
+                        city          : addressInput.city,
+                        postalCode    : addressInput.postalCode,
+                        state         : addressInput.state,
+                        lat           : addressInput.lat,
+                        lon           : addressInput.lon,
+                        additionalInfo: addressInput.additionalInfo,
+                        preferred     : addressInput.preferred,
+                        addressType   : addressInput.addressType,
+                        enabled       : addressInput.enabled
+                    ]
+                ), Map).body
+            return
         } catch (BadRequestErrorException badRequestException) {
-            throw new UnsupportedOperationException("Add Customer Address - Backend Error" , badRequestException)
+            throw new UnsupportedOperationException("Add Customer Address - Backend Error", badRequestException)
         }
     }
 
@@ -242,29 +244,30 @@ class CustomerBridgeImpl implements CustomerBridge{
         def url = UriComponentsBuilder.fromUri(root.resolve("customer/me/address/${addressInput.id}")).toUriString()
         def uri = url.toURI()
         try {
-            def body = http.exchange(
-                    RequestEntity.method(HttpMethod.PUT, uri)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .header(AUTHORIZATION, "Bearer $addressInput.accessToken")
-                            .body(
-                            [
-                                    id : addressInput.id,
-                                    formatted: addressInput.formatted,
-                                    placeId: addressInput.placeId,
-                                    addresName: addressInput.addressName,
-                                    addressNumber: addressInput.addressNumber,
-                                    city: addressInput.city,
-                                    postalCode: addressInput.postalCode,
-                                    state: addressInput.state,
-                                    lat : addressInput.lat,
-                                    lon: addressInput.lon,
-                                    additionalInfo: addressInput.additionalInfo,
-                                    preferred: addressInput.preferred,
-                                    addressType: addressInput.addressType,
-                                    enabled: addressInput.enabled
-                            ]
-                    ), Map).body
-        } catch(BadRequestErrorException badRequestErrorException) {
+            http.exchange(
+                RequestEntity.method(HttpMethod.PUT, uri)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(AUTHORIZATION, "Bearer $addressInput.accessToken")
+                    .body(
+                    [
+                        id            : addressInput.id,
+                        formatted     : addressInput.formatted,
+                        placeId       : addressInput.placeId,
+                        addresName    : addressInput.addressName,
+                        addressNumber : addressInput.addressNumber,
+                        city          : addressInput.city,
+                        postalCode    : addressInput.postalCode,
+                        state         : addressInput.state,
+                        lat           : addressInput.lat,
+                        lon           : addressInput.lon,
+                        additionalInfo: addressInput.additionalInfo,
+                        preferred     : addressInput.preferred,
+                        addressType   : addressInput.addressType,
+                        enabled       : addressInput.enabled
+                    ]
+                ), Map).body
+            return
+        } catch (BadRequestErrorException badRequestErrorException) {
             mapCustomerError(badRequestErrorException, "Update Address Error")
         }
     }
@@ -274,14 +277,15 @@ class CustomerBridgeImpl implements CustomerBridge{
         def url = UriComponentsBuilder.fromUri(root.resolve("customer/me/address/${addressIdInput.address_id}")).toUriString()
         def uri = url.toURI()
         try {
-            def body = http.exchange(
-                    RequestEntity.method(HttpMethod.DELETE, uri)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .header(AUTHORIZATION, "Bearer $addressIdInput.accessToken")
-                            .build()
-                    , Map).body
-        }catch(BadRequestErrorException badRequestErrorException) {
-                mapCustomerError(badRequestErrorException, "Update Address Error")
+            http.exchange(
+                RequestEntity.method(HttpMethod.DELETE, uri)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(AUTHORIZATION, "Bearer $addressIdInput.accessToken")
+                    .build()
+                , Map).body
+            return
+        } catch (BadRequestErrorException badRequestErrorException) {
+            mapCustomerError(badRequestErrorException, "Update Address Error")
         }
     }
 
@@ -293,30 +297,4 @@ class CustomerBridgeImpl implements CustomerBridge{
         }
     }
 
-    static Customer mapCustomer(body, String accessToken) {
-        new Customer(
-                id: body.id,
-                name: body.name,
-                enabled: body.enabled,
-                legalId: body.legalId,
-                linePhone: body.linePhone,
-                customerStatus: body.customerStatus as CustomerStatus,
-                user: new User(
-                        id: body.user.id,
-                        username: body.user.username,
-                        firstName: body.user.firstName,
-                        lastName: body.user.lastName,
-                        phone: body.user.phone,
-                        credentials: new UserCredentials(
-                                enabled: body.user.credentials?.enabled
-                        )
-                ),
-                smsVerification: body.smsVerification,
-                emailVerification: body.emailVerification,
-                deliveryPreference: body.deliveryPreference as DeliveryPreference,
-                level: body.level,
-                missingDocuments: body.missingDocuments,
-                accessToken: accessToken
-        )
-    }
 }

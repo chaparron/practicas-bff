@@ -105,7 +105,7 @@ class OrderBridgeImpl implements OrderBridge {
             RequestEntity.method(HttpMethod.POST, uri)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                 .contentType(MediaType.APPLICATION_JSON)
-                .build()
+                .body([orders: orders])
             , Map)
 
     }
