@@ -34,6 +34,16 @@ type Query {
     # Get new prices and supplier availabities
     refreshCart(input: RefreshCartInput!): CartResult!
 
+    # -- Pending queries
+
+    #verifiy(input: VerifiyInput): Boolean
+
+    #rating
+    #findSupplierOrderRating
+
+    #findOrderRatings
+
+    #findSupplierRatings
 }
 
 
@@ -63,7 +73,7 @@ type Mutation {
     setPreferredAddress(input: PreferredAddressInput!): PreferredAddressResult!
 
     # Add new Customer address
-    addAddress(input: AddressInput!): Void!
+    addAddress(input: AddressInput!): AddAdressResult!
 
     # Cancel pending orders
     cancelOrder(input: CancelOrderInput!): CancelOrderResult!
@@ -77,14 +87,15 @@ type Mutation {
     # Creates an order
     placeOrder(input: PlaceOrderInput!): PlaceOrderResult
 
+    # -- Pending mutations
+
     #registro
     #signIn(input: SignInInput!): SignInResult
 
     #registro
     #uploadVerificationDocument(input: Document!): UploadDocumentResult
 
-    #validations
-    #verifiy(input: VerifiyInput): Boolean
+    # customerRateSupplier
 
 }
 
@@ -249,6 +260,20 @@ type Filter{
 
 }
 
+enum AddAddressFailedReason {
+    INVALID_GOOGLE_ADDRESS,
+    INVALID_GOOGLE_PLACE_ID,
+    INVALID_ADDRESS_NAME,
+    INVALID_ADDRESS_NUMBER,
+    INVALID_POSTAL_CODE,
+    INVALID_LATITUDE,
+    INVALID_LONGITUDE,
+}
+
+type AddAddressFailed {
+    reason: AddAddressFailedReason
+}
+
 
 union UsernameRegistrationResult = UsernameRegistrationFailed | Void
 
@@ -267,3 +292,5 @@ union PreferredAddressResult = CustomerErrorFailed | Void
 union UpdateAddressResult = CustomerErrorFailed | Void
 
 union DeleteAddressResult = CustomerErrorFailed | Void
+
+union AddAdressResult = AddAddressFailed |  Void

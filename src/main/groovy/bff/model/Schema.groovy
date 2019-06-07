@@ -58,7 +58,8 @@ class Void implements ChangePasswordResult,
     CustomerOrdersResult,
     UpdateAddressResult,
     DeleteAddressResult,
-    PlaceOrderResult
+    PlaceOrderResult,
+    AddAddressResult
  {
     static final SUCCESS = new Void(voidReason: VoidReason.SUCCESS)
     VoidReason voidReason

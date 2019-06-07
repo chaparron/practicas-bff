@@ -79,9 +79,14 @@ class Mutation implements GraphQLMutationResolver {
         }
     }
 
-    Void addAddress(AddressInput addressInput) {
-        customerBridge.addAddress(addressInput)
-        Void.SUCCESS
+    AddAddressResult addAddress(AddressInput addressInput) {
+        try {
+            customerBridge.addAddress(addressInput)
+        }
+        catch (BadRequestErrorException badRequestException) {
+            AddressFailedReason.valueOf((String) badRequestException.innerResponse).build()
+        }
+
     }
 
     UpdateAddressResult updateAddress(AddressInput addressInput) {

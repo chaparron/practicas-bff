@@ -15,7 +15,10 @@ class OrderUpdateFailed extends RuntimeException implements OrderUpdateResult {
 
 enum OrderUpdateReason {
     INVALID_SUPPLIER_ORDERS_STATUS,
-    ORDER_NOT_FOUND
+    ORDER_NOT_FOUND,
+    INVALID_SUPPLIER,
+    INVALID_DELIVERY_COST,
+    INVALID_PRODUCTS
 
     def build() {
         new OrderUpdateFailed(orderUpdateReason: this)

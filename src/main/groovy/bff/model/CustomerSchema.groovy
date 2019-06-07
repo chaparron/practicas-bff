@@ -18,6 +18,8 @@ interface DeleteAddressResult{}
 
 interface AddressResult {}
 
+interface AddAddressResult {}
+
 
 enum CustomerStatus {
     PENDING,
@@ -93,7 +95,6 @@ class Customer implements CustomerUpdateResult {
     List<String> missingDocuments
 }
 
-
 class State {
     Long id
     String name
@@ -142,6 +143,24 @@ class AddressInput {
 class AddressIdInput {
     Long address_id
     String accessToken
+}
+
+enum AddAddressFailedReason {
+    INVALID_GOOGLE_ADDRESS,
+    INVALID_GOOGLE_PLACE_ID,
+    INVALID_ADDRESS_NAME,
+    INVALID_ADDRESS_NUMBER,
+    INVALID_POSTAL_CODE,
+    INVALID_LATITUDE,
+    INVALID_LONGITUDE,
+
+    def build() {
+        new AddAddressFailed(reason: this)
+    }
+}
+
+class AddAddressFailed {
+    AddAddressFailedReason reason
 }
 
 class CustomerInput {

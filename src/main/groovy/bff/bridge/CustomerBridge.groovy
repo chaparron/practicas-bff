@@ -28,7 +28,7 @@ interface CustomerBridge {
 
     Address getAddress(AddressIdInput addressIdInput)
 
-    Void addAddress(AddressInput addressInput)
+    AddAddressResult addAddress(AddressInput addressInput)
 
     Void updateAddress(AddressInput addressInput)
 

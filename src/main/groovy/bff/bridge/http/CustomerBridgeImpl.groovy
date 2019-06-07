@@ -222,34 +222,31 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    Void addAddress(AddressInput addressInput) {
-        try {
-            http.exchange(
-                RequestEntity.method(HttpMethod.POST, root.resolve("customer/me/address"))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer $addressInput.accessToken")
-                    .body(
-                    [
-                        id            : addressInput.id,
-                        formatted     : addressInput.formatted,
-                        placeId       : addressInput.placeId,
-                        addresName    : addressInput.addressName,
-                        addressNumber : addressInput.addressNumber,
-                        city          : addressInput.city,
-                        postalCode    : addressInput.postalCode,
-                        state         : addressInput.state,
-                        lat           : addressInput.lat,
-                        lon           : addressInput.lon,
-                        additionalInfo: addressInput.additionalInfo,
-                        preferred     : addressInput.preferred,
-                        addressType   : addressInput.addressType,
-                        enabled       : addressInput.enabled
-                    ]
-                ), Map).body
-            return
-        } catch (BadRequestErrorException badRequestException) {
-            throw new UnsupportedOperationException("Add Customer Address - Backend Error", badRequestException)
-        }
+    bff.model.Void addAddress(AddressInput addressInput) throws BadRequestErrorException {
+        http.exchange(
+            RequestEntity.method(HttpMethod.POST, root.resolve("customer/me/address"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $addressInput.accessToken")
+                .body(
+                [
+                    id            : addressInput.id,
+                    formatted     : addressInput.formatted,
+                    placeId       : addressInput.placeId,
+                    addressName   : addressInput.addressName,
+                    addressNumber : addressInput.addressNumber,
+                    city          : addressInput.city,
+                    postalCode    : addressInput.postalCode,
+                    state         : addressInput.state,
+                    lat           : addressInput.lat,
+                    lon           : addressInput.lon,
+                    additionalInfo: addressInput.additionalInfo,
+                    preferred     : addressInput.preferred,
+                    addressType   : addressInput.addressType,
+                    enabled       : addressInput.enabled
+                ]
+            ), Map).body
+        return bff.model.Void.SUCCESS
+
     }
 
     @Override
@@ -266,7 +263,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                         id            : addressInput.id,
                         formatted     : addressInput.formatted,
                         placeId       : addressInput.placeId,
-                        addressName    : addressInput.addressName,
+                        addressName   : addressInput.addressName,
                         addressNumber : addressInput.addressNumber,
                         city          : addressInput.city,
                         postalCode    : addressInput.postalCode,

@@ -38,6 +38,7 @@ class Main {
                 .add(CartFailed.class)
                 .add(PlaceOrderFailed.class)
                 .add(AddressFailed.class)
+                .add(AddAddressFailed.class)
     }
     /**
      *
