@@ -80,9 +80,9 @@ input AddressInput {
     placeId: String!
     addressName: String!
     addressNumber: String!
-    city: String!
+    city: String
     postalCode: String!
-    state: StateInput!
+    state: StateInput
     lat: Float
     lon: Float
     additionalInfo: String
