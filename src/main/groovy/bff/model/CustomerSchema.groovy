@@ -16,6 +16,8 @@ interface UpdateAddressResult{}
 
 interface DeleteAddressResult{}
 
+interface AddressResult {}
+
 
 enum CustomerStatus {
     PENDING,
@@ -62,6 +64,18 @@ class CustomerErrorFailed implements PreferredAddressResult, VerifyEmailResult, 
     CustomerErrorReason customerErrorReason
 }
 
+enum AddressFailedReason {
+    ADDRESS_NOT_FOUND
+
+    def build() {
+        return new AddressFailed(reason: this)
+    }
+}
+
+class AddressFailed implements AddressResult {
+    AddressFailedReason reason
+}
+
 class Customer implements CustomerUpdateResult {
     String accessToken
     Long id
@@ -90,7 +104,7 @@ class VerificationDocument {
     VerificationDocumentType type
 }
 
-class Address {
+class Address implements AddressResult {
     Long id
     String formatted
     String placeId
@@ -98,7 +112,6 @@ class Address {
     String addressNumber
     String city
     String postalCode
-    State state
     Double lat
     Double lon
     String additionalInfo

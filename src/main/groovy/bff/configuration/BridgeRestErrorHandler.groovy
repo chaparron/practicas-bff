@@ -1,10 +1,15 @@
 package bff.configuration
 
+import bff.model.CartFailedReason
+import graphql.ErrorType
+import graphql.GraphQLError
+import graphql.language.SourceLocation
 import groovy.json.JsonSlurper
 import groovy.transform.InheritConstructors
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.http.client.ClientHttpResponse
 import org.springframework.lang.Nullable
 import org.springframework.util.FileCopyUtils
@@ -51,6 +56,7 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
                 if (statusCode == HttpStatus.UNAUTHORIZED || statusCode == HttpStatus.FORBIDDEN) {
                     throw new AccessToBackendDeniedException(response.getStatusText(),  new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
                             response.getHeaders(), getResponseBody(response), getCharset(response)))
+
 
                 } else if (statusCode == HttpStatus.BAD_REQUEST) {
                     BadRequestErrorException badRequestErrorException =   new BadRequestErrorException(response.getStatusText(),  new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
@@ -111,7 +117,21 @@ interface MappedResponse {
 }
 
 @InheritConstructors
-class AccessToBackendDeniedException extends RuntimeException {
+class AccessToBackendDeniedException extends RuntimeException implements GraphQLError {
+    @Override
+    String getMessage() {
+        return "INVALID_TOKEN"
+    }
+
+    @Override
+    List<SourceLocation> getLocations() {
+        return [new SourceLocation(0,0, "accessToken")]
+    }
+
+    @Override
+    ErrorType getErrorType() {
+        return ErrorType.DataFetchingException
+    }
 }
 
 @InheritConstructors

@@ -102,7 +102,7 @@ class CustomerBridgeImpl implements CustomerBridge {
     Void verifyPhone(VerifyPhoneInput verifyPhoneInput) {
         try {
             http.exchange(
-                RequestEntity.method(HttpMethod.POST, root.resolve("customer/me/verify/phone"))
+                RequestEntity.method(HttpMethod.POST, root.resolve("/customer/me/verify/phone"))
                     .contentType(MediaType.APPLICATION_JSON)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer $verifyPhoneInput.accessToken")
                     .body([
@@ -117,7 +117,7 @@ class CustomerBridgeImpl implements CustomerBridge {
 
     @Override
     Void resendVerifySMS(AccessTokenInput accessTokenInput) {
-        def url = UriComponentsBuilder.fromUri(root.resolve("customer/me/resend/verification/sms")).toUriString()
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/resend/verification/sms")).toUriString()
         def uri = url.toURI()
 
         try {
@@ -136,7 +136,7 @@ class CustomerBridgeImpl implements CustomerBridge {
 
     @Override
     List<Address> findAddresses(AccessTokenInput accessTokenInput) {
-        def url = UriComponentsBuilder.fromUri(root.resolve("customer/me/address")).toUriString()
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/address")).toUriString()
         def uri = url.toURI()
 
         try {
@@ -155,7 +155,7 @@ class CustomerBridgeImpl implements CustomerBridge {
 
     @Override
     List<Address> findAddressesByCustomerAccessToken(String accessToken) {
-        def url = UriComponentsBuilder.fromUri(root.resolve("customer/me/addresses")).toUriString()
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/addresses")).toUriString()
         def uri = url.toURI()
 
         try {
@@ -174,7 +174,7 @@ class CustomerBridgeImpl implements CustomerBridge {
 
     @Override
     List<VerificationDocument> findVerificationDocs(String accessToken) {
-        def url = UriComponentsBuilder.fromUri(root.resolve("customer/me/verificationDocs")).toUriString()
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/verificationDocs")).toUriString()
         def uri = url.toURI()
 
         try {
@@ -194,7 +194,7 @@ class CustomerBridgeImpl implements CustomerBridge {
 
     @Override
     Void setPreferredAddress(PreferredAddressInput preferredAddressInput) {
-        def url = UriComponentsBuilder.fromUri(root.resolve("customer/me/address/preferred/${preferredAddressInput.addressId}")).toUriString()
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/address/preferred/${preferredAddressInput.addressId}")).toUriString()
         def uri = url.toURI()
         try {
             def body = http.exchange(
@@ -206,6 +206,19 @@ class CustomerBridgeImpl implements CustomerBridge {
         } catch (BadRequestErrorException badRequestException) {
             mapCustomerError(badRequestException, "Set Preferred Customer Address Error ")
         }
+    }
+
+    @Override
+    Address getAddress(AddressIdInput addressIdInput) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/address/${addressIdInput.address_id}"))
+            .toUriString().toURI()
+
+        http.exchange(
+            RequestEntity.method(HttpMethod.GET, uri)
+                .header(AUTHORIZATION, "Bearer $addressIdInput.accessToken")
+                .contentType(MediaType.APPLICATION_JSON)
+                .build()
+            , Address).body
     }
 
     @Override

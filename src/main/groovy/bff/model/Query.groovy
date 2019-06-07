@@ -93,6 +93,16 @@ class Query implements GraphQLQueryResolver {
         customerBridge.findAddresses(accessTokenInput)
     }
 
+    AddressResult getAddress(AddressIdInput addressIdInput) {
+        try {
+            customerBridge.getAddress(addressIdInput)
+        }
+        catch (EntityNotFoundException ex) {
+            AddressFailedReason.ADDRESS_NOT_FOUND.build()
+        }
+
+    }
+
     CartResult refreshCart(RefreshCartInput refreshCartInput) {
         try {
             productBridge.refreshCart(refreshCartInput.accessToken, refreshCartInput.products)

@@ -37,6 +37,7 @@ class Main {
                 .add(Cart.class)
                 .add(CartFailed.class)
                 .add(PlaceOrderFailed.class)
+                .add(AddressFailed.class)
     }
     /**
      *

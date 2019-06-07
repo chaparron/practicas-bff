@@ -25,6 +25,9 @@ type Query {
     # Get all the Customer's addersses, according accessToken
     findAddresses(input: AccessTokenInput) : [AddressType]
 
+    # Get a Customer adderss, according accessToken and id
+    getAddress(input: AddressIdInput!): AddressResponse
+
     # Find customer orders
     findCustomerOrders(input: FindOrdersInput!): CustomerOrdersResult!
 
@@ -71,9 +74,33 @@ type Mutation {
     # Delete Customer address
     deleteAddress(input: AddressIdInput!) : DeleteAddressResult!
 
+    # Creates an order
     placeOrder(input: PlaceOrderInput!): PlaceOrderResult
 
+    #registro
+    #signIn(input: SignInInput!): SignInResult
+
+    #registro
+    #uploadVerificationDocument(input: Document!): UploadDocumentResult
+
+    #validations
+    #verifiy(input: VerifiyInput): Boolean
+
 }
+
+#enum VerificationField {
+#    USER_USERNAME,
+#    USER_PHONE,
+#    CUSTOMER_LEGALID,
+#    CUSTOMER_NAME,
+#    CUSTOMER_CELLPHONE,
+#    CUSTOMER_LINEPPHONE,
+#}
+
+#type VerifyInput {
+#    id: Int
+#    field: VerificationField!
+#}
 
 
 enum PageSize {

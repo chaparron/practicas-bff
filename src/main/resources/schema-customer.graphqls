@@ -63,6 +63,17 @@ input Address {
     enabled: Boolean
 }
 
+
+enum AddressFailedReason {
+    ADDRESS_NOT_FOUND
+}
+
+type AddressFailed {
+    reason: AddressFailedReason
+}
+
+union AddressResponse = AddressType | AddressFailed
+
 input AddressInput {
     id: ID
     formatted: String!
@@ -124,7 +135,6 @@ type AddressType {
     addressNumber: String
     city: String
     postalCode: String
-    state: State
     lat: Float
     lon: Float
     additionalInfo: String
