@@ -266,7 +266,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                         id            : addressInput.id,
                         formatted     : addressInput.formatted,
                         placeId       : addressInput.placeId,
-                        addresName    : addressInput.addressName,
+                        addressName    : addressInput.addressName,
                         addressNumber : addressInput.addressNumber,
                         city          : addressInput.city,
                         postalCode    : addressInput.postalCode,

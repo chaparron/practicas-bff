@@ -83,8 +83,8 @@ input AddressInput {
     city: String
     postalCode: String!
     state: StateInput
-    lat: Float
-    lon: Float
+    lat: Float!
+    lon: Float!
     additionalInfo: String
     preferred: Boolean
     addressType: AddressMode
