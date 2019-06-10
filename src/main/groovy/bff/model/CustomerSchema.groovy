@@ -138,6 +138,7 @@ class AddressInput {
     AddressMode addressType
     Boolean enabled
     String accessToken
+    String geolocation
 }
 
 class AddressIdInput {
@@ -154,12 +155,13 @@ enum AddAddressFailedReason {
     INVALID_LATITUDE,
     INVALID_LONGITUDE,
 
+
     def build() {
         new AddAddressFailed(reason: this)
     }
 }
 
-class AddAddressFailed {
+class AddAddressFailed implements AddAddressResult {
     AddAddressFailedReason reason
 }
 

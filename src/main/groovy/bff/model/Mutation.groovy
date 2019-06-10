@@ -84,7 +84,7 @@ class Mutation implements GraphQLMutationResolver {
             customerBridge.addAddress(addressInput)
         }
         catch (BadRequestErrorException badRequestException) {
-            AddressFailedReason.valueOf((String) badRequestException.innerResponse).build()
+            AddAddressFailedReason.valueOf((String) badRequestException.innerResponse).build()
         }
 
     }

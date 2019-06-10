@@ -73,7 +73,7 @@ type Mutation {
     setPreferredAddress(input: PreferredAddressInput!): PreferredAddressResult!
 
     # Add new Customer address
-    addAddress(input: AddressInput!): AddAdressResult!
+    addAddress(input: AddressInput!): AddAddressResult!
 
     # Cancel pending orders
     cancelOrder(input: CancelOrderInput!): CancelOrderResult!
@@ -293,4 +293,4 @@ union UpdateAddressResult = CustomerErrorFailed | Void
 
 union DeleteAddressResult = CustomerErrorFailed | Void
 
-union AddAdressResult = AddAddressFailed |  Void
+union AddAddressResult = AddAddressFailed |  Void

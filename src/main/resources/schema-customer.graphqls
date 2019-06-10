@@ -78,10 +78,10 @@ input AddressInput {
     id: ID
     formatted: String!
     placeId: String!
-    addressName: String!
-    addressNumber: String!
+    addressName: String
+    addressNumber: String
     city: String
-    postalCode: String!
+    postalCode: String
     state: StateInput
     lat: Float!
     lon: Float!
@@ -90,6 +90,7 @@ input AddressInput {
     addressType: AddressMode
     enabled: Boolean
     accessToken: String!
+    geolocation: String
 }
 
 input AddressIdInput {
