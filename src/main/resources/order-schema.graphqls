@@ -141,7 +141,15 @@ type Order {
     supplierOrders: [SupplierOrder]
 }
 
-union CustomerOrdersResult = CustomerOrdersResponse | CustomerErrorFailed
+enum CustomerOrderFindFailedReason {
+    ORDER_NOT_FOUND
+}
+
+type CustomerOrderFindFailed {
+    reason:CustomerOrderFindFailedReason
+}
+
+union CustomerOrdersResult = CustomerOrdersResponse | CustomerOrderFindFailed
 
 type CustomerOrdersResponse {
     headers: Headers

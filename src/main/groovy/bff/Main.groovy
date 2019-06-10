@@ -40,6 +40,7 @@ class Main {
                 .add(AddressFailed.class)
                 .add(AddAddressFailed.class)
                 .add(DeleteAddressFailed.class)
+                .add(CustomerOrderFindFailed.class)
     }
     /**
      *
