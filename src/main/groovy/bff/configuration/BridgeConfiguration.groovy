@@ -36,40 +36,48 @@ class BridgeConfiguration {
     @Bean
     SearchBridge searchBridge() {
         new SearchBridgeImpl(
-            http: http,
-            root: root
+                http: http,
+                root: root
         )
     }
 
     @Bean
     CategoryBridge categoryBridge() {
         new CategoryBridgeImpl(
-            http: http,
-            root:root
+                http: http,
+                root: root
         )
     }
 
     @Bean
     OrderBridge orderBridge() {
         new OrderBridgeImpl(
-            http: http,
-            root: root
+                http: http,
+                root: root
         )
     }
 
     @Bean
     SupplierOrderBridge supplierOrder() {
         new SupplierOrderBridgeImpl(
-            http: http,
-            root: root
+                http: http,
+                root: root
         )
     }
 
     @Bean
     ProductBridge productBridge() {
         new ProductBridgeImpl(
-            http:http,
-            root: root
+                http: http,
+                root: root
+        )
+    }
+
+    @Bean
+    ValidationsBridge validationsBridge() {
+        new ValidationsBridgeImpl(
+                http: http,
+                root: root
         )
     }
 

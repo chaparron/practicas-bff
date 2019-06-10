@@ -34,9 +34,15 @@ type Query {
     # Get new prices and supplier availabities
     refreshCart(input: RefreshCartInput!): CartResult!
 
+    # Validate username
+    validateUsername(input: ValidateUsernameInput!): Boolean!
+
+    # Validate fields
+    validate(input: ValidateInput!): Boolean!
+
     # -- Pending queries
 
-    #verifiy(input: VerifiyInput): Boolean
+
 
     #rating
     #findSupplierOrderRating
@@ -98,20 +104,6 @@ type Mutation {
     # customerRateSupplier
 
 }
-
-#enum VerificationField {
-#    USER_USERNAME,
-#    USER_PHONE,
-#    CUSTOMER_LEGALID,
-#    CUSTOMER_NAME,
-#    CUSTOMER_CELLPHONE,
-#    CUSTOMER_LINEPPHONE,
-#}
-
-#type VerifyInput {
-#    id: Int
-#    field: VerificationField!
-#}
 
 
 enum PageSize {
@@ -259,6 +251,27 @@ type Filter{
     name: String
 
 }
+
+input ValidateUsernameInput{
+    id: ID
+    username: String!
+}
+
+input ValidateInput{
+    id: ID
+    value: String!
+    country_id: String!
+    accessToken: String
+    validationType: ValidationType!
+}
+
+enum ValidationType{
+      USER_PHONE,
+      USER_CELL_PHONE,
+      CUSTOMER_LEGAL_ID,
+      CUSTOMER_LINE_PHONE
+}
+
 
 enum AddAddressFailedReason {
     INVALID_GOOGLE_ADDRESS,

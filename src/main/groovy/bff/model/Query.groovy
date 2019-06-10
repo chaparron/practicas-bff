@@ -5,6 +5,7 @@ import bff.bridge.AuthServerBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.OrderBridge
 import bff.bridge.ProductBridge
+import bff.bridge.ValidationsBridge
 import bff.configuration.AccessToBackendDeniedException
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
@@ -31,6 +32,9 @@ class Query implements GraphQLQueryResolver {
 
     @Autowired
     OrderBridge orderBridge
+
+    @Autowired
+    ValidationsBridge validationsBridge
 
     Void testPhoneNumber(PhoneInput phoneInput) {
         authServerBridge.testPhoneNumber(phoneInput.phone)
@@ -112,6 +116,14 @@ class Query implements GraphQLQueryResolver {
             CartFailedReason.FORBIDDEN.build()
         }
 
+    }
+
+    boolean validateUsername(ValidateUsernameInput input) {
+        validationsBridge.validateUsername(input)
+    }
+
+    boolean validate(ValidateInput input) {
+        validationsBridge.validate(input)
     }
 }
 
