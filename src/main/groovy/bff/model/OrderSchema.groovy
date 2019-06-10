@@ -80,6 +80,7 @@ class PaginatedInput {
 class FindOrdersInput extends PaginatedInput {
     String accessToken
     Integer orderId
+    Integer countryId
     SupplierOrderStatus status
 
 }

@@ -29,6 +29,9 @@ enum SupplierOrderStatus {
 input FindOrdersInput {
     accessToken: String
     orderId: Int
+    countryId: Int
+    size: Int,
+    page: Int,
     status: SupplierOrderStatus
 }
 
@@ -141,7 +144,15 @@ type Order {
     supplierOrders: [SupplierOrder]
 }
 
-union CustomerOrdersResult = CustomerOrdersResponse | CustomerErrorFailed
+enum CustomerOrderFindFailedReason {
+    ORDER_NOT_FOUND
+}
+
+type CustomerOrderFindFailed {
+    reason:CustomerOrderFindFailedReason
+}
+
+union CustomerOrdersResult = CustomerOrdersResponse | CustomerOrderFindFailed
 
 type CustomerOrdersResponse {
     headers: Headers

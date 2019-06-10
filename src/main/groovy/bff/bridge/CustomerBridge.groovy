@@ -2,7 +2,6 @@ package bff.bridge
 
 import bff.model.*
 
-import java.lang.Void
 
 interface CustomerBridge {
 

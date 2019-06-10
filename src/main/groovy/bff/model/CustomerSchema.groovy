@@ -161,8 +161,20 @@ enum AddAddressFailedReason {
     }
 }
 
+enum DeleteAddressFailedReason {
+    NOT_ADDRESS_CUSTOMER
+
+    def build() {
+        new DeleteAddressFailed(reason: this)
+    }
+}
+
 class AddAddressFailed implements AddAddressResult {
     AddAddressFailedReason reason
+}
+
+class DeleteAddressFailed implements DeleteAddressResult {
+    DeleteAddressFailedReason reason
 }
 
 class CustomerInput {
