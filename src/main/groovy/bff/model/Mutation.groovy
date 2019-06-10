@@ -102,8 +102,8 @@ class Mutation implements GraphQLMutationResolver {
         try {
             customerBridge.deleteAddress(addressIdInput)
             Void.SUCCESS
-        } catch (CustomerException customerException) {
-            customerException.build()
+        } catch (BadRequestErrorException deleteAddressFailed) {
+            DeleteAddressFailedReason.valueOf( (String)  deleteAddressFailed.innerResponse).build()
         }
     }
 

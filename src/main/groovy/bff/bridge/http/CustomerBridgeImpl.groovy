@@ -14,7 +14,6 @@ import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
 
-import java.lang.Void
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION
 
@@ -74,6 +73,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                     .contentType(MediaType.APPLICATION_JSON)
                     .build()
                 , Map).body
+            Void.SUCCESS
         } catch (BadRequestErrorException badRequestException) {
             mapCustomerError(badRequestException, "Verify Customer Email Error")
         }
@@ -92,7 +92,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                     .header(AUTHORIZATION, "Bearer ${accessTokenInput.accessToken}")
                     .build()
                 , Map).body
-            return
+            return Void.SUCCESS
         } catch (BadRequestErrorException badRequestExcpetion) {
             mapCustomerError(badRequestExcpetion, "Resend Verify Customer Email Error")
         }
@@ -109,7 +109,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                     token: verifyPhoneInput.token
                 ])
                 , Map).body
-            return
+            return Void.SUCCESS
         } catch (BadRequestErrorException badRequestException) {
             mapCustomerError(badRequestException, "Verify Customer Phone Error")
         }
@@ -127,8 +127,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                     .header(AUTHORIZATION, "Bearer ${accessTokenInput.accessToken}")
                     .build()
                 , Map).body
-            return
-
+            return Void.SUCCESS
         } catch (BadRequestErrorException badRequestException) {
             mapCustomerError(badRequestException, "Resend Verify Customer SMS")
         }
@@ -222,7 +221,7 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    bff.model.Void addAddress(AddressInput addressInput) throws BadRequestErrorException {
+    Void addAddress(AddressInput addressInput) throws BadRequestErrorException {
         http.exchange(
             RequestEntity.method(HttpMethod.POST, root.resolve("/customer/me/address"))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -246,7 +245,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                     geolocation   : addressInput.geolocation
                 ]
             ), Map).body
-        return bff.model.Void.SUCCESS
+        return Void.SUCCESS
 
     }
 
@@ -278,7 +277,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                         geolocation   : addressInput.geolocation
                     ]
                 ), Map).body
-            return
+            return Void.SUCCESS
         } catch (BadRequestErrorException badRequestErrorException) {
             mapCustomerError(badRequestErrorException, "Update Address Error")
         }
@@ -288,17 +287,14 @@ class CustomerBridgeImpl implements CustomerBridge {
     Void deleteAddress(AddressIdInput addressIdInput) {
         def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/address/${addressIdInput.address_id}")).toUriString()
         def uri = url.toURI()
-        try {
-            http.exchange(
-                RequestEntity.method(HttpMethod.DELETE, uri)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header(AUTHORIZATION, "Bearer $addressIdInput.accessToken")
-                    .build()
-                , Map).body
-            return
-        } catch (BadRequestErrorException badRequestErrorException) {
-            mapCustomerError(badRequestErrorException, "Update Address Error")
-        }
+        http.exchange(
+            RequestEntity.method(HttpMethod.DELETE, uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer $addressIdInput.accessToken")
+                .build()
+            , Map).body
+        Void.SUCCESS
+
     }
 
     static def mapCustomerError(RuntimeException exception, String error) {

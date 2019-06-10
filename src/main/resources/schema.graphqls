@@ -270,8 +270,17 @@ enum AddAddressFailedReason {
     INVALID_LONGITUDE,
 }
 
+
 type AddAddressFailed {
     reason: AddAddressFailedReason
+}
+
+enum DeleteAddressFailedResult {
+    NOT_ADDRESS_CUSTOMER
+}
+
+type DeleteAddressFailed {
+    reason: DeleteAddressFailedResult
 }
 
 
@@ -291,6 +300,6 @@ union PreferredAddressResult = CustomerErrorFailed | Void
 
 union UpdateAddressResult = CustomerErrorFailed | Void
 
-union DeleteAddressResult = CustomerErrorFailed | Void
+union DeleteAddressResult = DeleteAddressFailed | Void
 
 union AddAddressResult = AddAddressFailed |  Void
