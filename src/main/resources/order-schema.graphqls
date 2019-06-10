@@ -29,6 +29,9 @@ enum SupplierOrderStatus {
 input FindOrdersInput {
     accessToken: String
     orderId: Int
+    countryId: Int
+    size: Int,
+    page: Int,
     status: SupplierOrderStatus
 }
 
