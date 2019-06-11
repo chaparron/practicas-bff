@@ -116,7 +116,7 @@ type SupplierOrder {
     total: Float
     units: Int
     products: [OrderItems]
-    ratings: RatingEntry
+    rating: RatingEntry
     canCustomerRate: Boolean
     canSupplierRate: Boolean
     customerRated: Boolean
@@ -129,8 +129,8 @@ enum RatingOwner {
 }
 
 type RatingEntry {
-    SUPPLIER: Rating!
-    CUSTOMER: Rating!
+    SUPPLIER: Rating
+    CUSTOMER: Rating
 }
 
 type Order {

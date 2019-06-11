@@ -126,6 +126,8 @@ class SupplierOrder {
     Boolean canSupplierRate
     Boolean customerRated
     Boolean supplierRated
+    RatingEntry rating
+    HashMap<RatingOwner, Rating> ratings
 }
 
 class RatingEntry {

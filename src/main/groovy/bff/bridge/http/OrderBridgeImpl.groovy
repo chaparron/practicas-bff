@@ -77,6 +77,12 @@ class OrderBridgeImpl implements OrderBridge {
             , param).body
 
         r.each { it.accessToken = accessToken }
+        r.each {
+            it.rating = new RatingEntry(
+                SUPPLIER: it.ratings?.get(RatingOwner.SUPPLIER),
+                CUSTOMER: it.ratings?.get(RatingOwner.CUSTOMER)
+            )
+        }
         r
     }
 

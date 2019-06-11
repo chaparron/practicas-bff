@@ -22,7 +22,7 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
     }
 
     RatingEntry ratings(SupplierOrder supplierOrder) {
-        supplierOrderBridge.getRatingBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
+        supplierOrder.rating?:supplierOrderBridge.getRatingBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
     }
 
     Order order(SupplierOrder supplierOrder) {
