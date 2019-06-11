@@ -20,7 +20,7 @@ class OrderBridgeImpl implements OrderBridge {
 
     @Override
     void cancel(CancelOrderInput cancelOrderInput) {
-        def uri = UriComponentsBuilder.fromUri(root.resolve("/user/me/order/${cancelOrderInput.orderId}/cancel"))
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/${cancelOrderInput.orderId}/cancel"))
             .toUriString().toURI()
 
         http.exchange(
