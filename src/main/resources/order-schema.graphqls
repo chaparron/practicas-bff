@@ -13,7 +13,7 @@ enum OrderUpdateReason {
 }
 
 type OrderUpdateFailed {
-    orderUpdateReason: OrderUpdateReason
+    reason: OrderUpdateReason
 }
 
 union CancelOrderResult = OrderUpdateFailed | Void

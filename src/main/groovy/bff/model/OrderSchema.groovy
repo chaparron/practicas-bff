@@ -10,7 +10,7 @@ interface CartResult {}
 
 @InheritConstructors
 class OrderUpdateFailed extends RuntimeException implements OrderUpdateResult {
-    OrderUpdateReason orderUpdateReason
+    OrderUpdateReason reason
 }
 
 enum OrderUpdateReason {
@@ -21,7 +21,7 @@ enum OrderUpdateReason {
     INVALID_PRODUCTS
 
     def build() {
-        new OrderUpdateFailed(orderUpdateReason: this)
+        new OrderUpdateFailed(reason: this)
     }
 }
 
