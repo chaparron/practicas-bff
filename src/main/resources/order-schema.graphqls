@@ -142,6 +142,7 @@ type Order {
     deliveryAddress: AddressType
     deliveryPreference: DeliveryPreference
     supplierOrders: [SupplierOrder]
+    total: Float
 }
 
 enum CustomerOrderFindFailedReason {
@@ -149,7 +150,7 @@ enum CustomerOrderFindFailedReason {
 }
 
 type CustomerOrderFindFailed {
-    reason:CustomerOrderFindFailedReason
+    reason: CustomerOrderFindFailedReason
 }
 
 union CustomerOrdersResult = CustomerOrdersResponse | CustomerOrderFindFailed

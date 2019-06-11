@@ -107,6 +107,7 @@ class Order {
     TimestampOutput created
     TimestampOutput updated
     DeliveryPreference deliveryPreference
+    Float total
 }
 
 class SupplierOrder {
