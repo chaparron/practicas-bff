@@ -32,4 +32,8 @@ interface CustomerBridge {
     Void updateAddress(AddressInput addressInput)
 
     Void deleteAddress(AddressIdInput addressIdInput)
+
+    Boolean customerHasOrders(AccessTokenInput accessTokenInput)
+
+    Integer getPendingRatesCount(AccessTokenInput accessTokenInput)
 }

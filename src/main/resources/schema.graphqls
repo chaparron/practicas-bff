@@ -42,14 +42,27 @@ type Query {
 
     # -- Pending queries
 
-
-
     #rating
+
+    #findSupplierOrder
+
     #findSupplierOrderRating
 
     #findOrderRatings
 
     #findSupplierRatings
+
+
+
+    #getSupplierOrdersPendingToRate
+
+    #getSupplierRating
+
+
+    getPendingRatesCount(input: AccessTokenInput!): Int
+
+    customerHasOrders(input: AccessTokenInput): Boolean
+
 }
 
 
@@ -102,6 +115,8 @@ type Mutation {
     #uploadVerificationDocument(input: Document!): UploadDocumentResult
 
     # customerRateSupplier
+
+    # reportRate
 
 }
 

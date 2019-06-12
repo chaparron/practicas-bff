@@ -125,5 +125,13 @@ class Query implements GraphQLQueryResolver {
     boolean validate(ValidateInput input) {
         validationsBridge.validate(input)
     }
+
+    boolean customerHasOrders(AccessTokenInput accessTokenInput) {
+        customerBridge.customerHasOrders(accessTokenInput)
+    }
+
+    Integer getPendingRatesCount(AccessTokenInput accessTokenInput) {
+        customerBridge.getPendingRatesCount(accessTokenInput)
+    }
 }
 

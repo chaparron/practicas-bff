@@ -297,6 +297,30 @@ class CustomerBridgeImpl implements CustomerBridge {
 
     }
 
+    @Override
+    Boolean customerHasOrders(AccessTokenInput accessTokenInput) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/exist")).toUriString()
+        def uri = url.toURI()
+        http.exchange(
+            RequestEntity.method(HttpMethod.GET, uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer $accessTokenInput.accessToken")
+                .build()
+            , Boolean).body
+    }
+
+    @Override
+    Integer getPendingRatesCount(AccessTokenInput accessTokenInput) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/rating/pending/count")).toUriString()
+        def uri = url.toURI()
+        http.exchange(
+            RequestEntity.method(HttpMethod.GET, uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer $accessTokenInput.accessToken")
+                .build()
+            , Integer).body
+    }
+
     static def mapCustomerError(RuntimeException exception, String error) {
         if (exception.innerResponse) {
             CustomerErrorReason.valueOf((String) exception.innerResponse).doThrow()
