@@ -47,7 +47,7 @@ type SortResult {
 
 type Headers {
     page: Int,
-    pageSize: Int,
+    page_size: Int,
     total: Int,
     sort: SortResult
 }
@@ -92,8 +92,7 @@ enum RatingStatus {
 type Rating {
     id: Int
     supplier: Supplier
-    customer: Customer
-    user: User
+    customerName: String
     created: TimestampOutput
     opinion: String
     score: Int

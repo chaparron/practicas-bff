@@ -1,6 +1,5 @@
 package bff.model
 
-import graphql.GraphQLError
 import groovy.transform.InheritConstructors
 
 
@@ -85,18 +84,27 @@ class FindOrdersInput extends PaginatedInput {
 
 }
 
-class Headers{
-    Long page
-    Long pageSize
-    Long total
-    SortResult sort = new SortResult()
+class GetSupplierRatingsInput extends PaginatedInput {
+    String accessToken
+    Long supplierId
 }
 
 class CustomerOrdersResponse extends PaginatedResponse<Order> implements CustomerOrdersResult {
 }
 
+class SupplierRatingsResponse extends PaginatedResponse<Rating> {
+
+}
+
+class Headers {
+    Long page
+    Long page_size
+    Long total
+    SortResult sort
+}
+
 class PaginatedResponse<T> {
-    Headers headers = new Headers()
+    Headers headers
     List<T> content
 }
 
@@ -136,10 +144,11 @@ class RatingEntry {
 }
 
 class Rating {
+    String accessToken
     Long id
     Supplier supplier
-    Customer customer
-    User user
+    Customer customer // -≥ not in schema
+    String customerName
     TimestampOutput created
     String opinion
     Long score

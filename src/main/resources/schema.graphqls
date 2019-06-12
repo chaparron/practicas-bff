@@ -40,6 +40,12 @@ type Query {
     # Validate fields
     validate(input: ValidateInput!): Boolean!
 
+    getPendingRatesCount(input: AccessTokenInput!): Int
+
+    customerHasOrders(input: AccessTokenInput): Boolean
+
+    getSupplierRatings(input: GetSupplierRatingsInput!): SupplierRatingsResponse
+
     # -- Pending queries
 
     #rating
@@ -52,19 +58,21 @@ type Query {
 
     #findSupplierRatings
 
-
-
     #getSupplierOrdersPendingToRate
-
-    #getSupplierRating
-
-
-    getPendingRatesCount(input: AccessTokenInput!): Int
-
-    customerHasOrders(input: AccessTokenInput): Boolean
 
 }
 
+type SupplierRatingsResponse {
+    headers: Headers
+    content: [Rating]
+}
+
+input GetSupplierRatingsInput {
+    page: Int
+    size: Int
+    accessToken: String!
+    supplierId: Int!
+}
 
 type Mutation {
     # User login

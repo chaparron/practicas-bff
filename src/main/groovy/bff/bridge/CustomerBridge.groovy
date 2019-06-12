@@ -5,7 +5,7 @@ import bff.model.*
 
 interface CustomerBridge {
 
-    Customer myProfile(CustomerInput customerInput)
+    Customer myProfile(String  accessToken)
 
     CustomerUpdateResult updateProfile(CustomerUpdateInput customerUpdateInput)
 
@@ -36,4 +36,6 @@ interface CustomerBridge {
     Boolean customerHasOrders(AccessTokenInput accessTokenInput)
 
     Integer getPendingRatesCount(AccessTokenInput accessTokenInput)
+
+    SupplierRatingsResponse getSupplierRatings(String accessToken, Long supplierId, Long page, Long size)
 }

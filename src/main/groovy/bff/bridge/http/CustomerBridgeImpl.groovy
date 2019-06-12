@@ -23,18 +23,18 @@ class CustomerBridgeImpl implements CustomerBridge {
     RestOperations http
 
     @Override
-    Customer myProfile(CustomerInput customerInput) {
+    Customer myProfile(String accessToken) {
         def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me")).toUriString()
         def uri = url.toURI()
 
         def body = http.exchange(
             RequestEntity.method(HttpMethod.GET, uri)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, "Bearer ${customerInput.accessToken}")
+                .header(AUTHORIZATION, "Bearer ${accessToken}")
                 .build()
             , Customer).body
 
-        body.accessToken = customerInput.accessToken
+        body.accessToken = accessToken
         return body
     }
 
@@ -319,6 +319,28 @@ class CustomerBridgeImpl implements CustomerBridge {
                 .header(AUTHORIZATION, "Bearer $accessTokenInput.accessToken")
                 .build()
             , Integer).body
+    }
+
+    @Override
+    SupplierRatingsResponse getSupplierRatings(String accessToken, Long supplierId, Long page, Long size) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/rating/supplier/${supplierId}"))
+            .queryParam("page", page)
+            .queryParam("size", size)
+            .toUriString()
+        def uri = url.toURI()
+        def response = http.exchange(
+            RequestEntity.method(HttpMethod.GET, uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer $accessToken")
+                .build()
+            , SupplierRatingsResponse).body
+
+        response.content.each {
+            it.accessToken = accessToken
+            it.customerName = it.customer.name
+            it
+        }
+        response
     }
 
     static def mapCustomerError(RuntimeException exception, String error) {

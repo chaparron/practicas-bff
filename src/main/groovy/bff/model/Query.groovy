@@ -42,7 +42,7 @@ class Query implements GraphQLQueryResolver {
     }
 
     Customer myProfile(CustomerInput customerInput) {
-        customerBridge.myProfile(customerInput)
+        customerBridge.myProfile(customerInput.accessToken)
     }
 
     VerifyEmailResult verifyEmail(VerifyEmailInput verifyEmailInput) {
@@ -132,6 +132,10 @@ class Query implements GraphQLQueryResolver {
 
     Integer getPendingRatesCount(AccessTokenInput accessTokenInput) {
         customerBridge.getPendingRatesCount(accessTokenInput)
+    }
+
+    SupplierRatingsResponse getSupplierRatings(GetSupplierRatingsInput supplierRatingsInput) {
+        customerBridge.getSupplierRatings(supplierRatingsInput.accessToken, supplierRatingsInput.supplierId, supplierRatingsInput.page, supplierRatingsInput.size)
     }
 }
 
