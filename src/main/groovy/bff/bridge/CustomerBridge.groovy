@@ -38,4 +38,6 @@ interface CustomerBridge {
     Integer getPendingRatesCount(AccessTokenInput accessTokenInput)
 
     SupplierRatingsResponse getSupplierRatings(String accessToken, Long supplierId, Long page, Long size)
+
+    List<SupplierOrder> getSupplierOrdersPendingToRate(String accessToken)
 }

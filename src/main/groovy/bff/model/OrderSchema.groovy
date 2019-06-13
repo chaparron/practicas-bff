@@ -121,7 +121,6 @@ class Order {
 class SupplierOrder {
     String accessToken
     Long id
-    String receipt
     SupplierOrderStatus status
     TimestampOutput created
     TimestampOutput updated

@@ -1,9 +1,6 @@
 
 type Query {
 
-    # Existence phone number test
-    testPhoneNumber(input: PhoneInput!): Void!
-
     # Find Customer by Id
     myProfile(input: CustomerInput!): Customer!
 
@@ -42,9 +39,11 @@ type Query {
 
     getPendingRatesCount(input: AccessTokenInput!): Int
 
-    customerHasOrders(input: AccessTokenInput): Boolean
+    customerHasOrders(input: AccessTokenInput!): Boolean
 
     getSupplierRatings(input: GetSupplierRatingsInput!): SupplierRatingsResponse
+
+    getSupplierOrdersPendingToRate(input: AccessTokenInput!): [SupplierOrder]
 
     # -- Pending queries
 
@@ -58,7 +57,7 @@ type Query {
 
     #findSupplierRatings
 
-    #getSupplierOrdersPendingToRate
+
 
 }
 

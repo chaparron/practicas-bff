@@ -343,6 +343,24 @@ class CustomerBridgeImpl implements CustomerBridge {
         response
     }
 
+    @Override
+    List<SupplierOrder> getSupplierOrdersPendingToRate(String accessToken) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/rating/pending")).toUriString()
+        def uri = url.toURI()
+
+        def supplierOrders = http.exchange(
+            RequestEntity.method(HttpMethod.GET, uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer $accessToken")
+                .build()
+            , new ParameterizedTypeReference<List<SupplierOrder>>() {}).body
+
+        supplierOrders.collect {
+            it.accessToken = accessToken
+            it
+        }
+    }
+
     static def mapCustomerError(RuntimeException exception, String error) {
         if (exception.innerResponse) {
             CustomerErrorReason.valueOf((String) exception.innerResponse).doThrow()
