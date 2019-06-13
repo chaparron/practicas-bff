@@ -22,7 +22,9 @@ enum ValidationType {
     SUPPLIER_NAME("supplierName"),
     SUPPLIER_LEGAL_ID("supplierLegalId"),
     SUPPLIER_LEGAL_NAME("supplierLegalName"),
-    BRAND_NAME("brandName")
+    BRAND_NAME("brandName"),
+    USER_USERNAME("userUsername")
+
 
     String name
 
