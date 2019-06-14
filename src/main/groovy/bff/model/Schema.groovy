@@ -155,3 +155,13 @@ class CompleteProfileInput {
 class IdInput {
     Long id
 }
+
+
+interface SupplierResponse {}
+
+
+
+class GetSupplierInput {
+    String accessToken
+    Integer supplierId
+}

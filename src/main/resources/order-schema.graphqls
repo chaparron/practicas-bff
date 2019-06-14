@@ -228,3 +228,30 @@ input ProductOrderInput {
     quantity: Int
     price: Float
 }
+
+enum SupplierFailedReason {
+    NOT_FOUND
+}
+
+input GetSupplierInput {
+    accessToken: String!
+    supplierId: Int!
+}
+
+type SupplierFailed {
+    reason: SupplierFailedReason
+}
+
+union SupplierResponse = Supplier | SupplierFailed
+
+type SupplierRatingsResponse {
+    headers: Headers
+    content: [Rating]
+}
+
+input GetSupplierRatingsInput {
+    page: Int
+    size: Int
+    accessToken: String!
+    supplierId: Int!
+}

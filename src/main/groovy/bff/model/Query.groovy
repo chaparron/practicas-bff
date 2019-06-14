@@ -138,6 +138,15 @@ class Query implements GraphQLQueryResolver {
         customerBridge.getSupplierOrdersPendingToRate(accessTokenInput.accessToken)
     }
 
+    SupplierResponse getSupplier(GetSupplierInput getSupplierInput) {
+        try {
+            productBridge.getSupplierById(getSupplierInput.accessToken, getSupplierInput.supplierId)
+        } catch (EntityNotFoundException ex) {
+            SupplierFailedReason.NOT_FOUND.build()
+        }
+
+    }
+
 
 }
 

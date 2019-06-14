@@ -139,7 +139,7 @@ class Prices implements PriceResult {
     List<Price> prices
 }
 
-class Supplier {
+class Supplier implements SupplierResponse {
     String accessToken
     Long id
     String name
@@ -255,6 +255,17 @@ class PriceFailed implements PriceResult {
     PriceErrorReason reason
 }
 
+enum SupplierFailedReason {
+    NOT_FOUND
+
+    def build() {
+        new SupplierFailed(reason: this)
+    }
+}
+
+class SupplierFailed implements SupplierResponse {
+    SupplierFailedReason reason
+}
 
 
 

@@ -46,31 +46,16 @@ type Query {
     getSupplierOrdersPendingToRate(input: AccessTokenInput!): [SupplierOrder]
 
     # -- Pending queries
+    getSupplier(input: GetSupplierInput!): SupplierResponse
 
     #rating
 
     #findSupplierOrder
 
-    #findSupplierOrderRating
-
     #findOrderRatings
 
     #findSupplierRatings
 
-
-
-}
-
-type SupplierRatingsResponse {
-    headers: Headers
-    content: [Rating]
-}
-
-input GetSupplierRatingsInput {
-    page: Int
-    size: Int
-    accessToken: String!
-    supplierId: Int!
 }
 
 type Mutation {

@@ -44,6 +44,7 @@ class Main {
                 .add(SignInFailed.class)
                 .add(CustomerRateSupplierFailed.class)
                 .add(CustomerReportRateFailed.class)
+                .add(SupplierFailed.class)
     }
     /**
      *
