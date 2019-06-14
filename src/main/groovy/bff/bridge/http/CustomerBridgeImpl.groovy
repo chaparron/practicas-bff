@@ -379,6 +379,54 @@ class CustomerBridgeImpl implements CustomerBridge {
         response
     }
 
+    @Override
+    List<SupplierOrder> getSupplierOrdersPendingToRate(String accessToken) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/rating/pending")).toUriString()
+        def uri = url.toURI()
+
+        def supplierOrders = http.exchange(
+            RequestEntity.method(HttpMethod.GET, uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer $accessToken")
+                .build()
+            , new ParameterizedTypeReference<List<SupplierOrder>>() {}).body
+
+        supplierOrders.collect {
+            it.accessToken = accessToken
+            it
+        }
+    }
+
+    @Override
+    CustomerRateSupplierResult customerRateSupplier(String accessToken, Integer supplierId, String opinion, Integer score) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/rating/rate/supplier")).toUriString()
+        def uri = url.toURI()
+
+        http.exchange(
+            RequestEntity.method(HttpMethod.POST, uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer $accessToken")
+                .body([accessToken: accessToken, supplierId: supplierId, opinion: opinion, score: score])
+            , Map).body
+
+        Void.SUCCESS
+    }
+
+    @Override
+    CustomerReportRateResult customerReportRate(String accessToken, Integer rateId) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/rating/report/${rateId}")).toUriString()
+        def uri = url.toURI()
+
+        http.exchange(
+            RequestEntity.method(HttpMethod.POST, uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer $accessToken")
+                .build()
+            , Map).body
+
+        Void.SUCCESS
+    }
+
     static def mapCustomerError(RuntimeException exception, String error) {
         if (exception.innerResponse) {
             CustomerErrorReason.valueOf((String) exception.innerResponse).doThrow()

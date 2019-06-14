@@ -7,6 +7,10 @@ interface PlaceOrderResult {}
 
 interface CartResult {}
 
+interface CustomerRateSupplierResult {}
+
+interface CustomerReportRateResult {}
+
 @InheritConstructors
 class OrderUpdateFailed extends RuntimeException implements OrderUpdateResult {
     OrderUpdateReason reason
@@ -121,7 +125,6 @@ class Order {
 class SupplierOrder {
     String accessToken
     Long id
-    String receipt
     SupplierOrderStatus status
     TimestampOutput created
     TimestampOutput updated
@@ -256,3 +259,45 @@ class PlaceOrderInput {
     String accessToken
     List<OrderInput> orders
 }
+
+
+class CustomerRateSupplierInput {
+    String accessToken
+    Integer supplierId
+    Integer score
+    String opinion
+}
+
+class CustomerReportRateInput {
+    String accessToken
+    Integer rateId
+}
+
+enum CustomerReportRateFailedReason {
+    RATE_NOT_FOUND
+
+    def build() {
+        new CustomerReportRateFailed(reason: this)
+    }
+}
+
+class CustomerReportRateFailed implements CustomerReportRateResult {
+    CustomerReportRateFailedReason reason
+}
+
+enum CustomerRateSupplierFailedReason {
+    SUPPLIER_ALREADY_RATED_BY_CUSTOMER,
+    INVALID_RATE,
+    INVALID_SUPPLIER_ORDER,
+    INVALID_SUPPLIER_ID,
+    INVALID_SCORE
+
+    def build () {
+        new CustomerRateSupplierFailed(reason: this)
+    }
+}
+
+class CustomerRateSupplierFailed implements CustomerRateSupplierResult {
+    CustomerRateSupplierFailedReason reason
+}
+

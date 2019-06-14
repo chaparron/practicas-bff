@@ -105,7 +105,6 @@ type Rating {
 type SupplierOrder {
     id:Int
     supplier: Supplier
-    receipt: String
     status: SupplierOrderStatus
     created: TimestampOutput
     updated: TimestampOutput

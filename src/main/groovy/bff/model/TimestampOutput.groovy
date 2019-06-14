@@ -16,6 +16,11 @@ class TimestampOutput {
         if (value)
             DateTimeFormatter.ofPattern(format.pattern()).format(value.toInstant().atZone(ZoneId.of(zoneId)))
     }
+
+    String getIsoutc() {
+        DateTimeFormatter.ofPattern(TimestampFormat.DATE_ISO.pattern()).format(value.toInstant().atZone(ZoneId.of("UTC")))
+    }
+
 }
 
 enum TimestampFormat {
@@ -25,8 +30,7 @@ enum TimestampFormat {
             "yyyMMddZ"
         }
     },
-    DATE_ISO{
-
+    DATE_ISO {
         String pattern() {
             "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         }

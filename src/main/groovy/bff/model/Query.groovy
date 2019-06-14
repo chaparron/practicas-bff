@@ -14,6 +14,7 @@ import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+
 /**
  * TODO: Representa todas las queries a graphql, tener en cuenta de dividirlo en mas de un resolver
  */
@@ -35,11 +36,6 @@ class Query implements GraphQLQueryResolver {
 
     @Autowired
     ValidationsBridge validationsBridge
-
-    Void testPhoneNumber(PhoneInput phoneInput) {
-        authServerBridge.testPhoneNumber(phoneInput.phone)
-        Void.SUCCESS
-    }
 
     Customer myProfile(CustomerInput customerInput) {
         customerBridge.myProfile(customerInput.accessToken)
@@ -137,5 +133,11 @@ class Query implements GraphQLQueryResolver {
     SupplierRatingsResponse getSupplierRatings(GetSupplierRatingsInput supplierRatingsInput) {
         customerBridge.getSupplierRatings(supplierRatingsInput.accessToken, supplierRatingsInput.supplierId, supplierRatingsInput.page, supplierRatingsInput.size)
     }
+
+    List<SupplierOrder> getSupplierOrdersPendingToRate(AccessTokenInput accessTokenInput) {
+        customerBridge.getSupplierOrdersPendingToRate(accessTokenInput.accessToken)
+    }
+
+
 }
 

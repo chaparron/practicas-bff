@@ -18,8 +18,6 @@ interface AuthServerBridge {
 
     void changePassword(String oldPassword, String newPassword, String accessToken)
 
-    void testPhoneNumber(String phoneNumber)
-
     void completeProfile(String phone, String document, String address, String accsstoken,
                          String recaptcha)
 }
