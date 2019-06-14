@@ -41,6 +41,8 @@ class Main {
                 .add(AddAddressFailed.class)
                 .add(DeleteAddressFailed.class)
                 .add(CustomerOrderFindFailed.class)
+                .add(CustomerRateSupplierFailed.class)
+                .add(CustomerReportRateFailed.class)
     }
     /**
      *

@@ -5,6 +5,7 @@ import bff.bridge.AuthServerBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.OrderBridge
 import bff.configuration.BadRequestErrorException
+import bff.configuration.ConflictErrorException
 import bff.configuration.EntityNotFoundException
 import com.coxautodev.graphql.tools.GraphQLMutationResolver
 import graphql.GraphQLError
@@ -168,6 +169,26 @@ class Mutation implements GraphQLMutationResolver {
         }
         catch (BadRequestErrorException ex) {
             PlaceOrderFailedReason.valueOf((String) ex.innerResponse).build()
+        }
+    }
+
+    CustomerRateSupplierResult customerRateSupplier(CustomerRateSupplierInput customerRateSupplierInput) {
+        try {
+            customerBridge.customerRateSupplier(customerRateSupplierInput.accessToken, customerRateSupplierInput.supplierId, customerRateSupplierInput.opinion, customerRateSupplierInput.score)
+        }
+        catch (BadRequestErrorException ex) {
+            CustomerRateSupplierFailedReason.valueOf((String) ex.innerResponse).build()
+        }
+        catch (ConflictErrorException ex) {
+            CustomerRateSupplierFailedReason.valueOf((String) ex.innerResponse).build()
+        }
+    }
+
+    CustomerReportRateResult customerReportRate(CustomerReportRateInput customerReportRateInput) {
+        try {
+            customerBridge.customerReportRate(customerReportRateInput.accessToken, customerReportRateInput.rateId)
+        } catch (EntityNotFoundException ex) {
+            CustomerReportRateFailedReason.RATE_NOT_FOUND.build()
         }
     }
 }

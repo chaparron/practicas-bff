@@ -30,19 +30,20 @@ class OrderBridgeImpl implements OrderBridge {
                 .body(cancelOrderInput)
             , Map).body
 
-
     }
 
     @Override
     CustomerOrdersResponse findCustomerOrders(FindOrdersInput findOrdersInput) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order"))
+            .queryParam("page", findOrdersInput.page)
+            .queryParam("size", findOrdersInput.size)
             .toUriString().toURI()
 
         def r = http.exchange(
             RequestEntity.method(HttpMethod.GET, uri)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer $findOrdersInput.accessToken")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(findOrdersInput)
+                .build()
             , CustomerOrdersResponse).body
 
         r.content.each { it.accessToken = findOrdersInput.accessToken }

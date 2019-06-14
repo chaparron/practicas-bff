@@ -14,6 +14,7 @@ import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+
 /**
  * TODO: Representa todas las queries a graphql, tener en cuenta de dividirlo en mas de un resolver
  */
@@ -136,5 +137,7 @@ class Query implements GraphQLQueryResolver {
     List<SupplierOrder> getSupplierOrdersPendingToRate(AccessTokenInput accessTokenInput) {
         customerBridge.getSupplierOrdersPendingToRate(accessTokenInput.accessToken)
     }
+
+
 }
 

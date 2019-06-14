@@ -40,4 +40,8 @@ interface CustomerBridge {
     SupplierRatingsResponse getSupplierRatings(String accessToken, Long supplierId, Long page, Long size)
 
     List<SupplierOrder> getSupplierOrdersPendingToRate(String accessToken)
+
+    CustomerRateSupplierResult customerRateSupplier(String accessToken, Integer supplierId, String opinion, Integer score)
+
+    CustomerReportRateResult customerReportRate(String accessToken, Integer rateId)
 }

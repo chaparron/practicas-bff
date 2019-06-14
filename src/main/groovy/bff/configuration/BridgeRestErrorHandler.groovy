@@ -60,9 +60,12 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
                 } else if (statusCode == HttpStatus.BAD_REQUEST) {
                     BadRequestErrorException badRequestErrorException = new BadRequestErrorException(response.getStatusText(), new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
                         response.getHeaders(), getResponseBody(response), getCharset(response)))
-                    badRequestErrorException.innerResponse = innerResponse?.message
+
                     if (!badRequestErrorException.innerResponse && innerResponse?.error instanceof List) {
                         badRequestErrorException.innerResponse = innerResponse?.error?.first()
+                    }
+                    else {
+                        badRequestErrorException.innerResponse = innerResponse?.message
                     }
                     throw badRequestErrorException
 

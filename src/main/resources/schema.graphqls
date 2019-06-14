@@ -121,11 +121,53 @@ type Mutation {
     #registro
     #uploadVerificationDocument(input: Document!): UploadDocumentResult
 
-    # customerRateSupplier
+    customerRateSupplier(input: CustomerRateSupplierInput!): CustomerRateSupplierResult
 
-    # reportRate
+    customerReportRate(input: CustomerReportRateInput!): CustomerReportRateResult
 
 }
+
+input CustomerRateSupplierInput {
+    accessToken: String!
+    supplierId: Int!,
+    score: Int!
+    opinion: String
+}
+
+input CustomerReportRateInput {
+    accessToken: String!
+    rateId: Int!
+}
+
+
+enum CustomerRateSupplierFailedReason {
+    SUPPLIER_ALREADY_RATED_BY_CUSTOMER,
+    INVALID_RATE,
+    INVALID_SUPPLIER_ORDER
+    INVALID_SUPPLIER_ID
+    INVALID_SCORE
+
+}
+
+enum CustomerReportRateFailedResult {
+    RATE_NOT_FOUND
+}
+
+type CustomerReportRateFailer {
+    reason: CustomerReportRateFailedResult
+}
+
+type CustomerRateSupplierFailed {
+    reason: CustomerRateSupplierFailedReason
+}
+
+type CustomerReportRateFailed {
+    reason: CustomerReportRateFailedResult
+}
+
+union CustomerRateSupplierResult = Void | CustomerRateSupplierFailed
+
+union CustomerReportRateResult = Void | CustomerReportRateFailed
 
 
 enum PageSize {
