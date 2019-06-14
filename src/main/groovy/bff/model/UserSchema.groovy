@@ -44,7 +44,7 @@ class Credentials {
     String expiresIn
 }
 
-class GenericCredentials implements LoginResult {
+class GenericCredentials implements LoginResult , SignInResult{
     String username
     Credentials credentials
 }

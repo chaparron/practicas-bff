@@ -41,6 +41,7 @@ class Main {
                 .add(AddAddressFailed.class)
                 .add(DeleteAddressFailed.class)
                 .add(CustomerOrderFindFailed.class)
+                .add(SignInFailed.class)
     }
     /**
      *

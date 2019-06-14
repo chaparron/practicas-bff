@@ -32,6 +32,16 @@ enum CustomerErrorReason {
     INVALID_DELIVERY_ADDRESS_COUNT
 }
 
+
+enum SignInFailedReason {
+    PHONE_ALREADY_EXIST
+    LEGAL_ID_ALREADY_EXIST
+    NAME_ALREADY_EXIST
+    USERNAME_ALREADY_EXIST
+    INVALID_ADDRESS
+    INVALID_ADDRESSES
+}
+
 input CustomerInput {
     accessToken: String
 }
@@ -61,6 +71,64 @@ input Address {
     preferred: Boolean
     addressType: AddressMode
     enabled: Boolean
+}
+
+
+input AddressTypeInput {
+    id: ID
+    formatted: String
+    placeId: String
+    addressName: String
+    addressNumber: String
+    city: String
+    postalCode: String
+    lat: Float
+    lon: Float
+    additionalInfo: String
+    preferred: Boolean
+    addressType: AddressMode
+    enabled: Boolean
+}
+
+input UserCredentialsSignInInput {
+    password: String!
+    enabled: Boolean!
+}
+
+
+
+input SignInUserInput {
+    id: ID
+    username: String
+    firstName: String
+    lastName: String
+    phone: String!
+    credentials: UserCredentialsSignInInput!
+}
+
+input RatingScoreInput {
+    average: Float
+    count: Int
+    percentage: Float
+}
+
+input SignInInput {
+    id: ID
+    name: String!
+    enabled: Boolean
+    legalId: String!
+    linePhone: String
+    customerStatus: CustomerStatus
+    user: SignInUserInput!
+    smsVerification: Boolean
+    emailVerification: Boolean
+    addresses: [AddressTypeInput]!
+    verificationDocuments: [VerificationDocumentInput]
+    deliveryPreference: DeliveryPreference!
+    country_id: String
+    rating: RatingScoreInput
+    level: Int
+    missingDocuments: [String]
 }
 
 
@@ -175,4 +243,8 @@ type Customer {
 
 type CustomerErrorFailed {
     customerErrorReason : CustomerErrorReason
+}
+
+type SignInFailed {
+    reason: SignInFailedReason
 }

@@ -9,6 +9,8 @@ interface CustomerBridge {
 
     CustomerUpdateResult updateProfile(CustomerUpdateInput customerUpdateInput)
 
+    Credentials signIn(SignInInput signInInput)
+
     Void verifyEmail(VerifyEmailInput verifyEmailInput)
 
     Void resendVerifyEmail(AccessTokenInput accessTokenInput)

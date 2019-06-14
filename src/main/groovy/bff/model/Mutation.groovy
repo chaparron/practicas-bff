@@ -5,6 +5,7 @@ import bff.bridge.AuthServerBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.OrderBridge
 import bff.configuration.BadRequestErrorException
+import bff.configuration.ConflictErrorException
 import bff.configuration.EntityNotFoundException
 import com.coxautodev.graphql.tools.GraphQLMutationResolver
 import graphql.GraphQLError
@@ -52,6 +53,23 @@ class Mutation implements GraphQLMutationResolver {
     def passwordLogin(String email, String password, Site site) {
         authServerBridge.login(email, password, site)
     }
+
+
+    SignInResult signIn(SignInInput signInInput) {
+        try {
+
+            def rawCredentials = customerBridge.signIn(signInInput)
+            new GenericCredentials(
+                    username: JwtToken.fromString(rawCredentials.accessToken).username,
+                    credentials: rawCredentials
+            )
+
+        } catch(ConflictErrorException conflictErrorException) {
+            SignInFailedReason.valueOf((String) conflictErrorException.innerResponse).build()
+        }
+    }
+
+
 
     CustomerUpdateResult updateProfile(CustomerUpdateInput customerUpdateInput) {
         try {

@@ -69,7 +69,11 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
                 } else if (statusCode == HttpStatus.CONFLICT) {
                     ConflictErrorException conflictErrorException = new ConflictErrorException(response.getStatusText(), new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
                         response.getHeaders(), getResponseBody(response), getCharset(response)))
-                    conflictErrorException.innerResponse = innerResponse?.error
+
+                    conflictErrorException.innerResponse = innerResponse?.message
+                    if(!conflictErrorException.innerResponse && innerResponse?.error instanceof List) {
+                        conflictErrorException.innerResponse = innerResponse?.error?.first
+                    }
                     throw conflictErrorException
                 } else if (statusCode == HttpStatus.NOT_FOUND) {
                     EntityNotFoundException entityNotFoundException = new EntityNotFoundException(response.getStatusText(), new BridgeHttpServerErrorException(statusCode, response.getStatusText(),

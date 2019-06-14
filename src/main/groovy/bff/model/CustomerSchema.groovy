@@ -20,6 +20,8 @@ interface AddressResult {}
 
 interface AddAddressResult {}
 
+interface SignInResult{}
+
 
 enum CustomerStatus {
     PENDING,
@@ -59,13 +61,6 @@ enum CustomerErrorReason {
     }
 }
 
-
-class CustomerErrorFailed implements PreferredAddressResult, VerifyEmailResult, VerifyPhoneResult,
-        ResendVerifyEmailResult, CustomerUpdateResult, ResendVerifySMSResult, UpdateAddressResult,
-        DeleteAddressResult {
-    CustomerErrorReason customerErrorReason
-}
-
 enum AddressFailedReason {
     ADDRESS_NOT_FOUND
 
@@ -73,6 +68,27 @@ enum AddressFailedReason {
         return new AddressFailed(reason: this)
     }
 }
+
+enum SignInFailedReason {
+    PHONE_ALREADY_EXIST,
+    LEGAL_ID_ALREADY_EXIST,
+    NAME_ALREADY_EXIST,
+    USERNAME_ALREADY_EXIST,
+    INVALID_ADDRESS,
+    INVALID_ADDRESSES
+
+    def build() {
+        return new SignInFailed(reason: this)
+    }
+}
+
+//TODO: refactor errores según web_store: Separarlos en enums correspondientes.
+class CustomerErrorFailed implements PreferredAddressResult, VerifyEmailResult, VerifyPhoneResult,
+        ResendVerifyEmailResult, CustomerUpdateResult, ResendVerifySMSResult, UpdateAddressResult,
+        DeleteAddressResult {
+    CustomerErrorReason customerErrorReason
+}
+
 
 class AddressFailed implements AddressResult {
     AddressFailedReason reason
@@ -177,6 +193,10 @@ class DeleteAddressFailed implements DeleteAddressResult {
     DeleteAddressFailedReason reason
 }
 
+class SignInFailed implements SignInResult {
+    SignInFailedReason reason
+}
+
 class CustomerInput {
     String accessToken
 }
@@ -188,6 +208,41 @@ class CustomerUpdateInput {
     DeliveryPreference deliveryPreference
     List<VerificationDocument> verificationDocuments
     String accessToken
+}
+
+
+class UserCredentialsSignInInput {
+    String password
+    Boolean enabled
+}
+
+
+class SignInUserInput {
+    long id
+    String username
+    String firstName
+    String lastName
+    String phone
+    UserCredentialsSignInInput credentials
+}
+
+class SignInInput {
+    Long id
+    String name
+    Boolean enabled
+    String legalId
+    String linePhone
+    CustomerStatus customerStatus
+    SignInUserInput user
+    Boolean smsVerification
+    Boolean emailVerification
+    DeliveryPreference deliveryPreference
+    String country_id
+    RatingScore rating
+    int level
+    List<Address> addresses
+    List<VerificationDocument> verificationDocuments
+    List<String> missingDocuments
 }
 
 class VerifyEmailInput {

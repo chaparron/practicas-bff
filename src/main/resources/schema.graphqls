@@ -117,7 +117,7 @@ type Mutation {
     # -- Pending mutations
 
     #registro
-    #signIn(input: SignInInput!): SignInResult
+    signIn(input: SignInInput!): SignInResult
 
     #registro
     #uploadVerificationDocument(input: Document!): UploadDocumentResult
@@ -339,3 +339,5 @@ union UpdateAddressResult = CustomerErrorFailed | Void
 union DeleteAddressResult = DeleteAddressFailed | Void
 
 union AddAddressResult = AddAddressFailed |  Void
+
+union SignInResult = SignInFailed | GenericCredentials
