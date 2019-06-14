@@ -1,5 +1,7 @@
 type TimestampOutput {
     value(format: TimestampFormat!, zoneId: String!): String!
+
+    isoutc: String!
 }
 
 enum TimestampFormat {
