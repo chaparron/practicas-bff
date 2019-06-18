@@ -90,7 +90,7 @@ enum FeatureType {
 }
 
 type Image {
-    id: Int,
+    id: String,
     originalName: String,
     imageOrder: Int,
     added: TimestampOutput,
