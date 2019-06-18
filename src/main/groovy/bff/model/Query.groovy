@@ -119,7 +119,11 @@ class Query implements GraphQLQueryResolver {
     }
 
     boolean validate(ValidateInput input) {
-        validationsBridge.validate(input)
+        try {
+            return validationsBridge.validate(input)
+        } catch (EntityNotFoundException ex) {
+            false
+        }
     }
 
     boolean customerHasOrders(AccessTokenInput accessTokenInput) {
