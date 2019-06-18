@@ -15,4 +15,6 @@ interface OrderBridge {
     Customer getCustomerOrder(String accessToken, Long orderId)
 
     void placeOrder(String accessToken, List<OrderInput> orders)
+
+    SupplierOrder getSupplierOrder(String accessToken, Long supplierOrderId)
 }

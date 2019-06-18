@@ -148,5 +148,14 @@ class Query implements GraphQLQueryResolver {
     }
 
 
+    SupplierOrderResponse getSupplierOrder(GetSupplierOrderInput supplierOrderInput) {
+        try {
+            orderBridge.getSupplierOrder(supplierOrderInput.accessToken, supplierOrderInput.supplierOrderId)
+        } catch (EntityNotFoundException ex) {
+            SupplierOrderFailedReason.NOT_FOUND.build()
+        }
+    }
+
+
 }
 

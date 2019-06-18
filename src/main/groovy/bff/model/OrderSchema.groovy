@@ -122,7 +122,7 @@ class Order {
     Float total
 }
 
-class SupplierOrder {
+class SupplierOrder implements SupplierOrderResponse {
     String accessToken
     Long id
     SupplierOrderStatus status
@@ -301,3 +301,24 @@ class CustomerRateSupplierFailed implements CustomerRateSupplierResult {
     CustomerRateSupplierFailedReason reason
 }
 
+
+interface SupplierOrderResponse {
+
+}
+
+enum SupplierOrderFailedReason {
+    NOT_FOUND
+
+    def build() {
+        return new SupplierOrderFailed(reason: this)
+    }
+}
+
+class SupplierOrderFailed implements SupplierOrderResponse {
+    SupplierOrderFailedReason reason
+}
+
+class GetSupplierOrderInput {
+    String accessToken
+    Long supplierOrderId
+}

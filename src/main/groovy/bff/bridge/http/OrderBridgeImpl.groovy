@@ -116,4 +116,20 @@ class OrderBridgeImpl implements OrderBridge {
             , Map)
 
     }
+
+    @Override
+    SupplierOrder getSupplierOrder(String accessToken, Long supplierOrderId) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplierOrder/${supplierOrderId}"))
+            .toUriString().toURI()
+
+        def r = http.exchange(
+            RequestEntity.method(HttpMethod.GET, uri)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                .contentType(MediaType.APPLICATION_JSON)
+                .build()
+            , SupplierOrder).body
+
+        r.accessToken = accessToken
+        r
+    }
 }
