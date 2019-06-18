@@ -21,7 +21,13 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
         supplierOrderBridge.getOrderItemsBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
     }
 
-    RatingEntry ratings(SupplierOrder supplierOrder) {
+    RatingEntry rating(SupplierOrder supplierOrder) {
+        if (!supplierOrder.rating && supplierOrder.ratings && supplierOrder.ratings.size() > 0) {
+            return new RatingEntry(
+                SUPPLIER: supplierOrder.ratings.get(RatingOwner.SUPPLIER),
+                CUSTOMER: supplierOrder.ratings.get(RatingOwner.CUSTOMER)
+            )
+        }
         supplierOrder.rating?:supplierOrderBridge.getRatingBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
     }
 
