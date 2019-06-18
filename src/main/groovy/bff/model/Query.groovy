@@ -10,6 +10,7 @@ import bff.configuration.AccessToBackendDeniedException
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
 import com.coxautodev.graphql.tools.GraphQLQueryResolver
+import com.fasterxml.jackson.annotation.JsonProperty.Access
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -101,6 +102,14 @@ class Query implements GraphQLQueryResolver {
             AddressFailedReason.ADDRESS_NOT_FOUND.build()
         }
 
+    }
+
+    AddressResult getPreferredAddress(AccessTokenInput accessTokenInput) {
+        try {
+            customerBridge.getPreferredAddress(accessTokenInput.accessToken)
+        }catch (EntityNotFoundException ex) {
+            AddressFailedReason.ADDRESS_NOT_FOUND.build()
+        }
     }
 
     CartResult refreshCart(RefreshCartInput refreshCartInput) {

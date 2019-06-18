@@ -256,6 +256,18 @@ class CustomerBridgeImpl implements CustomerBridge {
             , Address).body
     }
 
+    Address getPreferredAddress(String accessToken) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/address/preferred"))
+            .toUriString().toURI()
+
+        http.exchange(
+            RequestEntity.method(HttpMethod.GET, uri)
+                .header(AUTHORIZATION, "Bearer $accessToken")
+                .contentType(MediaType.APPLICATION_JSON)
+                .build()
+            , Address).body
+    }
+
     @Override
     Void addAddress(AddressInput addressInput) throws BadRequestErrorException {
         http.exchange(

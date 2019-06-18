@@ -46,4 +46,6 @@ interface CustomerBridge {
     CustomerRateSupplierResult customerRateSupplier(String accessToken, Integer supplierId, String opinion, Integer score)
 
     CustomerReportRateResult customerReportRate(String accessToken, Integer rateId)
+
+    AddressResult getPreferredAddress(String accessToken)
 }

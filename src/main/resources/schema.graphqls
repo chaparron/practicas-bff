@@ -25,6 +25,9 @@ type Query {
     # Get a Customer adderss, according accessToken and id
     getAddress(input: AddressIdInput!): AddressResponse
 
+    getPreferredAddress(input: AccessTokenInput!): AddressResponse
+
+
     # Find customer orders
     findCustomerOrders(input: FindOrdersInput!): CustomerOrdersResult!
 
@@ -47,6 +50,8 @@ type Query {
 
     # -- Pending queries
     getSupplier(input: GetSupplierInput!): SupplierResponse
+
+
 
     #rating
 
