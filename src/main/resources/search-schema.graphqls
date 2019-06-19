@@ -52,13 +52,6 @@ type ProductSearch {
     minUnitsPrice: Price
 }
 
-type Brand {
-    id: Int,
-    name: String,
-    enabled: Boolean,
-    logo: String
-}
-
 type Feature {
     id: Int,
     name: String,

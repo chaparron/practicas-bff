@@ -81,4 +81,12 @@ class BridgeConfiguration {
         )
     }
 
+    @Bean
+    BrandBridge brandBridge() {
+        new BrandBridgeImpl(
+            http: http,
+            root: root
+        )
+    }
+
 }

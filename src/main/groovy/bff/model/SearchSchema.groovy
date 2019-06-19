@@ -172,13 +172,6 @@ class Manufacturer {
 }
 
 
-class Brand {
-    Long id
-    String name
-    Boolean enabled
-    String logo
-}
-
 class Keyword {
     Long id
     String name

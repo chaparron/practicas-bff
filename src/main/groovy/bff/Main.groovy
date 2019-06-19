@@ -46,6 +46,8 @@ class Main {
                 .add(CustomerReportRateFailed.class)
                 .add(SupplierFailed.class)
                 .add(SupplierOrderFailed.class)
+                .add(GetHomeBrandsFailed.class)
+                .add(GetHomeBrandsResult.class)
     }
     /**
      *

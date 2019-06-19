@@ -46,11 +46,13 @@ type Query {
 
     getSupplierRatings(input: GetSupplierRatingsInput!): SupplierRatingsResponse
 
+
     getSupplierOrdersPendingToRate(input: AccessTokenInput!): [SupplierOrder]
 
     # -- Pending queries
     getSupplier(input: GetSupplierInput!): SupplierResponse
 
+    getHomeBrands(input: GetHomeBrandsInput!): GetHomeBrandsResponse
 
 
     #rating
@@ -63,21 +65,6 @@ type Query {
     #findSupplierRatings
 
 }
-
-input GetSupplierOrderInput {
-    accessToken: String!
-    supplierOrderId: Int
-}
-
-enum SupplierOrderFailedReason {
-    NOT_FOUND
-}
-
-type SupplierOrderFailed {
-    reason: SupplierOrderFailedReason
-}
-
-union SupplierOrderResponse = SupplierOrder | SupplierOrderFailed
 
 type Mutation {
     # User login

@@ -255,3 +255,18 @@ input GetSupplierRatingsInput {
     accessToken: String!
     supplierId: Int!
 }
+
+input GetSupplierOrderInput {
+    accessToken: String!
+    supplierOrderId: Int
+}
+
+enum SupplierOrderFailedReason {
+    NOT_FOUND
+}
+
+type SupplierOrderFailed {
+    reason: SupplierOrderFailedReason
+}
+
+union SupplierOrderResponse = SupplierOrder | SupplierOrderFailed
