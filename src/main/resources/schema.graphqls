@@ -287,12 +287,12 @@ type Facet{
 }
 
 type Slices{
-    size: ID!
+    size: Int!
     obj: Slice
 }
 
 type Slice {
-    id: Int!
+    id: String!
     name: String!
     key: String!
 }

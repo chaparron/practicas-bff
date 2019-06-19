@@ -94,7 +94,6 @@ class ProductResolver implements GraphQLResolver<Product> {
         }
         null
 
-        //productBridge.getPriceFromByProductId(product.accessToken, product.id)
     }
 
 }

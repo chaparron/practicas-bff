@@ -5,8 +5,8 @@ input SearchInput {
     sort: String,
     sortDirection: SortInput
     categoryId: Int,
-    page: Int!,
-    size: Int!,
+    page: Int,
+    size: Int,
     brand: Int
 }
 
@@ -45,7 +45,7 @@ type ProductSearch {
     description: String,
     images: [Image],
     created: TimestampOutput,
-    manufacturer: Manufacturer,
+    manufacturer: Manufacturer
     prices: [Price]
     title: String
     priceFrom: Price

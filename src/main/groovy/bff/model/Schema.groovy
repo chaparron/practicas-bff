@@ -87,7 +87,7 @@ class Slices {
 }
 
 class Slice {
-    Long id
+    String id
     String name
     String key
 }
