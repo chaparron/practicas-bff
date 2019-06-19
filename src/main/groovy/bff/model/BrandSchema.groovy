@@ -31,3 +31,8 @@ class GetBrandsInput {
     String accessToken
     String countryId
 }
+
+class CountryConfigurationEntry {
+    String key
+    String value
+}

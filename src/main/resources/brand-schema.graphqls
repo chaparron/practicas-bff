@@ -13,7 +13,7 @@ type GetHomeBrandsResult {
 union GetHomeBrandsResponse = GetHomeBrandsResult | GetHomeBrandsFailed
 
 input GetHomeBrandsInput {
-    accessToken: String!
+    accessToken: String
     countryId: String!
 }
 

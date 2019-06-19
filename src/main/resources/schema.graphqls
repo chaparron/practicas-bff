@@ -8,7 +8,7 @@ type Query {
 
     productDetail(input: ProductInput): ProductResult
 
-    findRootCategories(input: FindRootsInput): [Category]
+    findRootCategories(input: AccessTokenInput!): [Category]
 
     # Verify Email
     verifyEmail(input: VerifyEmailInput!): VerifyEmailResult!
@@ -54,6 +54,7 @@ type Query {
 
     getHomeBrands(input: GetHomeBrandsInput!): GetHomeBrandsResponse
 
+    getCountryConfiguration(countryId: String): [CountryConfigurationEntry]
 
     #rating
 
@@ -64,6 +65,11 @@ type Query {
 
     #findSupplierRatings
 
+}
+
+type CountryConfigurationEntry {
+    key: String
+    value: String
 }
 
 type Mutation {

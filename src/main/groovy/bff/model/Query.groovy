@@ -3,6 +3,8 @@ package bff.model
 
 import bff.bridge.AuthServerBridge
 import bff.bridge.BrandBridge
+import bff.bridge.CategoryBridge
+import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.OrderBridge
 import bff.bridge.ProductBridge
@@ -41,6 +43,9 @@ class Query implements GraphQLQueryResolver {
 
     @Autowired
     ValidationsBridge validationsBridge
+
+    @Autowired
+    CountryBridge countryBridge
 
     Customer myProfile(CustomerInput customerInput) {
         customerBridge.myProfile(customerInput.accessToken)
@@ -185,6 +190,15 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
+    List<CountryConfigurationEntry> getCountryConfiguration(String countryId) {
+        countryBridge.getCountryConfiguration(countryId)
+    }
 
+    @Autowired
+    CategoryBridge categoryBridge
+
+    List<Category> findRootCategories(AccessTokenInput accessTokenInput) {
+        categoryBridge.findRootCategories(accessTokenInput.accessToken)
+    }
 }
 

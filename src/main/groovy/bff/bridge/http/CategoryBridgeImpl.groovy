@@ -1,9 +1,10 @@
 package bff.bridge.http
 
 import bff.bridge.CategoryBridge
+import bff.model.Address
 import bff.model.Category
-import bff.model.FindRootsInput
 import groovy.util.logging.Slf4j
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
@@ -20,22 +21,14 @@ class CategoryBridgeImpl implements CategoryBridge {
     RestOperations http
 
     @Override
-    List<Category> findRootCategories(FindRootsInput searchInput) {
+    List<Category> findRootCategories(String accessToken) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/category/roots"))
 
-        http.<List<Category>> exchange (
+        http.<List<Category>> exchange(
             RequestEntity.method(HttpMethod.GET, uri.toUriString().toURI())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $searchInput.accessToken")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(searchInput)
-            , List).body?.collect {
-            new Category(
-                id: it.id,
-                isLeaf: it.isLeaf,
-                name: it.name,
-                enabled: it.enabled,
-                parentId: it.parentId
-            )
-        }
+                .build()
+            , new ParameterizedTypeReference<List<Category>>() {}).body
     }
 }
