@@ -8,7 +8,7 @@ type Query {
 
     productDetail(input: ProductInput): ProductResult
 
-    findRootCategories(input: FindRootsInput): [Category]
+    findRootCategories(input: AccessTokenInput!): [Category]
 
     # Verify Email
     verifyEmail(input: VerifyEmailInput!): VerifyEmailResult!
@@ -46,12 +46,15 @@ type Query {
 
     getSupplierRatings(input: GetSupplierRatingsInput!): SupplierRatingsResponse
 
+
     getSupplierOrdersPendingToRate(input: AccessTokenInput!): [SupplierOrder]
 
     # -- Pending queries
     getSupplier(input: GetSupplierInput!): SupplierResponse
 
+    getHomeBrands(input: GetHomeBrandsInput!): GetHomeBrandsResponse
 
+    getCountryConfiguration(countryId: String): [CountryConfigurationEntry]
 
     #rating
 
@@ -64,20 +67,10 @@ type Query {
 
 }
 
-input GetSupplierOrderInput {
-    accessToken: String!
-    supplierOrderId: Int
+type CountryConfigurationEntry {
+    key: String
+    value: String
 }
-
-enum SupplierOrderFailedReason {
-    NOT_FOUND
-}
-
-type SupplierOrderFailed {
-    reason: SupplierOrderFailedReason
-}
-
-union SupplierOrderResponse = SupplierOrder | SupplierOrderFailed
 
 type Mutation {
     # User login

@@ -5,7 +5,3 @@ type Category {
     name: String
     enabled: Boolean
 }
-
-input FindRootsInput {
-    accessToken: String!
-}

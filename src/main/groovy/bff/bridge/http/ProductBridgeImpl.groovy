@@ -11,7 +11,6 @@ import bff.model.Image
 import bff.model.Keyword
 import bff.model.Manufacturer
 import bff.model.Price
-import bff.model.Prices
 import bff.model.Product
 import bff.model.Supplier
 import org.springframework.core.ParameterizedTypeReference
@@ -84,58 +83,23 @@ class ProductBridgeImpl implements ProductBridge {
     }
 
     @Override
-    Prices getPricesByProductId(String accessToken, Long productId) {
+    List<Price> getPricesByProductId(String accessToken, Long productId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/product/${productId}/prices"))
             .toUriString().toURI()
 
-        def result = http.exchange(
+        def prices = http.exchange(
             RequestEntity.method(HttpMethod.GET, uri)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                 .contentType(MediaType.APPLICATION_JSON)
                 .build()
-            , List).body
+            , new ParameterizedTypeReference<List<Price>>() {}).body
 
-        List<Price> prices =  result.collect {
-            new Price(
-                accessToken: accessToken,
-                supplierId: it.supplier.id,
-                value: it.value,
-                enabled: it.enabled,
-                minUnits: it.minUnits,
-                maxUnits: it.maxUnits,
-                updated: it.updated
-            )
+        prices.collect {
+            it.accessToken = accessToken
+            it
         }
-
-        new Prices(prices: prices)
-
     }
 
-    @Override
-    Price getPriceFromByProductId(String accessToken, Long productId) {
-        def uri = UriComponentsBuilder.fromUri(root.resolve("/product/${productId}/priceFrom"))
-            .toUriString().toURI()
-
-        http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-            , Price).body
-    }
-
-    @Override
-    Price getMinUnitsPriceByProductId(String accessToken, Long productId) {
-        def uri = UriComponentsBuilder.fromUri(root.resolve("/product/${productId}/minUnitsPrice"))
-            .toUriString().toURI()
-
-        http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-            , Price).body
-    }
 
     @Override
     List<Keyword> getKeywordsByProductId(String accessToken, Long productId) {

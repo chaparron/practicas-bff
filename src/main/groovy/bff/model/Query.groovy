@@ -2,6 +2,9 @@ package bff.model
 
 
 import bff.bridge.AuthServerBridge
+import bff.bridge.BrandBridge
+import bff.bridge.CategoryBridge
+import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.OrderBridge
 import bff.bridge.ProductBridge
@@ -10,10 +13,10 @@ import bff.configuration.AccessToBackendDeniedException
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
 import com.coxautodev.graphql.tools.GraphQLQueryResolver
-import com.fasterxml.jackson.annotation.JsonProperty.Access
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+
 
 
 /**
@@ -36,7 +39,13 @@ class Query implements GraphQLQueryResolver {
     OrderBridge orderBridge
 
     @Autowired
+    BrandBridge brandBridge
+
+    @Autowired
     ValidationsBridge validationsBridge
+
+    @Autowired
+    CountryBridge countryBridge
 
     Customer myProfile(CustomerInput customerInput) {
         customerBridge.myProfile(customerInput.accessToken)
@@ -169,6 +178,27 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
+    GetHomeBrandsResponse getHomeBrands(GetBrandsInput brandsInput) {
+        try {
+            brandBridge.getHome(brandsInput.accessToken, brandsInput.countryId)
+        }
+        catch (EntityNotFoundException ex) {
+            GetBrandsFailedReason.NOT_FOUND.build()
+        }
+        catch (BadRequestErrorException ex) {
+            GetBrandsFailedReason.BAD_REQUEST.build()
+        }
+    }
 
+    List<CountryConfigurationEntry> getCountryConfiguration(String countryId) {
+        countryBridge.getCountryConfiguration(countryId)
+    }
+
+    @Autowired
+    CategoryBridge categoryBridge
+
+    List<Category> findRootCategories(AccessTokenInput accessTokenInput) {
+        categoryBridge.findRootCategories(accessTokenInput.accessToken)
+    }
 }
 

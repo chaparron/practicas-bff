@@ -1,0 +1,27 @@
+type Brand {
+    id: Int,
+    name: String,
+    enabled: Boolean,
+    logo: String
+}
+
+
+type GetHomeBrandsResult {
+    brands: [Brand]
+}
+
+union GetHomeBrandsResponse = GetHomeBrandsResult | GetHomeBrandsFailed
+
+input GetHomeBrandsInput {
+    accessToken: String
+    countryId: String!
+}
+
+enum GetHomeBrandsFailedReason {
+    NOT_FOUND
+    BAD_REQUEST
+}
+
+type GetHomeBrandsFailed {
+    reason: GetHomeBrandsFailedReason
+}
