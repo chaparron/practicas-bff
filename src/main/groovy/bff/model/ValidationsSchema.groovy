@@ -15,7 +15,7 @@ class ValidateInput {
 
 enum ValidationType {
     USER_PHONE("userPhone"),
-    USER_CELL_PHONE("userCellPhone"),
+    USER_CELL_PHONE("userCellphone"),
     CUSTOMER_LEGAL_ID("customerLegalId"),
     CUSTOMER_LINE_PHONE("customerLinePhone"),
     MANUFACTURER_NAME("manufacturerName"),

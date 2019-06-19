@@ -82,12 +82,14 @@ input AddressTypeInput {
     addressNumber: String
     city: String
     postalCode: String
+    state: StateInput
     lat: Float
     lon: Float
     additionalInfo: String
     preferred: Boolean
     addressType: AddressMode
     enabled: Boolean
+    geolocation: String
 }
 
 input UserCredentialsSignInInput {

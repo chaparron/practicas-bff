@@ -240,7 +240,7 @@ class SignInInput {
     String country_id
     RatingScore rating
     int level
-    List<Address> addresses
+    List<AddressInput> addresses
     List<VerificationDocument> verificationDocuments
     List<String> missingDocuments
 }
