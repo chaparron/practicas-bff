@@ -89,7 +89,9 @@ class Product implements ProductResult {
     String description
     TimestampOutput created
     String title
-
+    List<Price> prices
+    Price priceFrom
+    Price minUnitsPrice
     Brand brand
 }
 
@@ -126,8 +128,8 @@ class Image {
 }
 
 class Price {
-    Long supplierId
     String accessToken
+    Supplier supplier
     Double value
     Boolean enabled
     Integer minUnits
