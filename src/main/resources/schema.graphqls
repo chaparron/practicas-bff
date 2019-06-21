@@ -285,12 +285,12 @@ type Facet{
 }
 
 type Slices{
-    size: ID!
+    size: Int!
     obj: Slice
 }
 
 type Slice {
-    id: Int!
+    id: String!
     name: String!
     key: String!
 }
@@ -304,13 +304,6 @@ input UpdateBoostInput {
 input FacetFilter{
     key: String!
     value: String!
-}
-
-type Filter{
-    key: String
-    value: String
-    name: String
-
 }
 
 input ValidateUsernameInput{

@@ -4,9 +4,9 @@ input SearchInput {
     keyword: String,
     sort: String,
     sortDirection: SortInput
-    categoryId: Int,
-    page: Int!,
-    size: Int!,
+    category: Int,
+    page: Int,
+    size: Int,
     brand: Int
 }
 
@@ -19,9 +19,21 @@ enum SortInput {
 type SearchResult {
     header: Header,
     sort: Sort
-    breadCrumb: [BreadCrumb]
-    products: [ProductSearch],
+    breadcrumb: [BreadCrumb]
+    filters: [Filter]
+    products: [ProductSearch]
     facets: [Facet]
+}
+
+type Filter{
+    key: String
+    values: [FilterItem]
+    value: String
+}
+
+type FilterItem {
+    id: Int
+    name: String
 }
 
 type Header {
@@ -45,7 +57,7 @@ type ProductSearch {
     description: String,
     images: [Image],
     created: TimestampOutput,
-    manufacturer: Manufacturer,
+    manufacturer: Manufacturer
     prices: [Price]
     title: String
     priceFrom: Price
@@ -102,6 +114,7 @@ type Supplier {
     minAmount: Int,
     deliveryCost: Float,
     rating: RatingScore,
+    country_id: String
 }
 
 type Coordinate {
@@ -115,6 +128,7 @@ type Manufacturer {
     enabled: Boolean,
     phone: String,
     avatar: String
+    country_id: String
 }
 
 type Price {
@@ -167,6 +181,7 @@ type Product {
     title: String
     priceFrom: Price
     minUnitsPrice: Price
+    country_id: String
 }
 
 type Prices {

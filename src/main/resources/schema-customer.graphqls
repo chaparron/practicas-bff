@@ -241,6 +241,7 @@ type Customer {
     rating: RatingScore
     level: Int
     missingDocuments: [String]
+    country_id: String
 }
 
 type CustomerErrorFailed {
