@@ -56,7 +56,10 @@ class SearchBridgeImpl implements SearchBridge {
             }
         }
         result.filters = search.filters.collect {
-            new Filter(key: it.key, values: it.value.collect { fi -> new FilterItem(id: fi.id, name: fi.name ) })
+            if (it.value instanceof List) {
+              return new Filter(key: it.key, values: it.value.collect { fi -> new FilterItem(id: fi.id, name: fi.name ) })
+            }
+            return new Filter(key: it.key, value: it.value)
         }
 
         result

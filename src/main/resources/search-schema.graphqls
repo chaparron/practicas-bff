@@ -28,6 +28,7 @@ type SearchResult {
 type Filter{
     key: String
     values: [FilterItem]
+    value: String
 }
 
 type FilterItem {

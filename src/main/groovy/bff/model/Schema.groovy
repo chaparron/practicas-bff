@@ -70,6 +70,7 @@ class Void implements ChangePasswordResult,
 class Filter {
     String key
     List<FilterItem> values
+    String value
 }
 
 class FilterItem {
