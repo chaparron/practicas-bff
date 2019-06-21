@@ -48,6 +48,8 @@ class Main {
                 .add(SupplierOrderFailed.class)
                 .add(GetHomeBrandsFailed.class)
                 .add(GetHomeBrandsResult.class)
+                .add(UploadDocumentFailed.class)
+                .add(UploadedDocument.class)
     }
     /**
      *

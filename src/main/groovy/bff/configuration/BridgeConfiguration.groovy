@@ -98,4 +98,12 @@ class BridgeConfiguration {
         )
     }
 
+    @Bean
+    DocumentBridge documentBridge() {
+        new DocumentBridgeImpl(
+                http: http,
+                root: root
+        )
+    }
+
 }

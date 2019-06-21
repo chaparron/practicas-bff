@@ -1,0 +1,19 @@
+enum UploadDocumentReason {
+    UPLOAD_DOCUMENT_FAILED
+}
+
+input Document {
+    encodedFile: String!
+    accessToken: String!
+}
+
+type UploadedDocument {
+    documentId: String
+}
+
+type UploadDocumentFailed {
+    reason: UploadDocumentReason
+}
+
+
+union UploadDocumentResult = UploadDocumentFailed | UploadedDocument

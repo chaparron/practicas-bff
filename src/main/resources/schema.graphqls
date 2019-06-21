@@ -112,13 +112,11 @@ type Mutation {
     # Creates an order
     placeOrder(input: PlaceOrderInput!): PlaceOrderResult
 
-    # -- Pending mutations
-
     #registro
     signIn(input: SignInInput!): SignInResult
 
     #registro
-    #uploadVerificationDocument(input: Document!): UploadDocumentResult
+    uploadVerificationDocument(input: Document!): UploadDocumentResult
 
     customerRateSupplier(input: CustomerRateSupplierInput!): CustomerRateSupplierResult
 

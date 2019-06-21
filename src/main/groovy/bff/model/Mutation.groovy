@@ -3,10 +3,13 @@ package bff.model
 import bff.JwtToken
 import bff.bridge.AuthServerBridge
 import bff.bridge.CustomerBridge
+import bff.bridge.DocumentBridge
 import bff.bridge.OrderBridge
+import bff.model.utils.DataURL
 import bff.configuration.BadRequestErrorException
 import bff.configuration.ConflictErrorException
 import bff.configuration.EntityNotFoundException
+import bff.configuration.NotAcceptableException
 import com.coxautodev.graphql.tools.GraphQLMutationResolver
 import graphql.GraphQLError
 import groovy.util.logging.Slf4j
@@ -25,6 +28,9 @@ class Mutation implements GraphQLMutationResolver {
 
     @Autowired
     OrderBridge orderBridge
+
+    @Autowired
+    DocumentBridge documentBridge
 
     LoginResult login(LoginInput input) {
         try {
@@ -69,6 +75,15 @@ class Mutation implements GraphQLMutationResolver {
         }
     }
 
+
+    UploadDocumentResult uploadVerificationDocument(Document documentInput) {
+        try {
+            def dataUrl = DataURL.from(documentInput.encodedFile)
+            documentBridge.uploadDocument(documentInput.accessToken, dataUrl.decodedContent(), dataUrl.mediaType)
+        } catch(NotAcceptableException notAcceptableException) {
+            UploadDocumentReason.valueOf((String) notAcceptableException.innerResponse).build()
+        }
+    }
 
 
     CustomerUpdateResult updateProfile(CustomerUpdateInput customerUpdateInput) {

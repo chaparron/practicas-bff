@@ -83,6 +83,20 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
                         response.getHeaders(), getResponseBody(response), getCharset(response)))
                     entityNotFoundException.innerResponse = innerResponse?.error
                     throw entityNotFoundException
+
+                } else if (statusCode == HttpStatus.NOT_ACCEPTABLE) {
+                    NotAcceptableException notAcceptableException = new NotAcceptableException(response.getStatusText(),
+                            new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
+                            response.getHeaders(), getResponseBody(response), getCharset(response)))
+
+                    if(!notAcceptableException.innerResponse && innerResponse?.error instanceof List) {
+                        notAcceptableException.innerResponse = innerResponse?.error?.first()
+                    } else {
+                        notAcceptableException.innerResponse = innerResponse?.message
+                    }
+
+                    throw notAcceptableException
+
                 } else {
                     throw new BridgeHttpClientErrorException(statusCode, response.getStatusText(),
                         response.getHeaders(), getResponseBody(response), getCharset(response))
@@ -160,6 +174,11 @@ class EntityNotFoundException extends RuntimeException {
 
 @InheritConstructors
 class ConflictErrorException extends RuntimeException {
+    def innerResponse
+}
+
+@InheritConstructors
+class NotAcceptableException extends RuntimeException {
     def innerResponse
 }
 
