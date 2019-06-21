@@ -46,7 +46,7 @@ class SearchInput {
     String keyword
     String sort
     SortInput sortDirection
-    Integer categoryId
+    Integer category
     Integer page
     Integer size
     Integer brand

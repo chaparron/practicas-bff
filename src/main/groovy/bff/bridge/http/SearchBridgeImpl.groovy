@@ -22,7 +22,7 @@ class SearchBridgeImpl implements SearchBridge {
             .queryParam("keyword", searchInput.keyword)
             .queryParam("sort", searchInput.sort)
             .queryParam("sort_direction", searchInput.sortDirection?.name())
-            .queryParam("category", searchInput.categoryId)
+            .queryParam("category", searchInput.category)
             .queryParam("page", searchInput.page)
             .queryParam("size", searchInput.size)
             .queryParam("brand", searchInput.brand)

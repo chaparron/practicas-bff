@@ -4,7 +4,7 @@ input SearchInput {
     keyword: String,
     sort: String,
     sortDirection: SortInput
-    categoryId: Int,
+    category: Int,
     page: Int,
     size: Int,
     brand: Int
