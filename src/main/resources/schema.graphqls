@@ -308,13 +308,6 @@ input FacetFilter{
     value: String!
 }
 
-type Filter{
-    key: String
-    value: String
-    name: String
-
-}
-
 input ValidateUsernameInput{
     id: ID
     username: String!

@@ -1,8 +1,11 @@
 package bff.bridge.http
 
 import bff.bridge.SearchBridge
+import bff.model.Filter
+import bff.model.FilterItem
 import bff.model.SearchInput
 import bff.model.SearchResult
+import bff.model.SearchResultMapper
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
@@ -33,9 +36,18 @@ class SearchBridgeImpl implements SearchBridge {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer $searchInput.accessToken")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(searchInput)
-            , SearchResult).body
+            , SearchResultMapper).body
 
-        search.products.forEach {
+
+        def result = new SearchResult(
+            products: search.products,
+            breadcrumb: search.breadcrumb,
+            sort: search.sort,
+            header: search.header,
+            facets: search.facets
+        )
+
+        result.products.forEach {
             it.accessToken = searchInput.accessToken
             it.priceFrom.accessToken = searchInput.accessToken
             it.minUnitsPrice.accessToken = searchInput.accessToken
@@ -43,6 +55,11 @@ class SearchBridgeImpl implements SearchBridge {
                 pr.accessToken = searchInput.accessToken
             }
         }
-        search
+        result.filters = search.filters.collect {
+            new Filter(key: it.key, values: it.value.collect { fi -> new FilterItem(id: fi.id, name: fi.name ) })
+        }
+
+        result
+
     }
 }

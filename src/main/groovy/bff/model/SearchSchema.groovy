@@ -13,7 +13,18 @@ interface PriceResult {}
 class SearchResult {
     Header header
     Sort sort
-    List<BreadCrumb> breadCrumb
+    List<BreadCrumb> breadcrumb
+    List<Filter> filters
+    List<ProductSearch> products
+    List<Facet> facets
+}
+
+
+class SearchResultMapper {
+    Header header
+    Sort sort
+    List<BreadCrumb> breadcrumb
+    Map filters
     List<ProductSearch> products
     List<Facet> facets
 }

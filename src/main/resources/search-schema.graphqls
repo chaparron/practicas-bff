@@ -19,9 +19,20 @@ enum SortInput {
 type SearchResult {
     header: Header,
     sort: Sort
-    breadCrumb: [BreadCrumb]
-    products: [ProductSearch],
+    breadcrumb: [BreadCrumb]
+    filters: [Filter]
+    products: [ProductSearch]
     facets: [Facet]
+}
+
+type Filter{
+    key: String
+    values: [FilterItem]
+}
+
+type FilterItem {
+    id: Int
+    name: String
 }
 
 type Header {

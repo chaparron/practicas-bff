@@ -69,9 +69,12 @@ class Void implements ChangePasswordResult,
 
 class Filter {
     String key
-    String name
-    String value
+    List<FilterItem> values
+}
 
+class FilterItem {
+    Integer id
+    String name
 }
 
 class Facet {
