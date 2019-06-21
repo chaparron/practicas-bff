@@ -104,6 +104,7 @@ class Product implements ProductResult {
     Price priceFrom
     Price minUnitsPrice
     Brand brand
+    String country_id
 }
 
 @ToString
@@ -114,6 +115,7 @@ class Category implements Serializable {
     String name
     Boolean enabled
     Boolean isLeaf
+    String country_id
 
     @JsonProperty("parent_id")
     void setParentId(Long parentId) {
@@ -167,6 +169,7 @@ class Supplier implements SupplierResponse {
     Double minAmount
     Double deliveryCost
     RatingScore rating
+    String country_id
 }
 
 class RatingScore {
@@ -181,7 +184,7 @@ class Manufacturer {
     Boolean enabled
     String phone
     String avatar
-
+    String country_id
 }
 
 

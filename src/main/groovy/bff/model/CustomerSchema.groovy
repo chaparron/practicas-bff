@@ -109,6 +109,7 @@ class Customer implements CustomerUpdateResult {
     RatingScore rating
     int level
     List<String> missingDocuments
+    String country_id
 }
 
 class State {

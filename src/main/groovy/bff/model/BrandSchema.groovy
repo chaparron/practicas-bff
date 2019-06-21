@@ -25,6 +25,7 @@ class Brand {
     String name
     Boolean enabled
     String logo
+    String country_id
 }
 
 class GetBrandsInput {

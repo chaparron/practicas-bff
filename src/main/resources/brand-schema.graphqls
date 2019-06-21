@@ -3,6 +3,7 @@ type Brand {
     name: String,
     enabled: Boolean,
     logo: String
+    country_id: String
 }
 
 

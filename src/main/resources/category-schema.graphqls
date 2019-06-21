@@ -4,4 +4,5 @@ type Category {
     isLeaf: Boolean,
     name: String
     enabled: Boolean
+    country_id: String
 }

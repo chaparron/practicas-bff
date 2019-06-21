@@ -114,6 +114,7 @@ type Supplier {
     minAmount: Int,
     deliveryCost: Float,
     rating: RatingScore,
+    country_id: String
 }
 
 type Coordinate {
@@ -127,6 +128,7 @@ type Manufacturer {
     enabled: Boolean,
     phone: String,
     avatar: String
+    country_id: String
 }
 
 type Price {
@@ -179,6 +181,7 @@ type Product {
     title: String
     priceFrom: Price
     minUnitsPrice: Price
+    country_id: String
 }
 
 type Prices {
