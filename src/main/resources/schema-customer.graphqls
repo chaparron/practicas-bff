@@ -48,7 +48,7 @@ input CustomerInput {
 
 input VerificationDocumentInput {
     id: ID
-    documentType: VerificationDocumentType
+    type: VerificationDocumentType
 }
 
 input StateInput {

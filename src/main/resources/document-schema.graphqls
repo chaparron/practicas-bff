@@ -8,7 +8,7 @@ input Document {
 }
 
 type UploadedDocument {
-    documentId: String
+    id: String
 }
 
 type UploadDocumentFailed {

@@ -16,7 +16,7 @@ class UploadDocumentFailed implements UploadDocumentResult {
 }
 
 class UploadedDocument implements UploadDocumentResult {
-    String documentId
+    String id
 }
 
 class Document {

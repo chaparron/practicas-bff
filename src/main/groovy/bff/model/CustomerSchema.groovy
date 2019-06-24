@@ -202,6 +202,11 @@ class CustomerInput {
     String accessToken
 }
 
+class VerificationDocumentInput {
+    String id
+    VerificationDocumentType documentType
+}
+
 class CustomerUpdateInput {
     String phone
     String username

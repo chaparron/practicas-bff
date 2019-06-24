@@ -29,7 +29,7 @@ class DocumentBridgeImpl implements DocumentBridge{
 
         body
         new UploadedDocument(
-                documentId: body.documentId
+                id: body.id
         )
     }
 }
