@@ -177,7 +177,11 @@ enum PlaceOrderFailedReason {
     PRODUCT_PRICES_HAS_CHANGED,
     SUPPLIER_AVAILABILITY_HAS_CHANGED,
     INVALID_SUPPLIER_ORDER,
-    INVALID_ORDER
+    INVALID_ORDER,
+    MIN_UNITS_NO_REACHED,
+    MAX_UNITS_EXCEEDED,
+    MIN_AMOUNT_NO_REACHED,
+    MAX_AMOUNT_EXCEEDED
 
     def build() {
         new PlaceOrderFailed(reason: this)
