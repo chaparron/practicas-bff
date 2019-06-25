@@ -29,6 +29,7 @@ class SearchBridgeImpl implements SearchBridge {
             .queryParam("page", searchInput.page)
             .queryParam("size", searchInput.size)
             .queryParam("brand", searchInput.brand)
+            .queryParam("tag", searchInput.tag)
             .toUriString().toURI()
 
         def search = http.exchange(
