@@ -12,7 +12,6 @@ class Promotion {
     String country_id
 }
 
-class PromotionResponse{
+class PromotionResponse {
     List<Promotion> content
-    Headers headers
 }
