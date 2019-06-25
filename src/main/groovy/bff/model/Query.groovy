@@ -8,6 +8,7 @@ import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.OrderBridge
 import bff.bridge.ProductBridge
+import bff.bridge.PromotionBridge
 import bff.bridge.ValidationsBridge
 import bff.configuration.AccessToBackendDeniedException
 import bff.configuration.BadRequestErrorException
@@ -16,7 +17,6 @@ import com.coxautodev.graphql.tools.GraphQLQueryResolver
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-
 
 
 /**
@@ -46,6 +46,9 @@ class Query implements GraphQLQueryResolver {
 
     @Autowired
     CountryBridge countryBridge
+
+    @Autowired
+    PromotionBridge promotionBridge
 
     Customer myProfile(CustomerInput customerInput) {
         customerBridge.myProfile(customerInput.accessToken)
@@ -116,7 +119,7 @@ class Query implements GraphQLQueryResolver {
     AddressResult getPreferredAddress(AccessTokenInput accessTokenInput) {
         try {
             customerBridge.getPreferredAddress(accessTokenInput.accessToken)
-        }catch (EntityNotFoundException ex) {
+        } catch (EntityNotFoundException ex) {
             AddressFailedReason.ADDRESS_NOT_FOUND.build()
         }
     }
@@ -199,6 +202,10 @@ class Query implements GraphQLQueryResolver {
 
     List<Category> findRootCategories(AccessTokenInput accessTokenInput) {
         categoryBridge.findRootCategories(accessTokenInput.accessToken)
+    }
+
+    PromotionResponse getPromotions(PromotionInput promotionInput) {
+        promotionBridge.getAll(promotionInput)
     }
 }
 

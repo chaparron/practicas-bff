@@ -65,6 +65,8 @@ type Query {
 
     #findSupplierRatings
 
+    getPromotions(input:PromotionInput!) : PromotionResponse
+
 }
 
 type CountryConfigurationEntry {
@@ -351,6 +353,11 @@ type DeleteAddressFailed {
     reason: DeleteAddressFailedResult
 }
 
+type Header{
+    page : Int
+    page_size : Int
+    total : Int
+}
 
 union UsernameRegistrationResult = UsernameRegistrationFailed | Void
 

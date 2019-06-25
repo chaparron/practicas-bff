@@ -106,4 +106,12 @@ class BridgeConfiguration {
         )
     }
 
+    @Bean
+    PromotionBridge promotionBridge() {
+        new PromotionBridgeImpl(
+                http: http,
+                root: root
+        )
+    }
+
 }

@@ -1,0 +1,17 @@
+type Promotion {
+    id: ID,
+    tag: String,
+    banner: String,
+    country_id: String
+}
+
+type PromotionResponse{
+    content: [Promotion],
+    headers: Headers
+}
+
+
+input PromotionInput{
+    accessToken: String
+    country_id: String!
+}

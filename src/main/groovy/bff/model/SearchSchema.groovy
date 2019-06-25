@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
+import javax.validation.constraints.NotNull
+
 
 interface ProductResult{}
 
@@ -61,6 +63,7 @@ class SearchInput {
     Integer page
     Integer size
     Integer brand
+    String tag
 }
 
 enum SortInput {
@@ -275,6 +278,8 @@ enum SupplierFailedReason {
 class SupplierFailed implements SupplierResponse {
     SupplierFailedReason reason
 }
+
+
 
 
 
