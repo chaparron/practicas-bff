@@ -8,6 +8,7 @@ class PromotionInput {
 class Promotion {
     Long id
     String banner
+    String banner_mobile
     String tag
     String country_id
 }
