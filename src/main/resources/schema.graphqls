@@ -353,12 +353,6 @@ type DeleteAddressFailed {
     reason: DeleteAddressFailedResult
 }
 
-type Header{
-    page : Int
-    page_size : Int
-    total : Int
-}
-
 union UsernameRegistrationResult = UsernameRegistrationFailed | Void
 
 union CustomerUpdateResult = CustomerErrorFailed  | Customer
