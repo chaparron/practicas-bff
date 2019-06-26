@@ -13,7 +13,7 @@ input SearchInput {
 }
 
 input FeatureInput {
-    id: String
+    id: String,
     value: String
 }
 
