@@ -3,12 +3,18 @@ input SearchInput {
     addressId: Int,
     keyword: String,
     sort: String,
-    sortDirection: SortInput
+    sortDirection: SortInput,
     category: Int,
     page: Int,
     size: Int,
     brand: Int,
-    tag: String
+    tag: String,
+    featureInput: FeatureInput
+}
+
+input FeatureInput {
+    id: String
+    value: String
 }
 
 enum SortInput {

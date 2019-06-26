@@ -64,6 +64,12 @@ class SearchInput {
     Integer size
     Integer brand
     String tag
+    FeatureInput featureInput
+}
+
+class FeatureInput {
+    String id
+    String value
 }
 
 enum SortInput {
