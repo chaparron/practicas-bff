@@ -2,6 +2,7 @@ type Promotion {
     id: ID,
     tag: String,
     banner: String,
+    banner_mobile: String,
     country_id: String
 }
 
