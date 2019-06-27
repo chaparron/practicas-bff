@@ -30,10 +30,13 @@ class SearchBridgeImpl implements SearchBridge {
             .queryParam("size", searchInput.size)
             .queryParam("brand", searchInput.brand)
             .queryParam("tag", searchInput.tag)
-            .toUriString().toURI()
+
+        searchInput.featureInput?.each {
+            uri.queryParam("feature_${it.id}", it.value)
+        }
 
         def search = http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
+            RequestEntity.method(HttpMethod.GET, uri.toUriString().toURI())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer $searchInput.accessToken")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(searchInput)

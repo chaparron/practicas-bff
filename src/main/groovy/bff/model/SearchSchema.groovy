@@ -64,7 +64,7 @@ class SearchInput {
     Integer size
     Integer brand
     String tag
-    FeatureInput featureInput
+    List<FeatureInput> featureInput
 }
 
 class FeatureInput {
