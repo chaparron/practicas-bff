@@ -31,7 +31,7 @@ class SearchBridgeImpl implements SearchBridge {
             .queryParam("brand", searchInput.brand)
             .queryParam("tag", searchInput.tag)
 
-        searchInput.featureInput?.each {
+        searchInput.features?.each {
             uri.queryParam("feature_${it.id}", it.value)
         }
 
