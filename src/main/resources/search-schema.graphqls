@@ -9,7 +9,7 @@ input SearchInput {
     size: Int,
     brand: Int,
     tag: String,
-    featureInput: [FeatureInput]
+    features: [FeatureInput]
 }
 
 input FeatureInput {
