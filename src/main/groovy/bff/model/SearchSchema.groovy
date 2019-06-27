@@ -157,6 +157,7 @@ class Price {
     Integer minUnits
     Integer maxUnits
     TimestampOutput updated
+    List<Promotion> promotions
 }
 
 class Prices implements PriceResult {

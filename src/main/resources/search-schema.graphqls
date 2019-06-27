@@ -145,6 +145,7 @@ type Price {
     enabled: Boolean,
     maxUnits: Int
     minUnits: Int
+    promotions: [Promotion]
 }
 
 
