@@ -60,6 +60,7 @@ class SearchInput {
     Integer page
     Integer size
     Integer brand
+    Integer supplier
     String tag
     List<FeatureInput> features
 }
@@ -93,6 +94,7 @@ class ProductSearch implements ProductResult {
     List<Price> prices
     Price priceFrom
     Price minUnitsPrice
+    Price highlightedPrice
     String title
 }
 
@@ -109,6 +111,7 @@ class Product implements ProductResult {
     List<Price> prices
     Price priceFrom
     Price minUnitsPrice
+    Price highlightedPrice
     Brand brand
     String country_id
 }
