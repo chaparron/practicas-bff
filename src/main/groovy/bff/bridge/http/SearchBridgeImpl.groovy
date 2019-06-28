@@ -63,6 +63,9 @@ class SearchBridgeImpl implements SearchBridge {
             if (it.value instanceof List) {
               return new Filter(key: it.key, values: it.value.collect { fi -> new FilterItem(id: fi.id, name: fi.name ) })
             }
+            if (it.value instanceof Map ) {
+                return new Filter(key: it.key, values: [new FilterItem(id: it.value.id, name: it.value.name )])
+            }
             return new Filter(key: it.key, value: it.value)
         }
 
