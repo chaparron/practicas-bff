@@ -1,15 +1,6 @@
 package bff.bridge
 
-import bff.model.Brand
-import bff.model.Cart
-import bff.model.Category
-import bff.model.Feature
-import bff.model.Image
-import bff.model.Keyword
-import bff.model.Manufacturer
-import bff.model.Price
-import bff.model.Product
-import bff.model.Supplier
+import bff.model.*
 
 interface ProductBridge {
 

@@ -1,8 +1,8 @@
 package bff.bridge.http
 
 import bff.bridge.ValidationsBridge
-import bff.model.*
-import com.sun.org.apache.xpath.internal.operations.Bool
+import bff.model.ValidateInput
+import bff.model.ValidateUsernameInput
 import groovy.util.logging.Slf4j
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType

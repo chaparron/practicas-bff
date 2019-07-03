@@ -1,7 +1,6 @@
 package bff.bridge.http
 
 import bff.bridge.CategoryBridge
-import bff.model.Address
 import bff.model.Category
 import groovy.util.logging.Slf4j
 import org.springframework.core.ParameterizedTypeReference

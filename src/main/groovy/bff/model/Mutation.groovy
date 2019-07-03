@@ -5,13 +5,12 @@ import bff.bridge.AuthServerBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.DocumentBridge
 import bff.bridge.OrderBridge
-import bff.model.utils.DataURL
 import bff.configuration.BadRequestErrorException
 import bff.configuration.ConflictErrorException
 import bff.configuration.EntityNotFoundException
 import bff.configuration.NotAcceptableException
+import bff.model.utils.DataURL
 import com.coxautodev.graphql.tools.GraphQLMutationResolver
-import graphql.GraphQLError
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component

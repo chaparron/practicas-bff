@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
-import javax.validation.constraints.NotNull
-
-
 interface ProductResult{}
 
 interface PriceResult {}

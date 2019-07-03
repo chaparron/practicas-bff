@@ -1,11 +1,7 @@
 package bff.bridge.http
 
 import bff.bridge.SearchBridge
-import bff.model.Filter
-import bff.model.FilterItem
-import bff.model.SearchInput
-import bff.model.SearchResult
-import bff.model.SearchResultMapper
+import bff.model.*
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType

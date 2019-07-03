@@ -2,7 +2,6 @@ package bff.bridge.http
 
 import bff.bridge.DocumentBridge
 import bff.configuration.NotAcceptableException
-import bff.model.Document
 import bff.model.UploadDocumentResult
 import bff.model.UploadedDocument
 import org.springframework.http.HttpMethod

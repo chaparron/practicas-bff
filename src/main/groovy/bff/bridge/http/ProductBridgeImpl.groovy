@@ -3,16 +3,7 @@ package bff.bridge.http
 import bff.bridge.ProductBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
-import bff.model.Brand
-import bff.model.Cart
-import bff.model.Category
-import bff.model.Feature
-import bff.model.Image
-import bff.model.Keyword
-import bff.model.Manufacturer
-import bff.model.Price
-import bff.model.Product
-import bff.model.Supplier
+import bff.model.*
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -20,7 +11,6 @@ import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
-
 
 class ProductBridgeImpl implements ProductBridge {
 

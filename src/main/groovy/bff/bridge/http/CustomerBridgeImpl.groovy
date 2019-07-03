@@ -14,7 +14,6 @@ import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
 
-
 import static org.springframework.http.HttpHeaders.AUTHORIZATION
 
 @Slf4j

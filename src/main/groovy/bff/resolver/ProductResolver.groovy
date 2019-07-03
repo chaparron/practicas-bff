@@ -3,21 +3,10 @@ package bff.resolver
 import bff.bridge.ProductBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
-import bff.model.Brand
-import bff.model.Category
-import bff.model.Feature
-import bff.model.Image
-import bff.model.Manufacturer
-import bff.model.Price
-import bff.model.PriceErrorReason
-import bff.model.PriceResult
-import bff.model.Prices
-import bff.model.Product
+import bff.model.*
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-
-import javax.swing.text.html.parser.Entity
 
 @Component
 class ProductResolver implements GraphQLResolver<Product> {

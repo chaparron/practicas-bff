@@ -3,12 +3,10 @@ package bff.resolver
 import bff.bridge.CustomerBridge
 import bff.model.Address
 import bff.model.Customer
-import bff.model.User
 import bff.model.VerificationDocument
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-
 
 @Component
 class CustomerResolver implements GraphQLResolver<Customer> {

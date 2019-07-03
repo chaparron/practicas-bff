@@ -1,15 +1,6 @@
 package bff.model
 
-
-import bff.bridge.AuthServerBridge
-import bff.bridge.BrandBridge
-import bff.bridge.CategoryBridge
-import bff.bridge.CountryBridge
-import bff.bridge.CustomerBridge
-import bff.bridge.OrderBridge
-import bff.bridge.ProductBridge
-import bff.bridge.PromotionBridge
-import bff.bridge.ValidationsBridge
+import bff.bridge.*
 import bff.configuration.AccessToBackendDeniedException
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
@@ -17,7 +8,6 @@ import com.coxautodev.graphql.tools.GraphQLQueryResolver
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-
 
 /**
  * TODO: Representa todas las queries a graphql, tener en cuenta de dividirlo en mas de un resolver
