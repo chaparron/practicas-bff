@@ -19,7 +19,8 @@ enum VerificationDocumentType {
 
 enum DeliveryPreference {
     MORNING,
-    AFTERNOON
+    AFTERNOON,
+    NO_PREFERENCE
 }
 
 enum CustomerErrorReason {
