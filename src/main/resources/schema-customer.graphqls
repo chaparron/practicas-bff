@@ -118,20 +118,13 @@ input RatingScoreInput {
 input SignInInput {
     id: ID
     name: String!
-    enabled: Boolean
     legalId: String!
     linePhone: String
-    customerStatus: CustomerStatus
     user: SignInUserInput!
-    smsVerification: Boolean
-    emailVerification: Boolean
     addresses: [AddressTypeInput]!
     verificationDocuments: [VerificationDocumentInput]
     deliveryPreference: DeliveryPreference!
     country_id: String
-    rating: RatingScoreInput
-    level: Int
-    missingDocuments: [String]
 }
 
 

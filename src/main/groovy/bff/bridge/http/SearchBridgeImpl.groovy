@@ -25,6 +25,7 @@ class SearchBridgeImpl implements SearchBridge {
             .queryParam("page", searchInput.page)
             .queryParam("size", searchInput.size)
             .queryParam("brand", searchInput.brand)
+            .queryParam("supplier", searchInput.supplier)
             .queryParam("tag", searchInput.tag)
 
         searchInput.features?.each {
@@ -50,7 +51,11 @@ class SearchBridgeImpl implements SearchBridge {
         result.products.forEach {
             it.accessToken = searchInput.accessToken
             it.priceFrom.accessToken = searchInput.accessToken
-            it.minUnitsPrice.accessToken = searchInput.accessToken
+            it.minUnitsPrice?.accessToken = searchInput.accessToken
+            if (it.highlightedPrice) {
+                it.highlightedPrice?.accessToken = searchInput.accessToken
+            }
+
             it.prices.forEach { pr ->
                 pr.accessToken = searchInput.accessToken
             }

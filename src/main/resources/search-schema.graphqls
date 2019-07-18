@@ -10,6 +10,7 @@ input SearchInput {
     brand: Int,
     tag: String,
     features: [FeatureInput]
+    supplier: Int,
 }
 
 input FeatureInput {
@@ -69,6 +70,7 @@ type ProductSearch {
     title: String
     priceFrom: Price
     minUnitsPrice: Price
+    highlightedPrice: Price
 }
 
 type Feature {
@@ -188,6 +190,7 @@ type Product {
     prices: PriceResult
     title: String
     priceFrom: Price
+    highlightedPrice: Price
     minUnitsPrice: Price
     country_id: String
 }
