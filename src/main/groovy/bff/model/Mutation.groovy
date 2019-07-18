@@ -71,6 +71,8 @@ class Mutation implements GraphQLMutationResolver {
 
         } catch(ConflictErrorException conflictErrorException) {
             SignInFailedReason.valueOf((String) conflictErrorException.innerResponse).build()
+        } catch(BadRequestErrorException conflictErrorException) {
+            SignInFailedReason.valueOf((String) conflictErrorException.innerResponse).build()
         }
     }
 

@@ -64,34 +64,17 @@ class CustomerBridgeImpl implements CustomerBridge {
     @Override
     Credentials signIn(SignInInput signInInput) {
         def body = http.exchange(
-                RequestEntity.method(HttpMethod.POST, root.resolve('/customer'))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(
-                        [
-                                id : signInInput.id,
-                                name: signInInput.name,
-                                enabled: signInInput.enabled,
-                                legalId: signInInput.legalId,
-                                linePhone: signInInput.linePhone,
-                                customerStatus: signInInput.customerStatus,
-                                user: signInInput.user,
-                                smsVerification: signInInput.smsVerification,
-                                emailVerification: signInInput.emailVerification,
-                                addresses: signInInput.addresses,
-                                deliveryPreference: signInInput.deliveryPreference,
-                                rating: signInInput.rating,
-                                country_id: signInInput.country_id,
-                                level: signInInput.level
-
-                        ]
-                ), Map).body
+            RequestEntity.method(HttpMethod.POST, root.resolve('/customer'))
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(signInInput)
+            , Map).body
 
         new Credentials(
-                accessToken: body.access_token,
-                refreshToken: body.refresh_token,
-                tokenType: body.token_type,
-                scope: body.scope,
-                expiresIn: body.expires_in
+            accessToken: body.access_token,
+            refreshToken: body.refresh_token,
+            tokenType: body.token_type,
+            scope: body.scope,
+            expiresIn: body.expires_in
 
         )
 
@@ -288,7 +271,6 @@ class CustomerBridgeImpl implements CustomerBridge {
                     additionalInfo: addressInput.additionalInfo,
                     preferred     : addressInput.preferred,
                     addressType   : addressInput.addressType,
-                    enabled       : addressInput.enabled,
                     geolocation   : addressInput.geolocation
                 ]
             ), Map).body

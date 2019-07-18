@@ -235,20 +235,13 @@ class SignInUserInput {
 class SignInInput {
     Long id
     String name
-    Boolean enabled
     String legalId
     String linePhone
-    CustomerStatus customerStatus
     SignInUserInput user
-    Boolean smsVerification
-    Boolean emailVerification
     DeliveryPreference deliveryPreference
     String country_id
-    RatingScore rating
-    int level
     List<AddressInput> addresses
     List<VerificationDocument> verificationDocuments
-    List<String> missingDocuments
 }
 
 class VerifyEmailInput {
