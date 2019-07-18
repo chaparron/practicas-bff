@@ -15,7 +15,7 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     CustomerBridge customerBridge
 
     List<VerificationDocument> verificationDocuments(Customer customer) {
-        customerBridge.findVerificationDocs(customer.accessToken)
+        customer.verificationDocuments?:customerBridge.findVerificationDocs(customer.accessToken)
     }
 
     List<Address> addresses(Customer customer) {

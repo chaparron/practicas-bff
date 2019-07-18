@@ -102,9 +102,9 @@ input UserCredentialsSignInInput {
 
 input SignInUserInput {
     id: ID
-    username: String
-    firstName: String
-    lastName: String
+    username: String!
+    firstName: String!
+    lastName: String!
     phone: String!
     credentials: UserCredentialsSignInInput!
 }
@@ -194,18 +194,18 @@ type State {
 
 type AddressType {
     id: ID
-    formatted: String
-    placeId: String
+    formatted: String!
+    placeId: String!
     addressName: String
     addressNumber: String
     city: String
     postalCode: String
-    lat: Float
-    lon: Float
+    lat: Float!
+    lon: Float!
     additionalInfo: String
     preferred: Boolean
-    addressType: AddressMode
-    enabled: Boolean
+    addressType: AddressMode!
+    enabled: Boolean!
 }
 
 type VerificationDocument {
