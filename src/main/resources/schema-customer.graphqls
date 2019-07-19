@@ -44,7 +44,7 @@ enum SignInFailedReason {
 }
 
 input CustomerInput {
-    accessToken: String
+    accessToken: String!
 }
 
 input VerificationDocumentInput {
@@ -165,11 +165,9 @@ input AddressIdInput {
 
 input CustomerUpdateInput {
     phone: String
-    username: String
-    address: [Address]
     deliveryPreference: DeliveryPreference
     verificationDocuments: [VerificationDocumentInput]
-    accessToken: String
+    accessToken: String!
 }
 
 input VerifyEmailInput {
@@ -183,8 +181,8 @@ input VerifyPhoneInput {
 }
 
 input PreferredAddressInput {
-    addressId: ID
-    accessToken: String
+    addressId: ID!
+    accessToken: String!
 }
 
 type State {

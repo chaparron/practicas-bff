@@ -217,20 +217,20 @@ type PlaceOrderFailed {
 }
 
 input OrderInput {
-    supplierId: Int
-    deliveryCost: Float,
-    products: [ProductOrderInput]
+    supplierId: Int!
+    deliveryCost: Float,!
+    products: [ProductOrderInput]!
 }
 
 input PlaceOrderInput {
-    accessToken: String
-    orders: [OrderInput]
+    accessToken: String!
+    orders: [OrderInput]!
 }
 
 input ProductOrderInput {
-    productId: Int
-    quantity: Int
-    price: Float
+    productId: Int!
+    quantity: Int!
+    price: Float!
 }
 
 enum SupplierFailedReason {

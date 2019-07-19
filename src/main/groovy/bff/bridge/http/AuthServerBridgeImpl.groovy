@@ -37,7 +37,12 @@ class AuthServerBridgeImpl implements AuthServerBridge {
 
             mapCredentials body
         } catch (AccessToBackendDeniedException accessToBackendDeniedException) {
+
             mapperLoginException(accessToBackendDeniedException.cause.statusCode.name())
+
+            //TODO: terminar el mapping del error en este caso
+        } catch (BadRequestErrorException badRequestErrorException) {
+            badRequestErrorException.printStackTrace()
         }
     }
 

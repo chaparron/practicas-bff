@@ -52,6 +52,7 @@ type Query {
     # -- Pending queries
     getSupplier(input: GetSupplierInput!): SupplierResponse
 
+    #TODO: access token no es necesario
     getHomeBrands(input: GetHomeBrandsInput!): GetHomeBrandsResponse
 
     getCountryConfiguration(countryId: String): [CountryConfigurationEntry]
