@@ -119,9 +119,9 @@ class GenericError implements GraphQLError {
             path: error.path,
             errorType: ErrorType.ValidationError,
             extensions: [
-                message: cause.error.first().message,
-                field:cause.error.first().field,
-                rejectedValue: cause.error.first().rejectedValue
+                message: cause.error.first()?.message,
+                field:cause.error.first()?.field,
+                rejectedValue: cause.error.first()?.rejectedValue
             ]
         )
     }

@@ -63,7 +63,7 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
                         response.getHeaders(), getResponseBody(response), getCharset(response)))
 
 
-                    if (innerResponse.error instanceof List) {
+                    if (innerResponse.error instanceof List && innerResponse.error.first() instanceof Map ) {
                         throw new InvalidBodyException(innerResponse.error)
                     }
 
