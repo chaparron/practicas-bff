@@ -6,7 +6,7 @@ type Query {
 
     search (input: SearchInput!): SearchResult
 
-    productDetail(input: ProductInput): ProductResult
+    productDetail(input: ProductInput!): ProductResult
 
     findRootCategories(input: AccessTokenInput!): [Category]
 
