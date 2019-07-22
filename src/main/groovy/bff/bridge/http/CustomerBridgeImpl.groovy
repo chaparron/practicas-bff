@@ -411,7 +411,7 @@ class CustomerBridgeImpl implements CustomerBridge {
         def uri = url.toURI()
 
         http.exchange(
-            RequestEntity.method(HttpMethod.POST, uri)
+            RequestEntity.method(HttpMethod.PUT, uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer $accessToken")
                 .build()
