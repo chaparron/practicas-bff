@@ -158,8 +158,8 @@ input AddressInput {
 }
 
 input AddressIdInput {
-    address_id : ID
-    accessToken: String
+    address_id : ID!
+    accessToken: String!
 }
 
 
@@ -171,8 +171,8 @@ input CustomerUpdateInput {
 }
 
 input VerifyEmailInput {
-    id: ID
-    token: String
+    id: ID!
+    token: String!
 }
 
 input VerifyPhoneInput {
