@@ -194,7 +194,7 @@ class Query implements GraphQLQueryResolver {
         categoryBridge.findRootCategories(accessTokenInput.accessToken)
     }
 
-    PromotionResponse getPromotions(PromotionInput promotionInput) {
+    PromotionResponse getPromotions(PromotionInput promotionInput!) {
         promotionBridge.getAll(promotionInput)
     }
 }

@@ -12,6 +12,6 @@ type PromotionResponse{
 
 
 input PromotionInput{
-    accessToken: String
+    accessToken: String!
     country_id: String!
 }
