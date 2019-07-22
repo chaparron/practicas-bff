@@ -165,6 +165,7 @@ input AddressIdInput {
 
 input CustomerUpdateInput {
     phone: String
+    username: String
     deliveryPreference: DeliveryPreference
     verificationDocuments: [VerificationDocumentInput]
     accessToken: String!
