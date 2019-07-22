@@ -27,11 +27,11 @@ enum SupplierOrderStatus {
 }
 
 input FindOrdersInput {
-    accessToken: String
+    accessToken: String!
     orderId: Int
-    countryId: Int
-    size: Int,
-    page: Int,
+    countryId: Int!
+    size: Int!,
+    page: Int!,
     status: SupplierOrderStatus
 }
 
@@ -192,7 +192,7 @@ type SupplierPrice {
 }
 
 input RefreshCartInput {
-    accessToken: String
+    accessToken: String!
     products: [Int]
 }
 
@@ -207,7 +207,8 @@ enum PlaceOrderFailedReason {
     MIN_UNITS_NO_REACHED,
     MAX_UNITS_EXCEEDED,
     MIN_AMOUNT_NO_REACHED,
-    MAX_AMOUNT_EXCEEDED
+    MAX_AMOUNT_EXCEEDED,
+    MAX_ALLOWED_PRODUCT_EXCEEDED
 }
 
 union PlaceOrderResult = Void | PlaceOrderFailed
@@ -217,20 +218,20 @@ type PlaceOrderFailed {
 }
 
 input OrderInput {
-    supplierId: Int
-    deliveryCost: Float,
-    products: [ProductOrderInput]
+    supplierId: Int!
+    deliveryCost: Float,!
+    products: [ProductOrderInput]!
 }
 
 input PlaceOrderInput {
-    accessToken: String
-    orders: [OrderInput]
+    accessToken: String!
+    orders: [OrderInput]!
 }
 
 input ProductOrderInput {
-    productId: Int
-    quantity: Int
-    price: Float
+    productId: Int!
+    quantity: Int!
+    price: Float!
 }
 
 enum SupplierFailedReason {

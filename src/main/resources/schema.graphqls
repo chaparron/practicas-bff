@@ -6,7 +6,7 @@ type Query {
 
     search (input: SearchInput!): SearchResult
 
-    productDetail(input: ProductInput): ProductResult
+    productDetail(input: ProductInput!): ProductResult
 
     findRootCategories(input: AccessTokenInput!): [Category]
 
@@ -54,12 +54,12 @@ type Query {
 
     getHomeBrands(input: GetHomeBrandsInput!): GetHomeBrandsResponse
 
-    getCountryConfiguration(countryId: String): [CountryConfigurationEntry]
+    getCountryConfiguration(countryId: String!): [CountryConfigurationEntry]
 
     #rating
 
     # Find supplier order rating
-    getSupplierOrder(input: GetSupplierOrderInput): SupplierOrderResponse
+    getSupplierOrder(input: GetSupplierOrderInput!): SupplierOrderResponse
 
     #findOrderRatings
 

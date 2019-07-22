@@ -152,8 +152,8 @@ type Price {
 
 
 input ProductInput {
-    productId : Int
-    accessToken: String
+    productId : Int!
+    accessToken: String!
 }
 
 

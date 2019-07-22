@@ -44,7 +44,7 @@ enum SignInFailedReason {
 }
 
 input CustomerInput {
-    accessToken: String
+    accessToken: String!
 }
 
 input VerificationDocumentInput {
@@ -102,9 +102,9 @@ input UserCredentialsSignInInput {
 
 input SignInUserInput {
     id: ID
-    username: String
-    firstName: String
-    lastName: String
+    username: String!
+    firstName: String!
+    lastName: String!
     phone: String!
     credentials: UserCredentialsSignInInput!
 }
@@ -158,23 +158,22 @@ input AddressInput {
 }
 
 input AddressIdInput {
-    address_id : ID
-    accessToken: String
+    address_id : ID!
+    accessToken: String!
 }
 
 
 input CustomerUpdateInput {
     phone: String
     username: String
-    address: [Address]
     deliveryPreference: DeliveryPreference
     verificationDocuments: [VerificationDocumentInput]
-    accessToken: String
+    accessToken: String!
 }
 
 input VerifyEmailInput {
-    id: ID
-    token: String
+    id: ID!
+    token: String!
 }
 
 input VerifyPhoneInput {
@@ -183,8 +182,8 @@ input VerifyPhoneInput {
 }
 
 input PreferredAddressInput {
-    addressId: ID
-    accessToken: String
+    addressId: ID!
+    accessToken: String!
 }
 
 type State {
@@ -194,18 +193,18 @@ type State {
 
 type AddressType {
     id: ID
-    formatted: String
-    placeId: String
+    formatted: String!
+    placeId: String!
     addressName: String
     addressNumber: String
     city: String
     postalCode: String
-    lat: Float
-    lon: Float
+    lat: Float!
+    lon: Float!
     additionalInfo: String
     preferred: Boolean
-    addressType: AddressMode
-    enabled: Boolean
+    addressType: AddressMode!
+    enabled: Boolean!
 }
 
 type VerificationDocument {

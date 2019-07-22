@@ -62,7 +62,7 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
                         response.getHeaders(), getResponseBody(response), getCharset(response)))
 
                     if (!badRequestErrorException.innerResponse && innerResponse?.error instanceof List) {
-                        if(innerResponse.message.split(',').size() > 1) {
+                        if(innerResponse.message && innerResponse.message.split(',').size() > 1) {
                             String message = innerResponse.message.split(',').last().trim()
                             message.replace("\"", "")
 
