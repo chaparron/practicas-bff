@@ -43,6 +43,11 @@ class DefaultGraphQLErrorHandler implements GraphQLErrorHandler {
         else filterUnhandledException(cause, error)
     }
 
+    private List<GraphQLError> unwrap(InvalidBodyException cause, ExceptionWhileDataFetching error) {
+        if (exposeAllErrors) [GenericError.exposeInvalidBodyException(cause, error)]
+        else filterUnhandledException(cause, error)
+    }
+
     private List<GraphQLError> unwrap(OAuth2AccessDeniedException cause, ExceptionWhileDataFetching error) {
         [GenericError.exposeGenericError(cause, error)]
     }
@@ -106,6 +111,18 @@ class GenericError implements GraphQLError {
                 extensions: [
                         message: cause.message
                 ]
+        )
+    }
+
+    static GraphQLError exposeInvalidBodyException(InvalidBodyException cause, ExceptionWhileDataFetching error) {
+        new GenericError(
+            path: error.path,
+            errorType: ErrorType.ValidationError,
+            extensions: [
+                message: cause.error.first()?.message,
+                field:cause.error.first()?.field,
+                rejectedValue: cause.error.first()?.rejectedValue
+            ]
         )
     }
 }

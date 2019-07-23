@@ -207,7 +207,7 @@ class Mutation implements GraphQLMutationResolver {
 
     CustomerRateSupplierResult customerRateSupplier(CustomerRateSupplierInput customerRateSupplierInput) {
         try {
-            customerBridge.customerRateSupplier(customerRateSupplierInput.accessToken, customerRateSupplierInput.supplierId, customerRateSupplierInput.opinion, customerRateSupplierInput.score)
+            customerBridge.customerRateSupplier(customerRateSupplierInput.accessToken, customerRateSupplierInput.supplierOrderId, customerRateSupplierInput.supplierId, customerRateSupplierInput.opinion, customerRateSupplierInput.score)
         }
         catch (BadRequestErrorException ex) {
             CustomerRateSupplierFailedReason.valueOf((String) ex.innerResponse).build()

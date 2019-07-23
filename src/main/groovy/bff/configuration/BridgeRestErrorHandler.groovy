@@ -1,5 +1,6 @@
 package bff.configuration
 
+import bff.model.InvalidBodyException
 import graphql.ErrorType
 import graphql.GraphQLError
 import graphql.language.SourceLocation
@@ -60,6 +61,11 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
                 } else if (statusCode == HttpStatus.BAD_REQUEST) {
                     BadRequestErrorException badRequestErrorException = new BadRequestErrorException(response.getStatusText(), new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
                         response.getHeaders(), getResponseBody(response), getCharset(response)))
+
+
+                    if (innerResponse.error instanceof List && innerResponse.error.first() instanceof Map ) {
+                        throw new InvalidBodyException(innerResponse.error)
+                    }
 
                     if (!badRequestErrorException.innerResponse && innerResponse?.error instanceof List) {
                         if(innerResponse.message && innerResponse.message.split(',').size() > 1) {
