@@ -67,6 +67,8 @@ type Query {
 
     getPromotions(input:PromotionInput!) : PromotionResponse
 
+    getStatesByCountry(countryId: String!): [State]
+
 }
 
 type CountryConfigurationEntry {
@@ -117,7 +119,10 @@ type Mutation {
     #registro
     signIn(input: SignInInput!): SignInResult
 
-    #registro
+    # Registro
+    # El upload de imágenes / archivos solo permite los siguientes formatos:
+    # JPEG, PNG, PDF.
+    # En caso contrario, el error será: UNSUPPORTED_MEDIA_TYPE
     uploadVerificationDocument(input: Document!): UploadDocumentResult
 
     customerRateSupplier(input: CustomerRateSupplierInput!): CustomerRateSupplierResult

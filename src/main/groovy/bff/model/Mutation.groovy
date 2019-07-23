@@ -82,7 +82,7 @@ class Mutation implements GraphQLMutationResolver {
             def dataUrl = DataURL.from(documentInput.encodedFile)
             documentBridge.uploadDocument(documentInput.accessToken, dataUrl.decodedContent(), dataUrl.mediaType)
         } catch(NotAcceptableException notAcceptableException) {
-            UploadDocumentReason.valueOf((String) notAcceptableException.innerResponse).build()
+            UploadDocumentReason.UNSUPPORTED_MEDIA_TYPE.build()
         }
     }
 
