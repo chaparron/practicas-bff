@@ -70,7 +70,7 @@ input Address {
     lon: Float
     additionalInfo: String
     preferred: Boolean
-    addressType: AddressMode
+    addressType: AddressMode!
     enabled: Boolean
 }
 
@@ -88,7 +88,7 @@ input AddressTypeInput {
     lon: Float
     additionalInfo: String
     preferred: Boolean
-    addressType: AddressMode
+    addressType: AddressMode!
     enabled: Boolean
     geolocation: String
 }
@@ -151,7 +151,7 @@ input AddressInput {
     lon: Float!
     additionalInfo: String
     preferred: Boolean
-    addressType: AddressMode
+    addressType: AddressMode!
     enabled: Boolean
     accessToken: String!
     geolocation: String
@@ -203,7 +203,7 @@ type AddressType {
     lon: Float!
     additionalInfo: String
     preferred: Boolean
-    addressType: AddressMode!
+    addressType: AddressMode
     enabled: Boolean!
 }
 
