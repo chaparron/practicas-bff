@@ -15,6 +15,7 @@ union GetHomeBrandsResponse = GetHomeBrandsResult | GetHomeBrandsFailed
 
 input GetHomeBrandsInput {
     countryId: String!
+    accessToken: String
 }
 
 enum GetHomeBrandsFailedReason {
