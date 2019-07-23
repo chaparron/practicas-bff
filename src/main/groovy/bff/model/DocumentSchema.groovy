@@ -4,7 +4,7 @@ interface UploadDocumentResult {}
 
 
 enum UploadDocumentReason {
-    UPLOAD_DOCUMENT_FAILED
+    UNSUPPORTED_MEDIA_TYPE
 
     def build() {
         return new UploadDocumentFailed(reason: this)

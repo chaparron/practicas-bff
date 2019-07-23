@@ -99,7 +99,7 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
                     entityNotFoundException.innerResponse = innerResponse?.error
                     throw entityNotFoundException
 
-                } else if (statusCode == HttpStatus.NOT_ACCEPTABLE) {
+                } else if (statusCode == HttpStatus.UNSUPPORTED_MEDIA_TYPE) {
                     NotAcceptableException notAcceptableException = new NotAcceptableException(response.getStatusText(),
                             new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
                             response.getHeaders(), getResponseBody(response), getCharset(response)))
