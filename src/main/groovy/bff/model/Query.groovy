@@ -179,7 +179,7 @@ class Query implements GraphQLQueryResolver {
             GetBrandsFailedReason.NOT_FOUND.build()
         }
         catch (BadRequestErrorException ex) {
-            GetBrandsFailedReason.BAD_REQUEST.build()
+            GetBrandsFailedReason.valueOf((String) ex.innerResponse).build()
         }
     }
 
