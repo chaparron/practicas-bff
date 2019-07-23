@@ -43,7 +43,7 @@ interface CustomerBridge {
 
     List<SupplierOrder> getSupplierOrdersPendingToRate(String accessToken)
 
-    CustomerRateSupplierResult customerRateSupplier(String accessToken, Integer supplierId, String opinion, Integer score)
+    CustomerRateSupplierResult customerRateSupplier(String accessToken, Integer supplierOrderId, Integer supplierId, String opinion, Integer score)
 
     CustomerReportRateResult customerReportRate(String accessToken, Integer rateId)
 

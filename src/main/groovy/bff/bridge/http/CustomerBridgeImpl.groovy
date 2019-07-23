@@ -391,7 +391,7 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    CustomerRateSupplierResult customerRateSupplier(String accessToken, Integer supplierId, String opinion, Integer score) {
+    CustomerRateSupplierResult customerRateSupplier(String accessToken, Integer supplierOrderId, Integer supplierId, String opinion, Integer score) {
         def url = UriComponentsBuilder.fromUri(root.resolve("/rating/rate/supplier")).toUriString()
         def uri = url.toURI()
 
@@ -399,7 +399,13 @@ class CustomerBridgeImpl implements CustomerBridge {
             RequestEntity.method(HttpMethod.POST, uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer $accessToken")
-                .body([accessToken: accessToken, supplierId: supplierId, opinion: opinion, score: score])
+                .body([
+                        accessToken: accessToken,
+                        supplierOrderId: supplierOrderId,
+                        supplierId: supplierId,
+                        opinion: opinion,
+                        score: score
+                    ])
             , Map).body
 
         Void.SUCCESS

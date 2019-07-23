@@ -269,6 +269,7 @@ class PlaceOrderInput {
 class CustomerRateSupplierInput {
     String accessToken
     Integer supplierId
+    Integer supplierOrderId
     Integer score
     String opinion
 }
