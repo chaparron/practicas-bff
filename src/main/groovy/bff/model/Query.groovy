@@ -40,6 +40,9 @@ class Query implements GraphQLQueryResolver {
     @Autowired
     PromotionBridge promotionBridge
 
+    @Autowired
+    StateBridge stateBridge
+
     Customer myProfile(CustomerInput customerInput) {
         customerBridge.myProfile(customerInput.accessToken)
     }
@@ -179,7 +182,7 @@ class Query implements GraphQLQueryResolver {
             GetBrandsFailedReason.NOT_FOUND.build()
         }
         catch (BadRequestErrorException ex) {
-            GetBrandsFailedReason.BAD_REQUEST.build()
+            GetBrandsFailedReason.valueOf((String) ex.innerResponse).build()
         }
     }
 
@@ -196,6 +199,10 @@ class Query implements GraphQLQueryResolver {
 
     PromotionResponse getPromotions(PromotionInput promotionInput) {
         promotionBridge.getAll(promotionInput)
+    }
+
+    List<State> getStatesByCountry(String countryId) {
+        stateBridge.getByCountryId(countryId)
     }
 }
 

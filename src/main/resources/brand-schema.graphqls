@@ -15,11 +15,13 @@ union GetHomeBrandsResponse = GetHomeBrandsResult | GetHomeBrandsFailed
 
 input GetHomeBrandsInput {
     countryId: String!
+    accessToken: String
 }
 
 enum GetHomeBrandsFailedReason {
     NOT_FOUND
     BAD_REQUEST
+    INVALID_COUNTRY_ID
 }
 
 type GetHomeBrandsFailed {
