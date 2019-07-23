@@ -67,6 +67,8 @@ type Query {
 
     getPromotions(input:PromotionInput!) : PromotionResponse
 
+    getStatesByCountry(countryId: String!): [State]
+
 }
 
 type CountryConfigurationEntry {

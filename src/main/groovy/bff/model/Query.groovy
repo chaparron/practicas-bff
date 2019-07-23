@@ -40,6 +40,9 @@ class Query implements GraphQLQueryResolver {
     @Autowired
     PromotionBridge promotionBridge
 
+    @Autowired
+    StateBridge stateBridge
+
     Customer myProfile(CustomerInput customerInput) {
         customerBridge.myProfile(customerInput.accessToken)
     }
@@ -196,6 +199,10 @@ class Query implements GraphQLQueryResolver {
 
     PromotionResponse getPromotions(PromotionInput promotionInput) {
         promotionBridge.getAll(promotionInput)
+    }
+
+    List<State> getStatesByCountry(String countryId) {
+        stateBridge.getByCountryId(countryId)
     }
 }
 
