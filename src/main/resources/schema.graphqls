@@ -67,7 +67,7 @@ type Query {
 
     getPromotions(input:PromotionInput!) : PromotionResponse
 
-    getStatesByCountry(countryId: String!): [State]
+    getStatesByCountry(input: String!): [State]
 
 }
 
