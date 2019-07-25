@@ -5,7 +5,6 @@ import bff.model.OrderItem
 import bff.model.State
 import bff.model.Supplier
 import org.springframework.core.ParameterizedTypeReference
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity

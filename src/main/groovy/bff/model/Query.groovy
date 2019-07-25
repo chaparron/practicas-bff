@@ -1,7 +1,6 @@
 package bff.model
 
 import bff.bridge.*
-import bff.configuration.AccessToBackendDeniedException
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
 import com.coxautodev.graphql.tools.GraphQLQueryResolver
@@ -122,8 +121,6 @@ class Query implements GraphQLQueryResolver {
             productBridge.refreshCart(refreshCartInput.accessToken, refreshCartInput.products)
         } catch (BadRequestErrorException ex) {
             CartFailedReason.valueOf((String) ex.innerResponse).build()
-        } catch (AccessToBackendDeniedException ex) {
-            CartFailedReason.FORBIDDEN.build()
         }
 
     }

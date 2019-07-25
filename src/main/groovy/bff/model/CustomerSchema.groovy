@@ -54,7 +54,9 @@ enum CustomerErrorReason {
     NO_VERIFICATION_SMS_PENDING,
     NOT_ADDRESS_CUSTOMER,
     CANNOT_SET_LEGAL_ADDRESS_AS_PREFERRED,
-    INVALID_DELIVERY_ADDRESS_COUNT
+    INVALID_DELIVERY_ADDRESS_COUNT,
+    INVALID_ADDRESSES,
+    INVALID_STATE
 
     def doThrow() {
         throw new CustomerException(customerErrorReason: this)
@@ -172,6 +174,7 @@ enum AddAddressFailedReason {
     INVALID_POSTAL_CODE,
     INVALID_LATITUDE,
     INVALID_LONGITUDE,
+    CUSTOMER_ALREADY_HAS_LEGAL_ADDRESS
 
 
     def build() {

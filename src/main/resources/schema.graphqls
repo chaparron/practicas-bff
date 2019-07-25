@@ -67,7 +67,7 @@ type Query {
 
     getPromotions(input:PromotionInput!) : PromotionResponse
 
-    getStatesByCountry(countryId: String!): [State]
+    getStatesByCountry(input: String!): [State]
 
 }
 
@@ -344,6 +344,7 @@ enum AddAddressFailedReason {
     INVALID_POSTAL_CODE,
     INVALID_LATITUDE,
     INVALID_LONGITUDE,
+    CUSTOMER_ALREADY_HAS_LEGAL_ADDRESS
 }
 
 
