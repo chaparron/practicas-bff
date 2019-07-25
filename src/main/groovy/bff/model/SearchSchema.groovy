@@ -256,6 +256,10 @@ class ProductInput {
     String accessToken
     Integer productId
 }
+class ProductEanInput {
+    String accessToken
+    String ean
+}
 
 class ProductFailed implements ProductResult {
     ProductErrorReason reason

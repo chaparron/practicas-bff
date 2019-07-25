@@ -47,6 +47,21 @@ class ProductBridgeImpl implements ProductBridge {
     }
 
     @Override
+    Product getProductByEan(String accessToken, String ean) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/product/ean/${ean}"))
+                .toUriString().toURI()
+        def r = http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , Product).body
+
+        r.accessToken = accessToken
+        r
+    }
+
+    @Override
     List<Feature> getFeaturesByProductId(String accessToken, Long productId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/product/${productId}/features"))
             .toUriString().toURI()

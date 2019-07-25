@@ -85,6 +85,18 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
+    ProductResult productDetailByEan(ProductEanInput productInput) {
+        try {
+            productBridge.getProductByEan(productInput.accessToken, productInput.ean)
+        }
+        catch (BadRequestErrorException ex) {
+            ProductErrorReason.valueOf((String) ex.innerResponse).build()
+        }
+        catch (EntityNotFoundException ex) {
+            ProductErrorReason.PRODUCT_NOT_FOUND.build()
+        }
+    }
+
     CustomerOrdersResult findCustomerOrders(FindOrdersInput findOrdersInput) {
         try {
             orderBridge.findCustomerOrders(findOrdersInput)
