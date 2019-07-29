@@ -157,6 +157,12 @@ input ProductInput {
 }
 
 
+input ProductEanInput {
+    ean: String!
+    accessToken: String!
+}
+
+
 enum ProductErrorReason {
     PRODUCT_NOT_FOUND,
     BAD_REQUEST

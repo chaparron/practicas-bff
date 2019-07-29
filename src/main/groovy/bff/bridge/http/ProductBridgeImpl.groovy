@@ -20,27 +20,42 @@ class ProductBridgeImpl implements ProductBridge {
     @Override
     Category getCategoryByProductId(String accessToken, Long productId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/product/${productId}/category"))
-            .toUriString().toURI()
+                .toUriString().toURI()
 
         http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-            , Category).body
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , Category).body
     }
 
     @Override
     Product getProductById(String accessToken, Long productId) throws BadRequestErrorException, EntityNotFoundException {
 
         def uri = UriComponentsBuilder.fromUri(root.resolve("/product/${productId}"))
-            .toUriString().toURI()
+                .toUriString().toURI()
         def r = http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-            , Product).body
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , Product).body
+
+        r.accessToken = accessToken
+        r
+    }
+
+    @Override
+    Product getProductByEan(String accessToken, String ean) throws BadRequestErrorException, EntityNotFoundException {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/product/ean/${ean}"))
+                .toUriString().toURI()
+        def r = http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , Product).body
 
         r.accessToken = accessToken
         r
@@ -49,40 +64,40 @@ class ProductBridgeImpl implements ProductBridge {
     @Override
     List<Feature> getFeaturesByProductId(String accessToken, Long productId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/product/${productId}/features"))
-            .toUriString().toURI()
+                .toUriString().toURI()
 
         http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-            , new ParameterizedTypeReference<List<Feature>>() {}).body
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , new ParameterizedTypeReference<List<Feature>>() {}).body
     }
 
     @Override
     List<Image> getImagesByProductId(String accessToken, Long productId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/product/${productId}/images"))
-            .toUriString().toURI()
+                .toUriString().toURI()
 
         http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-            , new ParameterizedTypeReference<List<Image>>() {}).body
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , new ParameterizedTypeReference<List<Image>>() {}).body
     }
 
     @Override
     List<Price> getPricesByProductId(String accessToken, Long productId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/product/${productId}/prices"))
-            .toUriString().toURI()
+                .toUriString().toURI()
 
         def prices = http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-            , new ParameterizedTypeReference<List<Price>>() {}).body
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , new ParameterizedTypeReference<List<Price>>() {}).body
 
         prices.collect {
             it.accessToken = accessToken
@@ -94,40 +109,40 @@ class ProductBridgeImpl implements ProductBridge {
     @Override
     List<Keyword> getKeywordsByProductId(String accessToken, Long productId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/product/${productId}/keywords"))
-            .toUriString().toURI()
+                .toUriString().toURI()
 
         http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-            , new ParameterizedTypeReference<List<Keyword>>() {}).body
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , new ParameterizedTypeReference<List<Keyword>>() {}).body
     }
 
     @Override
     Supplier getSupplierById(String accessToken, Long supplierId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/supplier/${supplierId}"))
-            .toUriString().toURI()
+                .toUriString().toURI()
 
         http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-            , Supplier).body
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , Supplier).body
     }
 
     @Override
     Cart refreshCart(String accessToken, List<Integer> products) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/product/cart"))
-            .toUriString().toURI()
+                .toUriString().toURI()
 
         def cart = http.exchange(
-            RequestEntity.method(HttpMethod.POST, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body([products_ids: products])
-            , Cart).body
+                RequestEntity.method(HttpMethod.POST, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body([products_ids: products])
+                , Cart).body
 
         cart.availableProducts = cart.products
         cart.availableProducts.each {
@@ -140,27 +155,27 @@ class ProductBridgeImpl implements ProductBridge {
     @Override
     Manufacturer getManufacturerByProductId(String accessToken, Long productId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/product/${productId}/manufacturer"))
-            .toUriString().toURI()
+                .toUriString().toURI()
 
         http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-            , Manufacturer).body
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , Manufacturer).body
     }
 
     @Override
     Brand getBrandByProductId(String accessToken, Long productId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/product/${productId}/brand"))
-            .toUriString().toURI()
+                .toUriString().toURI()
 
         http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-            , Brand).body
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , Brand).body
     }
 
 }

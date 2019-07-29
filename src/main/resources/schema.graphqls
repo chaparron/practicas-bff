@@ -8,6 +8,8 @@ type Query {
 
     productDetail(input: ProductInput!): ProductResult
 
+    productDetailByEan(input: ProductEanInput!): ProductResult
+
     findRootCategories(input: AccessTokenInput!): [Category]
 
     # Verify Email

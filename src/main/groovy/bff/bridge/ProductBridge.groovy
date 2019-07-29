@@ -12,6 +12,8 @@ interface ProductBridge {
 
     Product getProductById(String accessToken, Long productId)
 
+    Product getProductByEan(String accessToken, String ean)
+
     List<Feature> getFeaturesByProductId(String accessToken, Long productId)
 
     List<Image> getImagesByProductId(String accessToken, Long productId)
