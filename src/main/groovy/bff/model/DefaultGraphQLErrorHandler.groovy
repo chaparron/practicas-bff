@@ -12,6 +12,7 @@ import graphql.servlet.GraphQLErrorHandler
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import groovy.util.logging.Slf4j
+import com.newrelic.api.agent.NewRelic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.oauth2.client.resource.OAuth2AccessDeniedException
 import org.springframework.stereotype.Component
@@ -30,6 +31,9 @@ class DefaultGraphQLErrorHandler implements GraphQLErrorHandler {
 
 
     private List<GraphQLError> unwrapGraphQLError(GraphQLError error) {
+        def exceptionMessage = error.getMessage() ?: "Unknown Error"
+        String errorMsg = sprintf("%s caused by: %s", error.errorType.toString(), exceptionMessage)
+        NewRelic.noticeError(errorMsg)
         [error]
     }
 
@@ -39,11 +43,13 @@ class DefaultGraphQLErrorHandler implements GraphQLErrorHandler {
 
 
     private List<GraphQLError> unwrap(Throwable cause, ExceptionWhileDataFetching error) {
+        NewRelic.noticeError(cause)
         if (exposeAllErrors) [GenericError.exposeGenericError(cause, error)]
         else filterUnhandledException(cause, error)
     }
 
     private List<GraphQLError> unwrap(InvalidBodyException cause, ExceptionWhileDataFetching error) {
+        NewRelic.noticeError(cause)
         if (exposeAllErrors) [GenericError.exposeInvalidBodyException(cause, error)]
         else filterUnhandledException(cause, error)
     }
@@ -77,6 +83,7 @@ class DefaultGraphQLErrorHandler implements GraphQLErrorHandler {
 
 
     private List<GraphQLError> unwrap(BackendServerErrorException cause, ExceptionWhileDataFetching error) {
+        NewRelic.noticeError(cause)
         log.debug('unauthorized request caused by', error.exception)
         [new GenericError(message: "Backend server error", path: error.path)]
     }
