@@ -260,18 +260,11 @@ class CustomerBridgeImpl implements CustomerBridge {
                 [
                     id            : addressInput.id,
                     formatted     : addressInput.formatted,
-                    placeId       : addressInput.placeId,
-                    addressName   : addressInput.addressName,
-                    addressNumber : addressInput.addressNumber,
-                    city          : addressInput.city,
-                    postalCode    : addressInput.postalCode,
                     state         : addressInput.state,
                     lat           : addressInput.lat,
                     lon           : addressInput.lon,
                     additionalInfo: addressInput.additionalInfo,
-                    preferred     : addressInput.preferred,
-                    addressType   : addressInput.addressType,
-                    geolocation   : addressInput.geolocation
+                    addressType   : addressInput.addressType
                 ]
             ), Map).body
         return Void.SUCCESS
@@ -291,19 +284,10 @@ class CustomerBridgeImpl implements CustomerBridge {
                     [
                         id            : addressInput.id,
                         formatted     : addressInput.formatted,
-                        placeId       : addressInput.placeId,
-                        addressName   : addressInput.addressName,
-                        addressNumber : addressInput.addressNumber,
-                        city          : addressInput.city,
-                        postalCode    : addressInput.postalCode,
-                        state         : addressInput.state,
                         lat           : addressInput.lat,
                         lon           : addressInput.lon,
                         additionalInfo: addressInput.additionalInfo,
-                        preferred     : addressInput.preferred,
-                        addressType   : addressInput.addressType,
-                        enabled       : addressInput.enabled,
-                        geolocation   : addressInput.geolocation
+                        addressType   : addressInput.addressType
                     ]
                 ), Map).body
             return Void.SUCCESS

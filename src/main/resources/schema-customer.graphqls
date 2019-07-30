@@ -43,6 +43,7 @@ enum SignInFailedReason {
     USERNAME_ALREADY_EXIST
     INVALID_ADDRESS
     INVALID_ADDRESSES
+    INVALID_STATE
 }
 
 input CustomerInput {
@@ -59,40 +60,26 @@ input StateInput {
     name: String
 }
 
-input Address {
-    id: ID
-    formatted: String!
-    placeId: String!
-    addressName: String!
-    addressNumber: String!
-    city: String!
-    postalCode: String!
-    state: StateInput!
-    lat: Float
-    lon: Float
-    additionalInfo: String
-    preferred: Boolean
-    addressType: AddressMode!
-    enabled: Boolean
-}
-
 
 input AddressTypeInput {
     id: ID
-    formatted: String
-    placeId: String
-    addressName: String
-    addressNumber: String
-    city: String
-    postalCode: String
+    formatted: String!
     state: StateInput
-    lat: Float
-    lon: Float
+    lat: Float!
+    lon: Float!
     additionalInfo: String
-    preferred: Boolean
     addressType: AddressMode!
-    enabled: Boolean
-    geolocation: String
+}
+
+input AddressTypeUpsertInput {
+    id: ID
+    formatted: String!
+    state: StateInput
+    lat: Float!
+    lon: Float!
+    additionalInfo: String
+    addressType: AddressMode!
+    accessToken: String!
 }
 
 input UserCredentialsSignInInput {
@@ -140,24 +127,6 @@ type AddressFailed {
 
 union AddressResponse = AddressType | AddressFailed
 
-input AddressInput {
-    id: ID
-    formatted: String!
-    placeId: String!
-    addressName: String
-    addressNumber: String
-    city: String
-    postalCode: String
-    state: StateInput
-    lat: Float!
-    lon: Float!
-    additionalInfo: String
-    preferred: Boolean
-    addressType: AddressMode!
-    enabled: Boolean
-    accessToken: String!
-    geolocation: String
-}
 
 input AddressIdInput {
     address_id : ID!

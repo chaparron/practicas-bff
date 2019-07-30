@@ -77,7 +77,8 @@ enum SignInFailedReason {
     NAME_ALREADY_EXIST,
     USERNAME_ALREADY_EXIST,
     INVALID_ADDRESS,
-    INVALID_ADDRESSES
+    INVALID_ADDRESSES,
+    INVALID_STATE
 
     def build() {
         return new SignInFailed(reason: this)
@@ -145,20 +146,12 @@ class Address implements AddressResult {
 class AddressInput {
     Long id
     String formatted
-    String placeId
-    String addressName
-    String addressNumber
-    String city
-    String postalCode
     State state
     Double lat
     Double lon
     String additionalInfo
-    Boolean preferred
     AddressMode addressType
-    Boolean enabled
     String accessToken
-    String geolocation
 }
 
 class AddressIdInput {
@@ -168,13 +161,11 @@ class AddressIdInput {
 
 enum AddAddressFailedReason {
     INVALID_GOOGLE_ADDRESS,
-    INVALID_GOOGLE_PLACE_ID,
-    INVALID_ADDRESS_NAME,
-    INVALID_ADDRESS_NUMBER,
-    INVALID_POSTAL_CODE,
     INVALID_LATITUDE,
     INVALID_LONGITUDE,
-    CUSTOMER_ALREADY_HAS_LEGAL_ADDRESS
+    CUSTOMER_ALREADY_HAS_LEGAL_ADDRESS,
+    INVALID_STATE,
+    INVALID_ADDRESSES
 
 
     def build() {

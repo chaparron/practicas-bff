@@ -104,13 +104,13 @@ type Mutation {
     setPreferredAddress(input: PreferredAddressInput!): PreferredAddressResult!
 
     # Add new Customer address
-    addAddress(input: AddressInput!): AddAddressResult!
+    addAddress(input: AddressTypeUpsertInput!): AddAddressResult!
 
     # Cancel pending orders
     cancelOrder(input: CancelOrderInput!): CancelOrderResult!
 
     # Update Customer address
-    updateAddress(input: AddressInput!) : UpdateAddressResult!
+    updateAddress(input: AddressTypeUpsertInput!) : UpdateAddressResult!
 
     # Delete Customer address
     deleteAddress(input: AddressIdInput!) : DeleteAddressResult!
@@ -340,13 +340,11 @@ enum ValidationType{
 
 enum AddAddressFailedReason {
     INVALID_GOOGLE_ADDRESS,
-    INVALID_GOOGLE_PLACE_ID,
-    INVALID_ADDRESS_NAME,
-    INVALID_ADDRESS_NUMBER,
-    INVALID_POSTAL_CODE,
     INVALID_LATITUDE,
     INVALID_LONGITUDE,
     CUSTOMER_ALREADY_HAS_LEGAL_ADDRESS
+    INVALID_STATE,
+    INVALID_ADDRESSES
 }
 
 
