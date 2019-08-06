@@ -216,7 +216,7 @@ class Query implements GraphQLQueryResolver {
 
     SummaryResult getOrderPriceSummary(OrderSummaryInput orderSummaryInput) {
         try {
-            orderBridge.getOrderSummary(orderSummaryInput.accessToken, orderSummaryInput.customerId, orderSummaryInput.products)
+            orderBridge.getOrderSummary(orderSummaryInput.accessToken, orderSummaryInput.products)
         }
         catch (EntityNotFoundException ex) {
             SummaryFailedReason.NOT_FOUND.build()

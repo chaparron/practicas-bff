@@ -18,6 +18,6 @@ interface OrderBridge {
 
     SupplierOrder getSupplierOrder(String accessToken, Long supplierOrderId)
 
-    SummaryResult getOrderSummary(String accessToken, Long customerId, List<SupplierCartProductInput> productsSupplier)
+    SummaryResult getOrderSummary(String accessToken, List<SupplierCartProductInput> productsSupplier)
 
 }

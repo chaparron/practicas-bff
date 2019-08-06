@@ -282,7 +282,6 @@ class CustomerReportRateInput {
 
 class OrderSummaryInput {
     String accessToken
-    Long customerId
     List<SupplierCartProductInput> products
 }
 
