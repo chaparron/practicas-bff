@@ -133,4 +133,19 @@ class OrderBridgeImpl implements OrderBridge {
         r.accessToken = accessToken
         r
     }
+
+    @Override
+    OrderSummaryResponse getOrderSummary(String accessToken, Long customerId, List<SupplierCartProductInput> productsSupplier) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/order/summary"))
+            .toUriString().toURI()
+
+        http.exchange(
+            RequestEntity.method(HttpMethod.POST, uri)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body([customerId: customerId, products: productsSupplier])
+            , OrderSummaryResponse).body
+
+
+    }
 }

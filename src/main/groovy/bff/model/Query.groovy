@@ -213,5 +213,14 @@ class Query implements GraphQLQueryResolver {
     List<State> getStatesByCountry(String countryId) {
         stateBridge.getByCountryId(countryId)
     }
+
+    SummaryResult getOrderPriceSummary(OrderSummaryInput orderSummaryInput) {
+        try {
+            orderBridge.getOrderSummary(orderSummaryInput.accessToken, orderSummaryInput.customerId, orderSummaryInput.products)
+        }
+        catch (EntityNotFoundException ex) {
+            SummaryFailedReason.NOT_FOUND.build()
+        }
+    }
 }
 

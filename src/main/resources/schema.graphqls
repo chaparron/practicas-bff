@@ -71,6 +71,8 @@ type Query {
 
     getStatesByCountry(input: String!): [State]
 
+    getOrderPriceSummary(input: OrderSummaryInput!) : SummaryResult
+
 }
 
 type CountryConfigurationEntry {

@@ -2,7 +2,6 @@ package bff.model
 
 import groovy.transform.InheritConstructors
 
-
 interface PlaceOrderResult {}
 
 interface CartResult {}
@@ -10,6 +9,8 @@ interface CartResult {}
 interface CustomerRateSupplierResult {}
 
 interface CustomerReportRateResult {}
+
+interface SummaryResult {}
 
 @InheritConstructors
 class OrderUpdateFailed extends RuntimeException implements OrderUpdateResult {
@@ -277,6 +278,63 @@ class CustomerRateSupplierInput {
 class CustomerReportRateInput {
     String accessToken
     Integer rateId
+}
+
+class OrderSummaryInput {
+    String accessToken
+    Long customerId
+    List<SupplierCartProductInput> products
+}
+
+class SupplierCartProductInput {
+    List<CartItemInput> items
+    Long supplierId
+}
+
+class CartItemInput {
+    Long productId
+    Integer quantity
+}
+
+class SummaryFailed implements SummaryResult {
+    SummaryFailedReason reason
+}
+
+enum SummaryFailedReason {
+    NOT_FOUND
+
+    def build() {
+        new SummaryFailed(reason: this)
+    }
+}
+
+class OrderSummaryResponse implements SummaryResult {
+    List<OrderSummary> orderSummary
+}
+
+class OrderSummary {
+    Supplier supplier
+    List<Summary> summary
+}
+
+class Summary {
+    CartSummaryItemType type
+    Double value
+    MetaEntry meta
+}
+
+enum CartSummaryItemType {
+    IBB,
+    SUBTOTAL,
+    NET_SUBTOTAL,
+    DELIVERY_COST,
+    FINAL_PRODUCT_PRICE,
+    ORDER_TOTAL,
+}
+
+class MetaEntry {
+    String key
+    Object value
 }
 
 enum CustomerReportRateFailedReason {
