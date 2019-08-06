@@ -303,7 +303,7 @@ enum CartSummaryItemType {
 type Summary {
     type: CartSummaryItemType!
     value: Float!
-    meta: MetaEntry
+    metadata: [MetaEntry]
 }
 
 type MetaEntry {

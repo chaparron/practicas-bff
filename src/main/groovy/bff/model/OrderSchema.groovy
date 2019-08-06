@@ -320,7 +320,8 @@ class OrderSummary {
 class Summary {
     CartSummaryItemType type
     Double value
-    MetaEntry meta
+    Map meta
+    List<MetaEntry> metadata
 }
 
 enum CartSummaryItemType {

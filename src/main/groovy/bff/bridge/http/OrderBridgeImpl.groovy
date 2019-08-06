@@ -139,13 +139,25 @@ class OrderBridgeImpl implements OrderBridge {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/order/summary"))
             .toUriString().toURI()
 
-        http.exchange(
+        def response = http.exchange(
             RequestEntity.method(HttpMethod.POST, uri)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body([customerId: customerId, products: productsSupplier])
             , OrderSummaryResponse).body
 
+        response.orderSummary.forEach {
+            it.summary.forEach { sm ->
+                sm.metadata = sm?.meta?.keySet()?.collect { key ->
+                    new MetaEntry(
+                        key: key,
+                        value: sm.meta.get(key)
+                    )
+                }
+            }
+        }
+
+        response
 
     }
 }
