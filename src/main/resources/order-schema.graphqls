@@ -266,6 +266,50 @@ input GetSupplierOrderInput {
     supplierOrderId: Int
 }
 
+input OrderSummaryInput {
+    accessToken: String!
+    products: [SupplierCartProductInput]!
+}
+
+input SupplierCartProductInput {
+    supplierId: Int!
+    items: [CartItemInput]!
+}
+
+input CartItemInput {
+    productId: Int!
+    quantity: Int!
+}
+
+type OrderSummaryResponse {
+    orderSummary: [OrderSummary]
+}
+
+type OrderSummary {
+    supplier: Supplier,
+    summary: [Summary]
+}
+
+enum CartSummaryItemType {
+    IBB,
+    SUBTOTAL,
+    NET_SUBTOTAL,
+    DELIVERY_COST,
+    FINAL_PRODUCT_PRICE,
+    ORDER_TOTAL,
+}
+
+type Summary {
+    type: CartSummaryItemType!
+    value: Float!
+    metadata: [MetaEntry]
+}
+
+type MetaEntry {
+    key: String!,
+    value: String!
+}
+
 enum SupplierOrderFailedReason {
     NOT_FOUND
 }
@@ -274,4 +318,14 @@ type SupplierOrderFailed {
     reason: SupplierOrderFailedReason
 }
 
+enum SummaryFailedReason {
+    NOT_FOUND
+}
+
+type SummaryFailed {
+    reason: SummaryFailedReason
+}
+
 union SupplierOrderResponse = SupplierOrder | SupplierOrderFailed
+
+union SummaryResult = OrderSummaryResponse | SummaryFailed

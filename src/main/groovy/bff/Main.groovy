@@ -50,6 +50,8 @@ class Main {
                 .add(GetHomeBrandsResult.class)
                 .add(UploadDocumentFailed.class)
                 .add(UploadedDocument.class)
+                .add(OrderSummaryResponse.class)
+                .add(SummaryFailed.class)
     }
     /**
      *

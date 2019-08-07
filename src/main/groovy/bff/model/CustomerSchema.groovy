@@ -22,7 +22,6 @@ interface AddAddressResult {}
 
 interface SignInResult{}
 
-
 enum CustomerStatus {
     PENDING,
     REJECTED,

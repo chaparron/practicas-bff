@@ -17,4 +17,7 @@ interface OrderBridge {
     void placeOrder(String accessToken, List<OrderInput> orders)
 
     SupplierOrder getSupplierOrder(String accessToken, Long supplierOrderId)
+
+    SummaryResult getOrderSummary(String accessToken, List<SupplierCartProductInput> productsSupplier)
+
 }
