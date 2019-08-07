@@ -129,11 +129,6 @@ class VerificationDocument {
 class Address implements AddressResult {
     Long id
     String formatted
-    String placeId
-    String addressName
-    String addressNumber
-    String city
-    String postalCode
     Double lat
     Double lon
     String additionalInfo
