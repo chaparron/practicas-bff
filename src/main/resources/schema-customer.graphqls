@@ -165,11 +165,6 @@ type State {
 type AddressType {
     id: ID
     formatted: String!
-    placeId: String!
-    addressName: String
-    addressNumber: String
-    city: String
-    postalCode: String
     lat: Float!
     lon: Float!
     additionalInfo: String
