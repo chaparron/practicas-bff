@@ -1,9 +1,7 @@
 package bff.bridge.http
 
 import bff.bridge.StateBridge
-import bff.model.OrderItem
 import bff.model.State
-import bff.model.Supplier
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
