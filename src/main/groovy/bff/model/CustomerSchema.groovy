@@ -46,6 +46,12 @@ enum DeliveryPreference {
     NO_PREFERENCE
 }
 
+enum DayOfWeekDeliveryPreference {
+    NO_PREFERENCE,
+    WORKING_DAYS,
+    WEEKEND
+}
+
 enum CustomerErrorReason {
     PHONE_ALREADY_EXIST,
     TOKEN_EXPIRED,
@@ -201,6 +207,8 @@ class CustomerUpdateInput {
     String username
     List<Address> address
     DeliveryPreference deliveryPreference
+    DayOfWeekDeliveryPreference dayOfWeekDeliveryPreference
+    String deliveryComment
     List<VerificationDocument> verificationDocuments
     String accessToken
 }
@@ -228,6 +236,8 @@ class SignInInput {
     String linePhone
     SignInUserInput user
     DeliveryPreference deliveryPreference
+    DayOfWeekDeliveryPreference dayOfWeekDeliveryPreference
+    String deliveryComment
     String country_id
     List<AddressInput> addresses
     List<VerificationDocument> verificationDocuments
