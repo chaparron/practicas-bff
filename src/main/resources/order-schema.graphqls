@@ -291,11 +291,17 @@ type OrderSummary {
 }
 
 enum CartSummaryItemType {
+    # IBB Component price
     IBB,
+    # Only product prices
+    PRODUCTS_TOTAL,
+    # Product prices plus product taxes
     SUBTOTAL,
+    # Product prices no IVA
     NET_SUBTOTAL,
+    # Supplier delivery cost
     DELIVERY_COST,
-    FINAL_PRODUCT_PRICE,
+    # Order final price
     ORDER_TOTAL,
 }
 

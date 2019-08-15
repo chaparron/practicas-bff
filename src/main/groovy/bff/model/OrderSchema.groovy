@@ -326,9 +326,9 @@ class Summary {
 enum CartSummaryItemType {
     IBB,
     SUBTOTAL,
+    PRODUCTS_TOTAL,
     NET_SUBTOTAL,
     DELIVERY_COST,
-    FINAL_PRODUCT_PRICE,
     ORDER_TOTAL,
 }
 
