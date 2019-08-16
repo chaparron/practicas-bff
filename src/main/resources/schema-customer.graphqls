@@ -113,9 +113,16 @@ input SignInInput {
     addresses: [AddressTypeInput]!
     verificationDocuments: [VerificationDocumentInput]
     deliveryPreference: DeliveryPreference!
+    dayOfWeekDeliveryPreference: DayOfWeekDeliveryPreference,
+    deliveryComment: String,
     country_id: String
 }
 
+enum DayOfWeekDeliveryPreference {
+    NO_PREFERENCE
+    WORKING_DAYS
+    WEEKEND
+}
 
 enum AddressFailedReason {
     ADDRESS_NOT_FOUND
@@ -138,6 +145,8 @@ input CustomerUpdateInput {
     phone: String
     username: String
     deliveryPreference: DeliveryPreference
+    dayOfWeekDeliveryPreference: DayOfWeekDeliveryPreference
+    deliveryComment: String
     verificationDocuments: [VerificationDocumentInput]
     accessToken: String!
 }
