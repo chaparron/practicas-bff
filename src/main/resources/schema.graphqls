@@ -73,6 +73,8 @@ type Query {
 
     getOrderPriceSummary(input: OrderSummaryInput!) : SummaryResult
 
+    getLandingPromotion(input: GetLandingPromotionInput!): GetLandingPromotionResult
+
 }
 
 type CountryConfigurationEntry {

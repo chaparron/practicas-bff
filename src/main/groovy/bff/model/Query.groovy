@@ -210,6 +210,10 @@ class Query implements GraphQLQueryResolver {
         promotionBridge.getAll(promotionInput)
     }
 
+    PromotionResult getLandingPromotion(GetLandingPromotionInput input) {
+        promotionBridge.getLandingPromotion(input)
+    }
+
     List<State> getStatesByCountry(String countryId) {
         stateBridge.getByCountryId(countryId)
     }
