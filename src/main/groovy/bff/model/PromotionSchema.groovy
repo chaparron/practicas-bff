@@ -16,7 +16,7 @@ class Promotion implements PromotionResult {
     String country_id
 }
 
-class GetLandingPromotionFailed {
+class GetLandingPromotionFailed implements PromotionResult {
     GetLandingPromotionFailedReason reason
 }
 

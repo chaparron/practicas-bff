@@ -211,7 +211,12 @@ class Query implements GraphQLQueryResolver {
     }
 
     PromotionResult getLandingPromotion(GetLandingPromotionInput input) {
-        promotionBridge.getLandingPromotion(input)
+        try {
+            promotionBridge.getLandingPromotion(input)
+        }
+        catch (EntityNotFoundException ex) {
+            GetLandingPromotionFailedReason.NOT_FOUND.build()
+        }
     }
 
     List<State> getStatesByCountry(String countryId) {
