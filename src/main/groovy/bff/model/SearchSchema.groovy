@@ -178,8 +178,17 @@ class Supplier implements SupplierResponse {
     Double maxAmount
     Double minAmount
     Double deliveryCost
+    List<DeliveryZone> deliveryZones
     RatingScore rating
     String country_id
+
+}
+
+class DeliveryZone {
+    Long id
+    Double minAmount
+    Double maxAmount
+    Double deliveryCost
 }
 
 class RatingScore {

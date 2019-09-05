@@ -219,7 +219,7 @@ type PlaceOrderFailed {
 
 input OrderInput {
     supplierId: Int!
-    deliveryCost: Float,!
+    deliveryCost: Float!
     products: [ProductOrderInput]!
 }
 
