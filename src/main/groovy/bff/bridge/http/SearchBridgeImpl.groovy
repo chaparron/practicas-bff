@@ -41,7 +41,15 @@ class SearchBridgeImpl implements SearchBridge {
 
 
         def result = new SearchResult(
-            products: search.products,
+            products: search.products.collect {
+                it.prices.forEach { pr ->
+                    def dz = pr.supplier?.deliveryZones?.first()
+                    pr.supplier.minAmount = dz?.minAmount
+                    pr.supplier.maxAmount = dz.maxAmount
+                    pr.supplier.deliveryCost = dz?.deliveryCost
+                }
+                it
+            },
             breadcrumb: search.breadcrumb,
             sort: search.sort,
             header: search.header,
