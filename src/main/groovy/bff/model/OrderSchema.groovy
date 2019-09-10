@@ -282,6 +282,7 @@ class CustomerReportRateInput {
 
 class OrderSummaryInput {
     String accessToken
+    String wabiPayAccessToken
     List<SupplierCartProductInput> products
 }
 
