@@ -332,6 +332,7 @@ enum CartSummaryItemType {
     NET_SUBTOTAL,
     DELIVERY_COST,
     ORDER_TOTAL,
+    CREDITS_USED
 }
 
 class MetaEntry {
