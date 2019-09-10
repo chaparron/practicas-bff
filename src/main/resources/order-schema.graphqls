@@ -225,6 +225,7 @@ input OrderInput {
 
 input PlaceOrderInput {
     accessToken: String!
+    wabiPayAccessToken: String
     orders: [OrderInput]!
 }
 

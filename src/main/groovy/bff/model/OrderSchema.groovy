@@ -263,6 +263,7 @@ class OrderInput {
 
 class PlaceOrderInput {
     String accessToken
+    String wabiPayAccessToken
     List<OrderInput> orders
 }
 

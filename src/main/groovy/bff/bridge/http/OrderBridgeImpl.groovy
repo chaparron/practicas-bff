@@ -105,7 +105,7 @@ class OrderBridgeImpl implements OrderBridge {
     }
 
     @Override
-    void placeOrder(String accessToken, List<OrderInput> orders) {
+    void placeOrder(String accessToken, List<OrderInput> orders, String wabiPayAccessToken) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/order"))
                 .toUriString().toURI()
 
@@ -113,7 +113,7 @@ class OrderBridgeImpl implements OrderBridge {
                 RequestEntity.method(HttpMethod.POST, uri)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body([orders: orders])
+                        .body([orders: orders, wabipay_order_details: [customer_wabipay_token: wabiPayAccessToken, use_wabipay: wabiPayAccessToken != null]])
                 , Map)
 
     }
