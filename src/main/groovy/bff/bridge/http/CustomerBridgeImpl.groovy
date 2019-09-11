@@ -46,11 +46,13 @@ class CustomerBridgeImpl implements CustomerBridge {
                     .header(HttpHeaders.AUTHORIZATION, "Bearer $customerUpdateInput.accessToken")
                     .body(
                     [
-                        phone                : customerUpdateInput.phone,
-                        username             : customerUpdateInput.username,
-                        adress               : customerUpdateInput.address,
-                        deliveryPreference   : customerUpdateInput.deliveryPreference,
-                        verificationDocuments: customerUpdateInput.verificationDocuments
+                        phone                      : customerUpdateInput.phone,
+                        username                   : customerUpdateInput.username,
+                        adress                     : customerUpdateInput.address,
+                        deliveryPreference         : customerUpdateInput.deliveryPreference,
+                        dayOfWeekDeliveryPreference: customerUpdateInput.dayOfWeekDeliveryPreference,
+                        deliveryComment            : customerUpdateInput.deliveryComment,
+                        verificationDocuments      : customerUpdateInput.verificationDocuments
                     ]
                 ), Customer).body
             body.accessToken = customerUpdateInput.accessToken
@@ -403,12 +405,12 @@ class CustomerBridgeImpl implements CustomerBridge {
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer $accessToken")
                 .body([
-                        accessToken: accessToken,
-                        supplierOrderId: supplierOrderId,
-                        supplierId: supplierId,
-                        opinion: opinion,
-                        score: score
-                    ])
+                accessToken    : accessToken,
+                supplierOrderId: supplierOrderId,
+                supplierId     : supplierId,
+                opinion        : opinion,
+                score          : score
+            ])
             , Map).body
 
         Void.SUCCESS

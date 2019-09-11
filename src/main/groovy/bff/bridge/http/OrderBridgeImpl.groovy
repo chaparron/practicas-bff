@@ -61,17 +61,17 @@ class OrderBridgeImpl implements OrderBridge {
     @Override
     CustomerOrdersResponse findCustomerOrders(FindOrdersInput findOrdersInput) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order"))
-            .queryParam("page", findOrdersInput.page)
-            .queryParam("size", findOrdersInput.size)
-            .queryParam("country_id", findOrdersInput.countryId)
-            .toUriString().toURI()
+                .queryParam("page", findOrdersInput.page)
+                .queryParam("size", findOrdersInput.size)
+                .queryParam("country_id", findOrdersInput.countryId)
+                .toUriString().toURI()
 
         def r = http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $findOrdersInput.accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-            , CustomerOrdersResponse).body
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $findOrdersInput.accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , CustomerOrdersResponse).body
 
         r.content.each { it.accessToken = findOrdersInput.accessToken }
         r
@@ -81,34 +81,34 @@ class OrderBridgeImpl implements OrderBridge {
     @Override
     Address getDeliveryAddress(String accessToken, Long orderId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/${orderId}/address"))
-            .toUriString().toURI()
+                .toUriString().toURI()
 
         http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-            , Address).body
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , Address).body
     }
 
     @Override
     List<SupplierOrder> getSupplierOrders(String accessToken, Long orderId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/${orderId}/supplierOrder"))
-            .toUriString().toURI()
+                .toUriString().toURI()
 
         def param = new ParameterizedTypeReference<List<SupplierOrder>>() {}
         def r = http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-            , param).body
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , param).body
 
         r.each { it.accessToken = accessToken }
         r.each {
             it.rating = new RatingEntry(
-                SUPPLIER: it.ratings?.get(RatingOwner.SUPPLIER),
-                CUSTOMER: it.ratings?.get(RatingOwner.CUSTOMER)
+                    SUPPLIER: it.ratings?.get(RatingOwner.SUPPLIER),
+                    CUSTOMER: it.ratings?.get(RatingOwner.CUSTOMER)
             )
         }
         r
@@ -117,67 +117,67 @@ class OrderBridgeImpl implements OrderBridge {
     @Override
     Customer getCustomerOrder(String accessToken, Long orderId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/${orderId}/customer"))
-            .toUriString().toURI()
+                .toUriString().toURI()
 
         def r = http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-            , Customer).body
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , Customer).body
 
         r.accessToken = accessToken
         r
     }
 
     @Override
-    void placeOrder(String accessToken, List<OrderInput> orders) {
+    void placeOrder(String accessToken, List<OrderInput> orders, String wabiPayAccessToken) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/order"))
-            .toUriString().toURI()
+                .toUriString().toURI()
 
         http.exchange(
-            RequestEntity.method(HttpMethod.POST, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body([orders: orders])
-            , Map)
+                RequestEntity.method(HttpMethod.POST, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body([orders: orders, wabipay_order_details: [customer_wabipay_token: wabiPayAccessToken, use_wabipay: wabiPayAccessToken != null]])
+                , Map)
 
     }
 
     @Override
     SupplierOrder getSupplierOrder(String accessToken, Long supplierOrderId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplierOrder/${supplierOrderId}"))
-            .toUriString().toURI()
+                .toUriString().toURI()
 
         def r = http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-            , SupplierOrder).body
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , SupplierOrder).body
 
         r.accessToken = accessToken
         r
     }
 
     @Override
-    OrderSummaryResponse getOrderSummary(String accessToken, List<SupplierCartProductInput> productsSupplier) {
+    OrderSummaryResponse getOrderSummary(String accessToken, List<SupplierCartProductInput> productsSupplier, String wabiPayAccessToken) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/order/summary"))
-            .toUriString().toURI()
+                .toUriString().toURI()
 
         def response = http.exchange(
-            RequestEntity.method(HttpMethod.POST, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body([products: productsSupplier])
-            , OrderSummaryResponse).body
+                RequestEntity.method(HttpMethod.POST, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body([products: productsSupplier, wabipay_order_details: [customer_wabipay_token: wabiPayAccessToken, use_wabipay: wabiPayAccessToken != null]])
+                , OrderSummaryResponse).body
 
         response.orderSummary.forEach {
             it.summary.forEach { sm ->
                 sm.metadata = sm?.meta?.keySet()?.collect { key ->
                     new MetaEntry(
-                        key: key,
-                        value: sm.meta.get(key)
+                            key: key,
+                            value: sm.meta.get(key)
                     )
                 }
             }

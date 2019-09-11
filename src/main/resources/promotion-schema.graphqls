@@ -6,7 +6,7 @@ type Promotion {
     country_id: String
 }
 
-type PromotionResponse{
+type PromotionResponse {
     content: [Promotion]
 }
 
@@ -15,3 +15,19 @@ input PromotionInput{
     accessToken: String!
     country_id: String!
 }
+
+
+input GetLandingPromotionInput {
+    accessToken: String!
+    country_id: String!
+}
+
+enum GetLandingPromotionFailedReason {
+    NOT_FOUND
+}
+
+type GetLandingPromotionFailed {
+    reason: GetLandingPromotionFailedReason
+}
+
+union GetLandingPromotionResult = Promotion | GetLandingPromotionFailed

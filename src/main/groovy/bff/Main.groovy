@@ -53,6 +53,8 @@ class Main {
                 .add(OrderSummaryResponse.class)
                 .add(SummaryFailed.class)
                 .add(FinalOrderState.class)
+                .add(Promotion.class)
+                .add(GetLandingPromotionFailed.class)
     }
     /**
      *

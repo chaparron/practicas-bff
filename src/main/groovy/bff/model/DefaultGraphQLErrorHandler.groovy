@@ -4,6 +4,7 @@ import bff.InvalidToken
 import bff.configuration.AccessToBackendDeniedException
 import bff.configuration.BackendServerErrorException
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.newrelic.api.agent.NewRelic
 import graphql.ErrorType
 import graphql.ExceptionWhileDataFetching
 import graphql.GraphQLError
@@ -12,7 +13,6 @@ import graphql.servlet.GraphQLErrorHandler
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import groovy.util.logging.Slf4j
-import com.newrelic.api.agent.NewRelic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.oauth2.client.resource.OAuth2AccessDeniedException
 import org.springframework.stereotype.Component
