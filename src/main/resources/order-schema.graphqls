@@ -1,6 +1,30 @@
 input CancelOrderInput {
     accessToken: String!
     orderId: Int!
+    supplierOrderId: Int!
+    cancelOptionReason: CustomerCancelOptionReason!
+}
+
+enum UserType {
+    SUPPLIER,
+    CUSTOMER
+}
+
+enum CustomerCancelOptionReason {
+    REGRET
+    COMMODITY_DELAY
+    PRICE_DIFFERENCE
+    DELIVERY_DIFFERENCE
+    OTHER
+}
+
+enum SupplierCancelOptionReason {
+    INCORRECT_PRICE,
+    INCORRECT_TAX,
+    CUSTOMER_CLOSED,
+    INSUFFICIENT_AMOUNT,
+    CUSTOMER_REGRET,
+    OTHERS
 }
 
 
@@ -16,7 +40,18 @@ type OrderUpdateFailed {
     reason: OrderUpdateReason
 }
 
-union CancelOrderResult = OrderUpdateFailed | Void
+type FinalOrderState {
+    orderId: Int
+    supplierOrderId: Int
+    canceledBy: UserType
+    customerCancellationReason: CustomerCancelOptionReason
+    supplierCancelOptionReason: SupplierCancelOptionReason
+    orderStatus: OrderStatus
+}
+
+union CancelOrderResult = OrderUpdateFailed | FinalOrderState
+
+union CancelOrderResonResult = OrderUpdateFailed | Void
 
 
 enum SupplierOrderStatus {
@@ -131,6 +166,16 @@ type RatingEntry {
     CUSTOMER: Rating
 }
 
+
+type OrderCancellation {
+    supplierOrderId: Int
+    orderId: Int
+    supplierId: Int
+    userType: UserType
+    customerCancelOptionReason: CustomerCancelOptionReason
+    supplierCancelOptionReason: SupplierCancelOptionReason
+}
+
 type Order {
     id: Int
     customer: Customer
@@ -140,6 +185,7 @@ type Order {
     deliveryAddress: AddressType
     deliveryPreference: DeliveryPreference
     supplierOrders: [SupplierOrder]
+    ordersCancellations: [OrderCancellation]
     total: Float
 }
 

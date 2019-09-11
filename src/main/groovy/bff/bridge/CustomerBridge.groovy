@@ -48,4 +48,6 @@ interface CustomerBridge {
     CustomerReportRateResult customerReportRate(String accessToken, Integer rateId)
 
     AddressResult getPreferredAddress(String accessToken)
+
+    List<CustomerCancelOptionReason> getCancelOptions(String accessToken)
 }

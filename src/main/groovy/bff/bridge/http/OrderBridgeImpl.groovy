@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
+import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -19,17 +20,42 @@ class OrderBridgeImpl implements OrderBridge {
     RestOperations http
 
     @Override
-    void cancel(CancelOrderInput cancelOrderInput) {
-        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/${cancelOrderInput.orderId}/cancel"))
-            .toUriString().toURI()
+    OrderUpdateResult cancel(CancelOrderInput cancelOrderInput) {
+        try {
+            def reference = new ParameterizedTypeReference<FinalOrderState>() {}
+            http.exchange(
+                    RequestEntity.method(HttpMethod.PUT, root.resolve('/customer/me/order/cancel'))
+                            .header(HttpHeaders.AUTHORIZATION, "Bearer $cancelOrderInput.accessToken")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(
+                            [
+                                    orderId: cancelOrderInput.orderId,
+                                    supplierOrderId: cancelOrderInput.supplierOrderId,
+                                    cancelOptionReason : cancelOrderInput.cancelOptionReason
+                            ]
+                    )
+                    , reference).body
 
-        http.exchange(
-            RequestEntity.method(HttpMethod.PUT, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $cancelOrderInput.accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(cancelOrderInput)
-            , Map).body
+        } catch (RestClientException e) {
+            throw new RuntimeException("Failed to Cancel Order", e)
+        }
+    }
 
+    @Override
+    void cancelReason(CancelOrderInput cancelOrderInput) {
+            // def reference = new ParameterizedTypeReference<FinalOrderState>() {}
+            http.exchange(
+                    RequestEntity.method(HttpMethod.PUT, root.resolve('/customer/me/order/cancel/reason'))
+                            .header(HttpHeaders.AUTHORIZATION, "Bearer $cancelOrderInput.accessToken")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(
+                            [
+                                    orderId: cancelOrderInput.orderId,
+                                    supplierOrderId: cancelOrderInput.supplierOrderId,
+                                    cancelOptionReason : cancelOrderInput.cancelOptionReason
+                            ]
+                    )
+                    , Map)
     }
 
     @Override
@@ -160,4 +186,35 @@ class OrderBridgeImpl implements OrderBridge {
         response
 
     }
+
+    @Override
+    List<OrderCancellation> getOrdersCancellation(String accessToken, Long orderId) {
+
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/ordersCancellation/${orderId}"))
+                .toUriString().toURI()
+
+        def ordersCancellationReference = new ParameterizedTypeReference<List<OrderCancellation>>() {}
+
+        http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , ordersCancellationReference).body
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -56,6 +56,27 @@ enum RatingStatus {
     REPORTED
 }
 
+enum UserType {
+    SUPPLIER,
+    CUSTOMER
+}
+
+enum SupplierCancelOptionReason {
+    INCORRECT_PRICE,
+    INCORRECT_TAX,
+    CUSTOMER_CLOSED,
+    INSUFFICIENT_AMOUNT,
+    CUSTOMER_REGRET,
+    OTHERS
+}
+
+enum CustomerCancelOptionReason {
+    REGRET,
+    COMMODITY_DELAY,
+    PRICE_DIFFERENCE,
+    DELIVERY_DIFFERENCE,
+    OTHER
+}
 
 interface OrderUpdateResult {}
 interface CustomerOrdersResult {}
@@ -63,6 +84,27 @@ interface CustomerOrdersResult {}
 class CancelOrderInput {
     String accessToken
     Integer orderId
+    Integer supplierOrderId
+    CustomerCancelOptionReason cancelOptionReason
+}
+
+
+class FinalOrderState implements OrderUpdateResult {
+    Long orderId
+    Long supplierOrderId
+    UserType canceledBy
+    CustomerCancelOptionReason customerCancellationReason
+    SupplierCancelOptionReason supplierCancelOptionReason
+    OrderStatus orderStatus
+}
+
+class OrderCancellation {
+    Long supplierOrderId
+    Long orderId
+    Long supplierId
+    UserType userType
+    CustomerCancelOptionReason customerCancelOptionReason
+    SupplierCancelOptionReason supplierCancelOptionReason
 }
 
 class SortResult {

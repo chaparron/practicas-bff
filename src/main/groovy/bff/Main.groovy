@@ -52,6 +52,7 @@ class Main {
                 .add(UploadedDocument.class)
                 .add(OrderSummaryResponse.class)
                 .add(SummaryFailed.class)
+                .add(FinalOrderState.class)
     }
     /**
      *

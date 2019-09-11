@@ -128,6 +128,10 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
+    List<CustomerCancelOptionReason> getCancelOptions(AccessTokenInput accessTokenInput) {
+        customerBridge.getCancelOptions(accessTokenInput.accessToken)
+    }
+
     CartResult refreshCart(RefreshCartInput refreshCartInput) {
         try {
             productBridge.refreshCart(refreshCartInput.accessToken, refreshCartInput.products)

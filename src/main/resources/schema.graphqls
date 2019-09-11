@@ -29,6 +29,7 @@ type Query {
 
     getPreferredAddress(input: AccessTokenInput!): AddressResponse
 
+    getCancelOptions(input: AccessTokenInput!): [CustomerCancelOptionReason]
 
     # Find customer orders
     findCustomerOrders(input: FindOrdersInput!): CustomerOrdersResult!
@@ -110,6 +111,9 @@ type Mutation {
 
     # Cancel pending orders
     cancelOrder(input: CancelOrderInput!): CancelOrderResult!
+
+    # Cancel Reason
+    cancelOrderReason(input : CancelOrderInput!) : CancelOrderResonResult!
 
     # Update Customer address
     updateAddress(input: AddressTypeUpsertInput!) : UpdateAddressResult!
