@@ -133,6 +133,7 @@ class SupplierOrder implements SupplierOrderResponse {
     TimestampOutput shipAt
     Double deliveryCost
     Double total
+    Double credits_paid
     Integer units
     Boolean canCustomerRate
     Boolean canSupplierRate

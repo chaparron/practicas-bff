@@ -112,6 +112,7 @@ type SupplierOrder {
     shipAt: TimestampOutput
     deliveryCost: Float
     total: Float
+    credits_paid: Float
     units: Int
     products: [OrderItems]
     rating: RatingEntry
