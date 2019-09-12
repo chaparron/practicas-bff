@@ -67,6 +67,8 @@ enum SupplierCancelOptionReason {
     CUSTOMER_CLOSED,
     INSUFFICIENT_AMOUNT,
     CUSTOMER_REGRET,
+    NO_STOCK,
+    STORE_OUTSIDE_COVERAGE_AREA,
     OTHERS
 }
 
