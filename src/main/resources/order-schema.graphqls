@@ -112,6 +112,7 @@ type SupplierOrder {
     shipAt: TimestampOutput
     deliveryCost: Float
     total: Float
+    credits_paid: Float
     units: Int
     products: [OrderItems]
     rating: RatingEntry
@@ -219,12 +220,13 @@ type PlaceOrderFailed {
 
 input OrderInput {
     supplierId: Int!
-    deliveryCost: Float,!
+    deliveryCost: Float!
     products: [ProductOrderInput]!
 }
 
 input PlaceOrderInput {
     accessToken: String!
+    wabiPayAccessToken: String
     orders: [OrderInput]!
 }
 
@@ -268,6 +270,7 @@ input GetSupplierOrderInput {
 
 input OrderSummaryInput {
     accessToken: String!
+    wabiPayAccessToken: String
     products: [SupplierCartProductInput]!
 }
 
@@ -303,6 +306,9 @@ enum CartSummaryItemType {
     DELIVERY_COST,
     # Order final price
     ORDER_TOTAL,
+    # Wabi Credits
+    CREDITS_USED,
+    PAYMENT_PENDING
 }
 
 type Summary {

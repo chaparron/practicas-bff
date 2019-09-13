@@ -133,6 +133,7 @@ class SupplierOrder implements SupplierOrderResponse {
     TimestampOutput shipAt
     Double deliveryCost
     Double total
+    Double credits_paid
     Integer units
     Boolean canCustomerRate
     Boolean canSupplierRate
@@ -263,6 +264,7 @@ class OrderInput {
 
 class PlaceOrderInput {
     String accessToken
+    String wabiPayAccessToken
     List<OrderInput> orders
 }
 
@@ -282,6 +284,7 @@ class CustomerReportRateInput {
 
 class OrderSummaryInput {
     String accessToken
+    String wabiPayAccessToken
     List<SupplierCartProductInput> products
 }
 
@@ -330,6 +333,8 @@ enum CartSummaryItemType {
     NET_SUBTOTAL,
     DELIVERY_COST,
     ORDER_TOTAL,
+    CREDITS_USED,
+    PAYMENT_PENDING
 }
 
 class MetaEntry {

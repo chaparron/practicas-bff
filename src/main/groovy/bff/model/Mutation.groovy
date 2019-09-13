@@ -197,7 +197,7 @@ class Mutation implements GraphQLMutationResolver {
 
     PlaceOrderResult placeOrder(PlaceOrderInput placeOrderInput) {
         try {
-            orderBridge.placeOrder(placeOrderInput.accessToken, placeOrderInput.orders)
+            orderBridge.placeOrder(placeOrderInput.accessToken, placeOrderInput.orders, placeOrderInput.wabiPayAccessToken)
             Void.SUCCESS
         }
         catch (BadRequestErrorException ex) {

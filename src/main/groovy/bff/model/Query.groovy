@@ -211,7 +211,12 @@ class Query implements GraphQLQueryResolver {
     }
 
     PromotionResult getLandingPromotion(GetLandingPromotionInput input) {
-        promotionBridge.getLandingPromotion(input)
+        try {
+            promotionBridge.getLandingPromotion(input)
+        }
+        catch (EntityNotFoundException ex) {
+            GetLandingPromotionFailedReason.NOT_FOUND.build()
+        }
     }
 
     List<State> getStatesByCountry(String countryId) {
@@ -220,7 +225,7 @@ class Query implements GraphQLQueryResolver {
 
     SummaryResult getOrderPriceSummary(OrderSummaryInput orderSummaryInput) {
         try {
-            orderBridge.getOrderSummary(orderSummaryInput.accessToken, orderSummaryInput.products)
+            orderBridge.getOrderSummary(orderSummaryInput.accessToken, orderSummaryInput.products, orderSummaryInput.wabiPayAccessToken)
         }
         catch (EntityNotFoundException ex) {
             SummaryFailedReason.NOT_FOUND.build()
