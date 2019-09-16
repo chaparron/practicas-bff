@@ -6,7 +6,6 @@ import groovy.transform.ToString
 
 interface ProductResult{}
 
-interface PriceResult {}
 
 
 class SearchResult {
@@ -160,7 +159,7 @@ class Price {
     List<Promotion> promotions
 }
 
-class Prices implements PriceResult {
+class Prices {
     List<Price> prices
 }
 
@@ -274,18 +273,6 @@ class ProductFailed implements ProductResult {
     ProductErrorReason reason
 }
 
-enum PriceErrorReason {
-    PRICE_NOT_FOUND,
-    NO_SUPPLIER_FOUND
-
-    def build() {
-        new PriceFailed(reason: this)
-    }
-}
-
-class PriceFailed implements PriceResult {
-    PriceErrorReason reason
-}
 
 enum SupplierFailedReason {
     NOT_FOUND
