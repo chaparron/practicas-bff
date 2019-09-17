@@ -33,7 +33,6 @@ class Main {
                 .add(CustomerOrdersResponse.class)
                 .add(Product.class)
                 .add(Prices.class)
-                .add(PriceFailed.class)
                 .add(Cart.class)
                 .add(CartFailed.class)
                 .add(PlaceOrderFailed.class)

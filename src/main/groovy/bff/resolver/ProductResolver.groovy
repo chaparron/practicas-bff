@@ -34,19 +34,15 @@ class ProductResolver implements GraphQLResolver<Product> {
         productBridge.getManufacturerByProductId(product.accessToken, product.id)
     }
 
-    PriceResult prices(Product product) {
+    List<Price> prices(Product product) {
         try {
             product.prices
-                ? new Prices(prices: product.prices)
-                : new Prices(prices: productBridge.getPricesByProductId(product.accessToken, product.id))
+                    ? product.prices
+                    : productBridge.getPricesByProductId(product.accessToken, product.id)
         }
-        catch (BadRequestErrorException ex) {
-            PriceErrorReason.valueOf((String) ex.innerResponse).build()
+        catch (Exception ex) {
+            product.prices = null
         }
-        catch (EntityNotFoundException ex) {
-            PriceErrorReason.PRICE_NOT_FOUND.build()
-        }
-
     }
 
     Price minUnitsPrice(Product product) {

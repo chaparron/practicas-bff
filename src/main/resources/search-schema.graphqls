@@ -193,7 +193,7 @@ type Product {
     images: [Image],
     created: TimestampOutput,
     manufacturer: Manufacturer,
-    prices: PriceResult
+    prices: [Price]
     title: String
     priceFrom: Price
     highlightedPrice: Price
@@ -206,4 +206,3 @@ type Prices {
 }
 
 union ProductResult = Product | ProductFailed
-union PriceResult = Prices | PriceFailed
