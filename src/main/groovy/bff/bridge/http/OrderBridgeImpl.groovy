@@ -79,6 +79,30 @@ class OrderBridgeImpl implements OrderBridge {
     }
 
     @Override
+    CustomerOrderResponse findCustomerOrder(FindSupplierOrderInput findSupplierOrderInput) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplier/order"))
+                .queryParam("orderId", findSupplierOrderInput.orderId)
+                .queryParam("supplierOrderId", findSupplierOrderInput.supplierOrderId)
+                .queryParam("country_id", findSupplierOrderInput.countryId)
+                .toUriString().toURI()
+
+        def customerOrderResponse = http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $findSupplierOrderInput.accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , CustomerOrderResponse).body
+
+        customerOrderResponse.accessToken = findSupplierOrderInput.accessToken
+        customerOrderResponse.supplierOrder.accessToken = findSupplierOrderInput.accessToken
+        customerOrderResponse.supplierOrder.order.accessToken = findSupplierOrderInput.accessToken
+        customerOrderResponse.customer.accessToken = findSupplierOrderInput.accessToken
+
+        customerOrderResponse
+
+    }
+
+    @Override
     Address getDeliveryAddress(String accessToken, Long orderId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/${orderId}/address"))
                 .toUriString().toURI()

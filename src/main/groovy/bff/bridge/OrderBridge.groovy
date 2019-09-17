@@ -10,6 +10,8 @@ interface OrderBridge {
 
     CustomerOrdersResponse findCustomerOrders(FindOrdersInput findOrdersInput)
 
+    CustomerOrderResponse findCustomerOrder(FindSupplierOrderInput findSupplierOrderInput)
+
     Address getDeliveryAddress(String accessToken, Long orderId)
 
     List<SupplierOrder> getSupplierOrders(String accessToken, Long orderId)

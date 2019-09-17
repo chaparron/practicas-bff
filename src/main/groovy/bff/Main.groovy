@@ -55,6 +55,7 @@ class Main {
                 .add(FinalOrderState.class)
                 .add(Promotion.class)
                 .add(GetLandingPromotionFailed.class)
+                .add(CustomerOrderResponse.class)
     }
     /**
      *

@@ -82,6 +82,7 @@ enum CustomerCancelOptionReason {
 
 interface OrderUpdateResult {}
 interface CustomerOrdersResult {}
+interface CustomerOrderResult {}
 
 class CancelOrderInput {
     String accessToken
@@ -133,12 +134,26 @@ class FindOrdersInput extends PaginatedInput {
 
 }
 
+class FindSupplierOrderInput {
+    String accessToken
+    String countryId
+    Integer orderId
+    Integer supplierOrderId
+}
+
 class GetSupplierRatingsInput extends PaginatedInput {
     String accessToken
     Long supplierId
 }
 
 class CustomerOrdersResponse extends PaginatedResponse<Order> implements CustomerOrdersResult {
+}
+
+class CustomerOrderResponse implements CustomerOrderResult {
+    String accessToken
+    SupplierOrderResult supplierOrder
+    Customer customer
+    OrderCancellation orderCancellation
 }
 
 class SupplierRatingsResponse extends PaginatedResponse<Rating> {
@@ -184,6 +199,29 @@ class SupplierOrder implements SupplierOrderResponse {
     Boolean customerRated
     Boolean supplierRated
     RatingEntry rating
+    HashMap<RatingOwner, Rating> ratings
+}
+
+class SupplierOrderResult {
+    String accessToken
+    Order order
+    Long id
+    SupplierOrderStatus status
+    Supplier supplier
+    TimestampOutput created
+    TimestampOutput updated
+    TimestampOutput shippedAt
+    TimestampOutput shipAt
+    Double deliveryCost
+    Double total
+    Double credits_paid
+    Integer units
+    Boolean canCustomerRate
+    Boolean canSupplierRate
+    Boolean customerRated
+    Boolean supplierRated
+    RatingEntry rating
+    List<OrderItem> products
     HashMap<RatingOwner, Rating> ratings
 }
 
@@ -235,7 +273,7 @@ enum PlaceOrderFailedReason {
     }
 }
 
-class CustomerOrderFindFailed implements CustomerOrdersResult {
+class CustomerOrderFindFailed implements CustomerOrdersResult, CustomerOrderResult {
     CustomerOrderFindFailedReason reason
 }
 

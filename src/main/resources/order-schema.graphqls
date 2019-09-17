@@ -72,6 +72,13 @@ input FindOrdersInput {
     status: SupplierOrderStatus
 }
 
+input FindSupplierOrderInput {
+    accessToken: String!
+    countryId: String!
+    orderId: Int!
+    supplierOrderId: Int!
+}
+
 enum Direction {
     ASC,
     DESC
@@ -159,6 +166,28 @@ type SupplierOrder {
     supplierRated: Boolean
 }
 
+
+type SupplierOrderResult {
+    id:Int
+    order: Order
+    supplier: Supplier
+    status: SupplierOrderStatus
+    created: TimestampOutput
+    updated: TimestampOutput
+    shippedAt: TimestampOutput
+    shipAt: TimestampOutput
+    deliveryCost: Float
+    total: Float
+    credits_paid: Float
+    units: Int
+    products: [OrderItems]
+    rating: RatingEntry
+    canCustomerRate: Boolean
+    canSupplierRate: Boolean
+    customerRated: Boolean
+    supplierRated: Boolean
+}
+
 enum RatingOwner {
     SUPPLIER,
     CUSTOMER
@@ -202,9 +231,17 @@ type CustomerOrderFindFailed {
 
 union CustomerOrdersResult = CustomerOrdersResponse | CustomerOrderFindFailed
 
+union CustomerOrderResult = CustomerOrderResponse | CustomerOrderFindFailed
+
 type CustomerOrdersResponse {
     headers: Headers
     content: [Order]
+}
+
+type CustomerOrderResponse {
+    supplierOrder: SupplierOrderResult
+    customer: Customer
+    orderCancellation: OrderCancellation
 }
 
 enum CartFailedReason {
