@@ -96,6 +96,7 @@ class OrderBridgeImpl implements OrderBridge {
         customerOrderResponse.accessToken = findSupplierOrderInput.accessToken
         customerOrderResponse.supplierOrder.accessToken = findSupplierOrderInput.accessToken
         customerOrderResponse.supplierOrder.order.accessToken = findSupplierOrderInput.accessToken
+        customerOrderResponse.supplierOrder.order.id = findSupplierOrderInput.orderId
         customerOrderResponse.customer.accessToken = findSupplierOrderInput.accessToken
 
         customerOrderResponse
