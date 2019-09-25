@@ -316,6 +316,7 @@ class SupplierPrice {
     Integer minUnits
     Integer maxUnits
     String avatar
+    SupplierProductConfiguration configuration
 }
 
 class CartFailed implements CartResult {

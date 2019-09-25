@@ -148,8 +148,12 @@ type Price {
     maxUnits: Int
     minUnits: Int
     promotions: [Promotion]
+    configuration: SupplierProductConfiguration
 }
 
+type SupplierProductConfiguration {
+    disableMinAmountCount: Boolean
+}
 
 input ProductInput {
     productId : Int!

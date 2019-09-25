@@ -157,6 +157,7 @@ class Price {
     Integer maxUnits
     TimestampOutput updated
     List<Promotion> promotions
+    SupplierProductConfiguration configuration
 }
 
 class Prices {

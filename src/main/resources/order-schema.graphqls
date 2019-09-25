@@ -274,6 +274,7 @@ type SupplierPrice {
     minUnits: Int,
     maxUnits: Int,
     avatar: String,
+    configuration: SupplierProductConfiguration
 
 }
 
