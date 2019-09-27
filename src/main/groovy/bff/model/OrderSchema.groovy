@@ -38,6 +38,12 @@ enum SupplierOrderStatus {
     CANCELED
 }
 
+enum FilterOrderStatus {
+    ALL,
+    OPEN,
+    CLOSED
+}
+
 enum OrderStatus {
     PENDING,
     IN_PROGRESS,
@@ -130,7 +136,7 @@ class FindOrdersInput extends PaginatedInput {
     String accessToken
     Integer orderId
     String countryId
-    SupplierOrderStatus status
+    FilterOrderStatus status
 
 }
 

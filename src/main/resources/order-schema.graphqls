@@ -63,13 +63,19 @@ enum SupplierOrderStatus {
     CANCELED
 }
 
+enum FilterOrderStatus {
+    ALL,
+    OPEN,
+    CLOSED
+}
+
 input FindOrdersInput {
     accessToken: String!
     orderId: Int
     countryId: String!
     size: Int!,
     page: Int!,
-    status: SupplierOrderStatus
+    status: FilterOrderStatus
 }
 
 input FindSupplierOrderInput {
