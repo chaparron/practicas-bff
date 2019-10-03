@@ -186,6 +186,7 @@ type SupplierOrderResult {
     deliveryCost: Float
     total: Float
     credits_paid: Float
+    localTaxes: Float
     units: Int
     products: [OrderItems]
     rating: RatingEntry
