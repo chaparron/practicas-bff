@@ -83,6 +83,7 @@ enum CustomerCancelOptionReason {
     COMMODITY_DELAY,
     PRICE_DIFFERENCE,
     DELIVERY_DIFFERENCE,
+    NO_MONEY,
     OTHER
 }
 
