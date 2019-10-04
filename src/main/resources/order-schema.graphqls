@@ -1,6 +1,33 @@
 input CancelOrderInput {
     accessToken: String!
     orderId: Int!
+    supplierOrderId: Int!
+    cancelOptionReason: CustomerCancelOptionReason!
+}
+
+enum UserType {
+    SUPPLIER,
+    CUSTOMER
+}
+
+enum CustomerCancelOptionReason {
+    REGRET
+    COMMODITY_DELAY
+    PRICE_DIFFERENCE
+    DELIVERY_DIFFERENCE
+    NO_MONEY
+    OTHER
+}
+
+enum SupplierCancelOptionReason {
+    INCORRECT_PRICE,
+    INCORRECT_TAX,
+    CUSTOMER_CLOSED,
+    INSUFFICIENT_AMOUNT,
+    CUSTOMER_REGRET,
+    NO_STOCK,
+    STORE_OUTSIDE_COVERAGE_AREA,
+    OTHERS
 }
 
 
@@ -16,7 +43,18 @@ type OrderUpdateFailed {
     reason: OrderUpdateReason
 }
 
-union CancelOrderResult = OrderUpdateFailed | Void
+type FinalOrderState {
+    orderId: Int
+    supplierOrderId: Int
+    canceledBy: UserType
+    customerCancellationReason: CustomerCancelOptionReason
+    supplierCancelOptionReason: SupplierCancelOptionReason
+    orderStatus: OrderStatus
+}
+
+union CancelOrderResult = OrderUpdateFailed | FinalOrderState
+
+union CancelOrderResonResult = OrderUpdateFailed | Void
 
 
 enum SupplierOrderStatus {
@@ -26,13 +64,26 @@ enum SupplierOrderStatus {
     CANCELED
 }
 
+enum FilterOrderStatus {
+    ALL,
+    OPEN,
+    CLOSED
+}
+
 input FindOrdersInput {
     accessToken: String!
     orderId: Int
     countryId: String!
     size: Int!,
     page: Int!,
-    status: SupplierOrderStatus
+    status: FilterOrderStatus
+}
+
+input FindSupplierOrderInput {
+    accessToken: String!
+    countryId: String!
+    orderId: Int!
+    supplierOrderId: Int!
 }
 
 enum Direction {
@@ -122,6 +173,29 @@ type SupplierOrder {
     supplierRated: Boolean
 }
 
+
+type SupplierOrderResult {
+    id:Int
+    order: Order
+    supplier: Supplier
+    status: SupplierOrderStatus
+    created: TimestampOutput
+    updated: TimestampOutput
+    shippedAt: TimestampOutput
+    shipAt: TimestampOutput
+    deliveryCost: Float
+    total: Float
+    credits_paid: Float
+    localTaxes: Float
+    units: Int
+    products: [OrderItems]
+    rating: RatingEntry
+    canCustomerRate: Boolean
+    canSupplierRate: Boolean
+    customerRated: Boolean
+    supplierRated: Boolean
+}
+
 enum RatingOwner {
     SUPPLIER,
     CUSTOMER
@@ -130,6 +204,16 @@ enum RatingOwner {
 type RatingEntry {
     SUPPLIER: Rating
     CUSTOMER: Rating
+}
+
+
+type OrderCancellation {
+    supplierOrderId: Int
+    orderId: Int
+    supplierId: Int
+    userType: UserType
+    customerCancelOptionReason: CustomerCancelOptionReason
+    supplierCancelOptionReason: SupplierCancelOptionReason
 }
 
 type Order {
@@ -141,6 +225,7 @@ type Order {
     deliveryAddress: AddressType
     deliveryPreference: DeliveryPreference
     supplierOrders: [SupplierOrder]
+    ordersCancellations: [OrderCancellation]
     total: Float
 }
 
@@ -154,9 +239,17 @@ type CustomerOrderFindFailed {
 
 union CustomerOrdersResult = CustomerOrdersResponse | CustomerOrderFindFailed
 
+union CustomerOrderResult = CustomerOrderResponse | CustomerOrderFindFailed
+
 type CustomerOrdersResponse {
     headers: Headers
     content: [Order]
+}
+
+type CustomerOrderResponse {
+    supplierOrder: SupplierOrderResult
+    customer: Customer
+    orderCancellation: OrderCancellation
 }
 
 enum CartFailedReason {
@@ -189,6 +282,7 @@ type SupplierPrice {
     minUnits: Int,
     maxUnits: Int,
     avatar: String,
+    configuration: SupplierProductConfiguration
 
 }
 

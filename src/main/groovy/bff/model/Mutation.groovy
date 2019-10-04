@@ -185,6 +185,18 @@ class Mutation implements GraphQLMutationResolver {
     OrderUpdateResult cancelOrder(CancelOrderInput cancelOrderInput) {
         try {
             orderBridge.cancel(cancelOrderInput)
+        }
+        catch (BadRequestErrorException ex) {
+            OrderUpdateReason.INVALID_SUPPLIER_ORDERS_STATUS.build()
+        }
+        catch (EntityNotFoundException ex) {
+            OrderUpdateReason.ORDER_NOT_FOUND.build()
+        }
+    }
+
+    OrderUpdateResult cancelOrderReason(CancelOrderInput cancelOrderInput) {
+        try {
+            orderBridge.cancelReason(cancelOrderInput)
             Void.SUCCESS
         }
         catch (BadRequestErrorException ex) {

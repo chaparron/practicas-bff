@@ -5,6 +5,7 @@ import bff.model.Address
 import bff.model.Customer
 import bff.model.Order
 import bff.model.SupplierOrder
+import bff.model.OrderCancellation
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -25,6 +26,10 @@ class OrderResolver implements GraphQLResolver<Order> {
 
     List<SupplierOrder> supplierOrders(Order order) {
         orderBridge.getSupplierOrders(order.accessToken, order.id)
+    }
+
+    List<OrderCancellation> ordersCancellations(Order order) {
+        orderBridge.getOrdersCancellation(order.accessToken, order.id)
     }
 
 }

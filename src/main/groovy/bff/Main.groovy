@@ -51,8 +51,10 @@ class Main {
                 .add(UploadedDocument.class)
                 .add(OrderSummaryResponse.class)
                 .add(SummaryFailed.class)
+                .add(FinalOrderState.class)
                 .add(Promotion.class)
                 .add(GetLandingPromotionFailed.class)
+                .add(CustomerOrderResponse.class)
     }
     /**
      *

@@ -106,6 +106,15 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
+    CustomerOrderResult findCustomerOrder(FindSupplierOrderInput findSupplierOrderInput) {
+        try {
+            orderBridge.findCustomerOrder(findSupplierOrderInput)
+        }
+        catch (EntityNotFoundException ex) {
+            CustomerOrderFindFailedReason.ORDER_NOT_FOUND.build()
+        }
+    }
+
     List<Address> findAddresses(AccessTokenInput accessTokenInput) {
         customerBridge.findAddresses(accessTokenInput)
     }
@@ -126,6 +135,10 @@ class Query implements GraphQLQueryResolver {
         } catch (EntityNotFoundException ex) {
             AddressFailedReason.ADDRESS_NOT_FOUND.build()
         }
+    }
+
+    List<CustomerCancelOptionReason> getCancelOptions(AccessTokenInput accessTokenInput) {
+        customerBridge.getCancelOptions(accessTokenInput.accessToken)
     }
 
     CartResult refreshCart(RefreshCartInput refreshCartInput) {

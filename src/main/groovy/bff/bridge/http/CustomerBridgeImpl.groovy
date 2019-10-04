@@ -253,6 +253,25 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
+    List<CustomerCancelOptionReason> getCancelOptions(String accessToken) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/cancelOrder-options")).toUriString()
+        def uri = url.toURI()
+
+        try {
+            def ref = new ParameterizedTypeReference<List<CustomerCancelOptionReason>>() {}
+            http.exchange(
+                    RequestEntity.method(HttpMethod.GET, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION, "Bearer ${accessToken}")
+                            .build()
+                    , ref).body
+
+        } catch (BadRequestErrorException badRequestException) {
+            throw new UnsupportedOperationException("Find Cancel Options  - Backend Error", badRequestException)
+        }
+    }
+
+    @Override
     Void addAddress(AddressInput addressInput) throws BadRequestErrorException {
         http.exchange(
             RequestEntity.method(HttpMethod.POST, root.resolve("/customer/me/address"))

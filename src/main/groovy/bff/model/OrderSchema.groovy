@@ -38,6 +38,12 @@ enum SupplierOrderStatus {
     CANCELED
 }
 
+enum FilterOrderStatus {
+    ALL,
+    OPEN,
+    CLOSED
+}
+
 enum OrderStatus {
     PENDING,
     IN_PROGRESS,
@@ -56,13 +62,59 @@ enum RatingStatus {
     REPORTED
 }
 
+enum UserType {
+    SUPPLIER,
+    CUSTOMER
+}
+
+enum SupplierCancelOptionReason {
+    INCORRECT_PRICE,
+    INCORRECT_TAX,
+    CUSTOMER_CLOSED,
+    INSUFFICIENT_AMOUNT,
+    CUSTOMER_REGRET,
+    NO_STOCK,
+    STORE_OUTSIDE_COVERAGE_AREA,
+    OTHERS
+}
+
+enum CustomerCancelOptionReason {
+    REGRET,
+    COMMODITY_DELAY,
+    PRICE_DIFFERENCE,
+    DELIVERY_DIFFERENCE,
+    NO_MONEY,
+    OTHER
+}
 
 interface OrderUpdateResult {}
 interface CustomerOrdersResult {}
+interface CustomerOrderResult {}
 
 class CancelOrderInput {
     String accessToken
     Integer orderId
+    Integer supplierOrderId
+    CustomerCancelOptionReason cancelOptionReason
+}
+
+
+class FinalOrderState implements OrderUpdateResult {
+    Long orderId
+    Long supplierOrderId
+    UserType canceledBy
+    CustomerCancelOptionReason customerCancellationReason
+    SupplierCancelOptionReason supplierCancelOptionReason
+    OrderStatus orderStatus
+}
+
+class OrderCancellation {
+    Long supplierOrderId
+    Long orderId
+    Long supplierId
+    UserType userType
+    CustomerCancelOptionReason customerCancelOptionReason
+    SupplierCancelOptionReason supplierCancelOptionReason
 }
 
 class SortResult {
@@ -85,8 +137,15 @@ class FindOrdersInput extends PaginatedInput {
     String accessToken
     Integer orderId
     String countryId
-    SupplierOrderStatus status
+    FilterOrderStatus status
 
+}
+
+class FindSupplierOrderInput {
+    String accessToken
+    String countryId
+    Integer orderId
+    Integer supplierOrderId
 }
 
 class GetSupplierRatingsInput extends PaginatedInput {
@@ -95,6 +154,13 @@ class GetSupplierRatingsInput extends PaginatedInput {
 }
 
 class CustomerOrdersResponse extends PaginatedResponse<Order> implements CustomerOrdersResult {
+}
+
+class CustomerOrderResponse implements CustomerOrderResult {
+    String accessToken
+    SupplierOrderResult supplierOrder
+    Customer customer
+    OrderCancellation orderCancellation
 }
 
 class SupplierRatingsResponse extends PaginatedResponse<Rating> {
@@ -140,6 +206,30 @@ class SupplierOrder implements SupplierOrderResponse {
     Boolean customerRated
     Boolean supplierRated
     RatingEntry rating
+    HashMap<RatingOwner, Rating> ratings
+}
+
+class SupplierOrderResult {
+    String accessToken
+    Order order
+    Long id
+    SupplierOrderStatus status
+    Supplier supplier
+    TimestampOutput created
+    TimestampOutput updated
+    TimestampOutput shippedAt
+    TimestampOutput shipAt
+    Double deliveryCost
+    Double total
+    Double credits_paid
+    Double localTaxes
+    Integer units
+    Boolean canCustomerRate
+    Boolean canSupplierRate
+    Boolean customerRated
+    Boolean supplierRated
+    RatingEntry rating
+    List<OrderItem> products
     HashMap<RatingOwner, Rating> ratings
 }
 
@@ -191,7 +281,7 @@ enum PlaceOrderFailedReason {
     }
 }
 
-class CustomerOrderFindFailed implements CustomerOrdersResult {
+class CustomerOrderFindFailed implements CustomerOrdersResult, CustomerOrderResult {
     CustomerOrderFindFailedReason reason
 }
 
@@ -234,6 +324,7 @@ class SupplierPrice {
     Integer minUnits
     Integer maxUnits
     String avatar
+    SupplierProductConfiguration configuration
 }
 
 class CartFailed implements CartResult {
