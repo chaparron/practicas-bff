@@ -22,7 +22,8 @@ enum OrderUpdateReason {
     ORDER_NOT_FOUND,
     INVALID_SUPPLIER,
     INVALID_DELIVERY_COST,
-    INVALID_PRODUCTS
+    INVALID_PRODUCTS,
+    CANCEL_REQUESTED_SUPPLIER_MUST_CANCEL
 
     def build() {
         new OrderUpdateFailed(reason: this)
@@ -205,6 +206,7 @@ class SupplierOrder implements SupplierOrderResponse {
     Boolean canSupplierRate
     Boolean customerRated
     Boolean supplierRated
+    Boolean cancelRequested
     RatingEntry rating
     HashMap<RatingOwner, Rating> ratings
 }
@@ -228,6 +230,7 @@ class SupplierOrderResult {
     Boolean canSupplierRate
     Boolean customerRated
     Boolean supplierRated
+    Boolean cancelRequested
     RatingEntry rating
     List<OrderItem> products
     HashMap<RatingOwner, Rating> ratings
