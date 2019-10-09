@@ -223,6 +223,7 @@ class SupplierOrderResult {
     Double total
     Double credits_paid
     Double localTaxes
+    Double amount
     Integer units
     Boolean canCustomerRate
     Boolean canSupplierRate
