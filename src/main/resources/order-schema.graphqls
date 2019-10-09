@@ -36,7 +36,8 @@ enum OrderUpdateReason {
     ORDER_NOT_FOUND,
     INVALID_SUPPLIER,
     INVALID_DELIVERY_COST,
-    INVALID_PRODUCTS
+    INVALID_PRODUCTS,
+    CANCEL_REQUESTED_SUPPLIER_MUST_CANCEL
 }
 
 type OrderUpdateFailed {
@@ -171,6 +172,7 @@ type SupplierOrder {
     canSupplierRate: Boolean
     customerRated: Boolean
     supplierRated: Boolean
+    cancelRequested: Boolean
 }
 
 
@@ -195,6 +197,7 @@ type SupplierOrderResult {
     canSupplierRate: Boolean
     customerRated: Boolean
     supplierRated: Boolean
+    cancelRequested: Boolean
 }
 
 enum RatingOwner {

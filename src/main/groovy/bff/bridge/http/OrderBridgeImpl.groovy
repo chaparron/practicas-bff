@@ -8,7 +8,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
-import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -21,7 +20,7 @@ class OrderBridgeImpl implements OrderBridge {
 
     @Override
     OrderUpdateResult cancel(CancelOrderInput cancelOrderInput) {
-        try {
+ //       try {
             def reference = new ParameterizedTypeReference<FinalOrderState>() {}
             http.exchange(
                     RequestEntity.method(HttpMethod.PUT, root.resolve('/customer/me/order/cancel'))
@@ -33,12 +32,12 @@ class OrderBridgeImpl implements OrderBridge {
                                     supplierOrderId: cancelOrderInput.supplierOrderId,
                                     cancelOptionReason : cancelOrderInput.cancelOptionReason
                             ]
-                    )
+                            )
                     , reference).body
-
-        } catch (RestClientException e) {
-            throw new RuntimeException("Failed to Cancel Order", e)
-        }
+//        }
+//       catch (RestClientException e) {
+//            throw new RuntimeException("Failed to Cancel Order", e)
+//        }
     }
 
     @Override
