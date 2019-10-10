@@ -103,6 +103,7 @@ class CancelOrderInput {
 class FinalOrderState implements OrderUpdateResult {
     Long orderId
     Long supplierOrderId
+    Boolean cancelRequested
     UserType canceledBy
     CustomerCancelOptionReason customerCancellationReason
     SupplierCancelOptionReason supplierCancelOptionReason

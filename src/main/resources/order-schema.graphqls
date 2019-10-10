@@ -47,6 +47,7 @@ type OrderUpdateFailed {
 type FinalOrderState {
     orderId: Int
     supplierOrderId: Int
+    cancelRequested: Boolean
     canceledBy: UserType
     customerCancellationReason: CustomerCancelOptionReason
     supplierCancelOptionReason: SupplierCancelOptionReason
