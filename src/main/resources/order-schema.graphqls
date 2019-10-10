@@ -75,7 +75,7 @@ enum FilterOrderStatus {
 input FindOrdersInput {
     accessToken: String!
     orderId: Int
-    countryId: String!
+    countryId: String
     size: Int!,
     page: Int!,
     status: FilterOrderStatus
