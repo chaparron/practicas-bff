@@ -47,6 +47,7 @@ type OrderUpdateFailed {
 type FinalOrderState {
     orderId: Int
     supplierOrderId: Int
+    cancelRequested: Boolean
     canceledBy: UserType
     customerCancellationReason: CustomerCancelOptionReason
     supplierCancelOptionReason: SupplierCancelOptionReason
@@ -74,7 +75,7 @@ enum FilterOrderStatus {
 input FindOrdersInput {
     accessToken: String!
     orderId: Int
-    countryId: String!
+    countryId: String
     size: Int!,
     page: Int!,
     status: FilterOrderStatus
@@ -189,6 +190,7 @@ type SupplierOrderResult {
     total: Float
     credits_paid: Float
     localTaxes: Float
+    amount: Float
     units: Int
     products: [OrderItems]
     rating: RatingEntry
