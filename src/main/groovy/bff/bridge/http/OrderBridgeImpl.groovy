@@ -163,7 +163,9 @@ class OrderBridgeImpl implements OrderBridge {
                 RequestEntity.method(HttpMethod.POST, uri)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body([orders: orders, wabipay_order_details: [customer_wabipay_token: wabiPayAccessToken, use_wabipay: wabiPayAccessToken != null]])
+                        .body([orders: orders, wabipay_order_details: [customer_wabipay_token: wabiPayAccessToken, use_wabipay: wabiPayAccessToken != null,
+                                                                       use_wabipay_credits   : wabiPayAccessToken != null,
+                                                                       use_wabipay_money     : wabiPayAccessToken != null]])
                 , Map)
 
     }
