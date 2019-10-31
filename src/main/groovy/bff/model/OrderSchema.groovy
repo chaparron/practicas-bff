@@ -76,7 +76,8 @@ enum SupplierCancelOptionReason {
     CUSTOMER_REGRET,
     NO_STOCK,
     STORE_OUTSIDE_COVERAGE_AREA,
-    OTHERS
+    OTHERS,
+    ACCEPT_CANCELED_ORDER
 }
 
 enum CustomerCancelOptionReason {
