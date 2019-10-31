@@ -431,6 +431,7 @@ enum CartSummaryItemType {
     DELIVERY_COST,
     ORDER_TOTAL,
     CREDITS_USED,
+    WABIMONEY_USED,
     PAYMENT_PENDING
 }
 
