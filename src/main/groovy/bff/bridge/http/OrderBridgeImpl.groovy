@@ -20,20 +20,20 @@ class OrderBridgeImpl implements OrderBridge {
 
     @Override
     OrderUpdateResult cancel(CancelOrderInput cancelOrderInput) {
- //       try {
-            def reference = new ParameterizedTypeReference<FinalOrderState>() {}
-            http.exchange(
-                    RequestEntity.method(HttpMethod.PUT, root.resolve('/customer/me/order/cancel'))
-                            .header(HttpHeaders.AUTHORIZATION, "Bearer $cancelOrderInput.accessToken")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .body(
-                            [
-                                    orderId: cancelOrderInput.orderId,
-                                    supplierOrderId: cancelOrderInput.supplierOrderId,
-                                    cancelOptionReason : cancelOrderInput.cancelOptionReason
-                            ]
-                            )
-                    , reference).body
+        //       try {
+        def reference = new ParameterizedTypeReference<FinalOrderState>() {}
+        http.exchange(
+                RequestEntity.method(HttpMethod.PUT, root.resolve('/customer/me/order/cancel'))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $cancelOrderInput.accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(
+                                [
+                                        orderId           : cancelOrderInput.orderId,
+                                        supplierOrderId   : cancelOrderInput.supplierOrderId,
+                                        cancelOptionReason: cancelOrderInput.cancelOptionReason
+                                ]
+                        )
+                , reference).body
 //        }
 //       catch (RestClientException e) {
 //            throw new RuntimeException("Failed to Cancel Order", e)
@@ -42,19 +42,19 @@ class OrderBridgeImpl implements OrderBridge {
 
     @Override
     void cancelReason(CancelOrderInput cancelOrderInput) {
-            // def reference = new ParameterizedTypeReference<FinalOrderState>() {}
-            http.exchange(
-                    RequestEntity.method(HttpMethod.PUT, root.resolve('/customer/me/order/cancel/reason'))
-                            .header(HttpHeaders.AUTHORIZATION, "Bearer $cancelOrderInput.accessToken")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .body(
-                            [
-                                    orderId: cancelOrderInput.orderId,
-                                    supplierOrderId: cancelOrderInput.supplierOrderId,
-                                    cancelOptionReason : cancelOrderInput.cancelOptionReason
-                            ]
-                    )
-                    , Map)
+        // def reference = new ParameterizedTypeReference<FinalOrderState>() {}
+        http.exchange(
+                RequestEntity.method(HttpMethod.PUT, root.resolve('/customer/me/order/cancel/reason'))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $cancelOrderInput.accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(
+                                [
+                                        orderId           : cancelOrderInput.orderId,
+                                        supplierOrderId   : cancelOrderInput.supplierOrderId,
+                                        cancelOptionReason: cancelOrderInput.cancelOptionReason
+                                ]
+                        )
+                , Map)
     }
 
     @Override
@@ -62,7 +62,7 @@ class OrderBridgeImpl implements OrderBridge {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order"))
                 .queryParam("page", findOrdersInput.page)
                 .queryParam("size", findOrdersInput.size)
-                .queryParam("status" , findOrdersInput.status)
+                .queryParam("status", findOrdersInput.status)
                 .toUriString().toURI()
 
         def r = http.exchange(
@@ -193,7 +193,9 @@ class OrderBridgeImpl implements OrderBridge {
                 RequestEntity.method(HttpMethod.POST, uri)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body([products: productsSupplier, wabipay_order_details: [customer_wabipay_token: wabiPayAccessToken, use_wabipay: wabiPayAccessToken != null]])
+                        .body([products: productsSupplier, wabipay_order_details: [customer_wabipay_token: wabiPayAccessToken,
+                                                                                   use_wabipay_credits   : wabiPayAccessToken != null, use_wabipay: wabiPayAccessToken != null,
+                                                                                   use_wabipay_money     : wabiPayAccessToken != null]])
                 , OrderSummaryResponse).body
 
         response.orderSummary.forEach {
