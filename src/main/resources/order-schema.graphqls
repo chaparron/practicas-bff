@@ -408,6 +408,8 @@ enum CartSummaryItemType {
     ORDER_TOTAL,
     # Wabi Credits
     CREDITS_USED,
+    #Money used
+    WABIMONEY_USED,
     PAYMENT_PENDING
 }
 
