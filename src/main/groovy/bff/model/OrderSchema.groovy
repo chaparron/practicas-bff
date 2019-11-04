@@ -203,6 +203,7 @@ class SupplierOrder implements SupplierOrderResponse {
     Double deliveryCost
     Double total
     Double credits_paid
+    Double money_paid
     Integer units
     Boolean canCustomerRate
     Boolean canSupplierRate
@@ -226,6 +227,7 @@ class SupplierOrderResult {
     Double deliveryCost
     Double total
     Double credits_paid
+    Double money_paid
     Double localTaxes
     Double amount
     Integer units

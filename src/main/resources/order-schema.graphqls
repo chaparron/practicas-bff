@@ -167,6 +167,7 @@ type SupplierOrder {
     deliveryCost: Float
     total: Float
     credits_paid: Float
+    money_paid: Float
     units: Int
     products: [OrderItems]
     rating: RatingEntry
@@ -190,6 +191,7 @@ type SupplierOrderResult {
     deliveryCost: Float
     total: Float
     credits_paid: Float
+    money_paid: Float
     localTaxes: Float
     amount: Float
     units: Int
