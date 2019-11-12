@@ -178,8 +178,8 @@ class Query implements GraphQLQueryResolver {
         customerBridge.getSupplierOrdersPendingToRate(accessTokenInput.accessToken)
     }
 
-    List<SupplierOrder> getSupplierOrders(AccessTokenInput accessTokenInput, Long orderId) {
-        orderBridge.getSupplierOrders(accessTokenInput.accessToken, orderId)
+    List<SupplierOrder> getSupplierOrders(GetSupplierOrdersInput input) {
+        orderBridge.getSupplierOrders(input.accessToken, input.orderId)
     }
 
     SupplierResponse getSupplier(GetSupplierInput getSupplierInput) {

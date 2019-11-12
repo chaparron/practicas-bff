@@ -156,6 +156,11 @@ class GetSupplierRatingsInput extends PaginatedInput {
     Long supplierId
 }
 
+class GetSupplierOrdersInput{
+    String accessToken
+    Long orderId
+}
+
 class CustomerOrdersResponse extends PaginatedResponse<Order> implements CustomerOrdersResult {
 }
 

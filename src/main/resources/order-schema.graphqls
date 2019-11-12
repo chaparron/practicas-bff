@@ -381,6 +381,11 @@ input SupplierCartProductInput {
     items: [CartItemInput]!
 }
 
+input GetSupplierOrdersInput {
+    accessToken: String!
+    orderId: ID!
+}
+
 input CartItemInput {
     productId: Int!
     quantity: Int!
