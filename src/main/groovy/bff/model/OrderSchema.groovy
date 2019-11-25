@@ -337,6 +337,7 @@ class SupplierPrice {
     Integer minUnits
     Integer maxUnits
     String avatar
+    DeliveryZone deliveryZone
     SupplierProductConfiguration configuration
 }
 
@@ -361,6 +362,7 @@ class ProductOrderInput {
 
 class OrderInput {
     Integer supplierId
+    Long deliveryZoneId
     Double deliveryCost
     List<ProductOrderInput> products
 }
@@ -395,6 +397,7 @@ class OrderSummaryInput {
 class SupplierCartProductInput {
     List<CartItemInput> items
     Long supplierId
+    Long deliveryZoneId
 }
 
 class CartItemInput {
