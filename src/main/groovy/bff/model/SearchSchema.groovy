@@ -177,7 +177,6 @@ class Supplier implements SupplierResponse {
     String postalCode
     Double maxAmount
     Double minAmount
-    Double deliveryCost
     List<DeliveryZone> deliveryZones
     RatingScore rating
     String country_id

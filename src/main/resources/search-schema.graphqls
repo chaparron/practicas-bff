@@ -119,11 +119,17 @@ type Supplier {
     legalId: String,
     address: String,
     postalCode: String,
-    maxAmount: Int,
-    minAmount: Int,
-    deliveryCost: Float,
     rating: RatingScore,
-    country_id: String
+    country_id: String,
+    deliveryZones: [DeliveryZone]
+
+}
+
+type DeliveryZone {
+    id: Int,
+    minAmount: Float,
+    maxAmount: Float,
+    deliveryCost: Float
 }
 
 type Coordinate {

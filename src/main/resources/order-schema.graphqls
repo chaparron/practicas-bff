@@ -290,7 +290,8 @@ type SupplierPrice {
     minUnits: Int,
     maxUnits: Int,
     avatar: String,
-    configuration: SupplierProductConfiguration
+    configuration: SupplierProductConfiguration,
+    deliveryZone: DeliveryZone
 
 }
 
@@ -323,6 +324,7 @@ type PlaceOrderFailed {
 input OrderInput {
     supplierId: Int!
     deliveryCost: Float!
+    deliveryZoneId: Int!
     products: [ProductOrderInput]!
 }
 
@@ -378,7 +380,13 @@ input OrderSummaryInput {
 
 input SupplierCartProductInput {
     supplierId: Int!
+    deliveryZoneId: Int!
     items: [CartItemInput]!
+}
+
+input GetSupplierOrdersInput {
+    accessToken: String!
+    orderId: ID!
 }
 
 input CartItemInput {

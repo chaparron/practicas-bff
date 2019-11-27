@@ -55,6 +55,8 @@ type Query {
 
     getSupplierOrdersPendingToRate(input: AccessTokenInput!): [SupplierOrder]
 
+    getSupplierOrders(input: GetSupplierOrdersInput!): [SupplierOrder]
+
     # -- Pending queries
     getSupplier(input: GetSupplierInput!): SupplierResponse
 
