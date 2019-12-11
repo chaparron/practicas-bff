@@ -1,26 +1,26 @@
 package bff.model
 
-interface CustomerUpdateResult{}
+interface CustomerUpdateResult {}
 
-interface VerifyEmailResult{}
+interface VerifyEmailResult {}
 
-interface VerifyPhoneResult{}
+interface VerifyPhoneResult {}
 
-interface ResendVerifyEmailResult{}
+interface ResendVerifyEmailResult {}
 
-interface ResendVerifySMSResult{}
+interface ResendVerifySMSResult {}
 
-interface PreferredAddressResult{}
+interface PreferredAddressResult {}
 
-interface UpdateAddressResult{}
+interface UpdateAddressResult {}
 
-interface DeleteAddressResult{}
+interface DeleteAddressResult {}
 
 interface AddressResult {}
 
 interface AddAddressResult {}
 
-interface SignInResult{}
+interface SignInResult {}
 
 enum CustomerStatus {
     PENDING,
@@ -205,6 +205,7 @@ class VerificationDocumentInput {
 class CustomerUpdateInput {
     String phone
     String username
+    Boolean acceptWhatsApp
     List<Address> address
     DeliveryPreference deliveryPreference
     DayOfWeekDeliveryPreference dayOfWeekDeliveryPreference
