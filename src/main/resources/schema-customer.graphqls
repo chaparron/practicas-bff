@@ -95,6 +95,7 @@ input SignInUserInput {
     firstName: String!
     lastName: String!
     phone: String!
+    acceptWhatsApp: Boolean
     credentials: UserCredentialsSignInInput!
 }
 

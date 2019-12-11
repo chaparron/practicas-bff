@@ -226,6 +226,7 @@ class SignInUserInput {
     String firstName
     String lastName
     String phone
+    Boolean acceptWhatsApp
     UserCredentialsSignInInput credentials
 }
 
