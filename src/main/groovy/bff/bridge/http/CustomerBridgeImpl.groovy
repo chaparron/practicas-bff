@@ -440,4 +440,38 @@ class CustomerBridgeImpl implements CustomerBridge {
         }
     }
 
+    @Override
+    Void enableWhatsApp(AccessTokenInput input) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/whatsapp/enable")).toUriString()
+        def uri = url.toURI()
+        try {
+            def body = http.exchange(
+                    RequestEntity.method(HttpMethod.PUT, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION, "Bearer $input.accessToken")
+                            .build()
+                    , Map).body
+        } catch (BadRequestErrorException badRequestException) {
+            mapCustomerError(badRequestException, "Enable whatsapp Error ")
+        }
+        Void.SUCCESS
+    }
+
+    @Override
+    Void disableWhatsApp(AccessTokenInput input) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/whatsapp/disable")).toUriString()
+        def uri = url.toURI()
+        try {
+            def body = http.exchange(
+                    RequestEntity.method(HttpMethod.PUT, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION, "Bearer $input.accessToken")
+                            .build()
+                    , Map).body
+        } catch (BadRequestErrorException badRequestException) {
+            mapCustomerError(badRequestException, "Disable whatsapp Error ")
+        }
+        Void.SUCCESS
+    }
+
 }

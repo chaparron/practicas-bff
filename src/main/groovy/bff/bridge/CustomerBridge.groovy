@@ -5,7 +5,7 @@ import bff.model.*
 
 interface CustomerBridge {
 
-    Customer myProfile(String  accessToken)
+    Customer myProfile(String accessToken)
 
     CustomerUpdateResult updateProfile(CustomerUpdateInput customerUpdateInput)
 
@@ -50,4 +50,8 @@ interface CustomerBridge {
     AddressResult getPreferredAddress(String accessToken)
 
     List<CustomerCancelOptionReason> getCancelOptions(String accessToken)
+
+    Void enableWhatsApp(AccessTokenInput input)
+
+    Void disableWhatsApp(AccessTokenInput input)
 }

@@ -35,8 +35,8 @@ class Mutation implements GraphQLMutationResolver {
         try {
             def credentials = passwordLogin(input.username, input.password, input.site)
             new GenericCredentials(
-                username: JwtToken.fromString(credentials.accessToken).username,
-                credentials: credentials
+                    username: JwtToken.fromString(credentials.accessToken).username,
+                    credentials: credentials
             )
         } catch (LoginFailureException loginException) {
             loginException.build()
@@ -47,8 +47,8 @@ class Mutation implements GraphQLMutationResolver {
         try {
             def rawCredentials = authServerBridge.refreshToken(input.refreshToken)
             new RefreshCredentials(
-                accessToken: rawCredentials.accessToken,
-                refreshToken: rawCredentials.refreshToken
+                    accessToken: rawCredentials.accessToken,
+                    refreshToken: rawCredentials.refreshToken
             )
         } catch (LoginFailureException loginException) {
             loginException.build()
@@ -69,9 +69,9 @@ class Mutation implements GraphQLMutationResolver {
                     credentials: rawCredentials
             )
 
-        } catch(ConflictErrorException conflictErrorException) {
+        } catch (ConflictErrorException conflictErrorException) {
             SignInFailedReason.valueOf((String) conflictErrorException.innerResponse).build()
-        } catch(BadRequestErrorException conflictErrorException) {
+        } catch (BadRequestErrorException conflictErrorException) {
             SignInFailedReason.valueOf((String) conflictErrorException.innerResponse).build()
         }
     }
@@ -81,7 +81,7 @@ class Mutation implements GraphQLMutationResolver {
         try {
             def dataUrl = DataURL.from(documentInput.encodedFile)
             documentBridge.uploadDocument(documentInput.accessToken, dataUrl.decodedContent(), dataUrl.mediaType)
-        } catch(NotAcceptableException notAcceptableException) {
+        } catch (NotAcceptableException notAcceptableException) {
             UploadDocumentReason.UNSUPPORTED_MEDIA_TYPE.build()
         }
     }
@@ -137,7 +137,7 @@ class Mutation implements GraphQLMutationResolver {
             customerBridge.deleteAddress(addressIdInput)
             Void.SUCCESS
         } catch (BadRequestErrorException deleteAddressFailed) {
-            DeleteAddressFailedReason.valueOf( (String)  deleteAddressFailed.innerResponse).build()
+            DeleteAddressFailedReason.valueOf((String) deleteAddressFailed.innerResponse).build()
         }
     }
 
@@ -180,6 +180,14 @@ class Mutation implements GraphQLMutationResolver {
     Void enableUsername(UsernameInput input) {
         usersBridge.enableUsername(input)
         Void.SUCCESS
+    }
+
+    Void enableWhatsApp(AccessTokenInput input) {
+        customerBridge.enableWhatsApp(input)
+    }
+
+    Void disableWhatsApp(AccessTokenInput input) {
+        customerBridge.disableWhatsApp(input)
     }
 
     OrderUpdateResult cancelOrder(CancelOrderInput cancelOrderInput) {
