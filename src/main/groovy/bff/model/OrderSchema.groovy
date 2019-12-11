@@ -410,7 +410,8 @@ class SummaryFailed implements SummaryResult {
 }
 
 enum SummaryFailedReason {
-    NOT_FOUND
+    NOT_FOUND,
+    PRODUCT_AVAILABILITY_HAS_CHANGED
 
     def build() {
         new SummaryFailed(reason: this)

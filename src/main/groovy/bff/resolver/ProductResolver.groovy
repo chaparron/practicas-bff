@@ -50,8 +50,17 @@ class ProductResolver implements GraphQLResolver<Product> {
         if (product.minUnitsPrice) {
             return product.minUnitsPrice
         } else if (!product.prices) {
-            product.prices = productBridge.getPricesByProductId(product.accessToken, product.id)
+            try {
+                product.prices = productBridge.getPricesByProductId(product.accessToken, product.id)
+            }
+            catch (EntityNotFoundException ex) {
+                product.prices = null
+            }
+            catch(BadRequestErrorException ex) { // Maybe no supplier price found
+                product.prices = null
+            }
         }
+
 
         def p = product.prices
         if (p && !p.isEmpty()) {
@@ -70,6 +79,9 @@ class ProductResolver implements GraphQLResolver<Product> {
                 product.prices = productBridge.getPricesByProductId(product.accessToken, product.id)
             }
             catch (EntityNotFoundException ex) {
+                product.prices = null
+            }
+            catch(BadRequestErrorException ex) { // Maybe no supplier price found
                 product.prices = null
             }
         }
