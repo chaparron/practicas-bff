@@ -15,6 +15,7 @@ class User {
     String username
     String firstName
     String lastName
+    Boolean acceptWhatsApp
     String phone
     UserCredentials credentials
 }

@@ -109,6 +109,7 @@ type User {
     username: String
     firstName: String
     lastName: String
+    acceptWhatsApp: Boolean
     phone: String
     credentials: UserCredentials
 }
