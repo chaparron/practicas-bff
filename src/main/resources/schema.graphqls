@@ -144,6 +144,10 @@ type Mutation {
 
     customerReportRate(input: CustomerReportRateInput!): CustomerReportRateResult
 
+    enableWhatsApp(input: AccessTokenInput!): Void!
+
+    disableWhatsApp(input: AccessTokenInput!): Void!
+
 }
 
 input CustomerRateSupplierInput {

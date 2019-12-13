@@ -444,6 +444,7 @@ type SupplierOrderFailed {
 
 enum SummaryFailedReason {
     NOT_FOUND
+    PRODUCT_AVAILABILITY_HAS_CHANGED
 }
 
 type SummaryFailed {
