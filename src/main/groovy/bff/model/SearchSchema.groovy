@@ -88,6 +88,7 @@ class ProductSearch implements ProductResult {
     List<Keyword> keywords
     List<Feature> features
     List<Image> images
+    List<Display> displays
     TimestampOutput created
     Manufacturer manufacturer
     List<Price> prices
@@ -158,6 +159,14 @@ class Price {
     TimestampOutput updated
     List<Promotion> promotions
     SupplierProductConfiguration configuration
+}
+
+
+class Display {
+    Integer id
+    String ean
+    Integer units
+
 }
 
 class Prices {
