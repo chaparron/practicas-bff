@@ -156,6 +156,7 @@ class Price {
     Boolean enabled
     Integer minUnits
     Integer maxUnits
+    Display display
     TimestampOutput updated
     List<Promotion> promotions
     SupplierProductConfiguration configuration
