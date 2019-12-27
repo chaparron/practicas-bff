@@ -109,6 +109,7 @@ class Product implements ProductResult {
     TimestampOutput created
     String title
     List<Price> prices
+    List<Display> displays
     Price priceFrom
     Price minUnitsPrice
     Price highlightedPrice
