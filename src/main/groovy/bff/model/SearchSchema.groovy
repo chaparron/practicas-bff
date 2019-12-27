@@ -151,6 +151,7 @@ class Image {
 }
 
 class Price {
+    Long id
     String accessToken
     Supplier supplier
     Double value

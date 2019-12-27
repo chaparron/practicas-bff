@@ -154,6 +154,7 @@ type Manufacturer {
 }
 
 type Price {
+    id: Int
     supplier: Supplier,
     value: Float,
     updated: TimestampOutput,
