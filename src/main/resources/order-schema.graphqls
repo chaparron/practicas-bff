@@ -289,6 +289,7 @@ type SupplierPrice {
     price: Float,
     minUnits: Int,
     maxUnits: Int,
+    display: Display,
     avatar: String,
     configuration: SupplierProductConfiguration,
     deliveryZone: DeliveryZone
@@ -391,6 +392,7 @@ input GetSupplierOrdersInput {
 
 input CartItemInput {
     productId: Int!
+    displayUnits: Int
     quantity: Int!
 }
 

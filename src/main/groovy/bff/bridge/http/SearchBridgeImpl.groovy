@@ -50,7 +50,7 @@ class SearchBridgeImpl implements SearchBridge {
 
         result.products.forEach {
             it.accessToken = searchInput.accessToken
-            it.priceFrom.accessToken = searchInput.accessToken
+            it.priceFrom?.accessToken = searchInput.accessToken
             it.minUnitsPrice?.accessToken = searchInput.accessToken
             if (it.highlightedPrice) {
                 it.highlightedPrice?.accessToken = searchInput.accessToken

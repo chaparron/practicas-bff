@@ -334,6 +334,7 @@ class SupplierPrice {
     Integer id
     String name
     Double price
+    Display display
     Integer minUnits
     Integer maxUnits
     String avatar
@@ -402,6 +403,7 @@ class SupplierCartProductInput {
 
 class CartItemInput {
     Long productId
+    Long displayUnits
     Integer quantity
 }
 

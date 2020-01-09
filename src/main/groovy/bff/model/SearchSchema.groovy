@@ -155,6 +155,7 @@ class Price {
     String accessToken
     Supplier supplier
     Double value
+    Double unitValue
     Boolean enabled
     Integer minUnits
     Integer maxUnits

@@ -157,6 +157,7 @@ type Price {
     id: Int
     supplier: Supplier,
     value: Float,
+    unitValue: Float,
     updated: TimestampOutput,
     enabled: Boolean,
     maxUnits: Int
