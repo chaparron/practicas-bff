@@ -3,6 +3,7 @@ input CancelOrderInput {
     orderId: Int!
     supplierOrderId: Int!
     cancelOptionReason: CustomerCancelOptionReason!
+    comment: String
 }
 
 enum UserType {

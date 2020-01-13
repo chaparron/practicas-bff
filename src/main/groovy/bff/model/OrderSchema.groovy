@@ -97,6 +97,7 @@ class CancelOrderInput {
     String accessToken
     Integer orderId
     Integer supplierOrderId
+    String comment
     CustomerCancelOptionReason cancelOptionReason
 }
 
