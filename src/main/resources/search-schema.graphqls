@@ -64,6 +64,7 @@ type ProductSearch {
     ean: String,
     description: String,
     images: [Image],
+    displays: [Display]
     created: TimestampOutput,
     manufacturer: Manufacturer
     prices: [Price]
@@ -71,6 +72,12 @@ type ProductSearch {
     priceFrom: Price
     minUnitsPrice: Price
     highlightedPrice: Price
+}
+
+type Display {
+    id: Int,
+    ean: String
+    units: Int
 }
 
 type Feature {
@@ -147,12 +154,15 @@ type Manufacturer {
 }
 
 type Price {
+    id: Int
     supplier: Supplier,
     value: Float,
+    unitValue: Float,
     updated: TimestampOutput,
     enabled: Boolean,
     maxUnits: Int
     minUnits: Int
+    display: Display
     promotions: [Promotion]
     configuration: SupplierProductConfiguration
 }
@@ -204,6 +214,7 @@ type Product {
     created: TimestampOutput,
     manufacturer: Manufacturer,
     prices: [Price]
+    displays: [Display]
     title: String
     priceFrom: Price
     highlightedPrice: Price
