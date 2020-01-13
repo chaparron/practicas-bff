@@ -338,6 +338,7 @@ input PlaceOrderInput {
 input ProductOrderInput {
     productId: Int!
     quantity: Int!
+    units: Int
     price: Float!
 }
 
@@ -392,7 +393,7 @@ input GetSupplierOrdersInput {
 
 input CartItemInput {
     productId: Int!
-    displayUnits: Int
+    units: Int
     quantity: Int!
 }
 

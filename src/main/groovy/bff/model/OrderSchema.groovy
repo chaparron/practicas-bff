@@ -355,9 +355,7 @@ class PlaceOrderFailed implements PlaceOrderResult {
     PlaceOrderFailedReason reason
 }
 
-class ProductOrderInput {
-    Integer productId
-    Integer quantity
+class ProductOrderInput extends CartItemInput {
     Double price
 }
 
@@ -403,7 +401,7 @@ class SupplierCartProductInput {
 
 class CartItemInput {
     Long productId
-    Long displayUnits
+    Long units
     Integer quantity
 }
 
