@@ -52,7 +52,9 @@ class OrderBridgeImpl implements OrderBridge {
                                 [
                                         orderId           : cancelOrderInput.orderId,
                                         supplierOrderId   : cancelOrderInput.supplierOrderId,
-                                        cancelOptionReason: cancelOrderInput.cancelOptionReason
+                                        cancelOptionReason: cancelOrderInput.cancelOptionReason,
+                                        comment           : cancelOrderInput.comment,
+
                                 ]
                         )
                 , Map)
