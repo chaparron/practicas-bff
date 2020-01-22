@@ -245,6 +245,7 @@ class SupplierOrderResult {
     RatingEntry rating
     List<OrderItem> products
     HashMap<RatingOwner, Rating> ratings
+    Display display
 }
 
 class RatingEntry {
@@ -274,6 +275,7 @@ class OrderItem {
     Double price
     Integer quantity
     Double subtotal
+    Display display
 }
 
 enum PlaceOrderFailedReason {

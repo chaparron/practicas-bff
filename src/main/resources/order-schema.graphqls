@@ -203,6 +203,7 @@ type SupplierOrderResult {
     customerRated: Boolean
     supplierRated: Boolean
     cancelRequested: Boolean
+    display: Display
 }
 
 enum RatingOwner {
@@ -240,6 +241,7 @@ type Order {
 
 enum CustomerOrderFindFailedReason {
     ORDER_NOT_FOUND
+
 }
 
 type CustomerOrderFindFailed {
