@@ -245,7 +245,6 @@ class SupplierOrderResult {
     RatingEntry rating
     List<OrderItem> products
     HashMap<RatingOwner, Rating> ratings
-    Display display
 }
 
 class RatingEntry {
@@ -414,7 +413,8 @@ class SummaryFailed implements SummaryResult {
 
 enum SummaryFailedReason {
     NOT_FOUND,
-    PRODUCT_AVAILABILITY_HAS_CHANGED
+    PRODUCT_AVAILABILITY_HAS_CHANGED,
+    IN
 
     def build() {
         new SummaryFailed(reason: this)

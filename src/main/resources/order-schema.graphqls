@@ -121,6 +121,7 @@ type OrderItems {
     price: Float
     quantity: Int
     subtotal: Float
+    display: Display
 }
 
 type OrderItemProduct {
@@ -203,7 +204,6 @@ type SupplierOrderResult {
     customerRated: Boolean
     supplierRated: Boolean
     cancelRequested: Boolean
-    display: Display
 }
 
 enum RatingOwner {
