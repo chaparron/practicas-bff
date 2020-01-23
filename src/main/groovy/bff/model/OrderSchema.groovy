@@ -275,6 +275,7 @@ class OrderItem {
     Integer quantity
     Double subtotal
     Display display
+    Product product
 }
 
 enum PlaceOrderFailedReason {
