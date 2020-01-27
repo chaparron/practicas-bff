@@ -268,6 +268,7 @@ enum CartFailedReason {
     BAD_REQUEST,
     INVALID_ADDRESS,
     EMPTY_PRODUCTS,
+    PRODUCTS_UNAVAILABLE
 }
 
 type CartFailed {
@@ -451,6 +452,7 @@ type SupplierOrderFailed {
 enum SummaryFailedReason {
     NOT_FOUND
     PRODUCT_AVAILABILITY_HAS_CHANGED
+    PRODUCTS_UNAVAILABLE
 }
 
 type SummaryFailed {

@@ -313,7 +313,8 @@ enum CartFailedReason {
     FORBIDDEN,
     BAD_REQUEST,
     INVALID_ADDRESS,
-    EMPTY_PRODUCTS
+    EMPTY_PRODUCTS,
+    PRODUCTS_UNAVAILABLE
 
     def build() {
         new CartFailed(reason: this)
@@ -415,7 +416,8 @@ class SummaryFailed implements SummaryResult {
 enum SummaryFailedReason {
     NOT_FOUND,
     PRODUCT_AVAILABILITY_HAS_CHANGED,
-    IN
+    IN,
+    PRODUCTS_UNAVAILABLE
 
     def build() {
         new SummaryFailed(reason: this)
