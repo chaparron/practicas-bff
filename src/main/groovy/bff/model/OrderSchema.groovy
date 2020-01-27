@@ -337,7 +337,7 @@ class ProductCart {
 class SupplierPrice {
     Integer id
     String name
-    Double price
+    BigDecimal price
     Display display
     Integer minUnits
     Integer maxUnits
