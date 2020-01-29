@@ -54,4 +54,6 @@ interface CustomerBridge {
     Void enableWhatsApp(AccessTokenInput input)
 
     Void disableWhatsApp(AccessTokenInput input)
+
+    Void userDevice(UserDeviceInput input)
 }

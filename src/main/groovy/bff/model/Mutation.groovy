@@ -190,6 +190,10 @@ class Mutation implements GraphQLMutationResolver {
         customerBridge.disableWhatsApp(input)
     }
 
+    Void userDevice(UserDeviceInput input) {
+        customerBridge.userDevice(input)
+    }
+
     OrderUpdateResult cancelOrder(CancelOrderInput cancelOrderInput) {
         try {
             orderBridge.cancel(cancelOrderInput)
