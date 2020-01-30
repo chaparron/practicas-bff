@@ -194,6 +194,10 @@ class Mutation implements GraphQLMutationResolver {
         customerBridge.userDevice(input)
     }
 
+    Void deleteUserDevice(AccessTokenInput input) {
+        customerBridge.deleteUserDevice(input)
+    }
+
     OrderUpdateResult cancelOrder(CancelOrderInput cancelOrderInput) {
         try {
             orderBridge.cancel(cancelOrderInput)

@@ -494,4 +494,22 @@ class CustomerBridgeImpl implements CustomerBridge {
         }
         Void.SUCCESS
     }
+
+    @Override
+    Void deleteUserDevice(AccessTokenInput input) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/userDevice")).toUriString()
+        def uri = url.toURI()
+        try {
+            http.exchange(
+                    RequestEntity.method(HttpMethod.DELETE, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION, "Bearer $input.accessToken")
+                            .body([
+                                    accessToken: input.accessToken,
+                            ])
+                    , Map).body
+        } catch (BadRequestErrorException ignored) {
+        }
+        Void.SUCCESS
+    }
 }
