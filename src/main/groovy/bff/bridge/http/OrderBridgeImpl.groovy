@@ -158,7 +158,7 @@ class OrderBridgeImpl implements OrderBridge {
     }
 
     @Override
-    void placeOrder(String accessToken, List<OrderInput> orders, String wabiPayAccessToken) {
+    void placeOrder(String accessToken, List<OrderInput> orders, String wabiPayAccessToken, List<String> coupons) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/order"))
                 .toUriString().toURI()
 
@@ -166,7 +166,9 @@ class OrderBridgeImpl implements OrderBridge {
                 RequestEntity.method(HttpMethod.POST, uri)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body([orders: orders, wabipay_order_details: [customer_wabipay_token: wabiPayAccessToken, use_wabipay: wabiPayAccessToken != null,
+                        .body([orders: orders,
+                                coupons: coupons,
+                               wabipay_order_details: [customer_wabipay_token: wabiPayAccessToken, use_wabipay: wabiPayAccessToken != null,
                                                                        use_wabipay_credits   : wabiPayAccessToken != null,
                                                                        use_wabipay_money     : wabiPayAccessToken != null]])
                 , Map)
@@ -190,7 +192,7 @@ class OrderBridgeImpl implements OrderBridge {
     }
 
     @Override
-    OrderSummaryResponse getOrderSummary(String accessToken, List<SupplierCartProductInput> productsSupplier, String wabiPayAccessToken) {
+    OrderSummaryResponse getOrderSummary(String accessToken, List<SupplierCartProductInput> productsSupplier, String wabiPayAccessToken, List<String> coupons) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/order/summary"))
                 .toUriString().toURI()
 
@@ -198,9 +200,11 @@ class OrderBridgeImpl implements OrderBridge {
                 RequestEntity.method(HttpMethod.POST, uri)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body([products: productsSupplier, wabipay_order_details: [customer_wabipay_token: wabiPayAccessToken,
-                                                                                   use_wabipay_credits   : wabiPayAccessToken != null, use_wabipay: wabiPayAccessToken != null,
-                                                                                   use_wabipay_money     : wabiPayAccessToken != null]])
+                        .body([products: productsSupplier,
+                               coupons: coupons,
+                               wabipay_order_details: [customer_wabipay_token: wabiPayAccessToken,
+                                                       use_wabipay_credits   : wabiPayAccessToken != null, use_wabipay: wabiPayAccessToken != null,
+                                                       use_wabipay_money     : wabiPayAccessToken != null]])
                 , OrderSummaryResponse).body
 
         response.orderSummary.forEach {
