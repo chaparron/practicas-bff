@@ -290,7 +290,8 @@ enum PlaceOrderFailedReason {
     MAX_UNITS_EXCEEDED,
     MIN_AMOUNT_NO_REACHED,
     MAX_AMOUNT_EXCEEDED,
-    MAX_ALLOWED_PRODUCT_EXCEEDED
+    MAX_ALLOWED_PRODUCT_EXCEEDED,
+    PRODUCTS_UNAVAILABLE
 
     def build() {
         new PlaceOrderFailed(reason: this)
