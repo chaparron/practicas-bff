@@ -242,7 +242,7 @@ class Query implements GraphQLQueryResolver {
 
     SummaryResult getOrderPriceSummary(OrderSummaryInput orderSummaryInput) {
         try {
-            orderBridge.getOrderSummary(orderSummaryInput.accessToken, orderSummaryInput.products, orderSummaryInput.wabiPayAccessToken)
+            orderBridge.getOrderSummary(orderSummaryInput.accessToken, orderSummaryInput.products, orderSummaryInput.wabiPayAccessToken, orderSummaryInput.coupons)
         }
         catch (BadRequestErrorException ex) {
             SummaryFailedReason.valueOf((String) ex.innerResponse).build()

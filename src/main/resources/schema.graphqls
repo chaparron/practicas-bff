@@ -148,6 +148,9 @@ type Mutation {
 
     disableWhatsApp(input: AccessTokenInput!): Void!
 
+    userDevice(input: UserDeviceInput!): Void!
+    deleteUserDevice(input: AccessTokenInput!): Void!
+
 }
 
 input CustomerRateSupplierInput {
@@ -344,6 +347,13 @@ input ValidateInput{
     country_id: String!
     accessToken: String
     validationType: ValidationType!
+}
+
+input UserDeviceInput{
+    pushToken: String!
+    accessToken: String!
+    os: String
+    appVersion: String
 }
 
 enum ValidationType{

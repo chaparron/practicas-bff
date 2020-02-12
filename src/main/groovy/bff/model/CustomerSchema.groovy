@@ -263,3 +263,10 @@ class PreferredAddressInput {
     Long addressId
     String accessToken
 }
+
+class UserDeviceInput{
+    String pushToken
+    String accessToken
+    String os
+    String appVersion
+}

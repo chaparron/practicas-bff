@@ -190,6 +190,14 @@ class Mutation implements GraphQLMutationResolver {
         customerBridge.disableWhatsApp(input)
     }
 
+    Void userDevice(UserDeviceInput input) {
+        customerBridge.userDevice(input)
+    }
+
+    Void deleteUserDevice(AccessTokenInput input) {
+        customerBridge.deleteUserDevice(input)
+    }
+
     OrderUpdateResult cancelOrder(CancelOrderInput cancelOrderInput) {
         try {
             orderBridge.cancel(cancelOrderInput)
@@ -217,7 +225,7 @@ class Mutation implements GraphQLMutationResolver {
 
     PlaceOrderResult placeOrder(PlaceOrderInput placeOrderInput) {
         try {
-            orderBridge.placeOrder(placeOrderInput.accessToken, placeOrderInput.orders, placeOrderInput.wabiPayAccessToken)
+            orderBridge.placeOrder(placeOrderInput.accessToken, placeOrderInput.orders, placeOrderInput.wabiPayAccessToken, placeOrderInput.coupons)
             Void.SUCCESS
         }
         catch (BadRequestErrorException ex) {

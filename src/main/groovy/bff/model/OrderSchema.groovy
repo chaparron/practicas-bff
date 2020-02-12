@@ -210,6 +210,7 @@ class SupplierOrder implements SupplierOrderResponse {
     Double total
     Double credits_paid
     Double money_paid
+    Double discounts
     Integer units
     Boolean canCustomerRate
     Boolean canSupplierRate
@@ -236,6 +237,7 @@ class SupplierOrderResult {
     Double money_paid
     Double localTaxes
     Double amount
+    Double discounts
     Integer units
     Boolean canCustomerRate
     Boolean canSupplierRate
@@ -291,7 +293,8 @@ enum PlaceOrderFailedReason {
     MIN_AMOUNT_NO_REACHED,
     MAX_AMOUNT_EXCEEDED,
     MAX_ALLOWED_PRODUCT_EXCEEDED,
-    PRODUCTS_UNAVAILABLE
+    PRODUCTS_UNAVAILABLE,
+    INVALID_COUPON
 
     def build() {
         new PlaceOrderFailed(reason: this)
@@ -375,6 +378,7 @@ class OrderInput {
 class PlaceOrderInput {
     String accessToken
     String wabiPayAccessToken
+    List<String> coupons
     List<OrderInput> orders
 }
 
@@ -396,6 +400,7 @@ class OrderSummaryInput {
     String accessToken
     String wabiPayAccessToken
     List<SupplierCartProductInput> products
+    List<String> coupons
 }
 
 class SupplierCartProductInput {
@@ -418,7 +423,8 @@ enum SummaryFailedReason {
     NOT_FOUND,
     PRODUCT_AVAILABILITY_HAS_CHANGED,
     IN,
-    PRODUCTS_UNAVAILABLE
+    PRODUCTS_UNAVAILABLE,
+    INVALID_COUPON
 
     def build() {
         new SummaryFailed(reason: this)
@@ -450,7 +456,8 @@ enum CartSummaryItemType {
     ORDER_TOTAL,
     CREDITS_USED,
     WABIMONEY_USED,
-    PAYMENT_PENDING
+    PAYMENT_PENDING,
+    DISCOUNT
 }
 
 class MetaEntry {

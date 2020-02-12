@@ -18,11 +18,11 @@ interface OrderBridge {
 
     Customer getCustomerOrder(String accessToken, Long orderId)
 
-    void placeOrder(String accessToken, List<OrderInput> orders, String wabiPayAccessToken)
+    void placeOrder(String accessToken, List<OrderInput> orders, String wabiPayAccessToken, List<String> coupons)
 
     SupplierOrder getSupplierOrder(String accessToken, Long supplierOrderId)
 
-    SummaryResult getOrderSummary(String accessToken, List<SupplierCartProductInput> productsSupplier, String wabiPayAccessToken)
+    SummaryResult getOrderSummary(String accessToken, List<SupplierCartProductInput> productsSupplier, String wabiPayAccessToken, List<String> coupons)
 
     List<OrderCancellation> getOrdersCancellation(String accessToken, Long orderId)
 

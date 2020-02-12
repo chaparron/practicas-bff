@@ -170,6 +170,7 @@ type SupplierOrder {
     total: Float
     credits_paid: Float
     money_paid: Float
+    discounts: Float
     units: Int
     products: [OrderItems]
     rating: RatingEntry
@@ -195,6 +196,7 @@ type SupplierOrderResult {
     credits_paid: Float
     money_paid: Float
     localTaxes: Float
+    discounts: Float
     amount: Float
     units: Int
     products: [OrderItems]
@@ -318,7 +320,8 @@ enum PlaceOrderFailedReason {
     MIN_AMOUNT_NO_REACHED,
     MAX_AMOUNT_EXCEEDED,
     MAX_ALLOWED_PRODUCT_EXCEEDED,
-    PRODUCTS_UNAVAILABLE
+    PRODUCTS_UNAVAILABLE,
+    INVALID_COUPON
 }
 
 union PlaceOrderResult = Void | PlaceOrderFailed
@@ -337,6 +340,7 @@ input OrderInput {
 input PlaceOrderInput {
     accessToken: String!
     wabiPayAccessToken: String
+    coupons: [String]
     orders: [OrderInput]!
 }
 
@@ -383,6 +387,7 @@ input OrderSummaryInput {
     accessToken: String!
     wabiPayAccessToken: String
     products: [SupplierCartProductInput]!
+    coupons: [String]
 }
 
 input SupplierCartProductInput {
@@ -428,7 +433,8 @@ enum CartSummaryItemType {
     CREDITS_USED,
     #Money used
     WABIMONEY_USED,
-    PAYMENT_PENDING
+    PAYMENT_PENDING,
+    DISCOUNT
 }
 
 type Summary {
@@ -453,7 +459,8 @@ type SupplierOrderFailed {
 enum SummaryFailedReason {
     NOT_FOUND
     PRODUCT_AVAILABILITY_HAS_CHANGED
-    PRODUCTS_UNAVAILABLE
+    PRODUCTS_UNAVAILABLE,
+    INVALID_COUPON
 }
 
 type SummaryFailed {
