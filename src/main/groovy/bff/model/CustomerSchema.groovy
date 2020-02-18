@@ -40,18 +40,6 @@ enum VerificationDocumentType {
     ID_BACK
 }
 
-enum DeliveryPreference {
-    MORNING,
-    AFTERNOON,
-    NO_PREFERENCE
-}
-
-enum DayOfWeekDeliveryPreference {
-    NO_PREFERENCE,
-    WORKING_DAYS,
-    WEEKEND
-}
-
 enum CustomerErrorReason {
     PHONE_ALREADY_EXIST,
     TOKEN_EXPIRED,
@@ -113,7 +101,7 @@ class Customer implements CustomerUpdateResult {
     User user
     Boolean smsVerification
     Boolean emailVerification
-    DeliveryPreference deliveryPreference
+    WorkingDays workingDays
     RatingScore rating
     int level
     List<String> missingDocuments
@@ -207,11 +195,25 @@ class CustomerUpdateInput {
     String username
     Boolean acceptWhatsApp
     List<Address> address
-    DeliveryPreference deliveryPreference
-    DayOfWeekDeliveryPreference dayOfWeekDeliveryPreference
+    WorkingDays workingDays
     String deliveryComment
     List<VerificationDocument> verificationDocuments
     String accessToken
+}
+
+class WorkingDays {
+    List<Day> days
+    List<HourRange> hours
+}
+
+class Day {
+    String day
+    Boolean selected
+}
+
+class HourRange {
+    String from
+    String to
 }
 
 
@@ -237,8 +239,7 @@ class SignInInput {
     String legalId
     String linePhone
     SignInUserInput user
-    DeliveryPreference deliveryPreference
-    DayOfWeekDeliveryPreference dayOfWeekDeliveryPreference
+    WorkingDays workingDays
     String deliveryComment
     String country_id
     List<AddressInput> addresses

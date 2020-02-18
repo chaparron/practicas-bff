@@ -235,7 +235,7 @@ type Order {
     created: TimestampOutput
     updated: TimestampOutput
     deliveryAddress: AddressType
-    deliveryPreference: DeliveryPreference
+    workingDays: WorkingDays
     supplierOrders: [SupplierOrder]
     ordersCancellations: [OrderCancellation]
     total: Float

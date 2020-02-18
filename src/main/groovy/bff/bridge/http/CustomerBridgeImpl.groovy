@@ -50,8 +50,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                                             username                   : customerUpdateInput.username,
                                             acceptWhatsApp             : customerUpdateInput.acceptWhatsApp,
                                             adress                     : customerUpdateInput.address,
-                                            deliveryPreference         : customerUpdateInput.deliveryPreference,
-                                            dayOfWeekDeliveryPreference: customerUpdateInput.dayOfWeekDeliveryPreference,
+                                            workingDays                : customerUpdateInput.workingDays,
                                             deliveryComment            : customerUpdateInput.deliveryComment,
                                             verificationDocuments      : customerUpdateInput.verificationDocuments
                                     ]
