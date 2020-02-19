@@ -207,7 +207,7 @@ class WorkingDays {
 }
 
 class Day {
-    String day
+    Integer dayIndex
     Boolean selected
 }
 

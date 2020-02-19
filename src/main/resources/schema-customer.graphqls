@@ -55,7 +55,7 @@ input WorkingDaysInput {
 
 
 input DayInput {
-    day: String
+    dayIndex: Int!
     selected: Boolean
 }
 
@@ -209,7 +209,7 @@ type Customer {
     emailVerification: Boolean
     addresses: [AddressType]
     verificationDocuments: [VerificationDocument]
-    workingDays: WorkingDays
+    workingDays: WorkingDays!
     rating: RatingScore
     level: Int
     missingDocuments: [String]
@@ -217,12 +217,12 @@ type Customer {
 }
 
 type WorkingDays {
-    days: [Day]
-    hours: [HourRange]
+    days: [Day]!
+    hours: [HourRange]!
 }
 
 type Day {
-    day: String
+    dayIndex: Int
     selected: Boolean
 }
 
