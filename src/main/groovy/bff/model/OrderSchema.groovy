@@ -247,6 +247,8 @@ class SupplierOrderResult {
     RatingEntry rating
     List<OrderItem> products
     HashMap<RatingOwner, Rating> ratings
+    Map metadata
+    List<Summary> summary
 }
 
 class RatingEntry {

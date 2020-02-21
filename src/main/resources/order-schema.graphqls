@@ -206,6 +206,7 @@ type SupplierOrderResult {
     customerRated: Boolean
     supplierRated: Boolean
     cancelRequested: Boolean
+    summary: [Summary]
 }
 
 enum RatingOwner {

@@ -101,6 +101,20 @@ class OrderBridgeImpl implements OrderBridge {
         customerOrderResponse.supplierOrder.order.id = findSupplierOrderInput.orderId
         customerOrderResponse.customer.accessToken = findSupplierOrderInput.accessToken
         customerOrderResponse.supplierOrder.products.each {it.accessToken = findSupplierOrderInput.accessToken}
+
+        customerOrderResponse.supplierOrder.summary = customerOrderResponse.supplierOrder.metadata.summary.collect { sm ->
+            new Summary(
+                    type: CartSummaryItemType.valueOf(sm.type),
+                    value: sm.value,
+                    metadata:  sm?.meta?.keySet()?.collect { key ->
+                        new MetaEntry(
+                                key: key,
+                                value: sm.meta.get(key)
+                        )
+                    }
+            )
+        }
+
         customerOrderResponse
 
     }
