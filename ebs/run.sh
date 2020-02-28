@@ -1,2 +1,2 @@
 #!/bin/bash
-exec java -javaagent:/var/newrelic/newrelic.jar -Dnewrelic.config.app_name="$NEW_RELIC_APP_NAME" -Dnewrelic.config.license_key=602c96ea128d65e4582bc82ba2214a01be9239eb  -jar application.jar
+exec java -javaagent:/var/newrelic/newrelic.jar -Dnewrelic.config.app_name="$NEW_RELIC_APP_NAME" -Dnewrelic.config.license_key=$NEW_RELIC_LICENSE  -jar application.jar
