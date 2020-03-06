@@ -194,7 +194,7 @@ class Order {
     OrderStatus status
     TimestampOutput created
     TimestampOutput updated
-    DeliveryPreference deliveryPreference
+    WorkingDays workingDays
     Float total
 }
 

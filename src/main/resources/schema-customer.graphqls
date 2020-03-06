@@ -16,13 +16,6 @@ enum VerificationDocumentType {
     ID_BACK
 }
 
-
-enum DeliveryPreference {
-    MORNING,
-    AFTERNOON,
-    NO_PREFERENCE
-}
-
 enum CustomerErrorReason {
     PHONE_ALREADY_EXIST
     TOKEN_EXPIRED
@@ -54,6 +47,23 @@ input VerificationDocumentInput {
     id: ID
     type: VerificationDocumentType
 }
+
+input WorkingDaysInput {
+    days: [DayInput]
+    hours: [HourRangeInput]
+}
+
+
+input DayInput {
+    dayIndex: Int!
+    selected: Boolean
+}
+
+input HourRangeInput {
+    from: String
+    to: String
+}
+
 
 input StateInput {
     id: ID
@@ -113,16 +123,9 @@ input SignInInput {
     user: SignInUserInput!
     addresses: [AddressTypeInput]!
     verificationDocuments: [VerificationDocumentInput]
-    deliveryPreference: DeliveryPreference!
-    dayOfWeekDeliveryPreference: DayOfWeekDeliveryPreference,
-    deliveryComment: String,
+    workingDays: WorkingDaysInput
+    deliveryComment: String
     country_id: String
-}
-
-enum DayOfWeekDeliveryPreference {
-    NO_PREFERENCE
-    WORKING_DAYS
-    WEEKEND
 }
 
 enum AddressFailedReason {
@@ -146,8 +149,7 @@ input CustomerUpdateInput {
     phone: String
     username: String
     acceptWhatsApp: Boolean
-    deliveryPreference: DeliveryPreference
-    dayOfWeekDeliveryPreference: DayOfWeekDeliveryPreference
+    workingDays: WorkingDaysInput
     deliveryComment: String
     verificationDocuments: [VerificationDocumentInput]
     accessToken: String!
@@ -207,11 +209,26 @@ type Customer {
     emailVerification: Boolean
     addresses: [AddressType]
     verificationDocuments: [VerificationDocument]
-    deliveryPreference: DeliveryPreference
+    workingDays: WorkingDays!
     rating: RatingScore
     level: Int
     missingDocuments: [String]
     country_id: String
+}
+
+type WorkingDays {
+    days: [Day]!
+    hours: [HourRange]!
+}
+
+type Day {
+    dayIndex: Int
+    selected: Boolean
+}
+
+type HourRange {
+    from: String
+    to: String
 }
 
 type CustomerErrorFailed {
