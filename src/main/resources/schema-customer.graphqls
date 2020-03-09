@@ -39,6 +39,13 @@ enum SignInFailedReason {
     INVALID_STATE
 }
 
+
+enum DeliveryPreference {
+    MORNING,
+    AFTERNOON,
+    NO_PREFERENCE
+}
+
 input CustomerInput {
     accessToken: String!
 }
@@ -209,6 +216,7 @@ type Customer {
     emailVerification: Boolean
     addresses: [AddressType]
     verificationDocuments: [VerificationDocument]
+    deliveryPreference: DeliveryPreference
     workingDays: WorkingDays!
     rating: RatingScore
     level: Int

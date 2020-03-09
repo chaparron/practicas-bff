@@ -1,5 +1,8 @@
 package bff.model
 
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
 interface CustomerUpdateResult {}
 
 interface VerifyEmailResult {}
@@ -64,6 +67,12 @@ enum AddressFailedReason {
     }
 }
 
+enum DeliveryPreference {
+    MORNING,
+    AFTERNOON,
+    NO_PREFERENCE
+}
+
 enum SignInFailedReason {
     PHONE_ALREADY_EXIST,
     LEGAL_ID_ALREADY_EXIST,
@@ -101,12 +110,42 @@ class Customer implements CustomerUpdateResult {
     User user
     Boolean smsVerification
     Boolean emailVerification
+
     WorkingDays workingDays
     RatingScore rating
     int level
     List<String> missingDocuments
     List<VerificationDocument> verificationDocuments
     String country_id
+
+    DeliveryPreference getDeliveryPreference() {
+        if (workingDays.hours) {
+
+            def preference = workingDays.hours.collect {
+                def from = getHours(workingDays.hours.first().from)
+                def to = getHours(workingDays.hours.first().to)
+
+                if (from >= 0 && to <= 13) {
+                    return DeliveryPreference.MORNING
+                }
+                if (from > 13 && to < 23) {
+                    return DeliveryPreference.AFTERNOON
+                }
+                return  DeliveryPreference.NO_PREFERENCE
+            }
+
+            preference.every { it == DeliveryPreference.MORNING } ? DeliveryPreference.MORNING
+                    : preference.every {  it ==  DeliveryPreference.AFTERNOON } ?  DeliveryPreference.AFTERNOON
+                    : DeliveryPreference.NO_PREFERENCE
+
+        }
+        DeliveryPreference.NO_PREFERENCE
+    }
+
+    private static int getHours(String strTime) {
+        String[] time = strTime.split (':')
+        Integer.parseInt ( time[0].trim() )
+    }
 }
 
 class State {
