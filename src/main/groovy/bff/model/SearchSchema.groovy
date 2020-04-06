@@ -193,7 +193,7 @@ class Supplier implements SupplierResponse {
     List<DeliveryZone> deliveryZones
     RatingScore rating
     String country_id
-
+    String averageDeliveryDay
 }
 
 class DeliveryZone {

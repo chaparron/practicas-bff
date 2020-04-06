@@ -129,7 +129,7 @@ type Supplier {
     rating: RatingScore,
     country_id: String,
     deliveryZones: [DeliveryZone]
-
+    averageDeliveryDay : String
 }
 
 type DeliveryZone {
