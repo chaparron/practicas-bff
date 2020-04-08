@@ -15,7 +15,7 @@ class SearchBridgeImpl implements SearchBridge {
     RestOperations http
 
     @Override
-    SearchResult search(SearchInput searchInput) {
+    SearchResponse search(SearchInput searchInput) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/product"))
             .queryParam("address_id", searchInput.addressId)
             .queryParam("keyword", searchInput.keyword)
