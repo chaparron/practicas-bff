@@ -13,7 +13,7 @@ class SearchQuery implements GraphQLQueryResolver {
     @Autowired
     SearchBridge searchBridge
 
-    SearchResponse search(SearchInput searchInput) {
+    SearchResult search(SearchInput searchInput) {
         searchBridge.search(searchInput)
     }
 

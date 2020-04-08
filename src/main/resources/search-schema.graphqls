@@ -24,18 +24,6 @@ enum SortInput {
     DEFAULT
 }
 
-enum SearchFailedReason {
-    INVALID_ADDRESS,
-    FORBIDDEN,
-    NO_SUPPLIERS_FOUND
-}
-
-type SearchFailed {
-    reason: SearchFailedReason
-}
-
-union SearchResponse = SearchResult | SearchFailed
-
 type SearchResult {
     header: Header,
     sort: Sort

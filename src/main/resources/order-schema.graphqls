@@ -381,7 +381,7 @@ input GetSupplierRatingsInput {
 
 input GetSupplierOrderInput {
     accessToken: String!
-    supplierOrderId: Int!
+    supplierOrderId: Int
 }
 
 input OrderSummaryInput {
