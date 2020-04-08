@@ -55,6 +55,8 @@ class Main {
                 .add(Promotion.class)
                 .add(GetLandingPromotionFailed.class)
                 .add(CustomerOrderResponse.class)
+                .add(SearchFailed.class)
+                .add(SearchResult.class)
     }
     /**
      *

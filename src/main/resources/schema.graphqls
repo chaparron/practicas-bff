@@ -4,7 +4,7 @@ type Query {
     # Find Customer by Id
     myProfile(input: CustomerInput!): Customer!
 
-    search (input: SearchInput!): SearchResult
+    search (input: SearchInput!): SearchResponse
 
     productDetail(input: ProductInput!): ProductResult
 

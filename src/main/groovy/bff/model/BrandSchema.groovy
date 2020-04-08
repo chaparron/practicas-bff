@@ -9,7 +9,8 @@ class GetHomeBrandsResult implements GetHomeBrandsResponse {
 enum GetBrandsFailedReason {
     NOT_FOUND,
     BAD_REQUEST,
-    INVALID_COUNTRY_ID
+    INVALID_COUNTRY_ID,
+    NO_SUPPLIERS_FOUND
 
     def build() {
         new GetHomeBrandsFailed(reason: this)
