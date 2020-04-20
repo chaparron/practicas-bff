@@ -73,4 +73,9 @@ class SearchBridgeImpl implements SearchBridge {
         result
 
     }
+
+    @Override
+    SearchResponse searchV2(SearchInput searchInput) {
+        return search(searchInput)
+    }
 }

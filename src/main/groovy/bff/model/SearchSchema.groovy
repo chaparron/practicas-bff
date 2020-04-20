@@ -4,11 +4,25 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
-interface ProductResult{}
+interface ProductResult {}
 
+interface SearchResponse {}
 
+enum SearchFailedReason {
+    INVALID_ADDRESS,
+    FORBIDDEN,
+    NO_SUPPLIERS_FOUND
 
-class SearchResult {
+    def build() {
+        new SearchFailed(reason: this)
+    }
+}
+
+class SearchFailed implements SearchResponse {
+    SearchFailedReason reason
+}
+
+class SearchResult implements SearchResponse {
     Header header
     Sort sort
     List<BreadCrumb> breadcrumb
@@ -277,6 +291,7 @@ class ProductInput {
     String accessToken
     Integer productId
 }
+
 class ProductEanInput {
     String accessToken
     String ean
