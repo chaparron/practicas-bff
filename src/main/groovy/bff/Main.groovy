@@ -57,6 +57,9 @@ class Main {
                 .add(CustomerOrderResponse.class)
                 .add(SearchFailed.class)
                 .add(SearchResult.class)
+                .add(BannerDialog.class)
+                .add(SiteConfigurationFailed.class)
+                .add(BannerDialogResult.class)
     }
     /**
      *

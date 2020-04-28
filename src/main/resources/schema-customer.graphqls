@@ -47,7 +47,7 @@ enum DeliveryPreference {
 }
 
 input CustomerInput {
-    accessToken: String!
+    accessToken: String
 }
 
 input VerificationDocumentInput {
@@ -96,7 +96,7 @@ input AddressTypeUpsertInput {
     lon: Float!
     additionalInfo: String
     addressType: AddressMode!
-    accessToken: String!
+    accessToken: String
 }
 
 input UserCredentialsSignInInput {
@@ -148,7 +148,7 @@ union AddressResponse = AddressType | AddressFailed
 
 input AddressIdInput {
     address_id : ID!
-    accessToken: String!
+    accessToken: String
 }
 
 
@@ -159,7 +159,7 @@ input CustomerUpdateInput {
     workingDays: WorkingDaysInput
     deliveryComment: String
     verificationDocuments: [VerificationDocumentInput]
-    accessToken: String!
+    accessToken: String
 }
 
 input VerifyEmailInput {
@@ -169,12 +169,12 @@ input VerifyEmailInput {
 
 input VerifyPhoneInput {
     token: String!
-    accessToken: String!
+    accessToken: String
 }
 
 input PreferredAddressInput {
     addressId: ID!
-    accessToken: String!
+    accessToken: String
 }
 
 type State {

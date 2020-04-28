@@ -248,5 +248,15 @@ class Query implements GraphQLQueryResolver {
             SummaryFailedReason.valueOf((String) ex.innerResponse).build()
         }
     }
+
+    BannerDialogResult getBannerDialog(String countrId) {
+        try
+        {
+            siteConfigurationBridge.getBannerDialog(countryId)
+        }
+        catch (BadRequestErrorException ex) {
+            SiteConfigurationFailedReason.valueOf((String) ex.innerResponse).build()
+        }
+    }
 }
 

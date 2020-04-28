@@ -4,8 +4,19 @@ interface UsernameRegistrationResult {}
 
 interface ProfileCredentialsResult {}
 
+interface BannerDialogResult {}
+
 class ProfileCredentials implements ProfileCredentialsResult {
     String accessToken
+}
+
+enum SiteConfigurationFailedReason {
+    NOT_FOUND
+
+    def build() {
+        new SiteConfigurationFailed(reason: this)
+    }
+
 }
 
 enum RegisterFailureReason {
@@ -38,6 +49,10 @@ enum VoidReason {
     SUCCESS
 }
 
+class SiteConfigurationFailed implements BannerDialogResult {
+    SiteConfigurationFailedReason reason
+}
+
 class RegisterFailed {
     RegisterFailureReason registerReason
 }
@@ -47,22 +62,21 @@ class UsernameRegistrationFailed implements UsernameRegistrationResult {
 }
 
 class Void implements ChangePasswordResult,
-    UsernameRegistrationResult,
-    ConfirmPasswordResult,
-    VerifyEmailResult,
-    VerifyPhoneResult,
-    ResendVerifyEmailResult,
-    ResendVerifySMSResult,
-    PreferredAddressResult,
-    OrderUpdateResult,
-    CustomerOrdersResult,
-    UpdateAddressResult,
-    DeleteAddressResult,
-    PlaceOrderResult,
-    AddAddressResult,
-    CustomerRateSupplierResult,
-    CustomerReportRateResult
- {
+        UsernameRegistrationResult,
+        ConfirmPasswordResult,
+        VerifyEmailResult,
+        VerifyPhoneResult,
+        ResendVerifyEmailResult,
+        ResendVerifySMSResult,
+        PreferredAddressResult,
+        OrderUpdateResult,
+        CustomerOrdersResult,
+        UpdateAddressResult,
+        DeleteAddressResult,
+        PlaceOrderResult,
+        AddAddressResult,
+        CustomerRateSupplierResult,
+        CustomerReportRateResult {
     static final SUCCESS = new Void(voidReason: VoidReason.SUCCESS)
     VoidReason voidReason
 }
@@ -164,9 +178,37 @@ class IdInput {
 interface SupplierResponse {}
 
 
-
 class GetSupplierInput {
     String accessToken
     Integer supplierId
 }
 
+class BannerDialog implements BannerDialogResult {
+    TimestampOutput startDate
+    TimestampOutput endDate
+    Boolean statusBanner
+    List<Dialog> dialogs
+    List<Banner> banners
+}
+
+
+class Dialog {
+    Boolean firstVisit
+    String image
+    List<DialogContent> dialogContent
+}
+
+class DialogContent {
+    String title
+    String text
+    String lang
+}
+
+class Banner {
+    List<BannerContent> bannerContent
+}
+
+class BannerContent {
+    String content
+    String lang
+}

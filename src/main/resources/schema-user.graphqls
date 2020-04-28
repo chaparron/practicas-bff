@@ -36,7 +36,7 @@ enum ConfirmPasswordReason {
 input ChangePasswordInput {
     currentPassword: String!
     newPassword: String!
-    accessToken: String!
+    accessToken: String
 }
 
 input ResetPasswordRequestInput {
@@ -78,7 +78,7 @@ type LoginFailed {
 
 
 type RefreshCredentials {
-    accessToken: String!
+    accessToken: String
     refreshToken: String!
 }
 
