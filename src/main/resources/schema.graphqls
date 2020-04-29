@@ -83,7 +83,7 @@ type Query {
 
     getLandingPromotion(input: GetLandingPromotionInput!): GetLandingPromotionResult
 
-    getBannerDialog(countryId: String!): BannerDialogResult
+    getBannerDialog(input: String!): BannerDialogResult
 
 }
 
@@ -400,11 +400,8 @@ type DeleteAddressFailed {
 }
 
 type BannerDialog {
-    startDate: TimestampOutput
-    endDate: TimestampOutput
-    statusBanner: Boolean
-    dialogs: [Dialog]
-    banners: [Banner]
+    dialog: Dialog
+    banner: Banner
 }
 
 type Dialog {

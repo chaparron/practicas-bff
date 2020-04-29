@@ -121,4 +121,12 @@ class BridgeConfiguration {
         )
     }
 
+    @Bean
+    SiteConfigurationBridge siteConfigurationBridge() {
+        return new SiteConfigurationBridgeImpl(
+                http: http,
+                root: root
+        )
+    }
+
 }

@@ -184,11 +184,8 @@ class GetSupplierInput {
 }
 
 class BannerDialog implements BannerDialogResult {
-    TimestampOutput startDate
-    TimestampOutput endDate
-    Boolean statusBanner
-    List<Dialog> dialogs
-    List<Banner> banners
+    Dialog dialog
+    Banner banner
 }
 
 

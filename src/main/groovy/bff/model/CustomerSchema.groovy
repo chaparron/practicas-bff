@@ -120,7 +120,6 @@ class Customer implements CustomerUpdateResult {
 
     DeliveryPreference getDeliveryPreference() {
         if (workingDays.hours) {
-
             def preference = workingDays.hours.collect {
                 def from = getHours(workingDays.hours.first().from)
                 def to = getHours(workingDays.hours.first().to)
@@ -134,7 +133,7 @@ class Customer implements CustomerUpdateResult {
                 return  DeliveryPreference.NO_PREFERENCE
             }
 
-            preference.every { it == DeliveryPreference.MORNING } ? DeliveryPreference.MORNING
+            return preference.every { it == DeliveryPreference.MORNING } ? DeliveryPreference.MORNING
                     : preference.every {  it ==  DeliveryPreference.AFTERNOON } ?  DeliveryPreference.AFTERNOON
                     : DeliveryPreference.NO_PREFERENCE
 
