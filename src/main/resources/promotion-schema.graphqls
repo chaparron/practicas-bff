@@ -12,13 +12,13 @@ type PromotionResponse {
 
 
 input PromotionInput{
-    accessToken: String
+    accessToken: String!
     country_id: String!
 }
 
 
 input GetLandingPromotionInput {
-    accessToken: String
+    accessToken: String!
     country_id: String!
 }
 

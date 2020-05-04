@@ -1,5 +1,5 @@
 input CancelOrderInput {
-    accessToken: String
+    accessToken: String!
     orderId: Int!
     supplierOrderId: Int!
     cancelOptionReason: CustomerCancelOptionReason!
@@ -75,7 +75,7 @@ enum FilterOrderStatus {
 }
 
 input FindOrdersInput {
-    accessToken: String
+    accessToken: String!
     orderId: Int
     countryId: String
     size: Int!,
@@ -84,7 +84,7 @@ input FindOrdersInput {
 }
 
 input FindSupplierOrderInput {
-    accessToken: String
+    accessToken: String!
     countryId: String!
     orderId: Int!
     supplierOrderId: Int!
@@ -304,7 +304,7 @@ type SupplierPrice {
 }
 
 input RefreshCartInput {
-    accessToken: String
+    accessToken: String!
     products: [Int]
 }
 
@@ -339,8 +339,8 @@ input OrderInput {
 }
 
 input PlaceOrderInput {
-    accessToken: String
-    wabiPayAccessToken: String
+    accessToken: String!
+    wabiPayAccessToken: String!
     coupons: [String]
     orders: [OrderInput]!
 }
@@ -357,7 +357,7 @@ enum SupplierFailedReason {
 }
 
 input GetSupplierInput {
-    accessToken: String
+    accessToken: String!
     supplierId: Int!
 }
 
@@ -375,17 +375,17 @@ type SupplierRatingsResponse {
 input GetSupplierRatingsInput {
     page: Int
     size: Int
-    accessToken: String
+    accessToken: String!
     supplierId: Int!
 }
 
 input GetSupplierOrderInput {
-    accessToken: String
+    accessToken: String!
     supplierOrderId: Int!
 }
 
 input OrderSummaryInput {
-    accessToken: String
+    accessToken: String!
     wabiPayAccessToken: String
     products: [SupplierCartProductInput]!
     coupons: [String]
@@ -398,7 +398,7 @@ input SupplierCartProductInput {
 }
 
 input GetSupplierOrdersInput {
-    accessToken: String
+    accessToken: String!
     orderId: ID!
 }
 

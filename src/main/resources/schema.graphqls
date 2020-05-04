@@ -158,7 +158,7 @@ type Mutation {
 }
 
 input CustomerRateSupplierInput {
-    accessToken: String
+    accessToken: String!
     supplierOrderId: Int!,
     supplierId: Int!,
     score: Int!
@@ -166,7 +166,7 @@ input CustomerRateSupplierInput {
 }
 
 input CustomerReportRateInput {
-    accessToken: String
+    accessToken: String!
     rateId: Int!
 }
 
@@ -240,12 +240,12 @@ input PageInput {
 input ListUsersInput {
     query: String
     page: PageInput!
-    accessToken: String
+    accessToken: String!
 }
 
 input ListMyFavoritesInput {
     page: PageInput!
-    accessToken: String
+    accessToken: String!
 }
 
 input CompleteProfileInput {
@@ -253,23 +253,18 @@ input CompleteProfileInput {
     phone: String!
     address: String!
     recaptchaResponse: String!
-    accessToken: String
+    accessToken: String!
 }
 
 input UsernameInput {
     userId: ID!
-    accessToken: String
-}
-
-input TechnicalReviewInput {
-    id: ID!
-    accessToken: String
+    accessToken: String!
 }
 
 
 input ListGroupsInput {
     authType: AuthType!
-    accessToken: String
+    accessToken: String!
 }
 
 
@@ -280,16 +275,17 @@ input IdInput {
 
 input UserInput {
     id: ID!
-    accessToken: String
+    accessToken: String!
 }
 
 input UploadImageInput {
     encodedFile: String!
-    accessToken: String
+    accessToken: String!
+
 }
 
 input AccessTokenInput {
-    accessToken: String
+    accessToken: String!
 }
 
 type UsernameRegistrationFailed {
@@ -301,7 +297,7 @@ type RegisterFailed {
 }
 
 type ProfileCredentials {
-    accessToken: String
+    accessToken: String!
 }
 
 type CompleteProfileFailed {
@@ -332,7 +328,7 @@ type Slice {
 input UpdateBoostInput {
     id: ID!
     boost: ID!
-    accessToken: String
+    accessToken: String!
 }
 
 input FacetFilter{
@@ -349,13 +345,13 @@ input ValidateInput{
     id: ID
     value: String!
     country_id: String!
-    accessToken: String
+    accessToken: String!
     validationType: ValidationType!
 }
 
 input UserDeviceInput{
     pushToken: String!
-    accessToken: String
+    accessToken: String!
     os: String
     appVersion: String
 }

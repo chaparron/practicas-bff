@@ -1,5 +1,5 @@
 input SearchInput {
-    accessToken: String,
+    accessToken: String!,
     addressId: Int,
     keyword: String,
     sort: String,
@@ -185,13 +185,13 @@ type SupplierProductConfiguration {
 
 input ProductInput {
     productId : Int!
-    accessToken: String
+    accessToken: String!
 }
 
 
 input ProductEanInput {
     ean: String!
-    accessToken: String
+    accessToken: String!
 }
 
 
