@@ -170,11 +170,13 @@ input VerifyEmailInput {
 input VerifyPhoneInput {
     token: String!
     accessToken: String!
+
 }
 
 input PreferredAddressInput {
     addressId: ID!
     accessToken: String!
+
 }
 
 type State {

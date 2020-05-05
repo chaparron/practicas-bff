@@ -42,6 +42,9 @@ class Query implements GraphQLQueryResolver {
     @Autowired
     StateBridge stateBridge
 
+    @Autowired
+    SiteConfigurationBridge siteConfigurationBridge
+
     Customer myProfile(CustomerInput customerInput) {
         customerBridge.myProfile(customerInput.accessToken)
     }
@@ -246,6 +249,16 @@ class Query implements GraphQLQueryResolver {
         }
         catch (BadRequestErrorException ex) {
             SummaryFailedReason.valueOf((String) ex.innerResponse).build()
+        }
+    }
+
+    BannerDialogResult getBannerDialog(String accessToken) {
+        try
+        {
+            siteConfigurationBridge.getBannerDialog(accessToken)
+        }
+        catch (BadRequestErrorException ex) {
+            SiteConfigurationFailedReason.valueOf((String) ex.innerResponse).build()
         }
     }
 }

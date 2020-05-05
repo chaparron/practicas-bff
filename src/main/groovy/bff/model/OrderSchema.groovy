@@ -459,7 +459,9 @@ enum CartSummaryItemType {
     CREDITS_USED,
     WABIMONEY_USED,
     PAYMENT_PENDING,
-    DISCOUNT
+    DISCOUNT,
+    TOTAL_BILLED
+
 }
 
 class MetaEntry {

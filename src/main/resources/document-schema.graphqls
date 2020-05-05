@@ -4,7 +4,7 @@ enum UploadDocumentReason {
 
 input Document {
     encodedFile: String!
-    accessToken: String!
+    accessToken: String
 }
 
 type UploadedDocument {

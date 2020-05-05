@@ -83,6 +83,8 @@ type Query {
 
     getLandingPromotion(input: GetLandingPromotionInput!): GetLandingPromotionResult
 
+    getBannerDialog(input: String!): BannerDialogResult
+
 }
 
 type CountryConfigurationEntry {
@@ -259,11 +261,6 @@ input UsernameInput {
     accessToken: String!
 }
 
-input TechnicalReviewInput {
-    id: ID!
-    accessToken: String!
-}
-
 
 input ListGroupsInput {
     authType: AuthType!
@@ -284,6 +281,7 @@ input UserInput {
 input UploadImageInput {
     encodedFile: String!
     accessToken: String!
+
 }
 
 input AccessTokenInput {
@@ -299,7 +297,7 @@ type RegisterFailed {
 }
 
 type ProfileCredentials {
-    accessToken: String
+    accessToken: String!
 }
 
 type CompleteProfileFailed {
@@ -347,7 +345,7 @@ input ValidateInput{
     id: ID
     value: String!
     country_id: String!
-    accessToken: String
+    accessToken: String!
     validationType: ValidationType!
 }
 
@@ -385,9 +383,43 @@ enum DeleteAddressFailedResult {
     NOT_ADDRESS_CUSTOMER
 }
 
+type SiteConfigurationFailed {
+    reason: SiteConfigurationFailedReason
+}
+
+enum SiteConfigurationFailedReason {
+    NOT_FOUND
+}
+
 type DeleteAddressFailed {
     reason: DeleteAddressFailedResult
 }
+
+type BannerDialog {
+    dialog: Dialog
+    banner: Banner
+}
+
+type Dialog {
+    image: String
+    dialogContent: [DialogContent]
+}
+
+type Banner {
+    bannerContent: [BannerContent]
+}
+
+type BannerContent {
+    content: String
+    lang: String
+}
+
+type DialogContent {
+    title: String
+    text: String
+    lang: String
+}
+
 
 union UsernameRegistrationResult = UsernameRegistrationFailed | Void
 
@@ -410,3 +442,6 @@ union DeleteAddressResult = DeleteAddressFailed | Void
 union AddAddressResult = AddAddressFailed |  Void
 
 union SignInResult = SignInFailed | GenericCredentials
+
+union BannerDialogResult = SiteConfigurationFailed | BannerDialog
+
