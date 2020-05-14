@@ -60,6 +60,7 @@ class Main {
                 .add(BannerDialog.class)
                 .add(SiteConfigurationFailed.class)
                 .add(BannerDialogResult.class)
+                .add(PreviewSearchResult.class)
     }
     /**
      *

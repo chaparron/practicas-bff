@@ -1,6 +1,7 @@
 package bff.model
 
 import bff.bridge.SearchBridge
+import bff.configuration.BadRequestErrorException
 import com.coxautodev.graphql.tools.GraphQLQueryResolver
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,8 +19,23 @@ class SearchQuery implements GraphQLQueryResolver {
     }
 
     SearchResponse searchV2(SearchInput searchInput) {
-        searchBridge.searchV2(searchInput)
+        try {
+            searchBridge.searchV2(searchInput)
+        } catch (BadRequestErrorException ex) {
+            SearchFailedReason.valueOf((String) ex.innerResponse).build()
+        }
     }
+
+    SearchResponse previewSearch(PreviewSearchInput searchInput) {
+        try {
+            searchBridge.previewSearch(searchInput)
+        } catch (BadRequestErrorException ex) {
+            SearchFailedReason.valueOf((String) ex.innerResponse).build()
+        }
+
+    }
+
+
 
 }
 

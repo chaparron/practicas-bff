@@ -8,6 +8,8 @@ type Query {
 
     searchV2 (input: SearchInput!): SearchResponse
 
+    previewSearch (input: PreviewSearchInput!): PreviewSearchResponse
+
     productDetail(input: ProductInput!): ProductResult
 
     productDetailByEan(input: ProductEanInput!): ProductResult
