@@ -10,7 +10,8 @@ enum GetBrandsFailedReason {
     NOT_FOUND,
     BAD_REQUEST,
     INVALID_COUNTRY_ID,
-    NO_SUPPLIERS_FOUND
+    NO_SUPPLIERS_FOUND,
+    INVALID_LOCATION
 
     def build() {
         new GetHomeBrandsFailed(reason: this)

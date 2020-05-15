@@ -60,7 +60,6 @@ class SearchBridgeImpl implements SearchBridge {
                 pr.accessToken = searchInput.accessToken
             }
         }
-            sq
         result.filters = transformFilters(result.filters)
         result
 
