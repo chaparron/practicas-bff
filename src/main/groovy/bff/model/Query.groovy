@@ -254,12 +254,34 @@ class Query implements GraphQLQueryResolver {
         promotionBridge.getAll(promotionInput)
     }
 
+    PromotionResult previewPromotions(CoordinatesInput coordinatesInput) {
+        try {
+            promotionBridge.previewPromotions(coordinatesInput)
+        }
+        catch (BadRequestErrorException ex) {
+            GetLandingPromotionFailedReason.valueOf((String) ex.innerResponse).build()
+        }
+
+    }
+
     PromotionResult getLandingPromotion(GetLandingPromotionInput input) {
         try {
             promotionBridge.getLandingPromotion(input)
         }
         catch (EntityNotFoundException ex) {
             GetLandingPromotionFailedReason.NOT_FOUND.build()
+        }
+    }
+
+    PromotionResult previewLandingPromotion(CoordinatesInput coordinatesInput) {
+        try {
+            promotionBridge.previewLandingPromotion(coordinatesInput)
+        }
+        catch (EntityNotFoundException ex) {
+            GetLandingPromotionFailedReason.NOT_FOUND.build()
+        }
+        catch(BadRequestErrorException ex) {
+            GetLandingPromotionFailedReason.valueOf((String) ex.innerResponse).build()
         }
     }
 

@@ -63,7 +63,9 @@ class Main {
                 .add(PreviewSearchResult.class)
                 .add(RootCategoriesResult.class)
                 .add(RootCategoriesFailed.class)
+                .add(PromotionFailed.class)
     }
+
     /**
      *
      * @return restOperations with custom error handler

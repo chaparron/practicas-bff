@@ -10,6 +10,16 @@ type PromotionResponse {
     content: [Promotion]
 }
 
+union PromotionResult = PromotionResponse | PromotionFailed
+
+type PromotionFailed {
+    reason: PromotionFailedReason
+}
+
+enum PromotionFailedReason {
+    INVALID_COUNTRY_ID,
+    INVALID_LOCATION
+}
 
 input PromotionInput{
     accessToken: String!
@@ -24,6 +34,8 @@ input GetLandingPromotionInput {
 
 enum GetLandingPromotionFailedReason {
     NOT_FOUND
+    INVALID_LOCATION
+    INVALID_COUNTRY_ID
 }
 
 type GetLandingPromotionFailed {

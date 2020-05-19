@@ -1,6 +1,7 @@
 package bff.bridge.http
 
 import bff.bridge.PromotionBridge
+import bff.model.CoordinatesInput
 import bff.model.GetLandingPromotionInput
 import bff.model.Promotion
 import bff.model.PromotionInput
@@ -33,14 +34,40 @@ class PromotionBridgeImpl implements PromotionBridge {
     }
 
     @Override
-    Promotion getLandingPromotion(GetLandingPromotionInput promotionInput) {
-        def uri = UriComponentsBuilder.fromUri(root.resolve("/promotion/landing"))
-            .queryParam("country_id", promotionInput.country_id)
+    PromotionResponse previewPromotions(CoordinatesInput coordinatesInput) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/promotion/"))
+                .queryParam("lat", coordinatesInput.lat)
+                .queryParam("lng", coordinatesInput.lng)
+                .queryParam("enabled", true)
 
         def request = RequestEntity.method(HttpMethod.GET, uri.toUriString().toURI())
-            .contentType(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+
+        return http.exchange(request.build(), PromotionResponse).body
+    }
+
+    @Override
+    Promotion getLandingPromotion(GetLandingPromotionInput promotionInput) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/promotion/landing"))
+                .queryParam("country_id", promotionInput.country_id)
+
+        def request = RequestEntity.method(HttpMethod.GET, uri.toUriString().toURI())
+                .contentType(MediaType.APPLICATION_JSON)
 
         request.header(HttpHeaders.AUTHORIZATION, "Bearer $promotionInput.accessToken")
+
+        http.exchange(request.build(), Promotion).body
+    }
+
+    @Override
+    Promotion previewLandingPromotion(CoordinatesInput coordinatesInput) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/promotion/landing"))
+                .queryParam("lat", coordinatesInput.lat)
+                .queryParam("lng", coordinatesInput.lng)
+
+
+        def request = RequestEntity.method(HttpMethod.GET, uri.toUriString().toURI())
+                .contentType(MediaType.APPLICATION_JSON)
 
         http.exchange(request.build(), Promotion).body
     }

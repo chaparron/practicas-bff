@@ -83,11 +83,15 @@ type Query {
 
     getPromotions(input:PromotionInput!) : PromotionResponse
 
+    previewPromotions(input: CoordinatesInput!): PromotionResult
+
     getStatesByCountry(input: String!): [State]
 
     getOrderPriceSummary(input: OrderSummaryInput!) : SummaryResult
 
     getLandingPromotion(input: GetLandingPromotionInput!): GetLandingPromotionResult
+
+    previewLandingPromotion(input: CoordinatesInput!): GetLandingPromotionResult
 
     getBannerDialog(input: String!): BannerDialogResult
 
