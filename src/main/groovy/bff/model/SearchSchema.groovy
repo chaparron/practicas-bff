@@ -336,6 +336,29 @@ class MeasurementUnit {
     Boolean enabled
 }
 
+interface RootCategoriesResponse {
+
+}
+
+class RootCategoriesFailed implements RootCategoriesResponse {
+    RootCategoriesFailedReasons reason
+
+}
+
+enum RootCategoriesFailedReasons {
+    BAD_REQUEST,
+    INVALID_LOCATION,
+    NO_SUPPLIERS_FOUND
+
+    def build() {
+        new RootCategoriesFailed(reason: this)
+    }
+}
+
+class RootCategoriesResult implements RootCategoriesResponse {
+    List<Category> categories
+}
+
 enum FeatureType {
     SINGLE,
     MULTIPLE,

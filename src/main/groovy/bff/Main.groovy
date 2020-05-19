@@ -61,6 +61,8 @@ class Main {
                 .add(SiteConfigurationFailed.class)
                 .add(BannerDialogResult.class)
                 .add(PreviewSearchResult.class)
+                .add(RootCategoriesResult.class)
+                .add(RootCategoriesFailed.class)
     }
     /**
      *

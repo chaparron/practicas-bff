@@ -66,6 +66,10 @@ type Query {
 
     getHomeBrands(input: GetHomeBrandsInput!): GetHomeBrandsResponse
 
+    previewHomeBrands(input: CoordinatesInput!): GetHomeBrandsResponse
+
+    previewRootCategories(input: CoordinatesInput!): RootCategoriesResponse
+
     getCountryConfiguration(countryId: String!): [CountryConfigurationEntry]
 
     #rating
@@ -356,6 +360,11 @@ input UserDeviceInput{
     accessToken: String!
     os: String
     appVersion: String
+}
+
+input CoordinatesInput {
+    lat: Float!
+    lng: Float
 }
 
 enum ValidationType{

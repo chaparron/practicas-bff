@@ -45,6 +45,10 @@ class Query implements GraphQLQueryResolver {
     @Autowired
     SiteConfigurationBridge siteConfigurationBridge
 
+    @Autowired
+    CategoryBridge categoryBridge
+
+
     Customer myProfile(CustomerInput customerInput) {
         customerBridge.myProfile(customerInput.accessToken)
     }
@@ -215,15 +219,35 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
+    GetHomeBrandsResponse previewHomeBrands(CoordinatesInput coordinatesInput) {
+        try {
+            brandBridge.previewHomeBrands(coordinatesInput)
+        }
+        catch (EntityNotFoundException ex) {
+            GetBrandsFailedReason.NOT_FOUND.build()
+        }
+        catch (BadRequestErrorException ex) {
+            GetBrandsFailedReason.valueOf((String) ex.innerResponse).build()
+        }
+    }
+
     List<CountryConfigurationEntry> getCountryConfiguration(String countryId) {
         countryBridge.getCountryConfiguration(countryId)
     }
 
-    @Autowired
-    CategoryBridge categoryBridge
 
     List<Category> findRootCategories(AccessTokenInput accessTokenInput) {
         categoryBridge.findRootCategories(accessTokenInput.accessToken)
+    }
+
+    RootCategoriesResponse previewRootCategories(CoordinatesInput coordinatesInput) {
+        try {
+            categoryBridge.previewRootCategories(coordinatesInput)
+        }
+        catch (BadRequestErrorException ex) {
+            RootCategoriesFailedReasons.valueOf((String) ex.innerResponse).build()
+        }
+
     }
 
     PromotionResponse getPromotions(PromotionInput promotionInput) {
