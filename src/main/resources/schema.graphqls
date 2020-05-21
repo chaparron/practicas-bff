@@ -355,7 +355,7 @@ input ValidateInput{
     id: ID
     value: String!
     country_id: String!
-    accessToken: String!
+    accessToken: String
     validationType: ValidationType!
 }
 
