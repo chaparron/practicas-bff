@@ -1,11 +1,7 @@
 package bff.resolver
 
 import bff.bridge.OrderBridge
-import bff.model.Address
-import bff.model.Customer
-import bff.model.Order
-import bff.model.SupplierOrder
-import bff.model.OrderCancellation
+import bff.model.*
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component

@@ -8,6 +8,8 @@ type Query {
 
     searchV2 (input: SearchInput!): SearchResponse
 
+    previewSearch (input: PreviewSearchInput!): PreviewSearchResponse
+
     productDetail(input: ProductInput!): ProductResult
 
     productDetailByEan(input: ProductEanInput!): ProductResult
@@ -64,6 +66,10 @@ type Query {
 
     getHomeBrands(input: GetHomeBrandsInput!): GetHomeBrandsResponse
 
+    previewHomeBrands(input: CoordinatesInput!): GetHomeBrandsResponse
+
+    previewRootCategories(input: CoordinatesInput!): RootCategoriesResponse
+
     getCountryConfiguration(countryId: String!): [CountryConfigurationEntry]
 
     #rating
@@ -77,11 +83,15 @@ type Query {
 
     getPromotions(input:PromotionInput!) : PromotionResponse
 
+    previewPromotions(input: CoordinatesInput!): PromotionResult
+
     getStatesByCountry(input: String!): [State]
 
     getOrderPriceSummary(input: OrderSummaryInput!) : SummaryResult
 
     getLandingPromotion(input: GetLandingPromotionInput!): GetLandingPromotionResult
+
+    previewLandingPromotion(input: CoordinatesInput!): GetLandingPromotionResult
 
     getBannerDialog(input: String!): BannerDialogResult
 
@@ -354,6 +364,11 @@ input UserDeviceInput{
     accessToken: String!
     os: String
     appVersion: String
+}
+
+input CoordinatesInput {
+    lat: Float!
+    lng: Float
 }
 
 enum ValidationType{

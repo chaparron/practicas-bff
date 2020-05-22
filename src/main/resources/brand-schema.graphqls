@@ -22,6 +22,8 @@ enum GetHomeBrandsFailedReason {
     NOT_FOUND
     BAD_REQUEST
     INVALID_COUNTRY_ID
+    INVALID_LOCATION
+    NO_SUPPLIERS_FOUND
 }
 
 type GetHomeBrandsFailed {

@@ -60,7 +60,12 @@ class Main {
                 .add(BannerDialog.class)
                 .add(SiteConfigurationFailed.class)
                 .add(BannerDialogResult.class)
+                .add(PreviewSearchResult.class)
+                .add(RootCategoriesResult.class)
+                .add(RootCategoriesFailed.class)
+                .add(PromotionFailed.class)
     }
+
     /**
      *
      * @return restOperations with custom error handler

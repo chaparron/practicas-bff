@@ -1,8 +1,5 @@
 package bff.model
 
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-
 interface CustomerUpdateResult {}
 
 interface VerifyEmailResult {}
@@ -296,6 +293,11 @@ class VerifyPhoneInput {
 
 class AccessTokenInput {
     String accessToken
+}
+
+class CoordinatesInput {
+    BigDecimal lat
+    BigDecimal lng
 }
 
 class PreferredAddressInput {

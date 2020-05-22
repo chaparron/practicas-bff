@@ -2,6 +2,7 @@ package bff.bridge.http
 
 import bff.bridge.BrandBridge
 import bff.model.Brand
+import bff.model.CoordinatesInput
 import bff.model.GetHomeBrandsResult
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders
@@ -19,10 +20,10 @@ class BrandBridgeImpl implements BrandBridge {
     @Override
     GetHomeBrandsResult getHome(String accessToken, String countryId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/brand/home/"))
-            .queryParam("country_id", countryId)
+                .queryParam("country_id", countryId)
 
         def request = RequestEntity.method(HttpMethod.GET, uri.toUriString().toURI())
-            .contentType(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
 
         if (accessToken) {
             request.header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
@@ -30,11 +31,28 @@ class BrandBridgeImpl implements BrandBridge {
 
         def brands = http.exchange(
                 request
-                .build()
-            , new ParameterizedTypeReference<List<Brand>>() {}).body
+                        .build()
+                , new ParameterizedTypeReference<List<Brand>>() {}).body
 
 
         return new GetHomeBrandsResult(brands: brands)
     }
 
+    @Override
+    GetHomeBrandsResult previewHomeBrands(CoordinatesInput coordinatesInput) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/brand/home/"))
+                .queryParam("lat", coordinatesInput.lat)
+                .queryParam("lng", coordinatesInput.lng)
+
+        def request = RequestEntity.method(HttpMethod.GET, uri.toUriString().toURI())
+                .contentType(MediaType.APPLICATION_JSON)
+
+        def brands = http.exchange(
+                request
+                        .build()
+                , new ParameterizedTypeReference<List<Brand>>() {}).body
+
+
+        return new GetHomeBrandsResult(brands: brands)
+    }
 }

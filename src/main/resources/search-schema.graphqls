@@ -13,6 +13,20 @@ input SearchInput {
     supplier: Int,
 }
 
+input PreviewSearchInput {
+    keyword: String,
+    sort: String,
+    sortDirection: SortInput,
+    category: Int,
+    page: Int,
+    size: Int,
+    brand: Int,
+    tag: String,
+    features: [FeatureInput]
+    lat: Float!,
+    lng: Float!
+}
+
 input FeatureInput {
     id: String,
     value: String
@@ -26,6 +40,7 @@ enum SortInput {
 
 enum SearchFailedReason {
     INVALID_ADDRESS,
+    INVALID_LOCATION,
     FORBIDDEN,
     NO_SUPPLIERS_FOUND
 }
@@ -36,12 +51,23 @@ type SearchFailed {
 
 union SearchResponse = SearchResult | SearchFailed
 
+union PreviewSearchResponse = PreviewSearchResult | SearchFailed
+
 type SearchResult {
     header: Header,
     sort: Sort
     breadcrumb: [BreadCrumb]
     filters: [Filter]
     products: [ProductSearch]
+    facets: [Facet]
+}
+
+type PreviewSearchResult {
+    header: Header,
+    sort: Sort
+    breadcrumb: [BreadCrumb]
+    filters: [Filter]
+    products: [PreviewProductSearch]
     facets: [Facet]
 }
 
@@ -65,6 +91,35 @@ type Header {
 type BreadCrumb {
     id: Int,
     name: String
+}
+
+type PreviewProductSearch {
+    name: String,
+    enabled: Boolean,
+    category: Category,
+    brand: Brand,
+    ean: String,
+    description: String,
+    images: [Image],
+    created: TimestampOutput,
+    manufacturer: Manufacturer
+    prices: [PreviewPrice]
+    title: String
+    suppliers: [PreviewSupplier]
+}
+
+type PreviewPrice {
+    id: Int
+    value: Float
+    display: Display
+}
+
+
+type PreviewSupplier {
+    id: Int
+    name: String
+    legalName: String
+    avatar: String
 }
 
 type ProductSearch {

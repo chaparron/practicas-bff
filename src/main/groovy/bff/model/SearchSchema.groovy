@@ -11,7 +11,9 @@ interface SearchResponse {}
 enum SearchFailedReason {
     INVALID_ADDRESS,
     FORBIDDEN,
-    NO_SUPPLIERS_FOUND
+    NO_SUPPLIERS_FOUND,
+    INVALID_LOCATION
+
 
     def build() {
         new SearchFailed(reason: this)
@@ -31,6 +33,24 @@ class SearchResult implements SearchResponse {
     List<Facet> facets
 }
 
+class PreviewSearchResult implements SearchResponse {
+    Header header
+    Sort sort
+    List<BreadCrumb> breadcrumb
+    List<Filter> filters
+    List<PreviewProductSearch> products
+    List<Facet> facets
+}
+
+
+class PreviewSearchResultMapper {
+    Header header
+    Sort sort
+    List<BreadCrumb> breadcrumb
+    Map filters
+    List<PreviewProductSearch> products
+    List<Facet> facets
+}
 
 class SearchResultMapper {
     Header header
@@ -63,6 +83,20 @@ class Header {
     }
 }
 
+class PreviewSearchInput {
+    String keyword
+    String sort
+    SortInput sortDirection
+    Integer category
+    Integer page
+    Integer size
+    Integer brand
+    String tag
+    List<FeatureInput> features
+    BigDecimal lat
+    BigDecimal lng
+}
+
 class SearchInput {
     String accessToken
     Integer addressId
@@ -89,6 +123,37 @@ enum SortInput {
     DEFAULT
 }
 
+
+class PreviewProductSearch implements ProductResult {
+    Long id
+    String name
+    Boolean enabled
+    Category category
+    Brand brand
+    String ean
+    String description
+    List<Keyword> keywords
+    List<Feature> features
+    List<Image> images
+    TimestampOutput created
+    Manufacturer manufacturer
+    List<PreviewPrice> prices
+    List<PreviewSupplier> suppliers
+    String title
+}
+
+class PreviewPrice {
+    Long id
+    BigDecimal value
+    Display display
+}
+
+class PreviewSupplier {
+    Long id
+    String name
+    String legalName
+    String avatar
+}
 
 class ProductSearch implements ProductResult {
     String accessToken
@@ -269,6 +334,29 @@ class MeasurementUnit {
     Long id
     String name
     Boolean enabled
+}
+
+interface RootCategoriesResponse {
+
+}
+
+class RootCategoriesFailed implements RootCategoriesResponse {
+    RootCategoriesFailedReasons reason
+
+}
+
+enum RootCategoriesFailedReasons {
+    BAD_REQUEST,
+    INVALID_LOCATION,
+    NO_SUPPLIERS_FOUND
+
+    def build() {
+        new RootCategoriesFailed(reason: this)
+    }
+}
+
+class RootCategoriesResult implements RootCategoriesResponse {
+    List<Category> categories
 }
 
 enum FeatureType {
