@@ -163,6 +163,7 @@ type Mutation {
     disableWhatsApp(input: AccessTokenInput!): Void!
 
     userDevice(input: UserDeviceInput!): Void!
+
     deleteUserDevice(input: AccessTokenInput!): Void!
 
 }

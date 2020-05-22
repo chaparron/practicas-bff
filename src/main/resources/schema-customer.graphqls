@@ -129,7 +129,7 @@ input SignInInput {
     linePhone: String
     user: SignInUserInput!
     addresses: [AddressTypeInput]!
-    verificationDocuments: [VerificationDocumentInput]
+    verificationDocuments: [VerificationDocumentInput]!
     workingDays: WorkingDaysInput
     deliveryComment: String
     country_id: String
