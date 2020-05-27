@@ -249,15 +249,15 @@ class OrderBridgeImpl implements OrderBridge {
 
     @Override
     ValidateOrderResponse validateOrder(ValidateOrderInput validateOrderInput) {
-        def uri = UriComponentsBuilder.fromUri(root.resolve("/order/validate"))
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/order/cart/validate"))
                 .toUriString().toURI()
 
 
         http.exchange(
-                RequestEntity.method(HttpMethod.GET, uri)
+                RequestEntity.method(HttpMethod.POST, uri)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer $validateOrderInput.accessToken")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .build()
+                        .body([orders: validateOrderInput.orders])
                 , ValidateOrderResponse).body
 
     }
