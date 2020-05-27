@@ -95,6 +95,8 @@ type Query {
 
     getBannerDialog(input: String!): BannerDialogResult
 
+    validateOrder(input: ValidateOrderInput!): ValidateOrderResult
+
 }
 
 type CountryConfigurationEntry {

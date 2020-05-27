@@ -64,6 +64,8 @@ class Main {
                 .add(RootCategoriesResult.class)
                 .add(RootCategoriesFailed.class)
                 .add(PromotionFailed.class)
+                .add(ValidateOrderResponse.class)
+                .add(ValidateOrderFailed.class)
     }
 
     /**

@@ -518,3 +518,50 @@ class GetSupplierOrderInput {
     String accessToken
     Long supplierOrderId
 }
+
+class OrderError {
+
+    OrderErrorType error
+    Long supplierId
+    Long productId
+    BigDecimal prevValue
+    BigDecimal actualValue
+
+}
+
+
+enum OrderErrorType {
+    PRODUCT_PRICES_HAS_CHANGED,
+    MIN_UNITS_NO_REACHED,
+    MAX_UNITS_EXCEEDED,
+    MAX_ALLOWED_PRODUCT_EXCEEDED,
+    MAX_AMOUNT_EXCEEDED,
+    MIN_AMOUNT_NO_REACHED,
+    SUPPLIER_UNAVAILABLE
+
+}
+
+interface ValidateOrderResult {}
+
+class ValidateOrderResponse implements  ValidateOrderResult {
+    List<OrderError> errors
+}
+
+class ValidateOrderFailed implements  ValidateOrderResult {
+    ValidateOrderFailedReason reason
+}
+
+enum ValidateOrderFailedReason {
+    INVALID_ORDER
+
+    def build() {
+        new ValidateOrderFailed(reason: this)
+    }
+}
+
+
+class ValidateOrderInput {
+    String accessToken
+    List<OrderInput> orders
+
+}

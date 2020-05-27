@@ -20,7 +20,6 @@ class OrderBridgeImpl implements OrderBridge {
 
     @Override
     OrderUpdateResult cancel(CancelOrderInput cancelOrderInput) {
-        //       try {
         def reference = new ParameterizedTypeReference<FinalOrderState>() {}
         http.exchange(
                 RequestEntity.method(HttpMethod.PUT, root.resolve('/customer/me/order/cancel'))
@@ -35,10 +34,6 @@ class OrderBridgeImpl implements OrderBridge {
                                 ]
                         )
                 , reference).body
-//        }
-//       catch (RestClientException e) {
-//            throw new RuntimeException("Failed to Cancel Order", e)
-//        }
     }
 
     @Override
@@ -100,13 +95,13 @@ class OrderBridgeImpl implements OrderBridge {
         customerOrderResponse.supplierOrder.order.accessToken = findSupplierOrderInput.accessToken
         customerOrderResponse.supplierOrder.order.id = findSupplierOrderInput.orderId
         customerOrderResponse.customer.accessToken = findSupplierOrderInput.accessToken
-        customerOrderResponse.supplierOrder.products.each {it.accessToken = findSupplierOrderInput.accessToken}
+        customerOrderResponse.supplierOrder.products.each { it.accessToken = findSupplierOrderInput.accessToken }
 
         customerOrderResponse.supplierOrder.summary = customerOrderResponse.supplierOrder.metadata.summary.collect { sm ->
             new Summary(
                     type: CartSummaryItemType.valueOf(sm.type),
                     value: sm.value,
-                    metadata:  sm?.meta?.keySet()?.collect { key ->
+                    metadata: sm?.meta?.keySet()?.collect { key ->
                         new MetaEntry(
                                 key: key,
                                 value: sm.meta.get(key)
@@ -180,11 +175,11 @@ class OrderBridgeImpl implements OrderBridge {
                 RequestEntity.method(HttpMethod.POST, uri)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body([orders: orders,
-                                coupons: coupons,
+                        .body([orders               : orders,
+                               coupons              : coupons,
                                wabipay_order_details: [customer_wabipay_token: wabiPayAccessToken, use_wabipay: wabiPayAccessToken != null,
-                                                                       use_wabipay_credits   : wabiPayAccessToken != null,
-                                                                       use_wabipay_money     : wabiPayAccessToken != null]])
+                                                       use_wabipay_credits   : wabiPayAccessToken != null,
+                                                       use_wabipay_money     : wabiPayAccessToken != null]])
                 , Map)
 
     }
@@ -214,8 +209,8 @@ class OrderBridgeImpl implements OrderBridge {
                 RequestEntity.method(HttpMethod.POST, uri)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body([products: productsSupplier,
-                               coupons: coupons,
+                        .body([products             : productsSupplier,
+                               coupons              : coupons,
                                wabipay_order_details: [customer_wabipay_token: wabiPayAccessToken,
                                                        use_wabipay_credits   : wabiPayAccessToken != null, use_wabipay: wabiPayAccessToken != null,
                                                        use_wabipay_money     : wabiPayAccessToken != null]])
@@ -250,6 +245,21 @@ class OrderBridgeImpl implements OrderBridge {
                         .contentType(MediaType.APPLICATION_JSON)
                         .build()
                 , ordersCancellationReference).body
+    }
+
+    @Override
+    ValidateOrderResponse validateOrder(ValidateOrderInput validateOrderInput) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/order/validate"))
+                .toUriString().toURI()
+
+
+        http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $validateOrderInput.accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , ValidateOrderResponse).body
+
     }
 }
 

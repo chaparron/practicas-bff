@@ -345,6 +345,44 @@ input PlaceOrderInput {
     orders: [OrderInput]!
 }
 
+input ValidateOrderInput {
+    accessToken: String!
+    orders: [OrderInput]!
+}
+
+union ValidateOrderResult = ValidateOrderResponse | ValidateOrderFailed
+
+
+type ValidateOrderFailed {
+    reason: ValidateOrderFailedReason
+}
+
+enum ValidateOrderFailedReason {
+    INVALID_ORDER
+}
+
+type ValidateOrderResponse {
+    errors: [OrderError]
+}
+
+type OrderError {
+    error: OrderErrorType
+    supplierId: Int
+    productId: Int
+    prevValue: Float
+    actualValue: Float
+}
+
+enum OrderErrorType {
+    PRODUCT_PRICES_HAS_CHANGED,
+    MIN_UNITS_NO_REACHED,
+    MAX_UNITS_EXCEEDED,
+    MAX_ALLOWED_PRODUCT_EXCEEDED,
+    MAX_AMOUNT_EXCEEDED,
+    MIN_AMOUNT_NO_REACHED,
+    SUPPLIER_UNAVAILABLE
+}
+
 input ProductOrderInput {
     productId: Int!
     quantity: Int!

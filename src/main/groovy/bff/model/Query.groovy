@@ -307,5 +307,14 @@ class Query implements GraphQLQueryResolver {
             SiteConfigurationFailedReason.valueOf((String) ex.innerResponse).build()
         }
     }
+
+    ValidateOrderResult validateOrder(ValidateOrderInput validateOrderInput) {
+        try {
+            orderBridge.validateOrder(validateOrderInput)
+        }
+        catch (BadRequestErrorException ex) {
+            ValidateOrderFailedReason.valueOf((String) ex.innerResponse).build()
+        }
+    }
 }
 
