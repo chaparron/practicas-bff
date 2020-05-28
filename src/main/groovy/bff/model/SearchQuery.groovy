@@ -20,7 +20,7 @@ class SearchQuery implements GraphQLQueryResolver {
 
     SearchResponse searchV2(SearchInput searchInput) {
         try {
-            searchBridge.searchV2(searchInput)
+            return searchBridge.searchV2(searchInput)
         } catch (BadRequestErrorException ex) {
             SearchFailedReason.valueOf((String) ex.innerResponse).build()
         }
@@ -28,11 +28,10 @@ class SearchQuery implements GraphQLQueryResolver {
 
     SearchResponse previewSearch(PreviewSearchInput searchInput) {
         try {
-            searchBridge.previewSearch(searchInput)
+            return searchBridge.previewSearch(searchInput)
         } catch (BadRequestErrorException ex) {
             SearchFailedReason.valueOf((String) ex.innerResponse).build()
         }
-
     }
 
 

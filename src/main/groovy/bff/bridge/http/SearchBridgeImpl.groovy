@@ -45,7 +45,8 @@ class SearchBridgeImpl implements SearchBridge {
                 breadcrumb: search.breadcrumb,
                 sort: search.sort,
                 header: search.header,
-                facets: search.facets
+                facets: search.facets,
+                filters: transformFilters(search.filters)
         )
 
         result.products.forEach {
@@ -60,7 +61,6 @@ class SearchBridgeImpl implements SearchBridge {
                 pr.accessToken = searchInput.accessToken
             }
         }
-        result.filters = transformFilters(result.filters)
         result
 
     }
@@ -106,7 +106,7 @@ class SearchBridgeImpl implements SearchBridge {
         result
     }
 
-    private static transformFilters(List filters) {
+    private static transformFilters(def filters) {
         filters.collect {
             if (it.value instanceof List) {
                 return new Filter(key: it.key, values: it.value.collect { fi -> new FilterItem(id: fi.id, name: fi.name) })
