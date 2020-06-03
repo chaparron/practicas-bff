@@ -66,6 +66,8 @@ class Main {
                 .add(PromotionFailed.class)
                 .add(ValidateOrderResponse.class)
                 .add(ValidateOrderFailed.class)
+                .add(PreviewHomeSupplierResponse.class)
+                .add(PreviewHomeSupplierFailed.class)
     }
 
     /**

@@ -28,6 +28,9 @@ class Query implements GraphQLQueryResolver {
     OrderBridge orderBridge
 
     @Autowired
+    SupplierBridge supplierBridge
+
+    @Autowired
     BrandBridge brandBridge
 
     @Autowired
@@ -280,7 +283,7 @@ class Query implements GraphQLQueryResolver {
         catch (EntityNotFoundException ex) {
             GetLandingPromotionFailedReason.NOT_FOUND.build()
         }
-        catch(BadRequestErrorException ex) {
+        catch (BadRequestErrorException ex) {
             GetLandingPromotionFailedReason.valueOf((String) ex.innerResponse).build()
         }
     }
@@ -299,8 +302,7 @@ class Query implements GraphQLQueryResolver {
     }
 
     BannerDialogResult getBannerDialog(String accessToken) {
-        try
-        {
+        try {
             siteConfigurationBridge.getBannerDialog(accessToken)
         }
         catch (BadRequestErrorException ex) {
@@ -316,5 +318,15 @@ class Query implements GraphQLQueryResolver {
             ValidateOrderFailedReason.valueOf((String) ex.innerResponse).build()
         }
     }
+
+    HomeSupplierResult previewHomeSuppliers(CoordinatesInput coordinatesInput) {
+        try {
+            supplierBridge.previewHomeSuppliers(coordinatesInput)
+        }
+        catch (BadRequestErrorException ex) {
+            PreviewHomeSupplierFailedReason.valueOf((String) ex.innerResponse).build()
+        }
+    }
 }
+
 

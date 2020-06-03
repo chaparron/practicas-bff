@@ -97,6 +97,8 @@ type Query {
 
     validateOrder(input: ValidateOrderInput!): ValidateOrderResult
 
+    previewHomeSuppliers(input: CoordinatesInput!): HomeSupplierResult
+
 }
 
 type CountryConfigurationEntry {

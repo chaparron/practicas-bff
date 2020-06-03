@@ -112,8 +112,8 @@ type PreviewPrice {
     id: Int
     value: Float
     display: Display
+    minUnits: Int
 }
-
 
 type PreviewSupplier {
     id: Int
@@ -294,3 +294,22 @@ type Prices {
 }
 
 union ProductResult = Product | ProductFailed
+
+enum PreviewSupplierFailedReason {
+    INVALID_LOCATION
+    NOT_FOUND
+    BAD_REQUEST
+    INVALID_COUNTRY_ID
+    NO_SUPPLIERS_FOUND
+}
+
+type PreviewHomeSupplierFailed {
+    reason: PreviewSupplierFailedReason
+}
+
+
+type PreviewHomeSupplierResponse {
+    suppliers: [PreviewSupplier]
+}
+
+union HomeSupplierResult = PreviewHomeSupplierResponse | PreviewHomeSupplierFailed

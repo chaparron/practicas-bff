@@ -211,3 +211,11 @@ class BannerContent {
     String content
     String lang
 }
+
+class PreviewSuppliersResponse implements PreviewSupplierResult {
+    List<Supplier> supplier
+}
+
+interface PreviewSupplierResult {
+
+}

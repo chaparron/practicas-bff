@@ -146,6 +146,7 @@ class PreviewPrice {
     Long id
     BigDecimal value
     Display display
+    Integer minUnits
 }
 
 class PreviewSupplier {
@@ -254,6 +255,13 @@ class Display {
 
 class Prices {
     List<Price> prices
+}
+
+class HomeSupplier {
+    String accessToken
+    Long id
+    String name
+    String avatar
 }
 
 class Supplier implements SupplierResponse {
@@ -400,6 +408,30 @@ enum SupplierFailedReason {
 
 class SupplierFailed implements SupplierResponse {
     SupplierFailedReason reason
+}
+
+interface HomeSupplierResult {
+
+}
+
+class PreviewHomeSupplierResponse implements HomeSupplierResult {
+    List<PreviewSupplier> suppliers
+}
+
+class PreviewHomeSupplierFailed implements HomeSupplierResult {
+    PreviewHomeSupplierFailedReason reason
+}
+
+enum PreviewHomeSupplierFailedReason {
+    INVALID_LOCATION,
+    NOT_FOUND,
+    BAD_REQUEST,
+    INVALID_COUNTRY_ID,
+    NO_SUPPLIERS_FOUND
+
+    def build() {
+        return new PreviewHomeSupplierFailed(reason: this)
+    }
 }
 
 
