@@ -23,7 +23,9 @@ enum RegisterFailureReason {
     DUPLICATE_USERNAME,
     PASSWORD_MISMATCH,
     INVALID_NAME,
-    INVALID_SURNAME
+    INVALID_SURNAME,
+    INVALID_VERIFICATION_DOCUMENTS,
+    MISSING_REQUIRED_VERIFICATION_DOCUMENT
 
     def doThrow() {
         throw new WebRegisterException(registerReason: this)
@@ -208,4 +210,12 @@ class Banner {
 class BannerContent {
     String content
     String lang
+}
+
+class PreviewSuppliersResponse implements PreviewSupplierResult {
+    List<Supplier> supplier
+}
+
+interface PreviewSupplierResult {
+
 }

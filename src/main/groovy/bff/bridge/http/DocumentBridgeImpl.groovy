@@ -19,7 +19,6 @@ class DocumentBridgeImpl implements DocumentBridge{
     UploadDocumentResult uploadDocument(String accessToken, byte[] content, MediaType contentType) throws NotAcceptableException {
         def body = http.exchange(
                 RequestEntity.method(HttpMethod.POST, root.resolve('/resource/uploadDocument'))
-                        .header(AUTHORIZATION, "Bearer $accessToken")
                         .contentType(contentType)
                         .contentLength(content.length)
                         .body(content)

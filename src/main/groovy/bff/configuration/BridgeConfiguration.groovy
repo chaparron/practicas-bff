@@ -58,6 +58,14 @@ class BridgeConfiguration {
     }
 
     @Bean
+    SupplierBridge supplierBridge() {
+        new SupplierBridgeImpl(
+                http: http,
+                root: root
+        )
+    }
+
+    @Bean
     SupplierOrderBridge supplierOrder() {
         new SupplierOrderBridgeImpl(
                 http: http,
