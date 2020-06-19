@@ -111,6 +111,7 @@ type PreviewProductSearch {
 type PreviewPrice {
     id: Int
     value: Float
+    unitValue: Float
     display: Display
     minUnits: Int
 }
