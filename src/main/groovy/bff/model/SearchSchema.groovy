@@ -145,6 +145,7 @@ class PreviewProductSearch implements ProductResult {
 class PreviewPrice {
     Long id
     BigDecimal value
+    BigDecimal unitValue
     Display display
     Integer minUnits
 }
