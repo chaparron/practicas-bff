@@ -369,6 +369,7 @@ type OrderError {
     error: OrderErrorType
     supplierId: Int
     productId: Int
+    units: Int
     prevValue: Float
     actualValue: Float
 }

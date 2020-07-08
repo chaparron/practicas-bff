@@ -524,6 +524,7 @@ class OrderError {
     OrderErrorType error
     Long supplierId
     Long productId
+    Integer units
     BigDecimal prevValue
     BigDecimal actualValue
 
