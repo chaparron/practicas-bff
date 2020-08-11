@@ -480,6 +480,8 @@ enum CartSummaryItemType {
     DISCOUNT
 
     TOTAL_BILLED
+    #Max ammount allowed to pay with wabipay
+    MAX_AMOUNT_WABIPAY_ALLOWED
 
 }
 
