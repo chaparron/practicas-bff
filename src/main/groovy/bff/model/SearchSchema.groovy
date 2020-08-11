@@ -265,6 +265,10 @@ class HomeSupplier {
     String avatar
 }
 
+class WabipayConfiguration {
+    Integer order_percentage_cap
+}
+
 class Supplier implements SupplierResponse {
     String accessToken
     Long id
@@ -282,6 +286,8 @@ class Supplier implements SupplierResponse {
     RatingScore rating
     String country_id
     String averageDeliveryDay
+    Integer orderPercentageCap
+    WabipayConfiguration wabipayConfiguration
 }
 
 class DeliveryZone {
