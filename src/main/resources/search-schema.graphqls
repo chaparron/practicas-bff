@@ -186,6 +186,7 @@ type Image {
 
 type WabipayConfiguration {
     order_percentage_cap: Int
+    use_wabipay_cap: Boolean
 }
 
 type Supplier {

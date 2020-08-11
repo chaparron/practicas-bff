@@ -266,6 +266,7 @@ class HomeSupplier {
 }
 
 class WabipayConfiguration {
+    Boolean use_wabipay_cap
     Integer order_percentage_cap
 }
 
