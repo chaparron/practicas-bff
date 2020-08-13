@@ -77,7 +77,8 @@ enum SignInFailedReason {
     USERNAME_ALREADY_EXIST,
     INVALID_ADDRESS,
     INVALID_ADDRESSES,
-    INVALID_STATE
+    INVALID_STATE,
+    INVALID_PREFERRED_ADDRESS
 
     def build() {
         return new SignInFailed(reason: this)

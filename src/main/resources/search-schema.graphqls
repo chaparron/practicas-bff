@@ -184,6 +184,11 @@ type Image {
     added: TimestampOutput,
 }
 
+type WabipayConfiguration {
+    order_percentage_cap: Int
+    use_wabipay_cap: Boolean
+}
+
 type Supplier {
     id: Int,
     name: String,
@@ -198,6 +203,7 @@ type Supplier {
     country_id: String,
     deliveryZones: [DeliveryZone]
     averageDeliveryDay : String
+    wabipayConfiguration: WabipayConfiguration
 }
 
 type DeliveryZone {
