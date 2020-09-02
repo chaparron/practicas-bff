@@ -14,7 +14,7 @@ class PriceResolver implements GraphQLResolver<Price> {
     ProductBridge productBridge
 
     Supplier supplier(Price price) {
-        productBridge.getSupplierById(price.accessToken, price.supplier.id)
+        price.supplier.id && !price.supplier.name ? productBridge.getSupplierById(price.accessToken, price.supplier.id) : price.supplier
     }
 
 }
