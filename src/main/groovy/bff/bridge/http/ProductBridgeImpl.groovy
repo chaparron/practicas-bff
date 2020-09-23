@@ -136,7 +136,9 @@ class ProductBridgeImpl implements ProductBridge {
     Cart refreshCart(String accessToken, List<Integer> products) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/product/cart"))
                 .toUriString().toURI()
-
+        if (products.size() == 0) {
+            throw new BadRequestErrorException(CartFailedReason.EMPTY_PRODUCTS.name())
+        }
         def cart = http.exchange(
                 RequestEntity.method(HttpMethod.POST, uri)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
