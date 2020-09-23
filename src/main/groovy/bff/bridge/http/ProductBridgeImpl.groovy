@@ -137,7 +137,7 @@ class ProductBridgeImpl implements ProductBridge {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/product/cart"))
                 .toUriString().toURI()
         if (products.size() == 0) {
-            throw new BadRequestErrorException(CartFailedReason.EMPTY_PRODUCTS.name())
+            throw new BadRequestErrorException(innerResponse: CartFailedReason.EMPTY_PRODUCTS.name())
         }
         def cart = http.exchange(
                 RequestEntity.method(HttpMethod.POST, uri)
