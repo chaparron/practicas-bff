@@ -155,6 +155,7 @@ class Query implements GraphQLQueryResolver {
         try {
             productBridge.refreshCart(refreshCartInput.accessToken, refreshCartInput.products)
         } catch (BadRequestErrorException ex) {
+            log.debug("refresh cart error: {}", ex.innerResponse as String)
             CartFailedReason.valueOf((String) ex.innerResponse).build()
         }
 
