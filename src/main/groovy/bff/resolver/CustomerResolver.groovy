@@ -20,7 +20,7 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     }
 
     List<Address> addresses(Customer customer) {
-        customerBridge.findAddressesByCustomerAccessToken(customer.accessToken)
+        customer.addresses?:customerBridge.findAddressesByCustomerAccessToken(customer.accessToken)
     }
 
     Boolean hasOrders(Customer customer) {

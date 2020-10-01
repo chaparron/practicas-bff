@@ -114,6 +114,7 @@ class Customer implements CustomerUpdateResult {
     Boolean smsVerification
     Boolean emailVerification
     CustomerType customerType
+    List<Address> addresses
 
     WorkingDays workingDays
     RatingScore rating
