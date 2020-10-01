@@ -97,6 +97,11 @@ class AddressFailed implements AddressResult {
     AddressFailedReason reason
 }
 
+class CustomerType {
+    Long id
+    String name
+}
+
 class Customer implements CustomerUpdateResult {
     String accessToken
     Long id
@@ -108,6 +113,7 @@ class Customer implements CustomerUpdateResult {
     User user
     Boolean smsVerification
     Boolean emailVerification
+    CustomerType customerType
 
     WorkingDays workingDays
     RatingScore rating

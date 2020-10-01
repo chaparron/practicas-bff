@@ -207,6 +207,12 @@ type RatingScore {
     percentage: Float
 }
 
+
+type CustomerType {
+    id: Int
+    name: String
+}
+
 type Customer {
     id: ID
     name: String
@@ -225,6 +231,8 @@ type Customer {
     level: Int
     missingDocuments: [String]
     country_id: String
+    customerType: CustomerType
+    hasOrders: Boolean
 }
 
 type WorkingDays {
