@@ -171,6 +171,7 @@ class Address implements AddressResult {
     Boolean preferred
     AddressMode addressType
     Boolean enabled
+    State state
 }
 
 
