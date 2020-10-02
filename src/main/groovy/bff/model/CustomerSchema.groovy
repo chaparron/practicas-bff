@@ -162,6 +162,7 @@ class VerificationDocument {
     VerificationDocumentType type
 }
 
+
 class Address implements AddressResult {
     Long id
     String formatted
