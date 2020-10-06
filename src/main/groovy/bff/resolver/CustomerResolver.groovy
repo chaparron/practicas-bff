@@ -1,6 +1,7 @@
 package bff.resolver
 
 import bff.bridge.CustomerBridge
+import bff.model.AccessTokenInput
 import bff.model.Address
 import bff.model.Customer
 import bff.model.VerificationDocument
@@ -19,7 +20,11 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     }
 
     List<Address> addresses(Customer customer) {
-        customerBridge.findAddressesByCustomerAccessToken(customer.accessToken)
+        customer.addresses?:customerBridge.findAddressesByCustomerAccessToken(customer.accessToken)
+    }
+
+    Boolean hasOrders(Customer customer) {
+        customerBridge.customerHasOrders(new AccessTokenInput(accessToken: customer.accessToken))
     }
 
 }

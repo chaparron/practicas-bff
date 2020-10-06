@@ -97,6 +97,11 @@ class AddressFailed implements AddressResult {
     AddressFailedReason reason
 }
 
+class CustomerType {
+    Long id
+    String name
+}
+
 class Customer implements CustomerUpdateResult {
     String accessToken
     Long id
@@ -108,6 +113,8 @@ class Customer implements CustomerUpdateResult {
     User user
     Boolean smsVerification
     Boolean emailVerification
+    CustomerType customerType
+    List<Address> addresses
 
     WorkingDays workingDays
     RatingScore rating
@@ -155,6 +162,7 @@ class VerificationDocument {
     VerificationDocumentType type
 }
 
+
 class Address implements AddressResult {
     Long id
     String formatted
@@ -164,6 +172,7 @@ class Address implements AddressResult {
     Boolean preferred
     AddressMode addressType
     Boolean enabled
+    State state
 }
 
 

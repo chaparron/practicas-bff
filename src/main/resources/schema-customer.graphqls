@@ -194,6 +194,7 @@ type AddressType {
     preferred: Boolean
     addressType: AddressMode
     enabled: Boolean!
+    state: State
 }
 
 type VerificationDocument {
@@ -205,6 +206,12 @@ type RatingScore {
     average: Float
     count: Int
     percentage: Float
+}
+
+
+type CustomerType {
+    id: Int
+    name: String
 }
 
 type Customer {
@@ -225,6 +232,8 @@ type Customer {
     level: Int
     missingDocuments: [String]
     country_id: String
+    customerType: CustomerType
+    hasOrders: Boolean
 }
 
 type WorkingDays {
