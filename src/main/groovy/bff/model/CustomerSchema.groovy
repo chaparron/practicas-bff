@@ -1,5 +1,7 @@
 package bff.model
 
+import org.apache.commons.lang3.StringUtils
+
 interface CustomerUpdateResult {}
 
 interface VerifyEmailResult {}
@@ -135,11 +137,11 @@ class Customer implements CustomerUpdateResult {
                 if (from > 13 && to < 23) {
                     return DeliveryPreference.AFTERNOON
                 }
-                return  DeliveryPreference.NO_PREFERENCE
+                return DeliveryPreference.NO_PREFERENCE
             }
 
             return preference.every { it == DeliveryPreference.MORNING } ? DeliveryPreference.MORNING
-                    : preference.every {  it ==  DeliveryPreference.AFTERNOON } ?  DeliveryPreference.AFTERNOON
+                    : preference.every { it == DeliveryPreference.AFTERNOON } ? DeliveryPreference.AFTERNOON
                     : DeliveryPreference.NO_PREFERENCE
 
         }
@@ -147,8 +149,11 @@ class Customer implements CustomerUpdateResult {
     }
 
     private static int getHours(String strTime) {
-        String[] time = strTime.split (':')
-        Integer.parseInt ( time[0].trim() )
+        if (!StringUtils.isEmpty(strTime)) {
+            String[] time = strTime.split(':')
+            return Integer.parseInt(time[0].trim())
+        }
+        -1
     }
 }
 
@@ -315,7 +320,7 @@ class PreferredAddressInput {
     String accessToken
 }
 
-class UserDeviceInput{
+class UserDeviceInput {
     String pushToken
     String accessToken
     String os
