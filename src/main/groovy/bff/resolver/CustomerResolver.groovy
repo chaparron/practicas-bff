@@ -24,7 +24,10 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     }
 
     Boolean hasOrders(Customer customer) {
-        customerBridge.customerHasOrders(new AccessTokenInput(accessToken: customer.accessToken))
+        if (customer.customerStatus.APPROVED && customer.accessToken) {
+            customerBridge.customerHasOrders(new AccessTokenInput(accessToken: customer.accessToken))
+        }
+        return false
     }
 
 }
