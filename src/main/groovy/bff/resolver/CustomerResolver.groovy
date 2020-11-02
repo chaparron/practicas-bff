@@ -4,6 +4,7 @@ import bff.bridge.CustomerBridge
 import bff.model.AccessTokenInput
 import bff.model.Address
 import bff.model.Customer
+import bff.model.CustomerStatus
 import bff.model.VerificationDocument
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,7 +25,7 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     }
 
     Boolean hasOrders(Customer customer) {
-        if (customer.customerStatus.APPROVED && customer.accessToken) {
+        if (customer.customerStatus == CustomerStatus.APPROVED && customer.accessToken) {
             customerBridge.customerHasOrders(new AccessTokenInput(accessToken: customer.accessToken))
         }
         return false
