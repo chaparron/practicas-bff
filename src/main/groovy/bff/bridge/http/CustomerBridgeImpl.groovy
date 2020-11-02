@@ -335,12 +335,18 @@ class CustomerBridgeImpl implements CustomerBridge {
     Boolean customerHasOrders(AccessTokenInput accessTokenInput) {
         def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/exist")).toUriString()
         def uri = url.toURI()
-        http.exchange(
-                RequestEntity.method(HttpMethod.GET, uri)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header(AUTHORIZATION, "Bearer $accessTokenInput.accessToken")
-                        .build()
-                , Boolean).body
+        try {
+            return http.exchange(
+                    RequestEntity.method(HttpMethod.GET, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION, "Bearer $accessTokenInput.accessToken")
+                            .build()
+                    , Boolean).body
+        }
+        catch(Exception ex) {
+            //Hide this exception temporally.
+        }
+        return false
     }
 
     @Override
