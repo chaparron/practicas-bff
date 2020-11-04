@@ -461,6 +461,7 @@ enum CartSummaryItemType {
     PAYMENT_PENDING,
     DISCOUNT,
     TOTAL_BILLED,
+    SERVICE_FEE,
     MAX_AMOUNT_WABIPAY_ALLOWED
 
 }
