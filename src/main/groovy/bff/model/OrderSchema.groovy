@@ -195,6 +195,11 @@ class Order {
     TimestampOutput created
     TimestampOutput updated
     WorkingDays workingDays
+    BigDecimal total_credits
+    BigDecimal total_money
+    BigDecimal discounts
+    BigDecimal total_service_fee
+    BigDecimal total_pending
     Float total
 }
 
@@ -206,11 +211,14 @@ class SupplierOrder implements SupplierOrderResponse {
     TimestampOutput updated
     TimestampOutput shippedAt
     TimestampOutput shipAt
-    Double deliveryCost
-    Double total
-    Double credits_paid
-    Double money_paid
-    Double discounts
+    BigDecimal deliveryCost
+    BigDecimal total
+    BigDecimal credits_paid
+    BigDecimal money_paid
+    BigDecimal service_fee
+    BigDecimal total_wabipay
+    BigDecimal payment_pending
+    BigDecimal discounts
     Integer units
     Boolean canCustomerRate
     Boolean canSupplierRate

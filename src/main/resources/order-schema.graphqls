@@ -170,6 +170,9 @@ type SupplierOrder {
     total: Float
     credits_paid: Float
     money_paid: Float
+    payment_pending: Float
+    total_wabipay: Float
+    service_fee: Float
     discounts: Float
     units: Int
     products: [OrderItems]
@@ -239,6 +242,11 @@ type Order {
     workingDays: WorkingDays
     supplierOrders: [SupplierOrder]
     ordersCancellations: [OrderCancellation]
+    total_credits: Float
+    total_money: Float
+    total_service_fee: Float
+    total_pending: Float
+    discounts: Float
     total: Float
 }
 

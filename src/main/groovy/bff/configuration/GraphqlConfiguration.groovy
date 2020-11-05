@@ -1,7 +1,6 @@
 package bff.configuration
 
 import brave.Tracer
-import com.coxautodev.graphql.tools.SchemaParserDictionary
 import com.newrelic.api.agent.NewRelic
 import graphql.ExecutionResult
 import graphql.ExecutionResultImpl
@@ -14,8 +13,6 @@ import graphql.execution.instrumentation.tracing.TracingSupport
 import graphql.language.Document
 import graphql.language.Field
 import graphql.language.Selection
-import graphql.language.StringValue
-import graphql.schema.*
 import graphql.validation.ValidationError
 import groovy.util.logging.Slf4j
 import org.springframework.context.annotation.Bean
