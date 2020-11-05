@@ -198,6 +198,8 @@ type SupplierOrderResult {
     total: Float
     credits_paid: Float
     money_paid: Float
+    service_fee: Float
+    payment_pending: Float
     localTaxes: Float
     discounts: Float
     amount: Float

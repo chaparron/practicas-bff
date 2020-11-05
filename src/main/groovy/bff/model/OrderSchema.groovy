@@ -201,6 +201,7 @@ class Order {
     BigDecimal total_service_fee
     BigDecimal total_pending
     Float total
+    Customer customer
 }
 
 class SupplierOrder implements SupplierOrderResponse {
@@ -239,13 +240,15 @@ class SupplierOrderResult {
     TimestampOutput updated
     TimestampOutput shippedAt
     TimestampOutput shipAt
-    Double deliveryCost
-    Double total
-    Double credits_paid
-    Double money_paid
-    Double localTaxes
-    Double amount
-    Double discounts
+    BigDecimal deliveryCost
+    BigDecimal total
+    BigDecimal credits_paid
+    BigDecimal money_paid
+    BigDecimal service_fee
+    BigDecimal payment_pending
+    BigDecimal localTaxes
+    BigDecimal amount
+    BigDecimal discounts
     Integer units
     Boolean canCustomerRate
     Boolean canSupplierRate
