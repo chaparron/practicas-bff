@@ -200,6 +200,7 @@ class Order {
     BigDecimal discounts
     BigDecimal total_service_fee
     BigDecimal total_pending
+    BigDecimal total_discounts_used
     Float total
     Customer customer
 }
@@ -220,6 +221,7 @@ class SupplierOrder implements SupplierOrderResponse {
     BigDecimal total_wabipay
     BigDecimal payment_pending
     BigDecimal discounts
+    BigDecimal discount_used
     Integer units
     Boolean canCustomerRate
     Boolean canSupplierRate
@@ -249,6 +251,7 @@ class SupplierOrderResult {
     BigDecimal localTaxes
     BigDecimal amount
     BigDecimal discounts
+    BigDecimal discount_used
     Integer units
     Boolean canCustomerRate
     Boolean canSupplierRate
