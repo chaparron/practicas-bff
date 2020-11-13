@@ -489,7 +489,9 @@ enum CartSummaryItemType {
     #Money used
     WABIMONEY_USED,
     PAYMENT_PENDING,
-    DISCOUNT
+    DISCOUNT,
+
+    DISCOUNT_USED,
 
     TOTAL_BILLED
 
