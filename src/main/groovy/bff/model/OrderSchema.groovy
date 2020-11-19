@@ -215,6 +215,7 @@ class SupplierOrder implements SupplierOrderResponse {
     TimestampOutput shipAt
     BigDecimal deliveryCost
     BigDecimal total
+    BigDecimal subTotal
     BigDecimal credits_paid
     BigDecimal money_paid
     BigDecimal service_fee
@@ -244,6 +245,7 @@ class SupplierOrderResult {
     TimestampOutput shipAt
     BigDecimal deliveryCost
     BigDecimal total
+    BigDecimal subTotal
     BigDecimal credits_paid
     BigDecimal money_paid
     BigDecimal service_fee
