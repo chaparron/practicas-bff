@@ -254,6 +254,7 @@ class SupplierOrderResult {
     BigDecimal amount
     BigDecimal discounts
     BigDecimal discount_used
+    BigDecimal total_wabipay
     Integer units
     Boolean canCustomerRate
     Boolean canSupplierRate

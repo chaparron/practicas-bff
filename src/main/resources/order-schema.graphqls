@@ -205,6 +205,7 @@ type SupplierOrderResult {
     localTaxes: Float
     discounts: Float
     discount_used: Float
+    total_wabipay: Float
     amount: Float
     units: Int
     products: [OrderItems]
