@@ -253,6 +253,8 @@ type Order {
     total_service_fee: Float
     total_pending: Float
     total_discounts_used: Float
+    total_wabipay: Float
+    subTotal: Float
     discounts: Float
     total: Float
 }

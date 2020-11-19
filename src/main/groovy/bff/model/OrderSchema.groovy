@@ -197,11 +197,14 @@ class Order {
     WorkingDays workingDays
     BigDecimal total_credits
     BigDecimal total_money
+    BigDecimal total_wabipay
+
     BigDecimal discounts
     BigDecimal total_service_fee
     BigDecimal total_pending
     BigDecimal total_discounts_used
-    Float total
+    BigDecimal total
+    BigDecimal subTotal
     Customer customer
 }
 
