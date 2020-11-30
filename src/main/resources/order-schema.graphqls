@@ -168,8 +168,12 @@ type SupplierOrder {
     shipAt: TimestampOutput
     deliveryCost: Float
     total: Float
+    subTotal: Float
     credits_paid: Float
     money_paid: Float
+    payment_pending: Float
+    total_wabipay: Float
+    service_fee: Float
     discounts: Float
     units: Int
     products: [OrderItems]
@@ -193,10 +197,15 @@ type SupplierOrderResult {
     shipAt: TimestampOutput
     deliveryCost: Float
     total: Float
+    subTotal: Float
     credits_paid: Float
     money_paid: Float
+    service_fee: Float
+    payment_pending: Float
     localTaxes: Float
     discounts: Float
+    discount_used: Float
+    total_wabipay: Float
     amount: Float
     units: Int
     products: [OrderItems]
@@ -239,6 +248,14 @@ type Order {
     workingDays: WorkingDays
     supplierOrders: [SupplierOrder]
     ordersCancellations: [OrderCancellation]
+    total_credits: Float
+    total_money: Float
+    total_service_fee: Float
+    total_pending: Float
+    total_discounts_used: Float
+    total_wabipay: Float
+    subTotal: Float
+    discounts: Float
     total: Float
 }
 
@@ -477,9 +494,13 @@ enum CartSummaryItemType {
     #Money used
     WABIMONEY_USED,
     PAYMENT_PENDING,
-    DISCOUNT
+    DISCOUNT,
+
+    DISCOUNT_USED,
 
     TOTAL_BILLED
+
+    SERVICE_FEE
     #Max ammount allowed to pay with wabipay
     MAX_AMOUNT_WABIPAY_ALLOWED
 

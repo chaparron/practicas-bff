@@ -13,7 +13,7 @@ class OrderResolver implements GraphQLResolver<Order> {
     OrderBridge orderBridge
 
     Customer customer(Order order) {
-        orderBridge.getCustomerOrder(order.accessToken, order.id)
+        order.customer?: orderBridge.getCustomerOrder(order.accessToken, order.id)
     }
 
     Address deliveryAddress(Order order) {

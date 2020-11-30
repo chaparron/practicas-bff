@@ -195,7 +195,17 @@ class Order {
     TimestampOutput created
     TimestampOutput updated
     WorkingDays workingDays
-    Float total
+    BigDecimal total_credits
+    BigDecimal total_money
+    BigDecimal total_wabipay
+
+    BigDecimal discounts
+    BigDecimal total_service_fee
+    BigDecimal total_pending
+    BigDecimal total_discounts_used
+    BigDecimal total
+    BigDecimal subTotal
+    Customer customer
 }
 
 class SupplierOrder implements SupplierOrderResponse {
@@ -206,11 +216,16 @@ class SupplierOrder implements SupplierOrderResponse {
     TimestampOutput updated
     TimestampOutput shippedAt
     TimestampOutput shipAt
-    Double deliveryCost
-    Double total
-    Double credits_paid
-    Double money_paid
-    Double discounts
+    BigDecimal deliveryCost
+    BigDecimal total
+    BigDecimal subTotal
+    BigDecimal credits_paid
+    BigDecimal money_paid
+    BigDecimal service_fee
+    BigDecimal total_wabipay
+    BigDecimal payment_pending
+    BigDecimal discounts
+    BigDecimal discount_used
     Integer units
     Boolean canCustomerRate
     Boolean canSupplierRate
@@ -231,13 +246,18 @@ class SupplierOrderResult {
     TimestampOutput updated
     TimestampOutput shippedAt
     TimestampOutput shipAt
-    Double deliveryCost
-    Double total
-    Double credits_paid
-    Double money_paid
-    Double localTaxes
-    Double amount
-    Double discounts
+    BigDecimal deliveryCost
+    BigDecimal total
+    BigDecimal subTotal
+    BigDecimal credits_paid
+    BigDecimal money_paid
+    BigDecimal service_fee
+    BigDecimal payment_pending
+    BigDecimal localTaxes
+    BigDecimal amount
+    BigDecimal discounts
+    BigDecimal discount_used
+    BigDecimal total_wabipay
     Integer units
     Boolean canCustomerRate
     Boolean canSupplierRate
@@ -460,7 +480,9 @@ enum CartSummaryItemType {
     WABIMONEY_USED,
     PAYMENT_PENDING,
     DISCOUNT,
+    DISCOUNT_USED,
     TOTAL_BILLED,
+    SERVICE_FEE,
     MAX_AMOUNT_WABIPAY_ALLOWED
 
 }
