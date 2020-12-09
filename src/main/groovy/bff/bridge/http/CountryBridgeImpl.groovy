@@ -8,6 +8,8 @@ import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION
+
 class CountryBridgeImpl implements CountryBridge {
 
     URI root
@@ -27,5 +29,20 @@ class CountryBridgeImpl implements CountryBridge {
             new CountryConfigurationEntry(key: it.key, value: it.value)
         }
 
+    }
+
+    @Override
+    List<CountryConfigurationEntry> getCustomerCountryConfiguration(String accessToken) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/country/config"))
+                .toUriString().toURI()
+
+        http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION, "Bearer $accessToken")
+                        .build()
+                , Map).body?.collect {
+            new CountryConfigurationEntry(key: it.key, value: it.value)
+        }
     }
 }
