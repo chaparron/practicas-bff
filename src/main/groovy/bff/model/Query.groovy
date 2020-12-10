@@ -239,6 +239,10 @@ class Query implements GraphQLQueryResolver {
         countryBridge.getCountryConfiguration(countryId)
     }
 
+    List<CountryConfigurationEntry> getCustomerCountryConfiguration(String accessToken) {
+        countryBridge.getCustomerCountryConfiguration(accessToken)
+    }
+
 
     List<Category> findRootCategories(AccessTokenInput accessTokenInput) {
         categoryBridge.findRootCategories(accessTokenInput.accessToken)

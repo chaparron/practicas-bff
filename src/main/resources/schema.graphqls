@@ -72,6 +72,8 @@ type Query {
 
     getCountryConfiguration(countryId: String!): [CountryConfigurationEntry]
 
+    getCustomerCountryConfiguration(accessToken: String!): [CountryConfigurationEntry]
+
     #rating
 
     # Find supplier order rating
