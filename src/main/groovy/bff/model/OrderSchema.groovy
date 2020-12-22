@@ -295,9 +295,9 @@ class OrderItem {
     Long id
     String productTitle
     String productEan
-    Double price
+    BigDecimal price
     Integer quantity
-    Double subtotal
+    BigDecimal subtotal
     Display display
     Product product
 }
@@ -386,13 +386,13 @@ class PlaceOrderFailed implements PlaceOrderResult {
 }
 
 class ProductOrderInput extends CartItemInput {
-    Double price
+    BigDecimal price
 }
 
 class OrderInput {
     Integer supplierId
     Long deliveryZoneId
-    Double deliveryCost
+    BigDecimal deliveryCost
     List<ProductOrderInput> products
 }
 
@@ -464,7 +464,7 @@ class OrderSummary {
 
 class Summary {
     CartSummaryItemType type
-    Double value
+    BigDecimal value
     Map meta
     List<MetaEntry> metadata
 }
