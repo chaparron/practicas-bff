@@ -235,8 +235,8 @@ class Price {
     Long id
     String accessToken
     Supplier supplier
-    Double value
-    Double unitValue
+    BigDecimal value
+    BigDecimal unitValue
     Boolean enabled
     Integer minUnits
     Integer maxUnits
@@ -281,8 +281,8 @@ class Supplier implements SupplierResponse {
     String legalId
     String address
     String postalCode
-    Double maxAmount
-    Double minAmount
+    BigDecimal maxAmount
+    BigDecimal minAmount
     List<DeliveryZone> deliveryZones
     RatingScore rating
     String country_id
@@ -293,9 +293,9 @@ class Supplier implements SupplierResponse {
 
 class DeliveryZone {
     Long id
-    Double minAmount
-    Double maxAmount
-    Double deliveryCost
+    BigDecimal minAmount
+    BigDecimal maxAmount
+    BigDecimal deliveryCost
 }
 
 class RatingScore {
