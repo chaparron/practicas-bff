@@ -1,0 +1,28 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto8
+  build:
+    commands:
+      - ./gradlew build
+      
+  post_build:
+    commands:
+        - rm -rf dist
+        - mkdir -p dist
+        - unzip build/distributions/application.zip -d dist/
+          
+artifacts:
+  files:
+    - '**/*'
+  base-directory: dist  
+  discard-paths: false  
+  secondary-artifacts:
+     buildReports:
+      files: 
+        - build/reports/**/**
+cache:
+  paths:
+    - '/root/.gradle/**/*'
