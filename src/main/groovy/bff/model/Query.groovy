@@ -336,6 +336,10 @@ class Query implements GraphQLQueryResolver {
     SuppliersNameResult getSuppliersThatHasSuggestedOrders(AccessTokenInput accessTokenInput){
         customerBridge.getSuppliersThatHasSuggestedOrders(accessTokenInput.accessToken)
     }
+
+    SuggestedOrderResult getSuggestedOrder(GetSuggestedOrderInput input){
+        customerBridge.getSuggestedOrder(input)
+    }
 }
 
 

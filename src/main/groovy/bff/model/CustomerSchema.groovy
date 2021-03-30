@@ -330,3 +330,23 @@ class UserDeviceInput {
 class SuppliersNameResult{
     List<String> names
 }
+
+class GetSuggestedOrderInput {
+    String accessToken
+    Long supplierId
+}
+
+class SuggestedOrderResult {
+    Long id
+    Long customerId
+    Long supplierId
+    List<SuggestedOrderItem> items
+}
+
+class SuggestedOrderItem {
+    Product product
+    String productTitle
+    String productEan
+    Long productUnits
+    Integer quantity
+}

@@ -103,6 +103,7 @@ type Query {
 
     getSuppliersThatHasSuggestedOrders(input: AccessTokenInput!): SuppliersNameResult
 
+    getSuggestedOrder(input: GetSuggestedOrderInput!): SuggestedOrderResult
 }
 
 type CountryConfigurationEntry {

@@ -262,3 +262,23 @@ type SignInFailed {
 type SuppliersNameResult {
     names: [String]
 }
+
+input GetSuggestedOrderInput{
+    accessToken: String
+    supplierId: Int
+}
+
+type SuggestedOrderResult{
+    id: Int
+    customerId: Int
+    supplierId: Int
+    items: [SuggestedOrderItem]
+}
+
+type SuggestedOrderItem{
+    product: Product
+    productTitle: String
+    productEan: String
+    productUnits: Int
+    quantity: Int
+}
