@@ -326,3 +326,7 @@ class UserDeviceInput {
     String os
     String appVersion
 }
+
+class SuppliersNameResult{
+    List<String> names
+}

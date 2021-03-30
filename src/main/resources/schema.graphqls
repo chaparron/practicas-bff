@@ -101,6 +101,8 @@ type Query {
 
     previewHomeSuppliers(input: CoordinatesInput!): HomeSupplierResult
 
+    getSuppliersThatHasSuggestedOrders(input: AccessTokenInput!): SuppliersNameResult
+
 }
 
 type CountryConfigurationEntry {

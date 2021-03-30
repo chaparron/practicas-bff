@@ -258,3 +258,7 @@ type CustomerErrorFailed {
 type SignInFailed {
     reason: SignInFailedReason
 }
+
+type SuppliersNameResult {
+    names: [String]
+}
