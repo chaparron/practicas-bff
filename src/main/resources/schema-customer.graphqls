@@ -263,19 +263,19 @@ type SuppliersNameResult {
     names: [String]
 }
 
-input GetSuggestedOrderInput{
+input GetSuggestedOrderInput {
     accessToken: String
     supplierId: Int
 }
 
-type SuggestedOrderResult{
+type SuggestedOrderResult {
     id: Int
     customerId: Int
     supplierId: Int
     items: [SuggestedOrderItem]
 }
 
-type SuggestedOrderItem{
+type SuggestedOrderItem {
     product: Product
     productTitle: String
     productEan: String
