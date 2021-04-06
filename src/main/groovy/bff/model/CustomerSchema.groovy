@@ -344,7 +344,7 @@ class SuggestedOrderResult {
 }
 
 class SuggestedOrderItem {
-    Product product
+    Long productId
     String productTitle
     String productEan
     Long productUnits
