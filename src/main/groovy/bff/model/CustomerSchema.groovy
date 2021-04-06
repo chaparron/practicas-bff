@@ -345,7 +345,6 @@ class SuggestedOrderResult {
 
 class SuggestedOrderItem {
     Long productId
-    String productTitle
     String productEan
     Long productUnits
     Integer quantity
