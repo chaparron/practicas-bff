@@ -175,6 +175,8 @@ type Mutation {
 
     deleteUserDevice(input: AccessTokenInput!): Void!
 
+    markSuggestionAsRead(input: MarkSuggestionInput !): Void!
+
 }
 
 input CustomerRateSupplierInput {
@@ -379,6 +381,11 @@ input UserDeviceInput{
 input CoordinatesInput {
     lat: Float!
     lng: Float
+}
+
+input MarkSuggestionInput {
+   accessToken: String!
+   supplierId: Int!
 }
 
 enum ValidationType{

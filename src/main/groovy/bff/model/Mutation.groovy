@@ -252,4 +252,8 @@ class Mutation implements GraphQLMutationResolver {
             CustomerReportRateFailedReason.RATE_NOT_FOUND.build()
         }
     }
+
+    Void markSuggestionAsRead(MarkSuggestionInput input){
+        customerBridge.markSuggestionAsRead(input.accessToken, input.supplierId)
+    }
 }

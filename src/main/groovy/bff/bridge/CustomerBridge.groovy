@@ -62,4 +62,6 @@ interface CustomerBridge {
     List<SuppliersNameResult> getSuppliersThatHasSuggestedOrders(String accessToken)
 
     SuggestedOrderResult getSuggestedOrder(GetSuggestedOrderInput input)
+
+    Void markSuggestionAsRead(String accessToken, Long supplierId)
 }
