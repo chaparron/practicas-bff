@@ -260,7 +260,11 @@ type SignInFailed {
 }
 
 type SuppliersNameResult {
-    names: [String]
+    id: Int
+    supplierId: Int
+    supplierName: String
+    productsQuantity: Int
+    readDate: String
 }
 
 input GetSuggestedOrderInput {
@@ -272,6 +276,7 @@ type SuggestedOrderResult {
     id: Int
     customerId: Int
     supplierId: Int
+    readDate: String
     items: [SuggestedOrderItem]
 }
 
@@ -280,4 +285,6 @@ type SuggestedOrderItem {
     productEan: String
     productUnits: Int
     quantity: Int
+    productTitle: String
+    categoryTitle: String
 }

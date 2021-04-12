@@ -518,17 +518,16 @@ class CustomerBridgeImpl implements CustomerBridge {
         Void.SUCCESS
     }
 
-    SuppliersNameResult getSuppliersThatHasSuggestedOrders(String accessToken){
+    List<SuppliersNameResult> getSuppliersThatHasSuggestedOrders(String accessToken){
         def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplier/suggestedOrder")).toUriString()
         def uri = url.toURI()
 
-        def result = http.exchange(
+       http.exchange(
                 RequestEntity.method(HttpMethod.GET, uri)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(AUTHORIZATION, "Bearer $accessToken")
                         .build()
-                , new ParameterizedTypeReference<List<String>>() {}).body
-            new SuppliersNameResult("names":result)
+                , new ParameterizedTypeReference<List<SuppliersNameResult>>() {}).body
     }
 
     SuggestedOrderResult getSuggestedOrder(GetSuggestedOrderInput input){

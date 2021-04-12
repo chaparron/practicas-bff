@@ -59,7 +59,7 @@ interface CustomerBridge {
 
     Void deleteUserDevice(AccessTokenInput input)
 
-    SuppliersNameResult getSuppliersThatHasSuggestedOrders(String accessToken)
+    List<SuppliersNameResult> getSuppliersThatHasSuggestedOrders(String accessToken)
 
     SuggestedOrderResult getSuggestedOrder(GetSuggestedOrderInput input)
 }

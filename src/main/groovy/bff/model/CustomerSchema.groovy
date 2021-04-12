@@ -1,5 +1,6 @@
 package bff.model
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import org.apache.commons.lang3.StringUtils
 
 interface CustomerUpdateResult {}
@@ -328,7 +329,11 @@ class UserDeviceInput {
 }
 
 class SuppliersNameResult{
-    List<String> names
+    Long id
+    Long supplierId
+    String supplierName
+    Long productsQuantity
+    String readDate
 }
 
 class GetSuggestedOrderInput {
@@ -340,6 +345,7 @@ class SuggestedOrderResult {
     Long id
     Long customerId
     Long supplierId
+    String readDate
     List<SuggestedOrderItem> items
 }
 
@@ -348,4 +354,6 @@ class SuggestedOrderItem {
     String productEan
     Long productUnits
     Integer quantity
+    String productTitle
+    String categoryTitle
 }

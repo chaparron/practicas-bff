@@ -333,7 +333,7 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
-    SuppliersNameResult getSuppliersThatHasSuggestedOrders(AccessTokenInput accessTokenInput){
+    List<SuppliersNameResult> getSuppliersThatHasSuggestedOrders(AccessTokenInput accessTokenInput){
         customerBridge.getSuppliersThatHasSuggestedOrders(accessTokenInput.accessToken)
     }
 

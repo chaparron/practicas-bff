@@ -101,7 +101,7 @@ type Query {
 
     previewHomeSuppliers(input: CoordinatesInput!): HomeSupplierResult
 
-    getSuppliersThatHasSuggestedOrders(input: AccessTokenInput!): SuppliersNameResult
+    getSuppliersThatHasSuggestedOrders(input: AccessTokenInput!): [SuppliersNameResult]
 
     getSuggestedOrder(input: GetSuggestedOrderInput!): SuggestedOrderResult
 }
