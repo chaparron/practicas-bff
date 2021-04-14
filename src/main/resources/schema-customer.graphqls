@@ -288,6 +288,7 @@ type SuggestedOrderItem {
     productId: Int
     productEan: String
     productUnits: Int
+    productImageId: String
     quantity: Int
     productTitle: String
     categoryTitle: String
