@@ -543,17 +543,15 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    Void markSuggestionAsRead(String accessToken, Long supplierId) {
-        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplier/suggestedOrder/${supplierId}")).toUriString()
+    Void markSuggestionAsRead(String accessToken, List<Long> supplierIds) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplier/suggestedOrder")).toUriString()
         def uri = url.toURI()
 
         http.exchange(
                 RequestEntity.method(HttpMethod.POST, uri)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(AUTHORIZATION, "Bearer $accessToken")
-                        .body([
-                                accessToken: accessToken,
-                        ])
+                        .body(supplierIds)
                 , Map).body
         Void.SUCCESS
     }

@@ -332,8 +332,10 @@ class SuppliersNameResult{
     Long id
     Long supplierId
     String supplierName
+    String supplierAvatar
     Long productsQuantity
     String readDate
+    String lastUpdate
 }
 
 class GetSuggestedOrderInput {
@@ -345,7 +347,9 @@ class SuggestedOrderResult {
     Long id
     Long customerId
     Long supplierId
+    String supplierName
     String readDate
+    String lastUpdate
     List<SuggestedOrderItem> items
 }
 

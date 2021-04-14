@@ -263,8 +263,10 @@ type SuppliersNameResult {
     id: Int
     supplierId: Int
     supplierName: String
+    supplierAvatar: String
     productsQuantity: Int
     readDate: String
+    lastUpdate: String
 }
 
 input GetSuggestedOrderInput {
@@ -277,6 +279,8 @@ type SuggestedOrderResult {
     customerId: Int
     supplierId: Int
     readDate: String
+    lastUpdate: String
+    supplierName: String
     items: [SuggestedOrderItem]
 }
 

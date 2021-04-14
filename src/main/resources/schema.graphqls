@@ -385,7 +385,7 @@ input CoordinatesInput {
 
 input MarkSuggestionInput {
    accessToken: String!
-   supplierId: Int!
+   supplierIds: [Int]!
 }
 
 enum ValidationType{

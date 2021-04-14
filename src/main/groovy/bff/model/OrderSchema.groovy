@@ -594,5 +594,5 @@ class ValidateOrderInput {
 
 class MarkSuggestionInput {
     String accessToken
-    Long supplierId
+    List<Long> supplierIds
 }
