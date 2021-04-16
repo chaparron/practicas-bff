@@ -586,9 +586,13 @@ enum ValidateOrderFailedReason {
     }
 }
 
-
 class ValidateOrderInput {
     String accessToken
     List<OrderInput> orders
 
+}
+
+class MarkSuggestionInput {
+    String accessToken
+    List<Long> supplierIds
 }

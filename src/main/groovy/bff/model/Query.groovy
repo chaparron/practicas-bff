@@ -332,6 +332,14 @@ class Query implements GraphQLQueryResolver {
             PreviewHomeSupplierFailedReason.valueOf((String) ex.innerResponse).build()
         }
     }
+
+    List<SuppliersNameResult> getSuppliersThatHasSuggestedOrders(AccessTokenInput accessTokenInput){
+        customerBridge.getSuppliersThatHasSuggestedOrders(accessTokenInput.accessToken)
+    }
+
+    SuggestedOrderResult getSuggestedOrder(GetSuggestedOrderInput input){
+        customerBridge.getSuggestedOrder(input)
+    }
 }
 
 

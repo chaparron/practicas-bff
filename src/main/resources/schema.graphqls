@@ -101,6 +101,9 @@ type Query {
 
     previewHomeSuppliers(input: CoordinatesInput!): HomeSupplierResult
 
+    getSuppliersThatHasSuggestedOrders(input: AccessTokenInput!): [SuppliersNameResult]
+
+    getSuggestedOrder(input: GetSuggestedOrderInput!): SuggestedOrderResult
 }
 
 type CountryConfigurationEntry {
@@ -171,6 +174,8 @@ type Mutation {
     userDevice(input: UserDeviceInput!): Void!
 
     deleteUserDevice(input: AccessTokenInput!): Void!
+
+    markSuggestionAsRead(input: MarkSuggestionInput !): Void!
 
 }
 
@@ -376,6 +381,11 @@ input UserDeviceInput{
 input CoordinatesInput {
     lat: Float!
     lng: Float
+}
+
+input MarkSuggestionInput {
+   accessToken: String!
+   supplierIds: [Int]!
 }
 
 enum ValidationType{

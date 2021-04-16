@@ -258,3 +258,38 @@ type CustomerErrorFailed {
 type SignInFailed {
     reason: SignInFailedReason
 }
+
+type SuppliersNameResult {
+    id: Int
+    supplierId: Int
+    supplierName: String
+    supplierAvatar: String
+    productsQuantity: Int
+    readDate: String
+    lastUpdate: String
+}
+
+input GetSuggestedOrderInput {
+    accessToken: String
+    supplierId: Int
+}
+
+type SuggestedOrderResult {
+    id: Int
+    customerId: Int
+    supplierId: Int
+    readDate: String
+    lastUpdate: String
+    supplierName: String
+    items: [SuggestedOrderItem]
+}
+
+type SuggestedOrderItem {
+    productId: Int
+    productEan: String
+    productUnits: Int
+    productImageId: String
+    quantity: Int
+    productTitle: String
+    categoryTitle: String
+}

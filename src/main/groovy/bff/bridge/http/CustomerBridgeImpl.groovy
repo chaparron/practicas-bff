@@ -517,4 +517,43 @@ class CustomerBridgeImpl implements CustomerBridge {
         }
         Void.SUCCESS
     }
+
+    List<SuppliersNameResult> getSuppliersThatHasSuggestedOrders(String accessToken){
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplier/suggestedOrder")).toUriString()
+        def uri = url.toURI()
+
+       http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION, "Bearer $accessToken")
+                        .build()
+                , new ParameterizedTypeReference<List<SuppliersNameResult>>() {}).body
+    }
+
+    SuggestedOrderResult getSuggestedOrder(GetSuggestedOrderInput input){
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplier/suggestedOrder/${input.supplierId}")).toUriString()
+        def uri = url.toURI()
+
+        http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION, "Bearer $input.accessToken")
+                        .build()
+                , new ParameterizedTypeReference<SuggestedOrderResult>() {}).body
+    }
+
+    @Override
+    Void markSuggestionAsRead(String accessToken, List<Long> supplierIds) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplier/suggestedOrder")).toUriString()
+        def uri = url.toURI()
+
+        http.exchange(
+                RequestEntity.method(HttpMethod.POST, uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION, "Bearer $accessToken")
+                        .body(supplierIds)
+                , Map).body
+        Void.SUCCESS
+    }
+
 }
