@@ -21,6 +21,7 @@ class SupplierBridgeImpl implements SupplierBridge {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/supplier/home"))
                 .queryParam("lat", coordinatesInput.lat)
                 .queryParam("lng", coordinatesInput.lng)
+                .queryParam("countryId", coordinatesInput.countryId)
 
         def request = RequestEntity.method(HttpMethod.GET, uri.toUriString().toURI())
                 .contentType(MediaType.APPLICATION_JSON)

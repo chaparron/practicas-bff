@@ -38,6 +38,7 @@ class PromotionBridgeImpl implements PromotionBridge {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/promotion/"))
                 .queryParam("lat", coordinatesInput.lat)
                 .queryParam("lng", coordinatesInput.lng)
+                .queryParam("country_id", coordinatesInput.countryId)
                 .queryParam("enable", true)
 
         def request = RequestEntity.method(HttpMethod.GET, uri.toUriString().toURI())
@@ -64,6 +65,7 @@ class PromotionBridgeImpl implements PromotionBridge {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/promotion/landing"))
                 .queryParam("lat", coordinatesInput.lat)
                 .queryParam("lng", coordinatesInput.lng)
+                .queryParam("country_id", coordinatesInput.countryId)
 
 
         def request = RequestEntity.method(HttpMethod.GET, uri.toUriString().toURI())
