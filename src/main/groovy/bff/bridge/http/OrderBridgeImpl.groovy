@@ -1,6 +1,7 @@
 package bff.bridge.http
 
 import bff.bridge.OrderBridge
+import bff.configuration.BadRequestErrorException
 import bff.model.*
 import groovy.util.logging.Slf4j
 import org.springframework.core.ParameterizedTypeReference
@@ -202,6 +203,7 @@ class OrderBridgeImpl implements OrderBridge {
 
     @Override
     OrderSummaryResponse getOrderSummary(String accessToken, List<SupplierCartProductInput> productsSupplier, String wabiPayAccessToken, List<String> coupons) {
+        if (!productsSupplier.size()) throw new BadRequestErrorException(innerResponse: SummaryFailedReason.PRODUCTS_UNAVAILABLE.name())
         def uri = UriComponentsBuilder.fromUri(root.resolve("/order/summary"))
                 .toUriString().toURI()
 
