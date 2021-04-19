@@ -85,7 +85,7 @@ class Header {
 
 class PreviewSearchInput {
     String keyword
-    String country_id
+    String countryId
     String sort
     SortInput sortDirection
     Integer category

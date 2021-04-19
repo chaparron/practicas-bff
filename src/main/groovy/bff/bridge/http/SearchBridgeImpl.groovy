@@ -81,7 +81,7 @@ class SearchBridgeImpl implements SearchBridge {
                 .queryParam("tag", searchInput.tag)
                 .queryParam("lat", searchInput.lat)
                 .queryParam("lng", searchInput.lng)
-                .queryParam("countryId", searchInput.country_id)
+                .queryParam("countryId", searchInput.countryId)
 
         searchInput.features?.each {
             uri.queryParam("feature_${it.id}", it.value)
