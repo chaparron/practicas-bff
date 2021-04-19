@@ -43,6 +43,7 @@ class BrandBridgeImpl implements BrandBridge {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/brand/home/"))
                 .queryParam("lat", coordinatesInput.lat)
                 .queryParam("lng", coordinatesInput.lng)
+                .queryParam("country_id", coordinatesInput.countryId)
 
         def request = RequestEntity.method(HttpMethod.GET, uri.toUriString().toURI())
                 .contentType(MediaType.APPLICATION_JSON)

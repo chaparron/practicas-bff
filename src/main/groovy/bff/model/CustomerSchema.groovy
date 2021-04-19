@@ -314,6 +314,7 @@ class AccessTokenInput {
 class CoordinatesInput {
     BigDecimal lat
     BigDecimal lng
+    String countryId
 }
 
 class PreferredAddressInput {

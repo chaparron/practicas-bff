@@ -39,6 +39,7 @@ class CategoryBridgeImpl implements CategoryBridge {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/category/roots"))
                 .queryParam("lat", coordinatesInput.lat)
                 .queryParam("lng", coordinatesInput.lng)
+                .queryParam("countryId", coordinatesInput.countryId)
 
 
         def response = http.<List<Category>> exchange(

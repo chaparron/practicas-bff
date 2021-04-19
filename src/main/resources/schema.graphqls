@@ -380,7 +380,8 @@ input UserDeviceInput{
 
 input CoordinatesInput {
     lat: Float!
-    lng: Float
+    lng: Float!
+    countryId: String
 }
 
 input MarkSuggestionInput {
