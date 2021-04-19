@@ -25,6 +25,7 @@ input PreviewSearchInput {
     features: [FeatureInput]
     lat: Float!,
     lng: Float!
+    country_id: String
 }
 
 input FeatureInput {
