@@ -92,6 +92,7 @@ enum CustomerCancelOptionReason {
 interface OrderUpdateResult {}
 interface CustomerOrdersResult {}
 interface CustomerOrderResult {}
+interface CustomerSupplierOrderResult{}
 
 class CancelOrderInput {
     String accessToken
@@ -145,6 +146,12 @@ class FindOrdersInput extends PaginatedInput {
 
 }
 
+class FindOrderAndSupplierOrderInput {
+    String accessToken
+    Integer orderId
+    String countryId
+}
+
 class FindSupplierOrderInput {
     String accessToken
     String countryId
@@ -170,6 +177,12 @@ class CustomerOrderResponse implements CustomerOrderResult {
     SupplierOrderResult supplierOrder
     Customer customer
     OrderCancellation orderCancellation
+}
+
+class CustomerSupplierOrdersResponse implements CustomerSupplierOrderResult {
+    String accessToken
+    List<SupplierOrderAndOrderCancellations> supplierOrderAndOrderCancellations
+    Customer customer
 }
 
 class SupplierRatingsResponse extends PaginatedResponse<Rating> {
@@ -271,6 +284,44 @@ class SupplierOrderResult {
     List<Summary> summary
 }
 
+
+class SupplierOrderAndOrderCancellations {
+    String accessToken
+    Order order
+    OrderCancellation orderCancellation
+    Long id
+    SupplierOrderStatus status
+    Supplier supplier
+    TimestampOutput created
+    TimestampOutput updated
+    TimestampOutput shippedAt
+    TimestampOutput shipAt
+    BigDecimal deliveryCost
+    BigDecimal total
+    BigDecimal subTotal
+    BigDecimal credits_paid
+    BigDecimal money_paid
+    BigDecimal service_fee
+    BigDecimal payment_pending
+    BigDecimal localTaxes
+    BigDecimal amount
+    BigDecimal discounts
+    BigDecimal discount_used
+    BigDecimal total_wabipay
+    Integer units
+    Boolean canCustomerRate
+    Boolean canSupplierRate
+    Boolean customerRated
+    Boolean supplierRated
+    Boolean cancelRequested
+    RatingEntry rating
+    List<OrderItem> products
+    HashMap<RatingOwner, Rating> ratings
+    Map metadata
+    List<Summary> summary
+}
+
+
 class RatingEntry {
     Rating SUPPLIER
     Rating CUSTOMER
@@ -323,7 +374,7 @@ enum PlaceOrderFailedReason {
     }
 }
 
-class CustomerOrderFindFailed implements CustomerOrdersResult, CustomerOrderResult {
+class CustomerOrderFindFailed implements CustomerOrdersResult, CustomerOrderResult, CustomerSupplierOrderResult {
     CustomerOrderFindFailedReason reason
 }
 

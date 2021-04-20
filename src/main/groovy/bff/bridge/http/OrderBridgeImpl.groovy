@@ -116,6 +116,45 @@ class OrderBridgeImpl implements OrderBridge {
     }
 
     @Override
+    CustomerSupplierOrdersResponse findCustomerAndSupplierOrders(FindOrderAndSupplierOrderInput findOrderAndSupplierOrderInput) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplierOrder/order"))
+                .queryParam("orderId", findOrderAndSupplierOrderInput.orderId)
+                .queryParam("country_id", findOrderAndSupplierOrderInput.countryId)
+                .toUriString().toURI()
+
+        def customerOrderResponse = http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $findOrderAndSupplierOrderInput.accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , CustomerSupplierOrdersResponse).body
+
+        customerOrderResponse.accessToken = findOrderAndSupplierOrderInput.accessToken
+        customerOrderResponse.customer.accessToken = findOrderAndSupplierOrderInput.accessToken
+        customerOrderResponse.supplierOrderAndOrderCancellations.collect {
+            it.accessToken = findOrderAndSupplierOrderInput.accessToken
+            it.order.accessToken = findOrderAndSupplierOrderInput.accessToken
+            it.order.id = findOrderAndSupplierOrderInput.orderId
+            it.products.each { it.accessToken = findOrderAndSupplierOrderInput.accessToken }
+
+            it.summary = it.metadata.summary.collect { sm ->
+                new Summary(
+                        type: CartSummaryItemType.valueOf(sm.type),
+                        value: sm.value,
+                        metadata: sm?.meta?.keySet()?.collect { key ->
+                            new MetaEntry(
+                                    key: key,
+                                    value: sm.meta.get(key)
+                            )
+                        }
+                )
+            }
+        }
+
+        customerOrderResponse
+    }
+
+    @Override
     Address getDeliveryAddress(String accessToken, Long orderId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/${orderId}/address"))
                 .toUriString().toURI()

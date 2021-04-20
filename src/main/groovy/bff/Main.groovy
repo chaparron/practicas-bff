@@ -55,6 +55,7 @@ class Main {
                 .add(Promotion.class)
                 .add(GetLandingPromotionFailed.class)
                 .add(CustomerOrderResponse.class)
+                .add(CustomerSupplierOrdersResponse.class)
                 .add(SearchFailed.class)
                 .add(SearchResult.class)
                 .add(BannerDialog.class)

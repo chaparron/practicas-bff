@@ -125,6 +125,17 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
+    CustomerSupplierOrderResult findCustomerAndSupplierOrders(FindOrderAndSupplierOrderInput findOrderAndSupplierOrderInput) {
+        try {
+            orderBridge.findCustomerAndSupplierOrders(findOrderAndSupplierOrderInput)
+        }
+        catch (EntityNotFoundException ex) {
+            CustomerOrderFindFailedReason.ORDER_NOT_FOUND.build()
+        }
+    }
+
+
+
     List<Address> findAddresses(AccessTokenInput accessTokenInput) {
         customerBridge.findAddresses(accessTokenInput)
     }

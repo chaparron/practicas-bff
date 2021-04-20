@@ -90,6 +90,12 @@ input FindSupplierOrderInput {
     supplierOrderId: Int!
 }
 
+input FindOrderAndSupplierOrderInput {
+    accessToken: String!
+    countryId: String!
+    orderId: Int!
+}
+
 enum Direction {
     ASC,
     DESC
@@ -218,6 +224,39 @@ type SupplierOrderResult {
     summary: [Summary]
 }
 
+type SupplierOrderAndOrderCancellations {
+    id:Int
+    order: Order
+    orderCancellation: OrderCancellation
+    supplier: Supplier
+    status: SupplierOrderStatus
+    created: TimestampOutput
+    updated: TimestampOutput
+    shippedAt: TimestampOutput
+    shipAt: TimestampOutput
+    deliveryCost: Float
+    total: Float
+    subTotal: Float
+    credits_paid: Float
+    money_paid: Float
+    service_fee: Float
+    payment_pending: Float
+    localTaxes: Float
+    discounts: Float
+    discount_used: Float
+    total_wabipay: Float
+    amount: Float
+    units: Int
+    products: [OrderItems]
+    rating: RatingEntry
+    canCustomerRate: Boolean
+    canSupplierRate: Boolean
+    customerRated: Boolean
+    supplierRated: Boolean
+    cancelRequested: Boolean
+    summary: [Summary]
+}
+
 enum RatingOwner {
     SUPPLIER,
     CUSTOMER
@@ -272,6 +311,8 @@ union CustomerOrdersResult = CustomerOrdersResponse | CustomerOrderFindFailed
 
 union CustomerOrderResult = CustomerOrderResponse | CustomerOrderFindFailed
 
+union CustomerSupplierOrderResult = CustomerSupplierOrdersResponse | CustomerOrderFindFailed
+
 type CustomerOrdersResponse {
     headers: Headers
     content: [Order]
@@ -281,6 +322,11 @@ type CustomerOrderResponse {
     supplierOrder: SupplierOrderResult
     customer: Customer
     orderCancellation: OrderCancellation
+}
+
+type CustomerSupplierOrdersResponse {
+    supplierOrderAndOrderCancellations: [SupplierOrderAndOrderCancellations]
+    customer: Customer
 }
 
 enum CartFailedReason {
