@@ -1,0 +1,10 @@
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  EnvironmentStackName:
+    Type: String
+    AllowedValues: [qa, prod]
+
+Resources:
+  NullResource:
+    Type: AWS::CloudFormation::WaitConditionHandle
