@@ -12,7 +12,7 @@ phases:
     commands:
         - rm -rf dist
         - mkdir -p dist
-        - unzip build/distributions/application.zip -d dist/
+        - unzip api-springboot/build/distributions/application.zip -d dist/
           
 artifacts:
   files:
