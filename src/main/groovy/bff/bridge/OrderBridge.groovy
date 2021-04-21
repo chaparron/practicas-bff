@@ -12,7 +12,7 @@ interface OrderBridge {
 
     CustomerOrderResponse findCustomerOrder(FindSupplierOrderInput findSupplierOrderInput)
 
-    CustomerSupplierOrdersResponse findCustomerAndSupplierOrders(FindOrderAndSupplierOrderInput findOrderAndSupplierOrderInput)
+    CustomerSupplierOrdersResponse findCustomerAndSupplierOrders(findCustomerAndSupplierOrdersInput findOrderAndSupplierOrderInput)
 
     Address getDeliveryAddress(String accessToken, Long orderId)
 

@@ -146,10 +146,9 @@ class FindOrdersInput extends PaginatedInput {
 
 }
 
-class FindOrderAndSupplierOrderInput {
+class findCustomerAndSupplierOrdersInput {
     String accessToken
     Integer orderId
-    String countryId
 }
 
 class FindSupplierOrderInput {

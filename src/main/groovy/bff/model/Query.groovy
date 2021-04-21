@@ -125,7 +125,7 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
-    CustomerSupplierOrderResult findCustomerAndSupplierOrders(FindOrderAndSupplierOrderInput findOrderAndSupplierOrderInput) {
+    CustomerSupplierOrderResult findCustomerAndSupplierOrders(findCustomerAndSupplierOrdersInput findOrderAndSupplierOrderInput) {
         try {
             orderBridge.findCustomerAndSupplierOrders(findOrderAndSupplierOrderInput)
         }

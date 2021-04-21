@@ -90,9 +90,8 @@ input FindSupplierOrderInput {
     supplierOrderId: Int!
 }
 
-input FindOrderAndSupplierOrderInput {
+input findCustomerAndSupplierOrdersInput {
     accessToken: String!
-    countryId: String!
     orderId: Int!
 }
 
