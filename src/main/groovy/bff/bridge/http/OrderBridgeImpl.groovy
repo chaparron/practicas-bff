@@ -116,7 +116,7 @@ class OrderBridgeImpl implements OrderBridge {
     }
 
     @Override
-    CustomerSupplierOrdersResponse findCustomerAndSupplierOrders(findCustomerAndSupplierOrdersInput findOrderAndSupplierOrderInput) {
+    CustomerSupplierOrdersResponse findCustomerAndSupplierOrders(FindCustomerAndSupplierOrdersInput findOrderAndSupplierOrderInput) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplierOrder/order"))
                 .queryParam("orderId", findOrderAndSupplierOrderInput.orderId)
                 .toUriString().toURI()

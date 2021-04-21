@@ -41,7 +41,7 @@ type Query {
     # Find unique customer order.
     findCustomerOrder(input: FindSupplierOrderInput!): CustomerOrderResult!
 
-    findCustomerAndSupplierOrders(input : findCustomerAndSupplierOrdersInput) : CustomerSupplierOrderResult!
+    findCustomerAndSupplierOrders(input : FindCustomerAndSupplierOrdersInput) : CustomerSupplierOrderResult!
 
     # Get new prices and supplier availabities
     refreshCart(input: RefreshCartInput!): CartResult!
