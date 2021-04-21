@@ -1,6 +1,6 @@
 package bff.model
 
-import com.fasterxml.jackson.annotation.JsonInclude
+
 import org.apache.commons.lang3.StringUtils
 
 interface CustomerUpdateResult {}

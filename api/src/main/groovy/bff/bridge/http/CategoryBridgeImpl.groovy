@@ -3,7 +3,6 @@ package bff.bridge.http
 import bff.bridge.CategoryBridge
 import bff.model.Category
 import bff.model.CoordinatesInput
-import bff.model.RootCategoriesResponse
 import bff.model.RootCategoriesResult
 import groovy.util.logging.Slf4j
 import org.springframework.core.ParameterizedTypeReference

@@ -1,0 +1,39 @@
+plugins {
+    id "java-library"
+    id "groovy"
+    id "org.springframework.boot" apply false
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+
+dependencies {
+    implementation(platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES))
+    implementation(platform("org.springframework.cloud:spring-cloud-dependencies:Greenwich.RELEASE"))
+    implementation(platform("org.springframework.cloud:spring-cloud-sleuth:2.0.4.RELEASE"))
+
+    def graphQL = '5.0.2'
+
+    compile 'com.graphql-java:graphql-java-tools:5.1.0'
+    compile 'com.sendgrid:sendgrid-java:4.2.1'
+    compile "com.graphql-java:graphql-spring-boot-starter:$graphQL"
+    compile "com.graphql-java:graphiql-spring-boot-starter:$graphQL"
+    compile "com.graphql-java:voyager-spring-boot-starter:$graphQL"
+    compile 'com.newrelic.agent.java:newrelic-api:5.14.0'
+    compile 'com.pubnub:pubnub-gson:4.18.0'
+    compile 'org.codehaus.groovy:groovy-all'
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-actuator'
+    compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    compile 'org.springframework.cloud:spring-cloud-starter-zipkin'
+    compile 'org.springframework.security.oauth:spring-security-oauth2:2.3.1.RELEASE'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+clean {
+    delete 'out'
+}

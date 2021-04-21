@@ -4,13 +4,14 @@ import bff.configuration.BridgeRestTemplateResponseErrorHandler
 import bff.model.*
 import com.coxautodev.graphql.tools.SchemaParserDictionary
 import org.springframework.boot.SpringApplication
+import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.web.client.RestOperations
 
-@SpringBootApplication(exclude = SecurityAutoConfiguration)
+@SpringBootApplication(exclude = [SecurityAutoConfiguration, ManagementWebSecurityAutoConfiguration])
 class Main {
     static void main(String[] args) {
         SpringApplication.run(Main, args)

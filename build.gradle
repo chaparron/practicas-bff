@@ -1,50 +1,13 @@
 plugins {
-    id 'org.springframework.boot' version '2.0.3.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.4.RELEASE'
+    id('org.springframework.boot') version '2.1.7.RELEASE' apply false
+    id('io.spring.dependency-management') version '1.0.4.RELEASE'
 }
 
-apply plugin: 'groovy'
-
-repositories {
-    mavenCentral()
-    maven {
-        setUrl('https://s3-us-west-2.amazonaws.com/yopdev.artifacts/maven2')
+subprojects {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url 'https://artifacts20200605212517641800000001.s3-us-west-2.amazonaws.com/maven2' }
+        mavenLocal()
     }
 }
-
-dependencyManagement {
-    imports {
-        mavenBom('org.springframework.cloud:spring-cloud-sleuth:2.0.0.RELEASE')
-    }
-}
-
-dependencies {
-    def graphQL = '5.0.2'
-    compile 'com.graphql-java:graphql-java-tools:5.1.0'
-    compile 'com.sendgrid:sendgrid-java:4.2.1'
-    compile "com.graphql-java:graphql-spring-boot-starter:$graphQL"
-    compile "com.graphql-java:graphiql-spring-boot-starter:$graphQL"
-    compile "com.graphql-java:voyager-spring-boot-starter:$graphQL"
-    compile 'com.newrelic.agent.java:newrelic-api:5.14.0'
-    compile 'com.pubnub:pubnub-gson:4.18.0'
-    compile 'org.codehaus.groovy:groovy-all'
-    compile 'org.springframework.boot:spring-boot-starter-web'
-    compile 'org.springframework.boot:spring-boot-starter-actuator'
-    compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
-    compile 'org.springframework.cloud:spring-cloud-starter-zipkin'
-    compile 'org.springframework.security.oauth:spring-security-oauth2:2.3.1.RELEASE'
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
-}
-
-
-task zip(type: Zip) {
-    from('build/libs') {
-        include '*.jar'
-    }
-    from 'ebs'
-}
-
-build.dependsOn(zip)
-archivesBaseName = 'application'
-version = ''
-

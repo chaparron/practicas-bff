@@ -9,8 +9,6 @@ import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION
-
 class DocumentBridgeImpl implements DocumentBridge{
     URI root
     RestOperations http

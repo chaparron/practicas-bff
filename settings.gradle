@@ -1,0 +1,3 @@
+rootProject.name = "wabi2b-bff"
+include("api", "api-springboot")
+

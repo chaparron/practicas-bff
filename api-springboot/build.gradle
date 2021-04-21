@@ -1,0 +1,34 @@
+import org.gradle.api.JavaVersion
+import org.gradle.api.tasks.bundling.Zip
+
+plugins {
+    id "groovy"
+    id "org.springframework.boot"
+}
+
+dependencies {
+    implementation(platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES))
+    implementation(platform("org.springframework.cloud:spring-cloud-dependencies:Greenwich.RELEASE"))
+    implementation(platform("org.springframework.cloud:spring-cloud-sleuth:2.0.4.RELEASE"))
+
+    compile(project(":api"))
+}
+
+springBoot {
+    mainClassName = "bff.Main"
+}
+
+task zip(type: Zip) {
+    archiveFileName = 'application.zip'
+    from('build/libs') {
+        include '*.jar'
+    }
+    from 'ebs'
+}
+
+build.dependsOn(zip)
+
+version = ''
+
+
+
