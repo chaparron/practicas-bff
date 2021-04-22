@@ -11,7 +11,7 @@ dependencies {
     implementation(platform("org.springframework.cloud:spring-cloud-dependencies:Greenwich.RELEASE"))
     implementation(platform("org.springframework.cloud:spring-cloud-sleuth:2.0.4.RELEASE"))
 
-    compile(project(":api"))
+    implementation(project(":api"))
 }
 
 springBoot {
