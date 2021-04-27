@@ -278,8 +278,7 @@ Resources:
 
         - Namespace: aws:elbv2:listener:443
           OptionName: SSLCertificateArns
-          Value:
-            Fn::ImportValue: !Sub "${EnvironmentStackName}-SSLCertificate"
+          Value: "arn:aws:acm:us-west-2:226074756433:certificate/ef9c4340-ea58-4d91-9df7-182cb4e343d8"
 
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
