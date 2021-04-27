@@ -23,7 +23,7 @@ Mappings:
       MaxPoolSize: '4'
       InstanceType: 'm3.medium'
       HttpMaxConnections: '60'
-      TasksPoolCoreSize: '1000'
+      TasksPoolCoreSize: '500'
       MaxHeapSize: '-Xmx4096m'
       LoggingLevel: 'TRACE'
       NewRelicAppName: 'Wabi2B - BFF - Prod'
