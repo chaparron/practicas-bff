@@ -8,6 +8,7 @@ Parameters:
 Mappings:
   Config:
     qa:
+      FoundationConfig: '/foundation/qa/'
       MinPoolSize: '1'
       MaxPoolSize: '1'
       InstanceType: 't2.micro'
@@ -19,6 +20,7 @@ Mappings:
       NewRelicLicenseKey: '2277dfa871634a7d0e7707a31781d430b528NRAL'
       ApiRoot: 'https://api-qa.wabi2b.com/'
     prod:
+      FoundationConfig: '/foundation/prod/'
       MinPoolSize: '2'
       MaxPoolSize: '4'
       InstanceType: 'm3.medium'
