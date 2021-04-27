@@ -180,7 +180,7 @@ Resources:
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, NewRelicAppName ]
 
         - Namespace: aws:elasticbeanstalk:application:environment
-          OptionName: NEW_RELIC_LICENSE
+          OptionName: NEW_RELIC_LICENSE_KEY
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, NewRelicLicenseKey ]
 
         - Namespace: aws:elasticbeanstalk:application:environment
