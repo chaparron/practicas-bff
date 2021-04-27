@@ -8,7 +8,6 @@ Parameters:
 Mappings:
   Config:
     qa:
-      FoundationConfig: '/foundation/qa/'
       MinPoolSize: '1'
       MaxPoolSize: '1'
       InstanceType: 't2.micro'
@@ -20,7 +19,6 @@ Mappings:
       NewRelicLicenseKey: '2277dfa871634a7d0e7707a31781d430b528NRAL'
       ApiRoot: 'https://api-qa.wabi2b.com/'
     prod:
-      FoundationConfig: '/foundation/prod/'
       MinPoolSize: '2'
       MaxPoolSize: '4'
       InstanceType: 'm3.medium'
@@ -75,12 +73,16 @@ Resources:
           Value: !Join
             - ''
             - - 'tcp,22,22,'
-              - Fn::ImportValue: !Sub '${FoundationConfig}bastion_security_group'
+              - Fn::ImportValue: !Sub
+                  - '{{resolve:ssm-secure:${parameterName}:1}}'
+                  - parameterName: !FindInMap [ Config, '/foundation/',!Ref EnvironmentStackName, '/bastion_security_group' ]
 
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: SecurityGroups
           Value:
-            Fn::ImportValue: !Sub '${FoundationConfig}security_groups'
+            Fn::ImportValue: !Sub
+              - '{{resolve:ssm-secure:${parameterName}:1}}'
+              - parameterName: !FindInMap [ Config, '/foundation/',!Ref EnvironmentStackName, '/security_groups' ]
 
         - Namespace: aws:autoscaling:trigger
           OptionName: MeasureName
@@ -113,17 +115,23 @@ Resources:
         - Namespace: aws:ec2:vpc
           OptionName: ELBSubnets
           Value:
-            Fn::ImportValue: !Sub '${FoundationConfig}public_subnets'
+            Fn::ImportValue: !Sub
+              - '{{resolve:ssm-secure:${parameterName}:1}}'
+              - parameterName: !FindInMap [ Config, '/foundation/',!Ref EnvironmentStackName, '/public_subnets' ]
 
         - Namespace: aws:ec2:vpc
           OptionName: Subnets
           Value:
-            Fn::ImportValue: !Sub '${FoundationConfig}private_subnets'
+            Fn::ImportValue: !Sub
+              - '{{resolve:ssm-secure:${parameterName}:1}}'
+              - parameterName: !FindInMap [ Config, '/foundation/',!Ref EnvironmentStackName, '/private_subnets' ]
 
         - Namespace: aws:ec2:vpc
           OptionName: VPCId
           Value:
-            Fn::ImportValue: !Sub '${FoundationConfig}vpc_id'
+            Fn::ImportValue: !Sub
+              - '{{resolve:ssm-secure:${parameterName}:1}}'
+              - parameterName: !FindInMap [ Config, '/foundation/',!Ref EnvironmentStackName, '/vpc_id' ]
 
         - Namespace: aws:elasticbeanstalk:application
           OptionName: 'Application Healthcheck URL'
