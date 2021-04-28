@@ -57,8 +57,7 @@ Resources:
 
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: EC2KeyName
-          Value:
-            Fn::ImportValue: !Sub '${EnvironmentStackName}ec2_key_name'
+          Value: !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/ec2_key_name:1}}''
 
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
@@ -73,12 +72,11 @@ Resources:
           Value: !Join
             - ''
             - - 'tcp,22,22,'
-              - Fn::ImportValue: !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/bastion_security_group:1}}'
+              - !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/bastion_security_group:1}}'
 
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: SecurityGroups
-          Value:
-            Fn::ImportValue: !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/security_groups:1}}'
+          Value: !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/security_groups:1}}'
 
         - Namespace: aws:autoscaling:trigger
           OptionName: MeasureName
@@ -110,18 +108,15 @@ Resources:
 
         - Namespace: aws:ec2:vpc
           OptionName: ELBSubnets
-          Value:
-            Fn::ImportValue: !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/public_subnets:1}}'
+          Value: !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/public_subnets:1}}'
 
         - Namespace: aws:ec2:vpc
           OptionName: Subnets
-          Value:
-            Fn::ImportValue: !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/private_subnets:1}}'
+          Value: !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/private_subnets:1}}'
 
         - Namespace: aws:ec2:vpc
           OptionName: VPCId
-          Value:
-            Fn::ImportValue: !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/vpc_id:1}}'
+          Value: !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/vpc_id:1}}'
 
         - Namespace: aws:elasticbeanstalk:application
           OptionName: 'Application Healthcheck URL'
