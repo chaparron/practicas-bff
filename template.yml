@@ -128,7 +128,7 @@ Resources:
 
         - Namespace: aws:ec2:vpc
           OptionName: Subnets
-          Value: !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/private_subnets:1}}'
+          Value: !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/public_subnets:1}}'
 
         - Namespace: aws:ec2:vpc
           OptionName: VPCId
