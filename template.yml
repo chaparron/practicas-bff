@@ -136,7 +136,7 @@ Resources:
 
         - Namespace: aws:elasticbeanstalk:application
           OptionName: 'Application Healthcheck URL'
-          Value: '/health'
+          Value: '/actuator/health'
 
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: SERVER_PORT
