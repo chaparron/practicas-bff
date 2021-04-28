@@ -45,7 +45,7 @@ Resources:
   BeanstalkApplication:
     Type: AWS::ElasticBeanstalk::Application
     Properties:
-      ApplicationName: !Sub '${EnvironmentStackName}-wabi2b-bff'
+      ApplicationName: 'wabi2b-bff'
 
   BackendForFrontend:
     Type: AWS::ElasticBeanstalk::Environment
