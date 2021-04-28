@@ -37,9 +37,9 @@ Resources:
   Wabi2bCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
-      DomainName: "wabi2b.com"
+      DomainName: 'wabi2b.com'
       SubjectAlternativeNames:
-        -"*.wabi2b.com"
+        - '*.wabi2b.com'
       ValidationMethod: DNS
 
   BeanstalkApplication:
