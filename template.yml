@@ -217,7 +217,7 @@ Resources:
 
         - Namespace: aws:elasticbeanstalk:environment:process:default
           OptionName: HealthCheckPath
-          Value: /health
+          Value: '/actuator/health'
 
         - Namespace: aws:elasticbeanstalk:environment:process:default
           OptionName: HealthCheckTimeout
