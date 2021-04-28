@@ -45,13 +45,13 @@ Resources:
   BeanstalkApplication:
     Type: AWS::ElasticBeanstalk::Application
     Properties:
-      ApplicationName: 'wabi2b-bff'
+      ApplicationName: !Sub '${EnvironmentStackName}-wabi2b-bff-app'
 
   BackendForFrontend:
     Type: AWS::ElasticBeanstalk::Environment
     Properties:
       ApplicationName: !Ref BeanstalkApplication
-      EnvironmentName: !Sub '${EnvironmentStackName}-wabi2b-bff'
+      EnvironmentName: !Sub '${EnvironmentStackName}-bff'
       SolutionStackName: 64bit Amazon Linux 2018.03 v2.11.7 running Java 8
       OptionSettings:
 
