@@ -51,6 +51,7 @@ Resources:
     Type: AWS::ElasticBeanstalk::Environment
     Properties:
       ApplicationName: !Ref BeanstalkApplication
+      EnvironmentName: !Sub '${EnvironmentStackName}-wabi2b-bff'
       SolutionStackName: 64bit Amazon Linux 2018.03 v2.11.7 running Java 8
       OptionSettings:
 
