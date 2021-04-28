@@ -340,3 +340,11 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonSQSFullAccess
         - arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess
         - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
+
+Outputs:
+
+  Wabi2bCertificateOutput:
+    Description: "Wabi2bCertificate"
+    Value: !Ref Wabi2bCertificate
+    Export:
+      Name: 'Wabi2bCertificate'
