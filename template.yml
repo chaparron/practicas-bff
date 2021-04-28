@@ -18,7 +18,7 @@ Mappings:
       NewRelicAppName: 'Wabi2B - BFF - Dev'
       NewRelicLicenseKey: '2277dfa871634a7d0e7707a31781d430b528NRAL'
       ApiRoot: 'https://api-qa.wabi2b.com/'
-      SecurityGroups: '{{resolve:ssm:/foundation/qa/security_groups:1}}'
+      SecurityGroups: '{{resolve:ssm:/foundation/qa/beanstalk/security_groups:1}}'
     prod:
       MinPoolSize: '2'
       MaxPoolSize: '4'
@@ -30,7 +30,7 @@ Mappings:
       NewRelicAppName: 'Wabi2B - BFF - Prod'
       NewRelicLicenseKey: '2277dfa871634a7d0e7707a31781d430b528NRAL'
       ApiRoot: 'https://api.wabi2b.com/'
-      SecurityGroups: '{{resolve:ssm:/foundation/prod/security_groups:1}}'
+      SecurityGroups: '{{resolve:ssm:/foundation/prod/beanstalk/security_groups:1}}'
 
 Resources:
 
@@ -59,7 +59,7 @@ Resources:
 
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: EC2KeyName
-          Value: !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/ec2_key_name:1}}'
+          Value: !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/beanstalk/ec2_key_name:1}}'
 
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
