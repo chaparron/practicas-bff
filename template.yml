@@ -34,6 +34,14 @@ Mappings:
 
 Resources:
 
+  Wabi2bCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: "wabi2b.com"
+      SubjectAlternativeNames:
+        -"*.wabi2b.com"
+      ValidationMethod: DNS
+
   BeanstalkApplication:
     Type: AWS::ElasticBeanstalk::Application
     Properties:
@@ -280,7 +288,7 @@ Resources:
 
         - Namespace: aws:elbv2:listener:443
           OptionName: SSLCertificateArns
-          Value: "arn:aws:acm:us-west-2:226074756433:certificate/ef9c4340-ea58-4d91-9df7-182cb4e343d8"
+          Value: !Ref Wabi2bCertificate
 
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
