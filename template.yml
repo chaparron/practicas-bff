@@ -34,10 +34,15 @@ Mappings:
 
 Resources:
 
+  BeanstalkApplication:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      ApplicationName: !Sub '${EnvironmentStackName}-wabi2b-bff'
+
   BackendForFrontend:
     Type: AWS::ElasticBeanstalk::Environment
     Properties:
-      ApplicationName: "wabi2b-BackendForFrontend"
+      ApplicationName: !Ref BeanstalkApplication
       SolutionStackName: 64bit Amazon Linux 2018.03 v2.11.7 running Java 8
       OptionSettings:
 
