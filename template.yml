@@ -57,7 +57,7 @@ Resources:
 
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: EC2KeyName
-          Value: !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/ec2_key_name:1}}''
+          Value: !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/ec2_key_name:1}}'
 
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
