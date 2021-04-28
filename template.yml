@@ -18,6 +18,7 @@ Mappings:
       NewRelicAppName: 'Wabi2B - BFF - Dev'
       NewRelicLicenseKey: '2277dfa871634a7d0e7707a31781d430b528NRAL'
       ApiRoot: 'https://api-qa.wabi2b.com/'
+      SecurityGroups: '{{resolve:ssm:/foundation/qa/security_groups:1}}'
     prod:
       MinPoolSize: '2'
       MaxPoolSize: '4'
@@ -29,6 +30,7 @@ Mappings:
       NewRelicAppName: 'Wabi2B - BFF - Prod'
       NewRelicLicenseKey: '2277dfa871634a7d0e7707a31781d430b528NRAL'
       ApiRoot: 'https://api.wabi2b.com/'
+      SecurityGroups: '{{resolve:ssm:/foundation/prod/security_groups:1}}'
 
 Resources:
 
@@ -57,7 +59,7 @@ Resources:
 
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: EC2KeyName
-          Value: !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/ec2_key_name:1}}'
+          Value: !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/ec2_key_name:1}}'
 
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
@@ -72,11 +74,11 @@ Resources:
           Value: !Join
             - ''
             - - 'tcp,22,22,'
-              - !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/bastion_security_group:1}}'
+              - !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/bastion_security_group:1}}'
 
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: SecurityGroups
-          Value: !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/security_groups:1}}'
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, SecurityGroups ]
 
         - Namespace: aws:autoscaling:trigger
           OptionName: MeasureName
@@ -108,15 +110,15 @@ Resources:
 
         - Namespace: aws:ec2:vpc
           OptionName: ELBSubnets
-          Value: !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/public_subnets:1}}'
+          Value: !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/public_subnets:1}}'
 
         - Namespace: aws:ec2:vpc
           OptionName: Subnets
-          Value: !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/private_subnets:1}}'
+          Value: !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/private_subnets:1}}'
 
         - Namespace: aws:ec2:vpc
           OptionName: VPCId
-          Value: !Sub '{{resolve:ssm-secure:/foundation/${EnvironmentStackName}/vpc_id:1}}'
+          Value: !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/vpc_id:1}}'
 
         - Namespace: aws:elasticbeanstalk:application
           OptionName: 'Application Healthcheck URL'
