@@ -64,4 +64,6 @@ interface CustomerBridge {
     SuggestedOrderResult getSuggestedOrder(GetSuggestedOrderInput input)
 
     Void markSuggestionAsRead(String accessToken, List<Long> supplierId)
+
+    Void acceptTc(AcceptTcInput acceptTcInput)
 }

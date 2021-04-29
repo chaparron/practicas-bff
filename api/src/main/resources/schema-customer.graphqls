@@ -134,6 +134,7 @@ input SignInInput {
     workingDays: WorkingDaysInput
     deliveryComment: String
     country_id: String
+    marketingEnabled: Boolean
 }
 
 enum AddressFailedReason {
@@ -161,6 +162,7 @@ input CustomerUpdateInput {
     deliveryComment: String
     verificationDocuments: [VerificationDocumentInput]
     accessToken: String!
+    marketingEnabled: Boolean
 }
 
 input VerifyEmailInput {
@@ -178,6 +180,11 @@ input PreferredAddressInput {
     addressId: ID!
     accessToken: String!
 
+}
+
+input AcceptTcInput {
+    marketingEnabled: Boolean
+    accessToken: String
 }
 
 type State {
@@ -234,6 +241,7 @@ type Customer {
     country_id: String
     customerType: CustomerType
     hasOrders: Boolean
+    marketingEnabled: Boolean
 }
 
 type WorkingDays {
