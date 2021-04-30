@@ -64,22 +64,13 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    Credentials signIn(SignInInput signInInput) {
+    CredentialsCustomerResponse signIn(SignInInput signInInput) {
         def body = http.exchange(
                 RequestEntity.method(HttpMethod.POST, root.resolve('/customer'))
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(signInInput)
-                , Map).body
-
-        new Credentials(
-                accessToken: body.access_token,
-                refreshToken: body.refresh_token,
-                tokenType: body.token_type,
-                scope: body.scope,
-                expiresIn: body.expires_in
-
-        )
-
+                , CredentialsCustomerResponse).body
+        return body
     }
 
     @Override

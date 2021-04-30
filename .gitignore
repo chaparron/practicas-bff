@@ -3,5 +3,6 @@
 .gradle
 build
 /out
+api/out
 
 devops/.terraform

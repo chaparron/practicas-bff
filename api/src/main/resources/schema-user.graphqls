@@ -73,6 +73,7 @@ type Void {
 type GenericCredentials {
     username: String!
     credentials: Credentials!
+    customer: Customer
 }
 
 type LoginFailed {
