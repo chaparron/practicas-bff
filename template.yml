@@ -182,9 +182,6 @@ Resources:
           OptionName: MAX_HEAP_SIZE
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, MaxHeapSize ]
 
-        - Namespace: aws:elasticbeanstalk:application:environment
-          OptionName: MERCADOPAGO_PUBLICKEY
-          Value: TEST-0931c5e1-8ce3-4e17-861c-9d4a65580796
 
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: NEW_RELIC_APP_NAME
@@ -255,13 +252,6 @@ Resources:
           OptionName: SystemType
           Value: enhanced
 
-        - Namespace: aws:elasticbeanstalk:managedactions
-          OptionName: PreferredStartTime
-          Value: 'Mon:04:00'
-
-        - Namespace: aws:elasticbeanstalk:managedactions:platformupdate
-          OptionName: UpdateLevel
-          Value: minor
 
         - Namespace: aws:elbv2:listener:default
           OptionName: DefaultProcess
