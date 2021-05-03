@@ -3,8 +3,331 @@ Transform: AWS::Serverless-2016-10-31
 Parameters:
   EnvironmentStackName:
     Type: String
-    AllowedValues: [qa, prod]
+    AllowedValues: [ qa, prod ]
+
+Mappings:
+  Config:
+    qa:
+      MinPoolSize: '1'
+      MaxPoolSize: '1'
+      InstanceType: 't2.micro'
+      HttpMaxConnections: '10'
+      TasksPoolCoreSize: '20'
+      MaxHeapSize: '-Xmx1024m'
+      LoggingLevel: 'TRACE'
+      NewRelicAppName: 'Wabi2B - BFF - Dev'
+      NewRelicLicenseKey: '2277dfa871634a7d0e7707a31781d430b528NRAL'
+      ApiRoot: 'https://api-qa.wabi2b.com/'
+    prod:
+      MinPoolSize: '2'
+      MaxPoolSize: '4'
+      InstanceType: 'm3.medium'
+      HttpMaxConnections: '60'
+      TasksPoolCoreSize: '500'
+      MaxHeapSize: '-Xmx4096m'
+      LoggingLevel: 'TRACE'
+      NewRelicAppName: 'Wabi2B - BFF - Prod'
+      NewRelicLicenseKey: '2277dfa871634a7d0e7707a31781d430b528NRAL'
+      ApiRoot: 'https://api.wabi2b.com/'
 
 Resources:
-  NullResource:
-    Type: AWS::CloudFormation::WaitConditionHandle
+
+  BackendForFrontend:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      ApplicationName: "wabi2b-BackendForFrontend"
+      SolutionStackName: 64bit Amazon Linux 2018.03 v2.11.2 running Java 8
+      OptionSettings:
+
+        - Namespace: aws:autoscaling:asg
+          OptionName: Availability Zones
+          Value: Any
+
+        - Namespace: aws:autoscaling:asg
+          OptionName: Cooldown
+          Value: 360
+
+        - Namespace: aws:autoscaling:asg
+          OptionName: MinSize
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, MinPoolSize ]
+
+        - Namespace: aws:autoscaling:asg
+          OptionName: MaxSize
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, MaxPoolSize ]
+
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: EC2KeyName
+          Value:
+            Fn::ImportValue: !Sub '${EnvironmentStackName}ec2_key_name'
+
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: IamInstanceProfile
+          Value: !Ref ElasticBeanstalkInstanceProfile
+
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: InstanceType
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, InstanceType ]
+
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: SSHSourceRestriction
+          Value: !Join
+            - ''
+            - - 'tcp,22,22,'
+              - Fn::ImportValue: !Sub '${FoundationConfig}bastion_security_group'
+
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: SecurityGroups
+          Value:
+            Fn::ImportValue: !Sub '${FoundationConfig}security_groups'
+
+        - Namespace: aws:autoscaling:trigger
+          OptionName: MeasureName
+          Value: CPUUtilization
+
+        - Namespace: aws:autoscaling:trigger
+          OptionName: Statistic
+          Value: Average
+
+        - Namespace: aws:autoscaling:trigger
+          OptionName: Unit
+          Value: Percent
+
+        - Namespace: aws:autoscaling:trigger
+          OptionName: LowerThreshold
+          Value: 25
+
+        - Namespace: aws:autoscaling:trigger
+          OptionName: UpperThreshold
+          Value: 70
+
+        - Namespace: aws:autoscaling:updatepolicy:rollingupdate
+          OptionName: RollingUpdateEnabled
+          Value: true
+
+        - Namespace: aws:autoscaling:updatepolicy:rollingupdate
+          OptionName: RollingUpdateType
+          Value: Health
+
+        - Namespace: aws:ec2:vpc
+          OptionName: ELBSubnets
+          Value:
+            Fn::ImportValue: !Sub '${FoundationConfig}public_subnets'
+
+        - Namespace: aws:ec2:vpc
+          OptionName: Subnets
+          Value:
+            Fn::ImportValue: !Sub '${FoundationConfig}private_subnets'
+
+        - Namespace: aws:ec2:vpc
+          OptionName: VPCId
+          Value:
+            Fn::ImportValue: !Sub '${FoundationConfig}vpc_id'
+
+        - Namespace: aws:elasticbeanstalk:application
+          OptionName: 'Application Healthcheck URL'
+          Value: '/health'
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: SERVER_PORT
+          Value: 5000
+
+        - Namespace: aws:elasticbeanstalk:command
+          OptionName: DeploymentPolicy
+          Value: RollingWithAdditionalBatch
+
+        - Namespace: aws:elasticbeanstalk:command
+          OptionName: BatchSize
+          Value: 50
+
+        - Namespace: aws:elasticbeanstalk:cloudwatch:logs
+          OptionName: RetentionInDays
+          Value: 30
+
+        - Namespace: aws:elasticbeanstalk:cloudwatch:logs
+          OptionName: StreamLogs
+          Value: true
+
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: EnvironmentType
+          Value: LoadBalanced
+
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: LoadBalancerType
+          Value: application
+
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: LoadBalancerIsShared
+          Value: false
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: HTTP_MAXCONNECTIONS
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, HttpMaxConnections ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: LOGGING_LEVEL_BFF
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, LoggingLevel ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: MAX_HEAP_SIZE
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, MaxHeapSize ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: MERCADOPAGO_PUBLICKEY
+          Value: TEST-0931c5e1-8ce3-4e17-861c-9d4a65580796
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: NEW_RELIC_APP_NAME
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, NewRelicAppName ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: NEW_RELIC_LICENSE
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, NewRelicLicenseKey ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: API_ROOT
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, ApiRoot ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: SERVICE_DISCOVERY_NAMESPACE
+          Value: !Ref EnvironmentStackName
+
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: SPRING_TASK_EXECUTION_POOL_CORESIZE
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, TasksPoolCoreSize ]
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: DeregistrationDelay
+          Value: 20
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: HealthCheckInterval
+          Value: 15
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: HealthCheckPath
+          Value: /health
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: HealthCheckTimeout
+          Value: 5
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: HealthyThresholdCount
+          Value: 3
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: MatcherHTTPCode
+          Value: 200
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: Port
+          Value: 80
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: Protocol
+          Value: HTTP
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: StickinessEnabled
+          Value: 'false'
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: UnhealthyThresholdCount
+          Value: 5
+
+        - Namespace: aws:elasticbeanstalk:healthreporting:system
+          OptionName: HealthCheckSuccessThreshold
+          Value: Degraded
+
+        - Namespace: aws:elasticbeanstalk:healthreporting:system
+          OptionName: SystemType
+          Value: enhanced
+
+        - Namespace: aws:elasticbeanstalk:managedactions
+          OptionName: PreferredStartTime
+          Value: 'Mon:04:00'
+
+        - Namespace: aws:elasticbeanstalk:managedactions:platformupdate
+          OptionName: UpdateLevel
+          Value: minor
+
+        - Namespace: aws:elbv2:listener:default
+          OptionName: DefaultProcess
+          Value: default
+
+        - Namespace: aws:elbv2:listener:default
+          OptionName: ListenerEnabled
+          Value: false
+
+        - Namespace: aws:elbv2:listener:default
+          OptionName: Protocol
+          Value: HTTP
+
+        - Namespace: aws:elbv2:listener:443
+          OptionName: DefaultProcess
+          Value: default
+
+        - Namespace: aws:elbv2:listener:443
+          OptionName: ListenerEnabled
+          Value: true
+
+        - Namespace: aws:elbv2:listener:443
+          OptionName: Protocol
+          Value: HTTPS
+
+        - Namespace: aws:elbv2:listener:443
+          OptionName: SSLCertificateArns
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-SSLCertificate"
+
+  ElasticBeanstalkInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref ElasticBeanstalkEC2Role
+
+  ElasticBeanstalkEC2Role:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: serviceDiscoveryPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - servicediscovery:ListInstances
+                  - servicediscovery:DiscoverInstances
+                Resource: '*'
+        - PolicyName: invokeFunctionPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource: '*'
+        - PolicyName: systemManagerPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ssm:DescribeParameters
+                  - ssm:Get*
+                Resource: '*'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSElasticBeanstalkEnhancedHealth
+        - arn:aws:iam::aws:policy/AmazonSQSFullAccess
+        - arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess
+        - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy

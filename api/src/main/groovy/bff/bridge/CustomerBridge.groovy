@@ -9,7 +9,7 @@ interface CustomerBridge {
 
     CustomerUpdateResult updateProfile(CustomerUpdateInput customerUpdateInput)
 
-    Credentials signIn(SignInInput signInInput)
+    CredentialsCustomerResponse signIn(SignInInput signInInput)
 
     Void verifyEmail(VerifyEmailInput verifyEmailInput)
 
