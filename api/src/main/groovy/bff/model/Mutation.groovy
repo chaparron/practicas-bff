@@ -257,4 +257,8 @@ class Mutation implements GraphQLMutationResolver {
     Void markSuggestionAsRead(MarkSuggestionInput input){
         customerBridge.markSuggestionAsRead(input.accessToken, input.supplierIds)
     }
+
+    Void acceptTc(AcceptTcInput input){
+        customerBridge.acceptTc(input)
+    }
 }

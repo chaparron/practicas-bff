@@ -179,6 +179,8 @@ type Mutation {
 
     markSuggestionAsRead(input: MarkSuggestionInput !): Void!
 
+    acceptTc(input: AcceptTcInput!): Void!
+
 }
 
 input CustomerRateSupplierInput {

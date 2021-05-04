@@ -52,7 +52,8 @@ class CustomerBridgeImpl implements CustomerBridge {
                                             adress                     : customerUpdateInput.address,
                                             workingDays                : customerUpdateInput.workingDays,
                                             deliveryComment            : customerUpdateInput.deliveryComment,
-                                            verificationDocuments      : customerUpdateInput.verificationDocuments
+                                            verificationDocuments      : customerUpdateInput.verificationDocuments,
+                                            marketingEnabled           : customerUpdateInput.marketingEnabled
                                     ]
                             ), Customer).body
             body.accessToken = customerUpdateInput.accessToken
@@ -543,6 +544,19 @@ class CustomerBridgeImpl implements CustomerBridge {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(AUTHORIZATION, "Bearer $accessToken")
                         .body(supplierIds)
+                , Map).body
+        Void.SUCCESS
+    }
+
+    @Override
+    Void acceptTc(AcceptTcInput input) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/tc")).toUriString()
+        def uri = url.toURI()
+        http.exchange(
+                RequestEntity.method(HttpMethod.POST, uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION, "Bearer ${input.accessToken}")
+                        .body(input)
                 , Map).body
         Void.SUCCESS
     }
