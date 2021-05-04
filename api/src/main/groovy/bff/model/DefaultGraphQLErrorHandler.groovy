@@ -71,7 +71,6 @@ class DefaultGraphQLErrorHandler implements GraphQLErrorHandler {
     }
 
     private List<GraphQLError> unwrap(AccessToBackendDeniedException cause, ExceptionWhileDataFetching error) {
-        log.debug('unauthorized request caused by', error.exception)
         [new GenericError(
             path: error.path,
             extensions: [
