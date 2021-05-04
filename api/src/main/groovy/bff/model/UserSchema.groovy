@@ -48,6 +48,7 @@ class Credentials {
 class GenericCredentials implements LoginResult , SignInResult{
     String username
     Credentials credentials
+    Customer customer
 }
 
 

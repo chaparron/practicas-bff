@@ -118,7 +118,7 @@ class Customer implements CustomerUpdateResult {
     Boolean emailVerification
     CustomerType customerType
     List<Address> addresses
-
+    boolean marketingEnabled
     WorkingDays workingDays
     RatingScore rating
     int level
@@ -250,6 +250,7 @@ class CustomerUpdateInput {
     String deliveryComment
     List<VerificationDocument> verificationDocuments
     String accessToken
+    boolean marketingEnabled
 }
 
 class WorkingDays {
@@ -295,6 +296,7 @@ class SignInInput {
     String country_id
     List<AddressInput> addresses
     List<VerificationDocument> verificationDocuments
+    boolean marketingEnabled
 }
 
 class VerifyEmailInput {
@@ -362,4 +364,9 @@ class SuggestedOrderItem {
     Integer quantity
     String productTitle
     String categoryTitle
+}
+
+class AcceptTcInput{
+    boolean marketingEnabled
+    String accessToken
 }

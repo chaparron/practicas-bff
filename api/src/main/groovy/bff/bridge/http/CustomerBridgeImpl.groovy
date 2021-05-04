@@ -52,7 +52,8 @@ class CustomerBridgeImpl implements CustomerBridge {
                                             adress                     : customerUpdateInput.address,
                                             workingDays                : customerUpdateInput.workingDays,
                                             deliveryComment            : customerUpdateInput.deliveryComment,
-                                            verificationDocuments      : customerUpdateInput.verificationDocuments
+                                            verificationDocuments      : customerUpdateInput.verificationDocuments,
+                                            marketingEnabled           : customerUpdateInput.marketingEnabled
                                     ]
                             ), Customer).body
             body.accessToken = customerUpdateInput.accessToken
@@ -64,22 +65,13 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    Credentials signIn(SignInInput signInInput) {
+    CredentialsCustomerResponse signIn(SignInInput signInInput) {
         def body = http.exchange(
                 RequestEntity.method(HttpMethod.POST, root.resolve('/customer'))
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(signInInput)
-                , Map).body
-
-        new Credentials(
-                accessToken: body.access_token,
-                refreshToken: body.refresh_token,
-                tokenType: body.token_type,
-                scope: body.scope,
-                expiresIn: body.expires_in
-
-        )
-
+                , CredentialsCustomerResponse).body
+        return body
     }
 
     @Override
@@ -552,6 +544,19 @@ class CustomerBridgeImpl implements CustomerBridge {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(AUTHORIZATION, "Bearer $accessToken")
                         .body(supplierIds)
+                , Map).body
+        Void.SUCCESS
+    }
+
+    @Override
+    Void acceptTc(AcceptTcInput input) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/tc")).toUriString()
+        def uri = url.toURI()
+        http.exchange(
+                RequestEntity.method(HttpMethod.POST, uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION, "Bearer ${input.accessToken}")
+                        .body(input)
                 , Map).body
         Void.SUCCESS
     }

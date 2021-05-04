@@ -65,8 +65,9 @@ class Mutation implements GraphQLMutationResolver {
 
             def rawCredentials = customerBridge.signIn(signInInput)
             new GenericCredentials(
-                    username: JwtToken.fromString(rawCredentials.accessToken).username,
-                    credentials: rawCredentials
+                    username: JwtToken.fromString(rawCredentials.credentials.access_token).username,
+                    credentials: rawCredentials.credentials.toCredentials(),
+                    customer: rawCredentials.customer
             )
 
         } catch (ConflictErrorException conflictErrorException) {
@@ -255,5 +256,9 @@ class Mutation implements GraphQLMutationResolver {
 
     Void markSuggestionAsRead(MarkSuggestionInput input){
         customerBridge.markSuggestionAsRead(input.accessToken, input.supplierIds)
+    }
+
+    Void acceptTc(AcceptTcInput input){
+        customerBridge.acceptTc(input)
     }
 }
