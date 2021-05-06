@@ -476,7 +476,7 @@ union UpdateAddressResult = CustomerErrorFailed | Void
 
 union DeleteAddressResult = DeleteAddressFailed | Void
 
-union AddAddressResult = AddAddressFailed |  Void
+union AddAddressResult = AddAddressFailed | Void
 
 union SignInResult = SignInFailed | GenericCredentials
 

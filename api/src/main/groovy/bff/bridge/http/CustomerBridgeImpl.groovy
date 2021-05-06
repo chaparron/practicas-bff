@@ -265,7 +265,7 @@ class CustomerBridgeImpl implements CustomerBridge {
 
     @Override
     Void addAddress(AddressInput addressInput) throws BadRequestErrorException {
-        http.exchange(
+        def res = http.exchange(
                 RequestEntity.method(HttpMethod.POST, root.resolve("/customer/me/address"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer $addressInput.accessToken")
@@ -280,7 +280,8 @@ class CustomerBridgeImpl implements CustomerBridge {
                                         addressType   : addressInput.addressType
                                 ]
                         ), Map).body
-        return Void.SUCCESS
+
+        return new Void(voidReason: VoidReason.SUCCESS, id: res.get("id"))
 
     }
 
@@ -289,7 +290,7 @@ class CustomerBridgeImpl implements CustomerBridge {
         def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/address/${addressInput.id}")).toUriString()
         def uri = url.toURI()
         try {
-            http.exchange(
+            def res = http.exchange(
                     RequestEntity.method(HttpMethod.PUT, uri)
                             .contentType(MediaType.APPLICATION_JSON)
                             .header(AUTHORIZATION, "Bearer $addressInput.accessToken")
@@ -303,7 +304,9 @@ class CustomerBridgeImpl implements CustomerBridge {
                                             addressType   : addressInput.addressType
                                     ]
                             ), Map).body
-            return Void.SUCCESS
+
+            return new Void(voidReason: VoidReason.SUCCESS, id: res.get("id"))
+
         } catch (BadRequestErrorException badRequestErrorException) {
             mapCustomerError(badRequestErrorException, "Update Address Error")
         }

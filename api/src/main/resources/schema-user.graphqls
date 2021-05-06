@@ -68,6 +68,7 @@ input PhoneInput {
 
 type Void {
     voidReason: VoidReason!
+    id: ID
 }
 
 type GenericCredentials {

@@ -127,7 +127,6 @@ class Mutation implements GraphQLMutationResolver {
     UpdateAddressResult updateAddress(AddressInput addressInput) {
         try {
             customerBridge.updateAddress(addressInput)
-            Void.SUCCESS
         } catch (CustomerException customerException) {
             customerException.build()
         }
