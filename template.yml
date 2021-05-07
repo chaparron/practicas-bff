@@ -18,6 +18,7 @@ Mappings:
       NewRelicAppName: 'Wabi2B - BFF - Dev'
       NewRelicLicenseKey: '2277dfa871634a7d0e7707a31781d430b528NRAL'
       ApiRoot: 'https://api-qa.wabi2b.com/'
+      SecurityGroups: '{{resolve:ssm:/foundation/qa/beanstalk/security_groups:1}}'
     prod:
       MinPoolSize: '2'
       MaxPoolSize: '4'
@@ -29,14 +30,29 @@ Mappings:
       NewRelicAppName: 'Wabi2B - BFF - Prod'
       NewRelicLicenseKey: '2277dfa871634a7d0e7707a31781d430b528NRAL'
       ApiRoot: 'https://api.wabi2b.com/'
+      SecurityGroups: '{{resolve:ssm:/foundation/prod/beanstalk/security_groups:1}}'
 
 Resources:
+
+  Wabi2bCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: 'wabi2b.com'
+      SubjectAlternativeNames:
+        - '*.wabi2b.com'
+      ValidationMethod: DNS
+
+  BeanstalkApplication:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      ApplicationName: !Sub '${EnvironmentStackName}-wabi2b-bff-app'
 
   BackendForFrontend:
     Type: AWS::ElasticBeanstalk::Environment
     Properties:
-      ApplicationName: "wabi2b-BackendForFrontend"
-      SolutionStackName: 64bit Amazon Linux 2018.03 v2.11.2 running Java 8
+      ApplicationName: !Ref BeanstalkApplication
+      EnvironmentName: !Sub '${EnvironmentStackName}-wabi2b-bff-env'
+      SolutionStackName: 64bit Amazon Linux 2018.03 v2.11.7 running Java 8
       OptionSettings:
 
         - Namespace: aws:autoscaling:asg
@@ -57,8 +73,7 @@ Resources:
 
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: EC2KeyName
-          Value:
-            Fn::ImportValue: !Sub '${EnvironmentStackName}ec2_key_name'
+          Value: !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/beanstalk/ec2_key_name:1}}'
 
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
@@ -73,12 +88,11 @@ Resources:
           Value: !Join
             - ''
             - - 'tcp,22,22,'
-              - Fn::ImportValue: !Sub '${FoundationConfig}bastion_security_group'
+              - !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/bastion_security_group:1}}'
 
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: SecurityGroups
-          Value:
-            Fn::ImportValue: !Sub '${FoundationConfig}security_groups'
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, SecurityGroups ]
 
         - Namespace: aws:autoscaling:trigger
           OptionName: MeasureName
@@ -110,22 +124,19 @@ Resources:
 
         - Namespace: aws:ec2:vpc
           OptionName: ELBSubnets
-          Value:
-            Fn::ImportValue: !Sub '${FoundationConfig}public_subnets'
+          Value: !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/public_subnets:1}}'
 
         - Namespace: aws:ec2:vpc
           OptionName: Subnets
-          Value:
-            Fn::ImportValue: !Sub '${FoundationConfig}private_subnets'
+          Value: !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/public_subnets:1}}'
 
         - Namespace: aws:ec2:vpc
           OptionName: VPCId
-          Value:
-            Fn::ImportValue: !Sub '${FoundationConfig}vpc_id'
+          Value: !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/vpc_id:1}}'
 
         - Namespace: aws:elasticbeanstalk:application
           OptionName: 'Application Healthcheck URL'
-          Value: '/health'
+          Value: '/actuator/health'
 
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: SERVER_PORT
@@ -171,16 +182,13 @@ Resources:
           OptionName: MAX_HEAP_SIZE
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, MaxHeapSize ]
 
-        - Namespace: aws:elasticbeanstalk:application:environment
-          OptionName: MERCADOPAGO_PUBLICKEY
-          Value: TEST-0931c5e1-8ce3-4e17-861c-9d4a65580796
 
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: NEW_RELIC_APP_NAME
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, NewRelicAppName ]
 
         - Namespace: aws:elasticbeanstalk:application:environment
-          OptionName: NEW_RELIC_LICENSE
+          OptionName: NEW_RELIC_LICENSE_KEY
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, NewRelicLicenseKey ]
 
         - Namespace: aws:elasticbeanstalk:application:environment
@@ -206,7 +214,7 @@ Resources:
 
         - Namespace: aws:elasticbeanstalk:environment:process:default
           OptionName: HealthCheckPath
-          Value: /health
+          Value: '/actuator/health'
 
         - Namespace: aws:elasticbeanstalk:environment:process:default
           OptionName: HealthCheckTimeout
@@ -244,13 +252,6 @@ Resources:
           OptionName: SystemType
           Value: enhanced
 
-        - Namespace: aws:elasticbeanstalk:managedactions
-          OptionName: PreferredStartTime
-          Value: 'Mon:04:00'
-
-        - Namespace: aws:elasticbeanstalk:managedactions:platformupdate
-          OptionName: UpdateLevel
-          Value: minor
 
         - Namespace: aws:elbv2:listener:default
           OptionName: DefaultProcess
@@ -278,8 +279,7 @@ Resources:
 
         - Namespace: aws:elbv2:listener:443
           OptionName: SSLCertificateArns
-          Value:
-            Fn::ImportValue: !Sub "${EnvironmentStackName}-SSLCertificate"
+          Value: !Ref Wabi2bCertificate
 
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
@@ -331,3 +331,11 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonSQSFullAccess
         - arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess
         - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
+
+Outputs:
+
+  Wabi2bCertificateOutput:
+    Description: "Wabi2bCertificate"
+    Value: !Ref Wabi2bCertificate
+    Export:
+      Name: 'Wabi2bCertificate'
