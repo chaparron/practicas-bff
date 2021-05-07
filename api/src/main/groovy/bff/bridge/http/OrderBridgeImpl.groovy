@@ -71,7 +71,12 @@ class OrderBridgeImpl implements OrderBridge {
                         .build()
                 , CustomerOrdersResponse).body
 
-        r.content.each { it.accessToken = findOrdersInput.accessToken }
+        r.content.each {
+            it.accessToken = findOrdersInput.accessToken
+            it.supplierOrders.each { so ->
+                so.accessToken = findOrdersInput.accessToken
+            }
+        }
         r
 
     }

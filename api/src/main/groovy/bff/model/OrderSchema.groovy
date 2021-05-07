@@ -210,7 +210,6 @@ class Order {
     BigDecimal total_credits
     BigDecimal total_money
     BigDecimal total_wabipay
-
     BigDecimal discounts
     BigDecimal total_service_fee
     BigDecimal total_pending
@@ -218,6 +217,7 @@ class Order {
     BigDecimal total
     BigDecimal subTotal
     Customer customer
+    List<SupplierOrder> supplierOrders
 }
 
 class SupplierOrder implements SupplierOrderResponse {
