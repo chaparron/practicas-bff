@@ -1,5 +1,6 @@
 package bff.model
 
+import bff.DecoderName
 import bff.JwtToken
 import bff.bridge.AuthServerBridge
 import bff.bridge.CustomerBridge
@@ -35,7 +36,7 @@ class Mutation implements GraphQLMutationResolver {
         try {
             def credentials = passwordLogin(input.username, input.password, input.site)
             new GenericCredentials(
-                    username: JwtToken.fromString(credentials.accessToken).username,
+                    username: JwtToken.fromString(credentials.accessToken, DecoderName.USERNAME).name,
                     credentials: credentials
             )
         } catch (LoginFailureException loginException) {
@@ -65,7 +66,7 @@ class Mutation implements GraphQLMutationResolver {
 
             def rawCredentials = customerBridge.signIn(signInInput)
             new GenericCredentials(
-                    username: JwtToken.fromString(rawCredentials.credentials.access_token).username,
+                    username: JwtToken.fromString(rawCredentials.credentials.access_token, DecoderName.USERNAME).name,
                     credentials: rawCredentials.credentials.toCredentials(),
                     customer: rawCredentials.customer
             )

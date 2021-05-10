@@ -5,17 +5,17 @@ import groovy.json.JsonSlurper
 import groovy.transform.InheritConstructors
 
 class JwtToken {
-    String username
+    String name
 
-    static JwtToken fromString(String token) {
+    static JwtToken fromString(String token, DecoderName decoderName) {
         def fields = token.split('\\.')
         if (fields.length != 3) throw new InvalidToken()
 
         try {
-            def username = new JsonSlurper().parse(
+            def decode = new JsonSlurper().parse(
                     Base64.decoder.decode(fields[1])
-            )['user_name'].toString()
-            new JwtToken(username: username)
+            )[decoderName.getDecoderName()].toString()
+            new JwtToken(name: decode)
         } catch (IllegalArgumentException | JsonException e) {
             throw new InvalidToken('Invalid token', e)
         }
@@ -26,5 +26,20 @@ class JwtToken {
 class InvalidToken extends RuntimeException{
     InvalidToken() {
         super("Invalid token")
+    }
+}
+
+enum DecoderName {
+    USERNAME("username"),
+    ENTITY_ID("entityId")
+
+    private final String decoder
+
+    DecoderName(String decoderName) {
+        this.decoder = decoderName
+    }
+
+    String getDecoderName() {
+        decoder
     }
 }

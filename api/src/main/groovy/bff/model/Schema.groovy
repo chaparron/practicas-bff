@@ -51,6 +51,11 @@ enum VoidReason {
     SUCCESS
 }
 
+enum EntityType {
+    CUSTOMER,
+    USER
+}
+
 class SiteConfigurationFailed implements BannerDialogResult {
     SiteConfigurationFailedReason reason
 }
@@ -82,6 +87,7 @@ class Void implements ChangePasswordResult,
     static final SUCCESS = new Void(voidReason: VoidReason.SUCCESS)
     VoidReason voidReason
     Integer id
+    EntityType entityType
 }
 
 class Filter {

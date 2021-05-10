@@ -36,6 +36,11 @@ enum ConfirmPasswordReason {
     TOKEN_EXPIRED
 }
 
+enum EntityType {
+    CUSTOMER,
+    USER
+}
+
 input ChangePasswordInput {
     currentPassword: String!
     newPassword: String!
@@ -68,6 +73,7 @@ input PhoneInput {
 
 type Void {
     voidReason: VoidReason!
+    entityType: EntityType
     id: ID
 }
 

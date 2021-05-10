@@ -1,5 +1,7 @@
 package bff.bridge.http
 
+import bff.DecoderName
+import bff.JwtToken
 import bff.bridge.CustomerBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.ConflictErrorException
@@ -265,7 +267,7 @@ class CustomerBridgeImpl implements CustomerBridge {
 
     @Override
     Void addAddress(AddressInput addressInput) throws BadRequestErrorException {
-        def res = http.exchange(
+        http.exchange(
                 RequestEntity.method(HttpMethod.POST, root.resolve("/customer/me/address"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer $addressInput.accessToken")
@@ -281,7 +283,9 @@ class CustomerBridgeImpl implements CustomerBridge {
                                 ]
                         ), Map).body
 
-        return new Void(voidReason: VoidReason.SUCCESS, id: res.get("id"))
+
+        def id = JwtToken.fromString(addressInput.accessToken, DecoderName.ENTITY_ID).name
+        return new Void(voidReason: VoidReason.SUCCESS, id: Integer.parseInt(id), entityType: EntityType.CUSTOMER)
 
     }
 
@@ -290,7 +294,7 @@ class CustomerBridgeImpl implements CustomerBridge {
         def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/address/${addressInput.id}")).toUriString()
         def uri = url.toURI()
         try {
-            def res = http.exchange(
+            http.exchange(
                     RequestEntity.method(HttpMethod.PUT, uri)
                             .contentType(MediaType.APPLICATION_JSON)
                             .header(AUTHORIZATION, "Bearer $addressInput.accessToken")
@@ -305,7 +309,9 @@ class CustomerBridgeImpl implements CustomerBridge {
                                     ]
                             ), Map).body
 
-            return new Void(voidReason: VoidReason.SUCCESS, id: res.get("id"))
+
+            def id = JwtToken.fromString(addressInput.accessToken, DecoderName.ENTITY_ID).name
+            return new Void(voidReason: VoidReason.SUCCESS, id: Integer.parseInt(id), entityType: EntityType.CUSTOMER)
 
         } catch (BadRequestErrorException badRequestErrorException) {
             mapCustomerError(badRequestErrorException, "Update Address Error")
