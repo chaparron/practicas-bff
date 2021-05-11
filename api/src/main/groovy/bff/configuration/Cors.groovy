@@ -19,6 +19,7 @@ class Cors {
         config.allowedOrigins = ["*"]
         config.allowedHeaders = ["Origin", "Content-Type", "Accept", "x-requested-with", "Accepts", "Accept-Language", "Access-Control- Allow-Origin", "Content-Type", "Authorization"]
         config.allowedMethods = ["GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"]
+        config.maxAge = 3600
         source.registerCorsConfiguration("/**", config)
         return new CorsFilter(source)
     }
