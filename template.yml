@@ -19,6 +19,7 @@ Mappings:
       NewRelicLicenseKey: '2277dfa871634a7d0e7707a31781d430b528NRAL'
       ApiRoot: 'https://api-qa.wabi2b.com/'
       SecurityGroups: '{{resolve:ssm:/foundation/qa/beanstalk/security_groups:1}}'
+      CountriesHttpApiGateway: "true"
     prod:
       MinPoolSize: '2'
       MaxPoolSize: '4'
@@ -31,6 +32,7 @@ Mappings:
       NewRelicLicenseKey: '2277dfa871634a7d0e7707a31781d430b528NRAL'
       ApiRoot: 'https://api.wabi2b.com/'
       SecurityGroups: '{{resolve:ssm:/foundation/prod/beanstalk/security_groups:1}}'
+      CountriesHttpApiGateway: "false"
 
 Resources:
 
@@ -280,6 +282,15 @@ Resources:
         - Namespace: aws:elbv2:listener:443
           OptionName: SSLCertificateArns
           Value: !Ref Wabi2bCertificate
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: countries_http_api_gateway
+          Value:
+            !FindInMap [ Config, !Ref EnvironmentStackName, CountriesHttpApiGateway ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: aws_cloudmap_namespace
+          Value: !Sub "${EnvironmentStackName}.local"
 
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
