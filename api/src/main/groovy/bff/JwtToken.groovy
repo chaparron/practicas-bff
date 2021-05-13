@@ -4,6 +4,8 @@ import groovy.json.JsonException
 import groovy.json.JsonSlurper
 import groovy.transform.InheritConstructors
 
+import static java.util.Base64.getUrlDecoder
+
 class JwtToken {
     String name
 
@@ -13,7 +15,7 @@ class JwtToken {
 
         try {
             def decode = new JsonSlurper().parse(
-                    Base64.decoder.decode(fields[1])
+                    getUrlDecoder().decode(fields[1])
             )[decoderName.getDecoderName()].toString()
             new JwtToken(name: decode)
         } catch (IllegalArgumentException | JsonException e) {
