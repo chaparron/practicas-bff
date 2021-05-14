@@ -18,7 +18,7 @@ class RatingResolver implements GraphQLResolver<Rating> {
     OrderBridge orderBridge
 
     Supplier getSupplier(Rating rating) {
-        productBridge.getSupplierById(rating.accessToken, rating.supplier.id)
+        rating ? productBridge.getSupplierById(rating.accessToken, rating.supplier.id) : null
     }
 
 }

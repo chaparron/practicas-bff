@@ -4,6 +4,8 @@ import bff.bridge.ProductBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
 import bff.model.*
+import groovy.util.logging.Log4j
+import groovy.util.logging.Slf4j
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -12,6 +14,8 @@ import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
 
+
+@Slf4j
 class ProductBridgeImpl implements ProductBridge {
 
     URI root

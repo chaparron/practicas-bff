@@ -58,10 +58,17 @@ class SupplierOrderBridgeImpl implements SupplierOrderBridge {
                 .build()
             , new ParameterizedTypeReference<List<Rating>>() {}).body
 
+        def supplierRating = ratings?.find { it.owner == RatingOwner.SUPPLIER }
+        supplierRating?.accessToken = accessToken
+
+        def customerRating = ratings?.find { it.owner == RatingOwner.CUSTOMER }
+        customerRating?.accessToken = accessToken
+
         new RatingEntry(
-            SUPPLIER: ratings?.find { it.owner == RatingOwner.SUPPLIER },
-            CUSTOMER: ratings?.find { it.owner == RatingOwner.CUSTOMER }
+                SUPPLIER: supplierRating,
+                CUSTOMER: customerRating
         )
+
     }
 
     @Override
