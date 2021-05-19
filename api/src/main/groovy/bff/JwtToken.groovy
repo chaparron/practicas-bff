@@ -22,10 +22,23 @@ class JwtToken {
             throw new InvalidToken('Invalid token', e)
         }
     }
+
+    static String countryFromString(String token) {
+        def fields = token.split('\\.')
+        if (fields.length != 3) throw new InvalidToken()
+
+        try {
+            return new JsonSlurper().parse(
+                    getUrlDecoder().decode(fields[1])
+            )["user"]["countries"].first()["id"].toString()
+        } catch (IllegalArgumentException | JsonException e) {
+            throw new InvalidToken('Invalid token', e)
+        }
+    }
 }
 
 @InheritConstructors
-class InvalidToken extends RuntimeException{
+class InvalidToken extends RuntimeException {
     InvalidToken() {
         super("Invalid token")
     }
@@ -33,7 +46,8 @@ class InvalidToken extends RuntimeException{
 
 enum DecoderName {
     USERNAME("username"),
-    ENTITY_ID("entityId")
+    ENTITY_ID("entityId"),
+    USER("user")
 
     private final String decoder
 
