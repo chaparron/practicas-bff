@@ -21,11 +21,14 @@ class CountryGatewayBridgeImpl implements CountryBridge {
     @Autowired
     ServiceDiscovery serviceDiscovery
 
+    @Value('${country.url:}')
     URI countryUrl
 
     @PostConstruct
     void init() {
-        countryUrl = new URI(serviceDiscovery.discover(countryServiceName))
+        if(null==countryUrl || countryUrl.toString().isEmpty()) {
+            countryUrl = new URI(serviceDiscovery.discover(countryServiceName))
+        }
     }
 
     @Override
