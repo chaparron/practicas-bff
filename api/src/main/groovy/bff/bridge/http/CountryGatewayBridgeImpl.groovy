@@ -1,6 +1,5 @@
 package bff.bridge.http
 
-import bff.JwtToken
 import bff.bridge.CountryBridge
 import bff.model.CountryConfigurationEntry
 import bff.service.HttpBridge
@@ -40,6 +39,10 @@ class CountryGatewayBridgeImpl implements CountryBridge {
 
     @Override
     List<CountryConfigurationEntry> getCustomerCountryConfiguration(String accessToken) {
-        return getCountryConfiguration(JwtToken.countryFromString(accessToken))
+        httpBridge.get(
+                UriComponentsBuilder.fromUri(countryUrl.resolve("country/me")).toUriString().toURI(),
+                "Bearer $accessToken")?.config?.collect {
+            new CountryConfigurationEntry(key: it.key, value: it.value)
+        }
     }
 }

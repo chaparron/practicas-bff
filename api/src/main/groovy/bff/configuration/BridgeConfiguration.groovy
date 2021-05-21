@@ -17,9 +17,6 @@ class BridgeConfiguration {
     @Value('${api.root}')
     URI root
 
-    @Value('${countries.http.api.gateway:false}')
-    Boolean countryGatewayEnabled
-
     @Bean
     AuthServerBridge authServerBridge() {
         new AuthServerBridgeImpl(
@@ -102,14 +99,7 @@ class BridgeConfiguration {
 
     @Bean
     CountryBridge countryBridge() {
-        if(countryGatewayEnabled) {
-            new CountryGatewayBridgeImpl()
-        } else {
-            new CountryBridgeImpl(
-                    http: http,
-                    root: root
-            )
-        }
+        new CountryGatewayBridgeImpl()
     }
 
     @Bean
