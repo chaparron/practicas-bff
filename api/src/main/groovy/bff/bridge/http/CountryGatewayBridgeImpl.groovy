@@ -26,9 +26,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
 
     @PostConstruct
     void init() {
-        if(null==countryUrl || countryUrl.toString().isEmpty()) {
-            countryUrl = new URI(serviceDiscovery.discover(countryServiceName))
-        }
+        countryUrl = serviceDiscovery.discover(countryServiceName, countryUrl)
     }
 
     @Override
