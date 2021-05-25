@@ -64,7 +64,9 @@ class CountryGatewayBridgeImplTest {
     @Before
     void init() {
         countryBridge.countryServiceName = "RegionalConfigService"
-        Mockito.when(serviceDiscovery.discover("RegionalConfigService")).thenReturn("http://localhost:3000/")
+        countryBridge.countryUrl = new URI("http://localhost:3000/")
+        Mockito.when(serviceDiscovery.discover(Mockito.anyString(), (URI)Mockito.any(URI.class)))
+                .thenReturn(new URI("http://localhost:3000/"))
         countryBridge.init()
     }
 

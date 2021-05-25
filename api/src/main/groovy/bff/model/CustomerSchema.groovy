@@ -159,7 +159,7 @@ class Customer implements CustomerUpdateResult {
 }
 
 class State {
-    Long id
+    String id
     String name
 }
 

@@ -120,10 +120,7 @@ class BridgeConfiguration {
 
     @Bean
     StateBridge stateBridge() {
-        new StateBridgeImpl(
-            http: http,
-            root: root
-        )
+        new StateGatewayBridgeImpl()
     }
 
     @Bean

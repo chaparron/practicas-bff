@@ -14,16 +14,21 @@ class ServiceDiscovery {
     @Value('${aws.cloudmap.namespace:qa.local}')
     String namespace
 
-    Random RAND = new Random(System.currentTimeMillis());
+    Random RAND = new Random(System.currentTimeMillis())
 
-    def discover(String serviceName) {
-        def discoverInstancesRequest = new DiscoverInstancesRequest()
-        discoverInstancesRequest.setNamespaceName(namespace)
-        discoverInstancesRequest.setServiceName(serviceName)
+    def discover(String serviceName, URI fallback) {
+        try {
+            def discoverInstancesRequest = new DiscoverInstancesRequest()
+            discoverInstancesRequest.setNamespaceName(namespace)
+            discoverInstancesRequest.setServiceName(serviceName)
 
-        def awsServiceDiscovery = AWSServiceDiscoveryClientBuilder.defaultClient()
-        def allInstances = awsServiceDiscovery.discoverInstances(discoverInstancesRequest).getInstances()
+            def awsServiceDiscovery = AWSServiceDiscoveryClientBuilder.defaultClient()
+            def allInstances = awsServiceDiscovery.discoverInstances(discoverInstancesRequest).getInstances()
 
-        allInstances?.get(RAND.nextInt(allInstances.size()))?.getAttributes()?.AWS_INSTANCE_CNAME
+            new URI(allInstances?.get(RAND.nextInt(allInstances.size()))?.getAttributes()?.AWS_INSTANCE_CNAME)
+        } catch(Exception e) {
+            log.error("Error in service discovery: ", e)
+            fallback
+        }
     }
 }

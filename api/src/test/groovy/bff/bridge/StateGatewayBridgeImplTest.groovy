@@ -1,0 +1,69 @@
+package bff.bridge
+
+import bff.bridge.http.StateGatewayBridgeImpl
+import bff.service.HttpBridge
+import bff.service.ServiceDiscovery
+import groovy.json.JsonSlurper
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.InjectMocks
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.junit.MockitoJUnitRunner
+
+@RunWith(MockitoJUnitRunner.class)
+class StateGatewayBridgeImplTest {
+
+    @Mock
+    private HttpBridge httpBridge
+
+    @Mock
+    ServiceDiscovery serviceDiscovery
+
+    @InjectMocks
+    StateGatewayBridgeImpl stateBridge = new StateGatewayBridgeImpl()
+
+    private static String stateEsStr =
+            "{\n" +
+            "    \"id\": \"es\",\n" +
+            "    \"config\": [\n" +
+            "        {\n" +
+            "            \"name\": \"Álava\",\n" +
+            "            \"iso_code\": \"ES-VI\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"name\": \"Albacete\",\n" +
+            "            \"iso_code\": \"ES-AB\"\n" +
+            "        }\n" +
+            "    ]\n" +
+            "}"
+
+    @Before
+    void init() {
+        stateBridge.countryServiceName = "RegionalConfigService"
+        stateBridge.countryUrl = new URI("http://localhost:3000/")
+        Mockito.when(serviceDiscovery.discover(Mockito.anyString(), (URI)Mockito.any(URI.class)))
+                .thenReturn(new URI("http://localhost:3000/"))
+        stateBridge.init()
+    }
+
+    @Test
+    void getByCountryIdTest() {
+        Mockito.when(
+                httpBridge.get(
+                        (URI)Mockito.any(URI.class),
+                        (String)Mockito.isNull()))
+                .thenReturn(
+                        new JsonSlurper().parseText(stateEsStr) as Map)
+
+        def response = stateBridge.getByCountryId("es")
+
+        Assert.assertNotNull(response)
+        Assert.assertFalse(response.empty)
+        Assert.assertTrue(response.size()==2)
+    }
+
+
+}
