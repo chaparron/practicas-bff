@@ -34,7 +34,7 @@ class StateGatewayBridgeImpl implements StateBridge {
         httpBridge.get(
                 UriComponentsBuilder.fromUri(countryUrl.resolve("state/$countryId")).toUriString().toURI(),
                 null)?.config?.collect {
-            new State(name: it.name)
+            new State(id: it.iso_code, name: it.name)
         }
     }
 }
