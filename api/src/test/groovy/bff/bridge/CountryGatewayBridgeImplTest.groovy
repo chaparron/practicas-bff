@@ -1,6 +1,7 @@
 package bff.bridge
 
 import bff.bridge.http.CountryGatewayBridgeImpl
+import bff.configuration.CacheConfigurationProperties
 import bff.service.HttpBridge
 import bff.service.ServiceDiscovery
 import groovy.json.JsonSlurper
@@ -23,6 +24,9 @@ class CountryGatewayBridgeImplTest {
 
     @Mock
     ServiceDiscovery serviceDiscovery
+
+    @Mock
+    CacheConfigurationProperties cacheConfiguration
 
     @InjectMocks
     private CountryGatewayBridgeImpl countryBridge = new CountryGatewayBridgeImpl()
@@ -63,9 +67,10 @@ class CountryGatewayBridgeImplTest {
 
     @Before
     void init() {
+        Mockito.when(cacheConfiguration.countries).thenReturn(1L)
         countryBridge.countryServiceName = "RegionalConfigService"
         countryBridge.countryUrl = new URI("http://localhost:3000/")
-        Mockito.when(serviceDiscovery.discover(Mockito.anyString(), (URI)Mockito.any(URI.class)))
+        Mockito.when(serviceDiscovery.discover(Mockito.anyString(), Mockito.any(URI.class)))
                 .thenReturn(new URI("http://localhost:3000/"))
         countryBridge.init()
     }
@@ -80,10 +85,19 @@ class CountryGatewayBridgeImplTest {
                         new JsonSlurper().parseText(countryEsPublicStr) as Map)
 
         def countryConfigs = countryBridge.getCountryConfiguration("es")
-
         Assert.assertNotNull(countryConfigs)
         Assert.assertFalse(countryConfigs.empty)
         Assert.assertTrue(countryConfigs.size()==2)
+
+        countryConfigs = countryBridge.getCountryConfiguration("es")
+        Assert.assertNotNull(countryConfigs)
+        Assert.assertFalse(countryConfigs.empty)
+        Assert.assertTrue(countryConfigs.size()==2)
+
+        Mockito.verify(httpBridge, Mockito.times(1))
+                .get(
+                        (URI) ArgumentMatchers.any(URI.class),
+                        (String)ArgumentMatchers.isNull())
     }
 
     @Test
