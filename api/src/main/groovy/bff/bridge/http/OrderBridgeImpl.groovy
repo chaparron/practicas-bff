@@ -83,7 +83,6 @@ class OrderBridgeImpl implements OrderBridge {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplier/order"))
                 .queryParam("orderId", findSupplierOrderInput.orderId)
                 .queryParam("supplierOrderId", findSupplierOrderInput.supplierOrderId)
-                .queryParam("country_id", findSupplierOrderInput.countryId)
                 .toUriString().toURI()
 
         def customerOrderResponse = http.exchange(
