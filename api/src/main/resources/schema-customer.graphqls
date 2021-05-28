@@ -301,3 +301,9 @@ type SuggestedOrderItem {
     productTitle: String!
     categoryTitle: String!
 }
+
+type LatestPendingRates{
+    supplierOrderId: Int!
+    shippedAt: String!
+    supplier: Supplier!
+}

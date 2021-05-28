@@ -370,3 +370,10 @@ class AcceptTcInput{
     boolean marketingEnabled
     String accessToken
 }
+
+class LatestPendingRates {
+    Long supplierOrderId
+    Date shippedAt
+    Supplier supplier
+    String accessToken
+}
