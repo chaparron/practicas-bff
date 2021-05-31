@@ -11,7 +11,13 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.ParameterizedTypeReference
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
+import org.springframework.http.MediaType
+import org.springframework.http.RequestEntity
 import org.springframework.stereotype.Component
+import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
 
 import javax.annotation.PostConstruct
@@ -22,6 +28,7 @@ import java.util.concurrent.TimeUnit
 class CategoryBridgeImpl implements CategoryBridge {
 
     URI root
+    RestOperations http
 
     @Autowired
     CacheConfigurationProperties cacheConfiguration
@@ -47,11 +54,14 @@ class CategoryBridgeImpl implements CategoryBridge {
 
     @Override
     List<Category> findRootCategories(String accessToken) {
-        httpBridge.getList(
-                UriComponentsBuilder.fromUri(root.resolve("/category/roots")).toUriString().toURI(),
-                "Bearer $accessToken",
-                null,
-                Category)
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/category/roots"))
+
+        http.<List<Category>> exchange(
+                RequestEntity.method(HttpMethod.GET, uri.toUriString().toURI())
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , new ParameterizedTypeReference<List<Category>>() {}).body
     }
 
     @Override
@@ -60,13 +70,15 @@ class CategoryBridgeImpl implements CategoryBridge {
         if(coordinatesInput.countryId) {
             response = categoryCache.get(coordinatesInput.countryId)
         } else {
-            response = httpBridge.getList(
-                    UriComponentsBuilder.fromUri(root.resolve("/category/roots"))
-                            .queryParam("lat", coordinatesInput.lat)
-                            .queryParam("lng", coordinatesInput.lng).toUriString().toURI(),
-                    null,
-                    null,
-                    Category)
+            def uri = UriComponentsBuilder.fromUri(root.resolve("/category/roots"))
+                    .queryParam("lat", coordinatesInput.lat)
+                    .queryParam("lng", coordinatesInput.lng).toUriString().toURI()
+
+            response = http.<List<Category>> exchange(
+                    RequestEntity.method(HttpMethod.GET, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .build()
+                    , new ParameterizedTypeReference<List<Category>>() {}).body
         }
 
         new RootCategoriesResult(
@@ -75,11 +87,13 @@ class CategoryBridgeImpl implements CategoryBridge {
     }
 
     private def getUnCachedCategories(String countryId) {
-        httpBridge.getList(
-                UriComponentsBuilder.fromUri(root.resolve("/category/roots"))
-                        .queryParam("countryId", countryId).toUriString().toURI(),
-                null,
-                null,
-                Category)
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/category/roots"))
+                .queryParam("countryId", countryId).toUriString().toURI()
+
+        http.<List<Category>> exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , new ParameterizedTypeReference<List<Category>>() {}).body
     }
 }

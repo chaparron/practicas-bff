@@ -13,12 +13,17 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
+import org.springframework.core.ParameterizedTypeReference
+import org.springframework.http.HttpStatus
+import org.springframework.http.RequestEntity
+import org.springframework.http.ResponseEntity
+import org.springframework.web.client.RestOperations
 
 @RunWith(MockitoJUnitRunner.class)
 class CategoryBridgeImplTest {
 
     @Mock
-    HttpBridge httpBridge
+    RestOperations http
 
     @Mock
     CacheConfigurationProperties cacheConfiguration
@@ -41,13 +46,10 @@ class CategoryBridgeImplTest {
         ]
 
         Mockito.when(
-                httpBridge.getList(
-                        (URI)Mockito.any(URI.class),
-                        (String)Mockito.anyString(),
-                        Mockito.isNull(),
-                        Mockito.any(Class.class)))
-                .thenReturn(
-                        expectedResponse)
+                http.<List<Category>> exchange(
+                        (RequestEntity)Mockito.any(RequestEntity.class),
+                        (ParameterizedTypeReference)Mockito.any(ParameterizedTypeReference.class)))
+                .thenReturn(new ResponseEntity<List<Category>>(expectedResponse, HttpStatus.OK))
 
         def response = categoryBridge.findRootCategories("1234")
         Assert.assertNotNull(response)
@@ -61,12 +63,10 @@ class CategoryBridgeImplTest {
         Assert.assertEquals(expectedResponse.get(0).id, response.get(0).id)
         Assert.assertEquals(expectedResponse.get(1).id, response.get(1).id)
 
-        Mockito.verify(httpBridge, Mockito.times(2))
-                .getList(
-                        (URI)Mockito.any(URI.class),
-                        (String)Mockito.anyString(),
-                        Mockito.isNull(),
-                        Mockito.any(Class.class))
+        Mockito.verify(http, Mockito.times(2))
+                .<List<Category>> exchange(
+                        (RequestEntity)Mockito.any(RequestEntity.class),
+                        (ParameterizedTypeReference)Mockito.any(ParameterizedTypeReference.class))
     }
 
     @Test
@@ -77,13 +77,10 @@ class CategoryBridgeImplTest {
         ]
 
         Mockito.when(
-                httpBridge.getList(
-                        (URI)Mockito.any(URI.class),
-                        (String)Mockito.isNull(),
-                        Mockito.isNull(),
-                        Mockito.any(Class.class)))
-                .thenReturn(
-                        expectedResponse)
+                http.<List<Category>> exchange(
+                        (RequestEntity)Mockito.any(RequestEntity.class),
+                        (ParameterizedTypeReference)Mockito.any(ParameterizedTypeReference.class)))
+                .thenReturn(new ResponseEntity<List<Category>>(expectedResponse, HttpStatus.OK))
 
         def response = categoryBridge.previewRootCategories(new CoordinatesInput(lat: 1, lng: 1, countryId: "ar"))
         Assert.assertNotNull(response)
@@ -97,12 +94,10 @@ class CategoryBridgeImplTest {
         Assert.assertEquals(expectedResponse.get(0).id, response.categories.get(0).id)
         Assert.assertEquals(expectedResponse.get(1).id, response.categories.get(1).id)
 
-        Mockito.verify(httpBridge, Mockito.times(1))
-                .getList(
-                        (URI)Mockito.any(URI.class),
-                        (String)Mockito.isNull(),
-                        Mockito.isNull(),
-                        Mockito.any(Class.class))
+        Mockito.verify(http, Mockito.times(1))
+                .<List<Category>> exchange(
+                        (RequestEntity)Mockito.any(RequestEntity.class),
+                        (ParameterizedTypeReference)Mockito.any(ParameterizedTypeReference.class))
     }
 
 
