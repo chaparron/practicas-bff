@@ -352,7 +352,7 @@ class Query implements GraphQLQueryResolver {
         customerBridge.getSuggestedOrder(input)
     }
 
-    List<LatestPendingRates> findPendingRateSinceLastLogin(AccessTokenInput input){
+    List<SupplierOrder> findPendingRateSinceLastLogin(AccessTokenInput input){
         customerBridge.findPendingRateSinceLastLogin(input.accessToken)
     }
 }

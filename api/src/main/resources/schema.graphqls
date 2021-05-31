@@ -107,7 +107,7 @@ type Query {
 
     getSuggestedOrder(input: GetSuggestedOrderInput!): SuggestedOrderResult
 
-    findPendingRateSinceLastLogin(input: AccessTokenInput!): [LatestPendingRates]
+    findPendingRateSinceLastLogin(input: AccessTokenInput!): [SupplierOrder]
 }
 
 type CountryConfigurationEntry {

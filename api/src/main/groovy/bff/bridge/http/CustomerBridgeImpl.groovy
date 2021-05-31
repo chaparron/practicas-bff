@@ -571,7 +571,7 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    List<LatestPendingRates> findPendingRateSinceLastLogin(String accessToken){
+    List<SupplierOrder> findPendingRateSinceLastLogin(String accessToken){
         def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/rating/pending/latest")).toUriString()
         def uri = url.toURI()
 
@@ -580,7 +580,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(AUTHORIZATION, "Bearer $accessToken")
                         .build()
-                , new ParameterizedTypeReference<List<LatestPendingRates>>() {}).body
+                , new ParameterizedTypeReference<List<SupplierOrder>>() {}).body
 
         latestPendingRates.collect {
             it.accessToken = accessToken
