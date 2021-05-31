@@ -4,6 +4,7 @@ import bff.bridge.http.CategoryBridgeImpl
 import bff.configuration.CacheConfigurationProperties
 import bff.model.Category
 import bff.model.CoordinatesInput
+import bff.service.HttpBridge
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -12,17 +13,12 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
-import org.springframework.core.ParameterizedTypeReference
-import org.springframework.http.HttpStatus
-import org.springframework.http.RequestEntity
-import org.springframework.http.ResponseEntity
-import org.springframework.web.client.RestOperations
 
 @RunWith(MockitoJUnitRunner.class)
 class CategoryBridgeImplTest {
 
     @Mock
-    RestOperations http
+    HttpBridge httpBridge
 
     @Mock
     CacheConfigurationProperties cacheConfiguration
@@ -38,6 +34,42 @@ class CategoryBridgeImplTest {
     }
 
     @Test
+    void findRootCategoriesTest() {
+        def expectedResponse = [
+                new Category(id: 1L, parentId: 1L, name: "Test1", enabled: true),
+                new Category(id: 2L, parentId: 2L, name: "Test2", enabled: true)
+        ]
+
+        Mockito.when(
+                httpBridge.get(
+                        (URI)Mockito.any(URI.class),
+                        (String)Mockito.anyString(),
+                        Mockito.isNull(),
+                        Mockito.any(Class.class)))
+                .thenReturn(
+                        expectedResponse)
+
+        def response = categoryBridge.findRootCategories("1234")
+        Assert.assertNotNull(response)
+        Assert.assertTrue(response.size() == 2)
+        Assert.assertEquals(expectedResponse.get(0).id, response.get(0).id)
+        Assert.assertEquals(expectedResponse.get(1).id, response.get(1).id)
+
+        response = categoryBridge.findRootCategories("1234")
+        Assert.assertNotNull(response)
+        Assert.assertTrue(response.size() == 2)
+        Assert.assertEquals(expectedResponse.get(0).id, response.get(0).id)
+        Assert.assertEquals(expectedResponse.get(1).id, response.get(1).id)
+
+        Mockito.verify(httpBridge, Mockito.times(2))
+                .get(
+                        (URI)Mockito.any(URI.class),
+                        (String)Mockito.anyString(),
+                        Mockito.isNull(),
+                        Mockito.any(Class.class))
+    }
+
+    @Test
     void previewRootCategoriesTest() {
         def expectedResponse = [
                 new Category(id: 1L, parentId: 1L, name: "Test1", enabled: true),
@@ -45,10 +77,13 @@ class CategoryBridgeImplTest {
         ]
 
         Mockito.when(
-                http.<List<Category>> exchange(
-                        (RequestEntity)Mockito.any(RequestEntity.class),
-                        (ParameterizedTypeReference)Mockito.any(ParameterizedTypeReference.class)))
-                .thenReturn(new ResponseEntity<List<Category>>(expectedResponse, HttpStatus.OK))
+                httpBridge.get(
+                        (URI)Mockito.any(URI.class),
+                        (String)Mockito.isNull(),
+                        Mockito.isNull(),
+                        Mockito.any(Class.class)))
+                .thenReturn(
+                        expectedResponse)
 
         def response = categoryBridge.previewRootCategories(new CoordinatesInput(lat: 1, lng: 1, countryId: "ar"))
         Assert.assertNotNull(response)
@@ -62,10 +97,12 @@ class CategoryBridgeImplTest {
         Assert.assertEquals(expectedResponse.get(0).id, response.categories.get(0).id)
         Assert.assertEquals(expectedResponse.get(1).id, response.categories.get(1).id)
 
-        Mockito.verify(http, Mockito.times(1))
-                .<List<Category>> exchange(
-                        (RequestEntity)Mockito.any(RequestEntity.class),
-                        (ParameterizedTypeReference)Mockito.any(ParameterizedTypeReference.class))
+        Mockito.verify(httpBridge, Mockito.times(1))
+                .get(
+                        (URI)Mockito.any(URI.class),
+                        (String)Mockito.isNull(),
+                        Mockito.isNull(),
+                        Mockito.any(Class.class))
     }
 
 
