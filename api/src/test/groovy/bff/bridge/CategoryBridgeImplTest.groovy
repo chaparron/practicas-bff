@@ -41,7 +41,7 @@ class CategoryBridgeImplTest {
         ]
 
         Mockito.when(
-                httpBridge.get(
+                httpBridge.getList(
                         (URI)Mockito.any(URI.class),
                         (String)Mockito.anyString(),
                         Mockito.isNull(),
@@ -62,7 +62,7 @@ class CategoryBridgeImplTest {
         Assert.assertEquals(expectedResponse.get(1).id, response.get(1).id)
 
         Mockito.verify(httpBridge, Mockito.times(2))
-                .get(
+                .getList(
                         (URI)Mockito.any(URI.class),
                         (String)Mockito.anyString(),
                         Mockito.isNull(),
@@ -77,7 +77,7 @@ class CategoryBridgeImplTest {
         ]
 
         Mockito.when(
-                httpBridge.get(
+                httpBridge.getList(
                         (URI)Mockito.any(URI.class),
                         (String)Mockito.isNull(),
                         Mockito.isNull(),
@@ -98,7 +98,7 @@ class CategoryBridgeImplTest {
         Assert.assertEquals(expectedResponse.get(1).id, response.categories.get(1).id)
 
         Mockito.verify(httpBridge, Mockito.times(1))
-                .get(
+                .getList(
                         (URI)Mockito.any(URI.class),
                         (String)Mockito.isNull(),
                         Mockito.isNull(),

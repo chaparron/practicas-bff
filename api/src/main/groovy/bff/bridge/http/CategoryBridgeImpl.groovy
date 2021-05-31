@@ -47,11 +47,11 @@ class CategoryBridgeImpl implements CategoryBridge {
 
     @Override
     List<Category> findRootCategories(String accessToken) {
-        httpBridge.get(
+        httpBridge.getList(
                 UriComponentsBuilder.fromUri(root.resolve("/category/roots")).toUriString().toURI(),
                 "Bearer $accessToken",
                 null,
-                List)
+                Category)
     }
 
     @Override
@@ -60,13 +60,13 @@ class CategoryBridgeImpl implements CategoryBridge {
         if(coordinatesInput.countryId) {
             response = categoryCache.get(coordinatesInput.countryId)
         } else {
-            response = httpBridge.get(
+            response = httpBridge.getList(
                     UriComponentsBuilder.fromUri(root.resolve("/category/roots"))
                             .queryParam("lat", coordinatesInput.lat)
                             .queryParam("lng", coordinatesInput.lng).toUriString().toURI(),
                     null,
                     null,
-                    List)
+                    Category)
         }
 
         new RootCategoriesResult(
@@ -75,11 +75,11 @@ class CategoryBridgeImpl implements CategoryBridge {
     }
 
     private def getUnCachedCategories(String countryId) {
-        httpBridge.get(
+        httpBridge.getList(
                 UriComponentsBuilder.fromUri(root.resolve("/category/roots"))
                         .queryParam("countryId", countryId).toUriString().toURI(),
                 null,
                 null,
-                List)
+                Category)
     }
 }

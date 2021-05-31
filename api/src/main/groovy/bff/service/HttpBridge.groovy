@@ -25,6 +25,10 @@ class HttpBridge {
         return get(uri, accessToken, otherHeaders, Map)
     }
 
+    def <T> List<T> getList(URI uri, String accessToken, Map<String, String> otherHeaders, Class<T> responseType) {
+        return get(uri, accessToken, otherHeaders, List) as List<T>
+    }
+
     def <T> T get(URI uri, String accessToken, Map<String, String> otherHeaders, Class<T> responseType) {
         try {
             RequestEntity.BodyBuilder bb = RequestEntity.method(HttpMethod.GET, uri).contentType(MediaType.APPLICATION_JSON)
