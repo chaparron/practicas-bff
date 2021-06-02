@@ -180,9 +180,9 @@ enum FeatureType {
 
 type Image {
     id: String!
-    originalName: String!
+    originalName: String
     imageOrder: Int
-    added: TimestampOutput!
+    added: TimestampOutput
 }
 
 type WabipayConfiguration {
