@@ -57,25 +57,25 @@ input VerificationDocumentInput {
 }
 
 input WorkingDaysInput {
-    days: [DayInput]
-    hours: [HourRangeInput]
+    days: [DayInput]!
+    hours: [HourRangeInput]!
 }
 
 
 input DayInput {
     dayIndex: Int!
-    selected: Boolean
+    selected: Boolean!
 }
 
 input HourRangeInput {
-    from: String
-    to: String
+    from: String!
+    to: String!
 }
 
 
 input StateInput {
-    id: ID
-    name: String
+    id: ID!
+    name: String!
 }
 
 
@@ -117,12 +117,6 @@ input SignInUserInput {
     credentials: UserCredentialsSignInInput!
 }
 
-input RatingScoreInput {
-    average: Float
-    count: Int
-    percentage: Float
-}
-
 input SignInInput {
     id: ID
     name: String!
@@ -142,7 +136,7 @@ enum AddressFailedReason {
 }
 
 type AddressFailed {
-    reason: AddressFailedReason
+    reason: AddressFailedReason!
 }
 
 union AddressResponse = AddressType | AddressFailed
@@ -188,12 +182,12 @@ input AcceptTcInput {
 }
 
 type State {
-    id: ID
-    name: String
+    id: ID!
+    name: String!
 }
 
 type AddressType {
-    id: ID
+    id: ID!
     formatted: String!
     lat: Float!
     lon: Float!
@@ -205,32 +199,32 @@ type AddressType {
 }
 
 type VerificationDocument {
-    id: ID
-    type: VerificationDocumentType
+    id: ID!
+    type: VerificationDocumentType!
 }
 
 type RatingScore {
-    average: Float
-    count: Int
+    average: Float!
+    count: Int!
     percentage: Float
 }
 
 
 type CustomerType {
-    id: Int
-    name: String
+    id: Int!
+    name: String!
 }
 
 type Customer {
     id: ID
-    name: String
-    enabled: Boolean
-    legalId: String
+    name: String!
+    enabled: Boolean!
+    legalId: String!
     linePhone: String
-    customerStatus: CustomerStatus
-    user: User
-    smsVerification: Boolean
-    emailVerification: Boolean
+    customerStatus: CustomerStatus!
+    user: User!
+    smsVerification: Boolean!
+    emailVerification: Boolean!
     addresses: [AddressType]
     verificationDocuments: [VerificationDocument]
     deliveryPreference: DeliveryPreference
@@ -238,10 +232,10 @@ type Customer {
     rating: RatingScore
     level: Int
     missingDocuments: [String]
-    country_id: String
-    customerType: CustomerType
+    country_id: String!
+    customerType: CustomerType!
     hasOrders: Boolean
-    marketingEnabled: Boolean
+    marketingEnabled: Boolean!
 }
 
 type WorkingDays {
@@ -250,21 +244,21 @@ type WorkingDays {
 }
 
 type Day {
-    dayIndex: Int
-    selected: Boolean
+    dayIndex: Int!
+    selected: Boolean!
 }
 
 type HourRange {
-    from: String
-    to: String
+    from: String!
+    to: String!
 }
 
 type CustomerErrorFailed {
-    customerErrorReason : CustomerErrorReason
+    customerErrorReason : CustomerErrorReason!
 }
 
 type SignInFailed {
-    reason: SignInFailedReason
+    reason: SignInFailedReason!
 }
 
 type SuppliersNameResult {

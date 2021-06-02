@@ -47,8 +47,8 @@ type OrderUpdateFailed {
 }
 
 type FinalOrderState {
-    orderId: Int
-    supplierOrderId: Int
+    orderId: Int!
+    supplierOrderId: Int!
     cancelRequested: Boolean
     canceledBy: UserType
     customerCancellationReason: CustomerCancelOptionReason
@@ -106,9 +106,9 @@ type SortResult {
 }
 
 type Headers {
-    page: Int,
-    page_size: Int,
-    total: Int,
+    page: Int!
+    page_size: Int!
+    total: Int!
     sort: SortResult
 }
 
@@ -119,25 +119,25 @@ enum OrderStatus {
 }
 
 type OrderItems {
-    id: Int
-    product: Product
-    productTitle: String
-    productEan: String
-    price: Float
-    quantity: Int
-    subtotal: Float
-    display: Display
+    id: Int!
+    product: Product!
+    productTitle: String!
+    productEan: String!
+    price: Float!
+    quantity: Int!
+    subtotal: Float!
+    display: Display!
 }
 
 type OrderItemProduct {
-    id: Int,
-    name: String,
-    enabled: Boolean,
+    id: Int!
+    name: String!
+    enabled: Boolean!
     category: Category,
     brand: Brand,
     ean: String,
     description: String,
-    images: [Image],
+    images: [Image]!,
     created: TimestampOutput,
     manufacturer: Manufacturer,
     title: String
@@ -151,28 +151,28 @@ enum RatingStatus {
 }
 
 type Rating {
-    id: Int
-    supplier: Supplier
+    id: Int!
+    supplier: Supplier!
     customerName: String
-    created: TimestampOutput
+    created: TimestampOutput!
     opinion: String
-    score: Int
-    owner: RatingOwner
-    status: RatingStatus
+    score: Int!
+    owner: RatingOwner!
+    status: RatingStatus!
     percentage: Float
 }
 
 
 type SupplierOrder {
-    id:Int
-    supplier: Supplier
-    status: SupplierOrderStatus
-    created: TimestampOutput
+    id:Int!
+    supplier: Supplier!
+    status: SupplierOrderStatus!
+    created: TimestampOutput!
     updated: TimestampOutput
     shippedAt: TimestampOutput
     shipAt: TimestampOutput
-    deliveryCost: Float
-    total: Float
+    deliveryCost: Float!
+    total: Float!
     subTotal: Float
     credits_paid: Float
     money_paid: Float
@@ -181,7 +181,7 @@ type SupplierOrder {
     service_fee: Float
     discounts: Float
     units: Int
-    products: [OrderItems]
+    products: [OrderItems!]!
     rating: RatingEntry
     canCustomerRate: Boolean
     canSupplierRate: Boolean
@@ -192,16 +192,16 @@ type SupplierOrder {
 
 
 type SupplierOrderResult {
-    id:Int
-    order: Order
-    supplier: Supplier
-    status: SupplierOrderStatus
-    created: TimestampOutput
+    id:Int!
+    order: Order!
+    supplier: Supplier!
+    status: SupplierOrderStatus!
+    created: TimestampOutput!
     updated: TimestampOutput
     shippedAt: TimestampOutput
     shipAt: TimestampOutput
-    deliveryCost: Float
-    total: Float
+    deliveryCost: Float!
+    total: Float!
     subTotal: Float
     credits_paid: Float
     money_paid: Float
@@ -213,7 +213,7 @@ type SupplierOrderResult {
     total_wabipay: Float
     amount: Float
     units: Int
-    products: [OrderItems]
+    products: [OrderItems!]!
     rating: RatingEntry
     canCustomerRate: Boolean
     canSupplierRate: Boolean
@@ -224,7 +224,7 @@ type SupplierOrderResult {
 }
 
 type SupplierOrderAndOrderCancellations {
-    id:Int
+    id:Int!
     order: Order
     orderCancellation: OrderCancellation
     supplier: Supplier
@@ -268,23 +268,23 @@ type RatingEntry {
 
 
 type OrderCancellation {
-    supplierOrderId: Int
-    orderId: Int
-    supplierId: Int
-    userType: UserType
+    supplierOrderId: Int!
+    orderId: Int!
+    supplierId: Int!
+    userType: UserType!
     customerCancelOptionReason: CustomerCancelOptionReason
     supplierCancelOptionReason: SupplierCancelOptionReason
 }
 
 type Order {
-    id: Int
-    customer: Customer
-    status: OrderStatus
-    created: TimestampOutput
+    id: Int!
+    customer: Customer!
+    status: OrderStatus!
+    created: TimestampOutput!
     updated: TimestampOutput
-    deliveryAddress: AddressType
+    deliveryAddress: AddressType!
     workingDays: WorkingDays
-    supplierOrders: [SupplierOrder]
+    supplierOrders: [SupplierOrder!]!
     ordersCancellations: [OrderCancellation]
     total_credits: Float
     total_money: Float
@@ -313,19 +313,19 @@ union CustomerOrderResult = CustomerOrderResponse | CustomerOrderFindFailed
 union CustomerSupplierOrderResult = CustomerSupplierOrdersResponse | CustomerOrderFindFailed
 
 type CustomerOrdersResponse {
-    headers: Headers
+    headers: Headers!
     content: [Order]
 }
 
 type CustomerOrderResponse {
     supplierOrder: SupplierOrderResult
-    customer: Customer
+    customer: Customer!
     orderCancellation: OrderCancellation
 }
 
 type CustomerSupplierOrdersResponse {
     supplierOrderAndOrderCancellations: [SupplierOrderAndOrderCancellations]
-    customer: Customer
+    customer: Customer!
 }
 
 enum CartFailedReason {
@@ -343,24 +343,24 @@ type CartFailed {
 union CartResult = Cart | CartFailed
 
 type Cart {
-    availableProducts: [ProductCart]
-    suppliers: [Supplier]
+    availableProducts: [ProductCart]!
+    suppliers: [Supplier]!
 }
 
 type ProductCart {
-    product: Product,
-    supplierPrices: [SupplierPrice]
+    product: Product!
+    supplierPrices: [SupplierPrice]!
 }
 
 type SupplierPrice {
-    id: Int,
+    id: Int!
     name: String
-    price: Float,
-    minUnits: Int,
-    maxUnits: Int,
-    display: Display,
-    avatar: String,
-    configuration: SupplierProductConfiguration,
+    price: Float
+    minUnits: Int
+    maxUnits: Int
+    display: Display
+    avatar: String!
+    configuration: SupplierProductConfiguration
     deliveryZone: DeliveryZone
 
 }
@@ -428,9 +428,9 @@ type ValidateOrderResponse {
 }
 
 type OrderError {
-    error: OrderErrorType
-    supplierId: Int
-    productId: Int
+    error: OrderErrorType!
+    supplierId: Int!
+    productId: Int!
     units: Int
     prevValue: Float
     actualValue: Float
@@ -472,8 +472,8 @@ type SupplierFailed {
 union SupplierResponse = Supplier | SupplierFailed
 
 type SupplierRatingsResponse {
-    headers: Headers
-    content: [Rating]
+    headers: Headers!
+    content: [Rating]!
 }
 
 input GetSupplierRatingsInput {
@@ -517,7 +517,7 @@ type OrderSummaryResponse {
 }
 
 type OrderSummary {
-    supplier: Supplier,
+    supplier: Supplier!
     summary: [Summary]
 }
 

@@ -103,12 +103,12 @@ type Credentials {
 
 
 type ChangePasswordFailed {
-    reason: ChangePasswordReason
+    reason: ChangePasswordReason!
 }
 
 
 type ConfirmPasswordFailed {
-    confirmPasswordReason: ConfirmPasswordReason
+    confirmPasswordReason: ConfirmPasswordReason!
 }
 
 type UserCredentials {
@@ -116,7 +116,7 @@ type UserCredentials {
 }
 
 type User {
-    id: ID
+    id: ID!
     username: String
     firstName: String
     lastName: String

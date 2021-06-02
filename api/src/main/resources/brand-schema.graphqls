@@ -1,14 +1,14 @@
 type Brand {
-    id: Int,
-    name: String,
-    enabled: Boolean,
+    id: Int!,
+    name: String!,
+    enabled: Boolean!,
     logo: String
-    country_id: String
+    country_id: String!
 }
 
 
 type GetHomeBrandsResult {
-    brands: [Brand]
+    brands: [Brand]!
 }
 
 union GetHomeBrandsResponse = GetHomeBrandsResult | GetHomeBrandsFailed
@@ -27,5 +27,5 @@ enum GetHomeBrandsFailedReason {
 }
 
 type GetHomeBrandsFailed {
-    reason: GetHomeBrandsFailedReason
+    reason: GetHomeBrandsFailedReason!
 }

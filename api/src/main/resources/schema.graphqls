@@ -211,15 +211,15 @@ enum CustomerReportRateFailedResult {
 }
 
 type CustomerReportRateFailer {
-    reason: CustomerReportRateFailedResult
+    reason: CustomerReportRateFailedResult!
 }
 
 type CustomerRateSupplierFailed {
-    reason: CustomerRateSupplierFailedReason
+    reason: CustomerRateSupplierFailedReason!
 }
 
 type CustomerReportRateFailed {
-    reason: CustomerReportRateFailedResult
+    reason: CustomerReportRateFailedResult!
 }
 
 union CustomerRateSupplierResult = Void | CustomerRateSupplierFailed
@@ -315,7 +315,7 @@ input AccessTokenInput {
 }
 
 type UsernameRegistrationFailed {
-    reason: UsernameRegistrationReason
+    reason: UsernameRegistrationReason!
 }
 
 type RegisterFailed {
@@ -413,7 +413,7 @@ enum AddAddressFailedReason {
 
 
 type AddAddressFailed {
-    reason: AddAddressFailedReason
+    reason: AddAddressFailedReason!
 }
 
 enum DeleteAddressFailedResult {
@@ -421,7 +421,7 @@ enum DeleteAddressFailedResult {
 }
 
 type SiteConfigurationFailed {
-    reason: SiteConfigurationFailedReason
+    reason: SiteConfigurationFailedReason!
 }
 
 enum SiteConfigurationFailedReason {
@@ -429,7 +429,7 @@ enum SiteConfigurationFailedReason {
 }
 
 type DeleteAddressFailed {
-    reason: DeleteAddressFailedResult
+    reason: DeleteAddressFailedResult!
 }
 
 type BannerDialog {
@@ -439,22 +439,22 @@ type BannerDialog {
 
 type Dialog {
     image: String
-    dialogContent: [DialogContent]
+    dialogContent: [DialogContent]!
 }
 
 type Banner {
-    bannerContent: [BannerContent]
+    bannerContent: [BannerContent]!
 }
 
 type BannerContent {
     content: String
-    lang: String
+    lang: String!
 }
 
 type DialogContent {
     title: String
     text: String
-    lang: String
+    lang: String!
 }
 
 

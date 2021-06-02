@@ -1,9 +1,9 @@
 type Promotion {
-    id: ID,
+    id: ID!,
     tag: String,
     banner: String,
     banner_mobile: String,
-    country_id: String
+    country_id: String!
 }
 
 type PromotionResponse {
@@ -13,7 +13,7 @@ type PromotionResponse {
 union PromotionResult = PromotionResponse | PromotionFailed
 
 type PromotionFailed {
-    reason: PromotionFailedReason
+    reason: PromotionFailedReason!
 }
 
 enum PromotionFailedReason {
@@ -39,7 +39,7 @@ enum GetLandingPromotionFailedReason {
 }
 
 type GetLandingPromotionFailed {
-    reason: GetLandingPromotionFailedReason
+    reason: GetLandingPromotionFailedReason!
 }
 
 union GetLandingPromotionResult = Promotion | GetLandingPromotionFailed

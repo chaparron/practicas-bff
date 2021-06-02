@@ -1,12 +1,12 @@
 
 type RootCategoriesResult {
-    categories: [Category]
+    categories: [Category]!
 }
 
 union RootCategoriesResponse =  RootCategoriesResult | RootCategoriesFailed
 
 type RootCategoriesFailed {
-    reason: RootCategoriesFailedReason
+    reason: RootCategoriesFailedReason!
 }
 
 enum RootCategoriesFailedReason {
@@ -17,10 +17,10 @@ enum RootCategoriesFailedReason {
 
 
 type Category {
-    id: Int,
+    id: Int!,
     parentId: Int,
-    isLeaf: Boolean,
-    name: String
-    enabled: Boolean
-    country_id: String
+    isLeaf: Boolean!,
+    name: String!
+    enabled: Boolean!
+    country_id: String!
 }
