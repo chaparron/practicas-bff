@@ -1,13 +1,13 @@
 type Promotion {
     id: ID!,
-    tag: String,
-    banner: String,
-    banner_mobile: String,
+    tag: String
+    banner: String
+    banner_mobile: String
     country_id: String!
 }
 
 type PromotionResponse {
-    content: [Promotion]
+    content: [Promotion]!
 }
 
 union PromotionResult = PromotionResponse | PromotionFailed
