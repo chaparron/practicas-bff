@@ -193,11 +193,11 @@ type WabipayConfiguration {
 type Supplier {
     id: Int!
     name: String!
-    legalName: String!
+    legalName: String
     avatar: String
-    enabled: Boolean!
+    enabled: Boolean
     phone: String
-    legalId: String!
+    legalId: String
     address: String
     postalCode: String
     rating: RatingScore
@@ -287,14 +287,14 @@ type Product {
     features: [Feature]
     images: [Image]!
     created: TimestampOutput!
-    manufacturer: Manufacturer!
+    manufacturer: Manufacturer
     prices: [Price]
     displays: [Display]
     title: String
     priceFrom: Price
     highlightedPrice: Price
     minUnitsPrice: Price
-    country_id: String!
+    country_id: String
 }
 
 type Prices {
