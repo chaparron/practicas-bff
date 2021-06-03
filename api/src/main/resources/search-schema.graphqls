@@ -162,13 +162,13 @@ type FeatureValue {
     id: Int!
     name: String
     unit: MeasurementUnit
-    enabled: Boolean!
+    enabled: Boolean
 }
 
 type MeasurementUnit {
     id: Int!
     name: String!
-    enabled: Boolean!
+    enabled: Boolean
 }
 
 enum FeatureType {
