@@ -73,7 +73,7 @@ class SupplierOrderBridgeImpl implements SupplierOrderBridge {
 
     @Override
     Order getOrderBySupplierOrderId(String accessToken, Long supplierOrderId) {
-        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplierOrder/${supplierOrderId}/order"))
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplierOrders/${supplierOrderId}/order"))
             .toUriString().toURI()
 
         def r = http.exchange(
