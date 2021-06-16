@@ -66,4 +66,6 @@ interface CustomerBridge {
     Void markSuggestionAsRead(String accessToken, List<Long> supplierId)
 
     Void acceptTc(AcceptTcInput acceptTcInput)
+
+    List<SupplierOrder> findPendingRateSinceLastLogin(String accessToken)
 }
