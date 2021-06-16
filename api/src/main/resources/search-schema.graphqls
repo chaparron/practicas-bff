@@ -120,7 +120,7 @@ type PreviewPrice {
 type PreviewSupplier {
     id: Int!
     name: String!
-    legalName: String!
+    legalName: String
     avatar: String
 }
 
