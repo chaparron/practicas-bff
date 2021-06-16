@@ -97,7 +97,7 @@ type BreadCrumb {
 type PreviewProductSearch {
     name: String!
     enabled: Boolean!
-    category: Category!
+    category: Category
     brand: Brand!
     ean: String
     description: String
@@ -128,7 +128,7 @@ type ProductSearch {
     id: Int!
     name: String!
     enabled: Boolean!
-    category: Category!
+    category: Category
     brand: Brand!
     ean: String
     description: String
