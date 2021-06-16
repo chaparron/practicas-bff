@@ -67,5 +67,5 @@ interface CustomerBridge {
 
     Void acceptTc(AcceptTcInput acceptTcInput)
 
-    List<List<SupplierOrder>> findPendingRateSinceLastLogin(String accessToken)
+    List<SupplierOrder> findPendingRateSinceLastLogin(String accessToken)
 }
