@@ -295,3 +295,17 @@ type SuggestedOrderItem {
     productTitle: String!
     categoryTitle: String!
 }
+
+input GetFrequentProductsInput {
+    accessToken: String!
+    customerId: Int!
+}
+
+type FrequentProductResult {
+    productId: Int!
+    nOrders: Int!
+    productEan: String!
+    productImageId: String
+    productTitle: String!
+    categoryTitle: String!
+}

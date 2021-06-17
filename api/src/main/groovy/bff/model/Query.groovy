@@ -51,6 +51,9 @@ class Query implements GraphQLQueryResolver {
     @Autowired
     CategoryBridge categoryBridge
 
+    @Autowired
+    RecommendedOrderBridge recommendOrderBridge
+
 
     Customer myProfile(CustomerInput customerInput) {
         customerBridge.myProfile(customerInput.accessToken)
@@ -350,6 +353,10 @@ class Query implements GraphQLQueryResolver {
 
     SuggestedOrderResult getSuggestedOrder(GetSuggestedOrderInput input){
         customerBridge.getSuggestedOrder(input)
+    }
+
+    List<FrequentProductResult> getFrequentProducts(GetFrequentProductsInput getFrequentProductsInput){
+        recommendOrderBridge.getFrequentProducts(getFrequentProductsInput)
     }
 }
 

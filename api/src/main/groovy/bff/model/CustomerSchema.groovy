@@ -370,3 +370,17 @@ class AcceptTcInput{
     boolean marketingEnabled
     String accessToken
 }
+
+class GetFrequentProductsInput {
+    String accessToken
+    Long customerId
+}
+
+class FrequentProductResult {
+    Long productId
+    Long nOrders
+    String productEan
+    String productImageId
+    String productTitle
+    String categoryTitle
+}

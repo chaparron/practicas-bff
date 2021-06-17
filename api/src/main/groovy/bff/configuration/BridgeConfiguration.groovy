@@ -131,4 +131,10 @@ class BridgeConfiguration {
         )
     }
 
+    @Bean
+    RecommendedOrderBridge recommendOrderBridge() {
+        new RecommendedOrderBridgeImpl(
+                http: http
+        )
+    }
 }
