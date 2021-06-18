@@ -101,7 +101,7 @@ class AddressFailed implements AddressResult {
 }
 
 class CustomerType {
-    Long id
+    String id
     String name
 }
 
