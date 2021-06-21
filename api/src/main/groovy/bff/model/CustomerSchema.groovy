@@ -373,7 +373,6 @@ class AcceptTcInput{
 
 class GetFrequentProductsInput {
     String accessToken
-    Long customerId
 }
 
 class FrequentProductResult {

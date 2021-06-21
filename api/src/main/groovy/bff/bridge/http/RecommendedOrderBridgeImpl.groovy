@@ -5,6 +5,7 @@ import bff.configuration.BadRequestErrorException
 import bff.model.FrequentProductResult
 import bff.model.GetFrequentProductsInput
 import groovy.util.logging.Slf4j
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
@@ -19,11 +20,12 @@ class RecommendedOrderBridgeImpl implements RecommendedOrderBridge{
 
     RestOperations http
 
-    URI apiGatewayUrl = new URI("https://tjg2esr15c.execute-api.eu-central-1.amazonaws.com/qa/")
+    @Value('${recommended.order.url}')
+    URI apiGatewayUrl
 
     @Override
     List<FrequentProductResult> getFrequentProducts(GetFrequentProductsInput getFrequentProductsInput) {
-        URI uri = UriComponentsBuilder.fromUri(apiGatewayUrl.resolve("external/recommendedorder/frequentproducts/${getFrequentProductsInput.customerId}"))
+        URI uri = UriComponentsBuilder.fromUri(apiGatewayUrl.resolve("frequentproducts"))
         .toUriString().toURI()
 
         try {

@@ -298,7 +298,6 @@ type SuggestedOrderItem {
 
 input GetFrequentProductsInput {
     accessToken: String!
-    customerId: Int!
 }
 
 type FrequentProductResult {
