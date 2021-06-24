@@ -199,7 +199,6 @@ Resources:
           OptionName: SERVICE_DISCOVERY_NAMESPACE
           Value: !Ref EnvironmentStackName
 
-
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: SPRING_TASK_EXECUTION_POOL_CORESIZE
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, TasksPoolCoreSize ]
@@ -285,6 +284,11 @@ Resources:
           OptionName: aws_cloudmap_namespace
           Value: !Sub "${EnvironmentStackName}.local"
 
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: countries_url
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-regionalConfig-ApiRootURL"
+
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -304,15 +308,6 @@ Resources:
             Action:
               - sts:AssumeRole
       Policies:
-        - PolicyName: serviceDiscoveryPolicy
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - servicediscovery:ListInstances
-                  - servicediscovery:DiscoverInstances
-                Resource: '*'
         - PolicyName: invokeFunctionPolicy
           PolicyDocument:
             Version: 2012-10-17
