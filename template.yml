@@ -285,7 +285,7 @@ Resources:
           Value: !Sub "${EnvironmentStackName}.local"
 
         - Namespace: aws:elasticbeanstalk:application:environment
-          OptionName: countries_url
+          OptionName: country_url
           Value:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-regionalConfig-ApiRootURL"
 
