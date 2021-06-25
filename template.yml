@@ -286,7 +286,8 @@ Resources:
 
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: country_url
-          Value: "https://rd4gv4bb0a.execute-api.eu-central-1.amazonaws.com/qa/"
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-regionalConfig-ApiRootURL"
 
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
