@@ -308,3 +308,30 @@ type FrequentProductResult {
     productTitle: String!
     categoryTitle: String!
 }
+
+input GetFavoriteProductsInput {
+    accessToken: String!
+}
+
+type FavoriteProductResult {
+    productId: Int!
+    productEan: String!
+    productImageId: String
+    productTitle: String!
+    categoryTitle: String!
+}
+
+input ProductToMarkAsFavoriteInput {
+    accessToken: String!
+    productId: Int!,
+    productEan: String,
+    productImageId: String,
+    productTitle: String!,
+    categoryTitle: String!
+}
+
+input ProductToUnmarkAsFavoriteInput{
+    accessToken: String!
+    productId: Int!,
+}
+

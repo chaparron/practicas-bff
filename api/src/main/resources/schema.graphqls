@@ -108,6 +108,8 @@ type Query {
     getSuggestedOrder(input: GetSuggestedOrderInput!): SuggestedOrderResult
 
     getFrequentProducts(input: GetFrequentProductsInput!): [FrequentProductResult]
+
+    getFavoriteProducts(input: GetFavoriteProductsInput!): [FavoriteProductResult]
 }
 
 type CountryConfigurationEntry {
@@ -183,6 +185,9 @@ type Mutation {
 
     acceptTc(input: AcceptTcInput!): Void!
 
+    markProductAsFavorite(input: ProductToMarkAsFavoriteInput): Void!
+
+    unmarkProductAsFavorite(input: ProductToUnmarkAsFavoriteInput): Void!
 }
 
 input CustomerRateSupplierInput {

@@ -6,6 +6,7 @@ import bff.bridge.AuthServerBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.DocumentBridge
 import bff.bridge.OrderBridge
+import bff.bridge.RecommendedOrderBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.ConflictErrorException
 import bff.configuration.EntityNotFoundException
@@ -31,6 +32,9 @@ class Mutation implements GraphQLMutationResolver {
 
     @Autowired
     DocumentBridge documentBridge
+
+    @Autowired
+    RecommendedOrderBridge recommendedOrderBridge
 
     LoginResult login(LoginInput input) {
         try {
@@ -260,5 +264,13 @@ class Mutation implements GraphQLMutationResolver {
 
     Void acceptTc(AcceptTcInput input){
         customerBridge.acceptTc(input)
+    }
+
+    Void markProductAsFavorite(ProductToMarkAsFavoriteInput productToMarkAsFavoriteInput){
+        recommendedOrderBridge.markProductAsFavorite(productToMarkAsFavoriteInput)
+    }
+
+    Void unmarkProductAsFavorite(ProductToUnmarkAsFavoriteInput productToUnmarkAsFavoriteInput){
+        recommendedOrderBridge.unmarkProductAsFavorite(productToUnmarkAsFavoriteInput)
     }
 }

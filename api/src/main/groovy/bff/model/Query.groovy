@@ -358,6 +358,11 @@ class Query implements GraphQLQueryResolver {
     List<FrequentProductResult> getFrequentProducts(GetFrequentProductsInput getFrequentProductsInput){
         recommendOrderBridge.getFrequentProducts(getFrequentProductsInput)
     }
+
+    List<FavoriteProductResult> getFavoriteProducts(GetFavoriteProductsInput getFavoriteProductsInput){
+        recommendOrderBridge.getFavoriteProducts(getFavoriteProductsInput)
+    }
+
 }
 
 
