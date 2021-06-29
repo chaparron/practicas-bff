@@ -141,6 +141,7 @@ type ProductSearch {
     priceFrom: Price
     minUnitsPrice: Price
     highlightedPrice: Price
+    favorite: Boolean!
 }
 
 type Display {
@@ -295,6 +296,7 @@ type Product {
     highlightedPrice: Price
     minUnitsPrice: Price
     country_id: String
+    favorite: Boolean!
 }
 
 type Prices {

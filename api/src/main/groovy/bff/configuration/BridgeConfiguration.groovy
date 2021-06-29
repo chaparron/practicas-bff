@@ -37,7 +37,8 @@ class BridgeConfiguration {
     SearchBridge searchBridge() {
         new SearchBridgeImpl(
                 http: http,
-                root: root
+                root: root,
+                recommendedOrderBridge: recommendedOrderBridge()
         )
     }
 
@@ -132,7 +133,7 @@ class BridgeConfiguration {
     }
 
     @Bean
-    RecommendedOrderBridge recommendOrderBridge() {
+    RecommendedOrderBridge recommendedOrderBridge() {
         new RecommendedOrderBridgeImpl(
                 http: http
         )

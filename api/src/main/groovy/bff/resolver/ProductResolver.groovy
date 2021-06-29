@@ -1,6 +1,7 @@
 package bff.resolver
 
 import bff.bridge.ProductBridge
+import bff.bridge.RecommendedOrderBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
 import bff.model.*
@@ -13,6 +14,9 @@ class ProductResolver implements GraphQLResolver<Product> {
 
     @Autowired
     ProductBridge productBridge
+
+    @Autowired
+    RecommendedOrderBridge recommendedOrderBridge
 
     Category category(Product product) {
         productBridge.getCategoryByProductId(product.accessToken, product.id)
@@ -91,6 +95,16 @@ class ProductResolver implements GraphQLResolver<Product> {
         }
         null
 
+    }
+
+    Boolean favorite(Product product){
+        def favorites = recommendedOrderBridge.getFavoriteProducts(new GetFavoriteProductsInput(accessToken: product.accessToken))
+        for (favorite in favorites){
+            if (favorite.productId.longValue() == product.id.longValue()){
+                return true
+            }
+        }
+        return false
     }
 
 }

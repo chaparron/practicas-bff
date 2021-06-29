@@ -178,6 +178,7 @@ class ProductSearch implements ProductResult {
     Price minUnitsPrice
     Price highlightedPrice
     String title
+    Boolean favorite
 }
 
 
@@ -197,6 +198,7 @@ class Product implements ProductResult {
     Price highlightedPrice
     Brand brand
     String country_id
+    Boolean favorite
 }
 
 @ToString
