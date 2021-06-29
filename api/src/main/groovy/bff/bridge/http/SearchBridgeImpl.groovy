@@ -1,6 +1,6 @@
 package bff.bridge.http
 
-import bff.bridge.RecommendedOrderBridge
+
 import bff.bridge.SearchBridge
 import bff.model.*
 import org.springframework.http.HttpHeaders
@@ -14,8 +14,6 @@ class SearchBridgeImpl implements SearchBridge {
 
     URI root
     RestOperations http
-
-    RecommendedOrderBridge recommendedOrderBridge
 
     @Override
     SearchResult search(SearchInput searchInput) {
@@ -42,10 +40,6 @@ class SearchBridgeImpl implements SearchBridge {
                         .body(searchInput)
                 , SearchResultMapper).body
 
-        def favoriteIds = favoriteIds(
-                recommendedOrderBridge.getFavoriteProducts(new GetFavoriteProductsInput(accessToken: searchInput.accessToken))
-        )
-
         def result = new SearchResult(
                 products: search.products,
                 breadcrumb: search.breadcrumb,
@@ -64,20 +58,10 @@ class SearchBridgeImpl implements SearchBridge {
             it.prices?.forEach { pr ->
                 pr.accessToken = searchInput.accessToken
             }
-
-            it.favorite = favoriteIds.contains(it.id)
         }
         result
 
     }
-
-    private static List<Long> favoriteIds(List<FavoriteProductResult> favoriteProducts){
-        List<Long> ids = new ArrayList<>()
-        favoriteProducts.forEach{
-                ids.add(it.productId)
-            }
-        return ids
-        }
 
     @Override
     SearchResponse searchV2(SearchInput searchInput) {

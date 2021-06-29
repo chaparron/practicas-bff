@@ -10,5 +10,6 @@ class CacheConfigurationProperties {
     Long categories
     Long countries
     Long states
+    Long favorites
 
 }

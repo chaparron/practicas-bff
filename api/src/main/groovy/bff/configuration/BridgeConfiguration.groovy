@@ -37,8 +37,7 @@ class BridgeConfiguration {
     SearchBridge searchBridge() {
         new SearchBridgeImpl(
                 http: http,
-                root: root,
-                recommendedOrderBridge: recommendedOrderBridge()
+                root: root
         )
     }
 
