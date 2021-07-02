@@ -3,7 +3,6 @@ package bff.bridge
 import bff.bridge.http.CountryGatewayBridgeImpl
 import bff.configuration.CacheConfigurationProperties
 import bff.service.HttpBridge
-import bff.service.ServiceDiscovery
 import groovy.json.JsonSlurper
 import org.junit.Assert
 import org.junit.Before
@@ -14,16 +13,12 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
-import org.springframework.web.util.UriComponentsBuilder
 
 @RunWith(MockitoJUnitRunner.class)
 class CountryGatewayBridgeImplTest {
 
     @Mock
     private HttpBridge httpBridge
-
-    @Mock
-    ServiceDiscovery serviceDiscovery
 
     @Mock
     CacheConfigurationProperties cacheConfiguration
@@ -48,30 +43,10 @@ class CountryGatewayBridgeImplTest {
             "    ]\n" +
             "}"
 
-    private static String countryArPublicStr =
-            "{\n" +
-            "    \"id\": \"ar\",\n" +
-            "    \"config\": [\n" +
-            "        {\n" +
-            "            \"key\": \"name\",\n" +
-            "            \"value\": \"Argentina\",\n" +
-            "            \"private\": false\n" +
-            "        },\n" +
-            "        {\n" +
-            "            \"key\": \"locale\",\n" +
-            "            \"value\": \"es_AR\",\n" +
-            "            \"private\": false\n" +
-            "        }\n" +
-            "    ]\n" +
-            "}"
-
     @Before
     void init() {
         Mockito.when(cacheConfiguration.countries).thenReturn(1L)
-        countryBridge.countryServiceName = "RegionalConfigService"
         countryBridge.countryUrl = new URI("http://localhost:3000/")
-        Mockito.when(serviceDiscovery.discover(Mockito.anyString(), Mockito.any(URI.class)))
-                .thenReturn(new URI("http://localhost:3000/"))
         countryBridge.init()
     }
 

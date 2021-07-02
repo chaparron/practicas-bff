@@ -97,7 +97,7 @@ type BreadCrumb {
 type PreviewProductSearch {
     name: String!
     enabled: Boolean!
-    category: Category!
+    category: Category
     brand: Brand!
     ean: String
     description: String
@@ -120,7 +120,7 @@ type PreviewPrice {
 type PreviewSupplier {
     id: Int!
     name: String!
-    legalName: String!
+    legalName: String
     avatar: String
 }
 
@@ -128,7 +128,7 @@ type ProductSearch {
     id: Int!
     name: String!
     enabled: Boolean!
-    category: Category!
+    category: Category
     brand: Brand!
     ean: String
     description: String

@@ -3,13 +3,11 @@ package bff.bridge
 import bff.bridge.http.StateGatewayBridgeImpl
 import bff.configuration.CacheConfigurationProperties
 import bff.service.HttpBridge
-import bff.service.ServiceDiscovery
 import groovy.json.JsonSlurper
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
@@ -20,9 +18,6 @@ class StateGatewayBridgeImplTest {
 
     @Mock
     private HttpBridge httpBridge
-
-    @Mock
-    ServiceDiscovery serviceDiscovery
 
     @Mock
     CacheConfigurationProperties cacheConfiguration
@@ -48,10 +43,7 @@ class StateGatewayBridgeImplTest {
     @Before
     void init() {
         Mockito.when(cacheConfiguration.states).thenReturn(1L)
-        stateBridge.countryServiceName = "RegionalConfigService"
         stateBridge.countryUrl = new URI("http://localhost:3000/")
-        Mockito.when(serviceDiscovery.discover(Mockito.anyString(), (URI)Mockito.any(URI.class)))
-                .thenReturn(new URI("http://localhost:3000/"))
         stateBridge.init()
     }
 

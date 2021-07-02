@@ -107,6 +107,8 @@ type Query {
 
     getSuggestedOrder(input: GetSuggestedOrderInput!): SuggestedOrderResult
 
+    findPendingRateSinceLastLogin(input: AccessTokenInput!): [SupplierOrder]
+
     getFrequentProducts(input: GetFrequentProductsInput!): [FrequentProductResult]
 
     getFavoriteProducts(input: GetFavoriteProductsInput!): [FavoriteProductResult]

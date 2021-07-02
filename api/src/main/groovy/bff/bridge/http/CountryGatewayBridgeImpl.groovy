@@ -4,7 +4,6 @@ import bff.bridge.CountryBridge
 import bff.configuration.CacheConfigurationProperties
 import bff.model.CountryConfigurationEntry
 import bff.service.HttpBridge
-import bff.service.ServiceDiscovery
 import com.github.benmanes.caffeine.cache.CacheLoader
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
@@ -16,27 +15,19 @@ import javax.annotation.PostConstruct
 import java.util.concurrent.TimeUnit
 
 class CountryGatewayBridgeImpl implements CountryBridge {
-
-    @Value('${country.service:RegionalConfigService}')
-    String countryServiceName
-
     @Autowired
-    HttpBridge httpBridge
-
-    @Autowired
-    ServiceDiscovery serviceDiscovery
+    private HttpBridge httpBridge
 
     @Value('${country.url:}')
     URI countryUrl
 
     @Autowired
-    CacheConfigurationProperties cacheConfiguration
+    private CacheConfigurationProperties cacheConfiguration
 
     private LoadingCache<String, List<CountryConfigurationEntry>> countryCache
 
     @PostConstruct
     void init() {
-        countryUrl = serviceDiscovery.discover(countryServiceName, countryUrl)
         countryCache = Caffeine.newBuilder()
                 .expireAfterWrite(cacheConfiguration.countries, TimeUnit.HOURS)
                 .build(

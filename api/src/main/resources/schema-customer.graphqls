@@ -211,7 +211,7 @@ type RatingScore {
 
 
 type CustomerType {
-    id: Int!
+    id: String!
     name: String!
 }
 

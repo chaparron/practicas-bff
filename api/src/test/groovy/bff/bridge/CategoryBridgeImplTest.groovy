@@ -4,7 +4,6 @@ import bff.bridge.http.CategoryBridgeImpl
 import bff.configuration.CacheConfigurationProperties
 import bff.model.Category
 import bff.model.CoordinatesInput
-import bff.service.HttpBridge
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -21,6 +20,11 @@ import org.springframework.web.client.RestOperations
 
 @RunWith(MockitoJUnitRunner.class)
 class CategoryBridgeImplTest {
+    private static final String JWT_AR = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48"
+    private static final String JWT_ES = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJlcyJ9XX19.2n-uzIWGZMqK53Kea-tzHjnMw8fl2PD-fXbR3zYwAQU"
+    private static final CoordinatesInput COORD_INPUT_AR = new CoordinatesInput(lat: 1, lng: 1, countryId: "ar")
+    private static final CoordinatesInput COORD_INPUT_ES = new CoordinatesInput(lat: 2, lng: 2, countryId: "es")
+    private static final CoordinatesInput COORD_INPUT_AR_NO_COUNTRY_ID = new CoordinatesInput(lat: 1, lng: 1)
 
     @Mock
     RestOperations http
@@ -31,6 +35,11 @@ class CategoryBridgeImplTest {
     @InjectMocks
     CategoryBridgeImpl categoryBridge = new CategoryBridgeImpl(root: new URI("http://localhost:3000/"))
 
+    private final def CATEGORIES_API_RESPONSE = [
+            new Category(id: 1L, parentId: 1L, name: "Test1", enabled: true),
+            new Category(id: 2L, parentId: 2L, name: "Test2", enabled: true)
+    ]
+
     @Before
     void init() {
         Mockito.when(cacheConfiguration.categories).thenReturn(1L)
@@ -39,66 +48,72 @@ class CategoryBridgeImplTest {
     }
 
     @Test
-    void findRootCategoriesTest() {
-        def expectedResponse = [
-                new Category(id: 1L, parentId: 1L, name: "Test1", enabled: true),
-                new Category(id: 2L, parentId: 2L, name: "Test2", enabled: true)
-        ]
-
-        Mockito.when(
-                http.<List<Category>> exchange(
-                        (RequestEntity)Mockito.any(RequestEntity.class),
-                        (ParameterizedTypeReference)Mockito.any(ParameterizedTypeReference.class)))
-                .thenReturn(new ResponseEntity<List<Category>>(expectedResponse, HttpStatus.OK))
-
-        def response = categoryBridge.findRootCategories("1234")
-        Assert.assertNotNull(response)
-        Assert.assertTrue(response.size() == 2)
-        Assert.assertEquals(expectedResponse.get(0).id, response.get(0).id)
-        Assert.assertEquals(expectedResponse.get(1).id, response.get(1).id)
-
-        response = categoryBridge.findRootCategories("1234")
-        Assert.assertNotNull(response)
-        Assert.assertTrue(response.size() == 2)
-        Assert.assertEquals(expectedResponse.get(0).id, response.get(0).id)
-        Assert.assertEquals(expectedResponse.get(1).id, response.get(1).id)
-
-        Mockito.verify(http, Mockito.times(2))
-                .<List<Category>> exchange(
-                        (RequestEntity)Mockito.any(RequestEntity.class),
-                        (ParameterizedTypeReference)Mockito.any(ParameterizedTypeReference.class))
+    void findRootCategoriesWithCountryIdSameCountryTest() {
+        findRootCategoriesTest(1, JWT_AR, JWT_AR)
     }
 
     @Test
-    void previewRootCategoriesTest() {
-        def expectedResponse = [
-                new Category(id: 1L, parentId: 1L, name: "Test1", enabled: true),
-                new Category(id: 2L, parentId: 2L, name: "Test2", enabled: true)
-        ]
-
-        Mockito.when(
-                http.<List<Category>> exchange(
-                        (RequestEntity)Mockito.any(RequestEntity.class),
-                        (ParameterizedTypeReference)Mockito.any(ParameterizedTypeReference.class)))
-                .thenReturn(new ResponseEntity<List<Category>>(expectedResponse, HttpStatus.OK))
-
-        def response = categoryBridge.previewRootCategories(new CoordinatesInput(lat: 1, lng: 1, countryId: "ar"))
-        Assert.assertNotNull(response)
-        Assert.assertTrue(response.categories.size() == 2)
-        Assert.assertEquals(expectedResponse.get(0).id, response.categories.get(0).id)
-        Assert.assertEquals(expectedResponse.get(1).id, response.categories.get(1).id)
-
-        response = categoryBridge.previewRootCategories(new CoordinatesInput(lat: 1, lng: 1, countryId: "ar"))
-        Assert.assertNotNull(response)
-        Assert.assertTrue(response.categories.size() == 2)
-        Assert.assertEquals(expectedResponse.get(0).id, response.categories.get(0).id)
-        Assert.assertEquals(expectedResponse.get(1).id, response.categories.get(1).id)
-
-        Mockito.verify(http, Mockito.times(1))
-                .<List<Category>> exchange(
-                        (RequestEntity)Mockito.any(RequestEntity.class),
-                        (ParameterizedTypeReference)Mockito.any(ParameterizedTypeReference.class))
+    void findRootCategoriesWithCountryIdDifferentCountriesTest() {
+        findRootCategoriesTest(2, JWT_AR, JWT_ES)
     }
 
+    @Test
+    void previewRootCategoriesWithCountryIdSameCountryTest() {
+        previewRootCategoriesTest(1, COORD_INPUT_AR, COORD_INPUT_AR)
+    }
 
+    @Test
+    void previewRootCategoriesWithCountryIdDifferentCountriesTest() {
+        previewRootCategoriesTest(2, COORD_INPUT_AR, COORD_INPUT_ES)
+    }
+
+    @Test
+    void previewRootCategoriesWithoutCountryIdTest() {
+        previewRootCategoriesTest(2, COORD_INPUT_AR_NO_COUNTRY_ID, COORD_INPUT_AR_NO_COUNTRY_ID)
+    }
+
+    private findRootCategoriesTest(int apiInvocationTimes, String... accessTokens) {
+        Mockito.when(
+                http.<List<Category>> exchange(
+                        (RequestEntity) Mockito.any(RequestEntity.class),
+                        (ParameterizedTypeReference) Mockito.any(ParameterizedTypeReference.class)))
+                .thenReturn(new ResponseEntity<List<Category>>(CATEGORIES_API_RESPONSE, HttpStatus.OK))
+
+        accessTokens.each { findRootCategoriesCallTest(it, CATEGORIES_API_RESPONSE) }
+
+        Mockito.verify(http, Mockito.times(apiInvocationTimes))
+                .<List<Category>> exchange(
+                        (RequestEntity) Mockito.any(RequestEntity.class),
+                        (ParameterizedTypeReference) Mockito.any(ParameterizedTypeReference.class))
+    }
+
+    private findRootCategoriesCallTest(String accessToken, List<Category> expectedResponse) {
+        def response = categoryBridge.findRootCategories(accessToken)
+        Assert.assertNotNull(response)
+        Assert.assertTrue(response.size() == 2)
+        Assert.assertEquals(expectedResponse, response)
+    }
+
+    private previewRootCategoriesTest(int apiInvocationTimes, CoordinatesInput... coordinatesInputs) {
+        Mockito.when(
+                http.<List<Category>> exchange(
+                        (RequestEntity) Mockito.any(RequestEntity.class),
+                        (ParameterizedTypeReference) Mockito.any(ParameterizedTypeReference.class)))
+                .thenReturn(new ResponseEntity<List<Category>>(CATEGORIES_API_RESPONSE, HttpStatus.OK))
+
+        coordinatesInputs.each { previewRootCategoriesCallTest(it, CATEGORIES_API_RESPONSE) }
+
+        Mockito.verify(http, Mockito.times(apiInvocationTimes))
+                .<List<Category>> exchange(
+                        (RequestEntity) Mockito.any(RequestEntity.class),
+                        (ParameterizedTypeReference) Mockito.any(ParameterizedTypeReference.class))
+    }
+
+    private previewRootCategoriesCallTest(CoordinatesInput coordinatesInput, List<Category> expectedResponse) {
+        def response = categoryBridge.previewRootCategories(coordinatesInput)
+        Assert.assertNotNull(response)
+        Assert.assertTrue(response.categories.size() == 2)
+        Assert.assertEquals(expectedResponse.get(0).id, response.categories.get(0).id)
+        Assert.assertEquals(expectedResponse.get(1).id, response.categories.get(1).id)
+    }
 }
