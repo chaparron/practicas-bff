@@ -18,4 +18,5 @@ interface RecommendedOrderBridge {
 
     Void unmarkProductAsFavorite(ProductToUnmarkAsFavoriteInput productToUnmarkAsFavoriteInput)
 
+    List<FavoriteProductResult> getFavoriteProductsUpdatedByApi(GetFavoriteProductsInput getFavoriteProductsInput)
 }

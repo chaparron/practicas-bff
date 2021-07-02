@@ -32,6 +32,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION
 class RecommendedOrderBridgeImpl implements RecommendedOrderBridge{
 
     RestOperations http
+    URI root
 
     @Value('${recommended.order.url}')
     URI apiGatewayUrl
@@ -139,4 +140,44 @@ class RecommendedOrderBridgeImpl implements RecommendedOrderBridge{
         }
     }
 
+    @Override
+    List<FavoriteProductResult> getFavoriteProductsUpdatedByApi(GetFavoriteProductsInput getFavoriteProductsInput) {
+
+        List<Long> favoriteIds = getFavoriteProducts(getFavoriteProductsInput).collect {it.productId}
+
+        URI uri = UriComponentsBuilder.fromUri(root.resolve("/product/favorites/detail"))
+                .toUriString().toURI()
+
+        def responseType = new ParameterizedTypeReference<List<FavoriteProductAPIDetail>>() {}
+        List<FavoriteProductAPIDetail> favoriteProductsApiDetails = http.exchange(
+                RequestEntity.method(HttpMethod.POST, uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION, "Bearer ${getFavoriteProductsInput.accessToken}")
+                        .body(favoriteIds)
+                , responseType).body
+
+        Map<Long,FavoriteProductResult> mapProducts = favoriteProductsApiDetails
+                .collectEntries{[(it.id) : it.toFavoriteProductResult()]}
+        return favoriteIds.findAll {mapProducts.containsKey(it)}.collect{mapProducts.get(it)}
+
+    }
+
+}
+
+class FavoriteProductAPIDetail {
+    Long id
+    String name
+    String categoryName
+    String image
+    String ean
+
+    FavoriteProductResult toFavoriteProductResult() {
+        return new FavoriteProductResult(
+                productId: id,
+                productEan: ean,
+                productImageId: image,
+                productTitle: name,
+                categoryTitle: categoryName
+        )
+    }
 }

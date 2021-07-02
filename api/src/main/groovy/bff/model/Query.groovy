@@ -360,7 +360,7 @@ class Query implements GraphQLQueryResolver {
     }
 
     List<FavoriteProductResult> getFavoriteProducts(GetFavoriteProductsInput getFavoriteProductsInput){
-        recommendOrderBridge.getFavoriteProducts(getFavoriteProductsInput)
+        recommendOrderBridge.getFavoriteProductsUpdatedByApi(getFavoriteProductsInput)
     }
 
 }
