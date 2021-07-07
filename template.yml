@@ -19,7 +19,6 @@ Mappings:
       NewRelicLicenseKey: '2277dfa871634a7d0e7707a31781d430b528NRAL'
       ApiRoot: 'https://api-qa.wabi2b.com/'
       SecurityGroups: '{{resolve:ssm:/foundation/qa/beanstalk/security_groups:1}}'
-      RecommendedOrderUrl: 'https://tjg2esr15c.execute-api.eu-central-1.amazonaws.com/qa/'
     prod:
       MinPoolSize: '2'
       MaxPoolSize: '4'
@@ -32,7 +31,6 @@ Mappings:
       NewRelicLicenseKey: '2277dfa871634a7d0e7707a31781d430b528NRAL'
       ApiRoot: 'https://api.wabi2b.com/'
       SecurityGroups: '{{resolve:ssm:/foundation/prod/beanstalk/security_groups:1}}'
-      RecommendedOrderUrl: 'https://xxxxxxxx.xxxx.xxxxx.xxxxxxxxxx.xxxx/xxxx/'
 Resources:
 
   Wabi2bCertificate:
@@ -197,10 +195,6 @@ Resources:
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, ApiRoot ]
 
         - Namespace: aws:elasticbeanstalk:application:environment
-          OptionName: REOMMENDED_ORDER_URL
-          Value: !FindInMap [ Config, !Ref EnvironmentStackName, RecommendedOrderUrl ]
-
-        - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: SERVICE_DISCOVERY_NAMESPACE
           Value: !Ref EnvironmentStackName
 
@@ -293,6 +287,12 @@ Resources:
           OptionName: country_url
           Value:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-regionalConfig-ApiRootURL"
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: recommended_order_url
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-recommendedOrder-ApiRootURL"
+
 
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
