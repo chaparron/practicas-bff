@@ -15,7 +15,7 @@ dependencies {
     implementation(platform("org.springframework.cloud:spring-cloud-dependencies:Greenwich.RELEASE"))
     implementation(platform("org.springframework.cloud:spring-cloud-sleuth:2.0.4.RELEASE"))
 
-    implementation "com.github.ben-manes.caffeine:caffeine:2.5.5"
+    implementation "com.github.ben-manes.caffeine:caffeine:2.9.2"
 
     def graphQL = '5.0.2'
 
