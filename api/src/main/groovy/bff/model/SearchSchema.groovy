@@ -141,6 +141,7 @@ class PreviewProductSearch implements ProductResult {
     List<PreviewPrice> prices
     List<PreviewSupplier> suppliers
     String title
+    String country_id
 }
 
 class PreviewPrice {
@@ -179,6 +180,7 @@ class ProductSearch implements ProductResult {
     Price highlightedPrice
     String title
     Boolean favorite
+    String country_id
 }
 
 

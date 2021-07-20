@@ -107,6 +107,7 @@ type PreviewProductSearch {
     prices: [PreviewPrice]
     title: String
     suppliers: [PreviewSupplier]
+    country_id: String!
 }
 
 type PreviewPrice {
@@ -142,6 +143,7 @@ type ProductSearch {
     minUnitsPrice: Price
     highlightedPrice: Price
     favorite: Boolean!
+    country_id: String!
 }
 
 type Display {
