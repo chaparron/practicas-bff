@@ -43,7 +43,7 @@ class StateGatewayBridgeImplTest {
     @Before
     void init() {
         Mockito.when(cacheConfiguration.states).thenReturn(1L)
-        stateBridge.countryUrl = new URI("http://localhost:3000/")
+        stateBridge.regionalConfigUrl = new URI("http://localhost:3000/")
         stateBridge.init()
     }
 

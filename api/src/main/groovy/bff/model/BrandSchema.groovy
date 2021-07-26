@@ -40,3 +40,23 @@ class CountryConfigurationEntry {
     String key
     String value
 }
+
+class CountryHomeResponse {
+    String id
+    String name
+    DesignCountry design
+    LegalUrlsCountry legalUrls
+}
+
+class DesignCountry {
+    String flag
+}
+
+class LegalUrlsCountry {
+    String tyc
+    String pp
+    String cookies
+    String faqs
+    String tycSupplier
+    String ppSupplier
+}

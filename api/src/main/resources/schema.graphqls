@@ -76,6 +76,8 @@ type Query {
 
     getCustomerCountryConfiguration(accessToken: String!): [CountryConfigurationEntry]
 
+    getHomeCountries(locale: String!): [CountryHomeResponse]
+
     #rating
 
     # Find supplier order rating
@@ -117,6 +119,26 @@ type Query {
 type CountryConfigurationEntry {
     key: String
     value: String
+}
+
+type CountryHomeResponse {
+    id: String!
+    name: String!
+    design: DesignCountry
+    legalUrls: LegalUrlsCountry
+}
+
+type DesignCountry {
+    flag: String!
+}
+
+type LegalUrlsCountry {
+    tyc: String
+    pp: String
+    cookies: String
+    faqs: String
+    tycSupplier: String
+    ppSupplier: String
 }
 
 type Mutation {

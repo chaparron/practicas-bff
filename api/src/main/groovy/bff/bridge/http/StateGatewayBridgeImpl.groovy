@@ -18,8 +18,8 @@ class StateGatewayBridgeImpl implements StateBridge {
     @Autowired
     private HttpBridge httpBridge
 
-    @Value('${country.url:}')
-    URI countryUrl
+    @Value('${regional.config.url:}')
+    URI regionalConfigUrl
 
     @Autowired
     private CacheConfigurationProperties cacheConfiguration
@@ -47,7 +47,7 @@ class StateGatewayBridgeImpl implements StateBridge {
 
     private def getUnCachedState(String countryId) {
         httpBridge.get(
-                UriComponentsBuilder.fromUri(countryUrl.resolve("state/$countryId")).toUriString().toURI(),
+                UriComponentsBuilder.fromUri(regionalConfigUrl.resolve("state/$countryId")).toUriString().toURI(),
                 null)?.config?.collect {
             new State(id: it.iso_code, name: it.name)
         }
