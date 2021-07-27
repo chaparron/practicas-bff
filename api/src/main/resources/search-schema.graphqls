@@ -297,7 +297,7 @@ type Product {
     priceFrom: Price
     highlightedPrice: Price
     minUnitsPrice: Price
-    country_id: String
+    country_id: String!
     favorite: Boolean!
 }
 
