@@ -11,7 +11,8 @@ enum VoidReason {
 
 enum LoginFailureReason {
     FORBIDDEN,
-    UNAUTHORIZED
+    UNAUTHORIZED,
+    DEPRECATED_LOGIN_SYSTEM
 }
 
 enum RegisterFailureReason {

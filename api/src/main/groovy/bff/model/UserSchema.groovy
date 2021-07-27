@@ -72,7 +72,8 @@ enum Site {
 
 enum LoginFailureReason {
     FORBIDDEN,
-    UNAUTHORIZED
+    UNAUTHORIZED,
+    DEPRECATED_LOGIN_SYSTEM
 
     def doThrow() {
         throw new LoginFailureException(loginFailureReason: this)
