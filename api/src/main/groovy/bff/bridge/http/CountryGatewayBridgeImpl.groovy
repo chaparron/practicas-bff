@@ -4,7 +4,6 @@ import bff.bridge.CountryBridge
 import bff.configuration.CacheConfigurationProperties
 import bff.model.CountryConfigurationEntry
 import bff.model.CountryHomeResponse
-import bff.model.DesignCountry
 import bff.model.LegalUrlsCountry
 import bff.service.HttpBridge
 import com.github.benmanes.caffeine.cache.CacheLoader
@@ -92,9 +91,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
             new CountryHomeResponse(
                     id: it.id,
                     name: it["config"]?.find({ config -> config["key"].contains("name-$locale")})?.value ?: it["config"]?.find({ config -> config["key"].contains("name-en")})?.value,
-                    design: new DesignCountry(
-                            flag: it["config"]?.find({ config -> config["key"].contains("flag")})?.value,
-                    ),
+                    flag: it["config"]?.find({ config -> config["key"].contains("flag")})?.value,
                     legalUrls: new LegalUrlsCountry(
                             tyc: it["config"]?.find({ config -> config["key"].contains("tyc")})?.value,
                             pp: it["config"]?.find({ config -> config["key"].contains("pp")})?.value,

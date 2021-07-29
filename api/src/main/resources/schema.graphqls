@@ -124,12 +124,12 @@ type CountryConfigurationEntry {
 type CountryHomeResponse {
     id: String!
     name: String!
-    design: DesignCountry
+    flag(size: CountryFlagSize!): String!
     legalUrls: LegalUrlsCountry
 }
 
-type DesignCountry {
-    flag: String!
+enum CountryFlagSize {
+    SIZE_50x50
 }
 
 type LegalUrlsCountry {

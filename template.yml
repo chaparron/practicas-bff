@@ -19,6 +19,7 @@ Mappings:
       NewRelicLicenseKey: '2277dfa871634a7d0e7707a31781d430b528NRAL'
       ApiRoot: 'https://api-qa.wabi2b.com/'
       SecurityGroups: '{{resolve:ssm:/foundation/qa/beanstalk/security_groups:1}}'
+      ResizerUrl: 'https://resizer-qa.wabi2b.com/'
     prod:
       MinPoolSize: '2'
       MaxPoolSize: '4'
@@ -31,6 +32,7 @@ Mappings:
       NewRelicLicenseKey: '2277dfa871634a7d0e7707a31781d430b528NRAL'
       ApiRoot: 'https://api.wabi2b.com/'
       SecurityGroups: '{{resolve:ssm:/foundation/prod/beanstalk/security_groups:1}}'
+      ResizerUrl: 'https://resizer.wabi2b.com/'
 Resources:
 
   Wabi2bCertificate:
@@ -292,6 +294,10 @@ Resources:
           OptionName: recommended_order_url
           Value:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-recommendedOrder-ApiRootURL"
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+            OptionName: resizer_url
+            Value: !FindInMap [ Config, !Ref EnvironmentStackName, ResizerUrl ]
 
 
   ElasticBeanstalkInstanceProfile:
