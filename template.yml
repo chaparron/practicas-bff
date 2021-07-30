@@ -296,8 +296,8 @@ Resources:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-recommendedOrder-ApiRootURL"
 
         - Namespace: aws:elasticbeanstalk:application:environment
-            OptionName: resizer_url
-            Value: !FindInMap [ Config, !Ref EnvironmentStackName, ResizerUrl ]
+          OptionName: resizer_url
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, ResizerUrl ]
 
 
   ElasticBeanstalkInstanceProfile:
