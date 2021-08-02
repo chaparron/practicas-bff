@@ -15,7 +15,7 @@ class CountryHomeResponse {
 }
 
 enum CountryFlagSize implements ImageSizeEnum {
-    SIZE_50x50
+    SIZE_30x20, SIZE_60x40, SIZE_120x80
 
     @Override
     String value() {
