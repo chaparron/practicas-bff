@@ -7,6 +7,10 @@ class CountryConfigurationEntry {
     String value
 }
 
+class CountryHomeInput {
+    String locale
+}
+
 class CountryHomeResponse {
     String id
     String name

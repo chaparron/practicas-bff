@@ -76,7 +76,7 @@ type Query {
 
     getCustomerCountryConfiguration(accessToken: String!): [CountryConfigurationEntry]
 
-    getHomeCountries(locale: String!): [CountryHomeResponse]
+    getHomeCountries(input: CountryHomeInput!): [CountryHomeResponse!]
 
     #rating
 
@@ -119,6 +119,10 @@ type Query {
 type CountryConfigurationEntry {
     key: String
     value: String
+}
+
+input CountryHomeInput {
+  locale: String!
 }
 
 type CountryHomeResponse {
