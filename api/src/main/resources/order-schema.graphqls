@@ -85,7 +85,7 @@ input FindOrdersInput {
 
 input FindSupplierOrderInput {
     accessToken: String!
-    orderId: Int!
+    orderId: Int
     supplierOrderId: Int!
     countryId: String
 }

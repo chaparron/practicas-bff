@@ -11,5 +11,6 @@ class CacheConfigurationProperties {
     Long countries
     Long states
     Long favorites
+    Long brands;
     Long suppliers;
 }
