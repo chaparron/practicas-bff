@@ -28,7 +28,7 @@ class Query implements GraphQLQueryResolver {
     OrderBridge orderBridge
 
     @Autowired
-    SupplierBridge supplierBridge
+    SupplierHomeBridge supplierBridge
 
     @Autowired
     BrandBridge brandBridge

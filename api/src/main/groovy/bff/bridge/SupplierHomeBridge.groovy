@@ -3,9 +3,8 @@ package bff.bridge
 import bff.model.CoordinatesInput
 import bff.model.PreviewHomeSupplierResponse
 
-interface SupplierBridge {
+interface SupplierHomeBridge {
 
     PreviewHomeSupplierResponse previewHomeSuppliers(CoordinatesInput coordinatesInput)
-
 
 }

@@ -1,10 +1,8 @@
 package bff.bridge.http
 
-import bff.bridge.SupplierBridge
+import bff.bridge.SupplierHomeBridge
 import bff.configuration.CacheConfigurationProperties
-import bff.model.Category
 import bff.model.CoordinatesInput
-import bff.model.CountryConfigurationEntry
 import bff.model.PreviewHomeSupplierResponse
 import bff.model.PreviewSupplier
 import com.github.benmanes.caffeine.cache.CacheLoader
@@ -22,7 +20,9 @@ import org.springframework.web.util.UriComponentsBuilder
 import javax.annotation.PostConstruct
 import java.util.concurrent.TimeUnit
 
-class SupplierBridgeImpl implements SupplierBridge {
+class SupplierHomeBridgeImpl implements SupplierHomeBridge {
+
+    private final static String SUPPLIER_HOME_ENDPOINT = "/supplier/home"
 
     URI root
 
@@ -49,18 +49,21 @@ class SupplierBridgeImpl implements SupplierBridge {
 
     @Override
     PreviewHomeSupplierResponse previewHomeSuppliers(CoordinatesInput coordinatesInput) {
-        def suppliers = supplierCache.getIfPresent(coordinatesInput.getCountryId())
-
+        def suppliers = []
+        if (coordinatesInput.countryId) {
+            suppliers = supplierCache.getIfPresent(coordinatesInput.getCountryId())
+        }
         if (!suppliers) {
             suppliers = getUncachedHomeSupplier(coordinatesInput)
-            supplierCache.put(coordinatesInput.countryId, suppliers)
+            if (coordinatesInput.countryId)
+                supplierCache.put(coordinatesInput.countryId, suppliers)
         }
         return new PreviewHomeSupplierResponse(suppliers: suppliers)
     }
 
     private def getUncachedHomeSupplier(CoordinatesInput coordinatesInput) {
 
-        def uri = UriComponentsBuilder.fromUri(root.resolve("/supplier/home"))
+        def uri = UriComponentsBuilder.fromUri(root.resolve(SUPPLIER_HOME_ENDPOINT))
                 .queryParam("lat", coordinatesInput.lat)
                 .queryParam("lng", coordinatesInput.lng)
                 .queryParam("countryId", coordinatesInput.countryId)
@@ -68,7 +71,7 @@ class SupplierBridgeImpl implements SupplierBridge {
         def request = RequestEntity.method(HttpMethod.GET, uri.toUriString().toURI())
                 .contentType(MediaType.APPLICATION_JSON)
 
-        return http.exchange(
+        return http.<List<PreviewSupplier>> exchange(
                 request.build(),
                 new ParameterizedTypeReference<List<PreviewSupplier>>() {})
                 .body
