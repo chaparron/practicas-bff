@@ -30,7 +30,7 @@ class SupplierHomeBridgeTest {
     private static final CoordinatesInput COORD_INPUT_AR_NO_COUNTRY_ID = new CoordinatesInput(lat: 1, lng: 1)
 
     @Mock
-    RestOperations http;
+    RestOperations http
 
     @Mock
     CacheConfigurationProperties cacheConfiguration
