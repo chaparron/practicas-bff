@@ -11,8 +11,7 @@ import graphql.execution.instrumentation.parameters.*
 import graphql.execution.instrumentation.tracing.TracingInstrumentation
 import graphql.execution.instrumentation.tracing.TracingSupport
 import graphql.language.Document
-import graphql.language.Field
-import graphql.language.Selection
+import graphql.language.OperationDefinition
 import graphql.validation.ValidationError
 import groovy.util.logging.Slf4j
 import org.springframework.context.annotation.Bean
@@ -28,7 +27,12 @@ class GraphqlConfiguration {
     Instrumentation tracingInstrumentation(Tracer tracer) {
         new TracingInstrumentation() {
 
-            public static final String STEP_PARAM_NR = "step"
+            private static final String STEP_PARAM_NR = "step"
+            private static final Map<String, List<String>> HIDDEN_ATTR_KEYS_BY_TRANSACTION = [
+                    "mutation/login"               : ["password"],
+                    "mutation/resetPasswordConfirm": ["password"],
+                    "mutation/changePassword"      : ["currentPassword", "newPassword"],
+            ]
 
             private void sentParameterToNewRelic(String name, String value) {
                 try {
@@ -42,9 +46,6 @@ class GraphqlConfiguration {
             InstrumentationContext<ExecutionResult> beginExecution(InstrumentationExecutionParameters parameters) {
                 sentParameterToNewRelic(STEP_PARAM_NR, "beginExecution")
                 sentParameterToNewRelic("query", parameters.getExecutionInput().getQuery())
-                parameters.getExecutionInput().getVariables()?.each {
-                    sentParameterToNewRelic("variable-${it.key}", it.value.toString())
-                }
                 sentParameterToNewRelic("trace", tracer.currentSpan().context().traceIdString())
                 return super.beginExecution(parameters)
             }
@@ -64,31 +65,24 @@ class GraphqlConfiguration {
             @Override
             InstrumentationContext<ExecutionResult> beginExecuteOperation(InstrumentationExecuteOperationParameters parameters) {
                 sentParameterToNewRelic(STEP_PARAM_NR, "beginExecuteOperation")
-                String transactionName = getNewRelicTransactionName(parameters)
+                String transactionName = getNewRelicTransactionName(parameters.getExecutionContext().getOperationDefinition())
                 if (!transactionName.isEmpty()) {
+                    List<String> transactionHiddenAttrs = HIDDEN_ATTR_KEYS_BY_TRANSACTION.get(transactionName.toLowerCase())
+                    parameters.getExecutionContext().getVariables()?.each {
+                        def value = transactionHiddenAttrs ? ConfigUtils.getHiddenValueByKey(transactionHiddenAttrs, it) : it.value
+                        sentParameterToNewRelic("variable-${it.key}", value.toString())
+                    }
                     NewRelic.setTransactionName(null, transactionName)
                 }
                 return super.beginExecuteOperation(parameters)
             }
 
-            private String getNewRelicTransactionName(InstrumentationExecuteOperationParameters parameters) {
-                List<String> nameParts = new ArrayList()
+            private static String getNewRelicTransactionName(OperationDefinition operationDefinition) {
                 try {
-                    nameParts.add(parameters.getExecutionContext().getOperationDefinition().getOperation())
-                    List<Selection> selections = parameters.getExecutionContext().getOperationDefinition().getSelectionSet().getSelections()
-                    selections.each { selection ->
-                        if (selection instanceof Field) {
-                            Field field = (Field) selection
-                            nameParts.add(field.getName())
-                        } else {
-                            nameParts.add(selection.getClass().getCanonicalName())
-                        }
-                    }
+                    ConfigUtils.getNewRelicTransactionName(operationDefinition)
                 } catch (Exception e) {
                     log.error('error building transaction Name', e)
                 }
-                String transactionName = nameParts.join('/')
-                transactionName
             }
 
             @Override
