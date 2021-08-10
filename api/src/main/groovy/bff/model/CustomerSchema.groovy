@@ -81,7 +81,8 @@ enum SignInFailedReason {
     INVALID_ADDRESS,
     INVALID_ADDRESSES,
     INVALID_STATE,
-    INVALID_PREFERRED_ADDRESS
+    INVALID_PREFERRED_ADDRESS,
+    INVALID_POSTAL_CODE
 
     def build() {
         return new SignInFailed(reason: this)
@@ -180,6 +181,7 @@ class Address implements AddressResult {
     AddressMode addressType
     Boolean enabled
     State state
+    String postalCode
 }
 
 
@@ -189,6 +191,7 @@ class AddressInput {
     State state
     Double lat
     Double lon
+    String postalCode
     String additionalInfo
     AddressMode addressType
     String accessToken
