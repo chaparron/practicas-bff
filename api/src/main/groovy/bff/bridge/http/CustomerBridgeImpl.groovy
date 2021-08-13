@@ -515,7 +515,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                             .body([
                                     accessToken: input.accessToken,
                             ])
-                    , Map).body
+                    , Boolean).body
         } catch (BadRequestErrorException ignored) {
         }
         Void.SUCCESS
