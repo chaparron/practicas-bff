@@ -307,7 +307,8 @@ class CustomerBridgeImpl implements CustomerBridge {
                                             lon           : addressInput.lon,
                                             additionalInfo: addressInput.additionalInfo,
                                             addressType   : addressInput.addressType,
-                                            postalCode    : addressInput.postalCode
+                                            postalCode    : addressInput.postalCode,
+                                            state         : addressInput.state
                                     ]
                             ), Map).body
 
