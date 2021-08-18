@@ -15,10 +15,8 @@ interface AuthServerBridge {
 
     def resetPasswordConfirm(String token, String password, Long user_id)
 
-
     void changePassword(String oldPassword, String newPassword, String accessToken)
 
-    void completeProfile(String phone, String document, String address, String accsstoken,
-                         String recaptcha)
+    void completeProfile(String phone, String document, String address, String accessToken, String recaptcha)
 }
 

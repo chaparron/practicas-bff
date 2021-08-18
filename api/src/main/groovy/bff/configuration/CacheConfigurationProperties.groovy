@@ -13,4 +13,5 @@ class CacheConfigurationProperties {
     Long favorites
     Long brands;
     Long suppliers;
+    Long promotions;
 }
