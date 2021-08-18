@@ -84,7 +84,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
 
     private def getUnCachedHomeCountries(String locale) {
         httpBridge.get(
-                UriComponentsBuilder.fromUri(regionalConfigUrl.resolve("country/public/enabled?keys=name-en,name-$locale,flag,tyc,pp,cookies,faqs,tyc-supplier,pp-supplier")).toUriString().toURI(),
+                UriComponentsBuilder.fromUri(regionalConfigUrl.resolve("country/public/enabled?keys=name-en,name-$locale,flag,tyc,pp,cookies,faqs")).toUriString().toURI(),
                 null,
                 null,
                 List)?.collect {
@@ -97,8 +97,6 @@ class CountryGatewayBridgeImpl implements CountryBridge {
                             pp: it["config"]?.find({ config -> config["key"].contains("pp")})?.value,
                             cookies: it["config"]?.find({ config -> config["key"].contains("cookies")})?.value,
                             faqs: it["config"]?.find({ config -> config["key"].contains("faqs")})?.value,
-                            tycSupplier: it["config"]?.find({ config -> config["key"].contains("tyc-supplier")})?.value,
-                            ppSupplier: it["config"]?.find({ config -> config["key"].contains("pp-supplier")})?.value,
                     )
             )
         }

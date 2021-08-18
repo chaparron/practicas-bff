@@ -32,6 +32,4 @@ class LegalUrlsCountry {
     String pp
     String cookies
     String faqs
-    String tycSupplier
-    String ppSupplier
 }

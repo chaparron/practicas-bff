@@ -141,8 +141,6 @@ type LegalUrlsCountry {
     pp: String
     cookies: String
     faqs: String
-    tycSupplier: String
-    ppSupplier: String
 }
 
 type Mutation {
