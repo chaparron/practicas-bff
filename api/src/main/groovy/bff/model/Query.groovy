@@ -257,7 +257,7 @@ class Query implements GraphQLQueryResolver {
         countryBridge.getCustomerCountryConfiguration(accessToken)
     }
 
-    List<CountryHomeResponse> getHomeCountries(CountryHomeInput input) {
+    List<Country> getHomeCountries(CountryHomeInput input) {
         countryBridge.getHomeCountries(input.locale)
     }
 

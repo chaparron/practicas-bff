@@ -76,7 +76,7 @@ type Query {
 
     getCustomerCountryConfiguration(accessToken: String!): [CountryConfigurationEntry]
 
-    getHomeCountries(input: CountryHomeInput!): [CountryHomeResponse!]
+    getHomeCountries(input: CountryHomeInput!): [Country!]
 
     #rating
 
@@ -125,7 +125,7 @@ input CountryHomeInput {
   locale: String!
 }
 
-type CountryHomeResponse {
+type Country {
     id: String!
     name: String!
     flag(size: CountryFlagSize!): String!

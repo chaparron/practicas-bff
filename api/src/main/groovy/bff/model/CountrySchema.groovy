@@ -11,7 +11,7 @@ class CountryHomeInput {
     String locale
 }
 
-class CountryHomeResponse {
+class Country {
     String id
     String name
     String flag

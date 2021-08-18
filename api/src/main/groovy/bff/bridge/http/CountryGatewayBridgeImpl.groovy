@@ -3,7 +3,7 @@ package bff.bridge.http
 import bff.bridge.CountryBridge
 import bff.configuration.CacheConfigurationProperties
 import bff.model.CountryConfigurationEntry
-import bff.model.CountryHomeResponse
+import bff.model.Country
 import bff.model.LegalUrlsCountry
 import bff.service.HttpBridge
 import com.github.benmanes.caffeine.cache.CacheLoader
@@ -28,7 +28,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
 
     private LoadingCache<String, List<CountryConfigurationEntry>> countryCache
 
-    private LoadingCache<String, List<CountryHomeResponse>> countriesEnabled
+    private LoadingCache<String, List<Country>> countriesEnabled
 
     @PostConstruct
     void init() {
@@ -46,9 +46,9 @@ class CountryGatewayBridgeImpl implements CountryBridge {
         countriesEnabled = Caffeine.newBuilder()
                 .expireAfterWrite(cacheConfiguration.countries, TimeUnit.HOURS)
                 .build(
-                        new CacheLoader<String, List<CountryHomeResponse>>() {
+                        new CacheLoader<String, List<Country>>() {
                             @Override
-                            List<CountryHomeResponse> load(String key) throws Exception {
+                            List<Country> load(String key) throws Exception {
                                 getUnCachedHomeCountries(key)
                             }
                         }
@@ -78,7 +78,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
     }
 
     @Override
-    List<CountryHomeResponse> getHomeCountries(String locale) {
+    List<Country> getHomeCountries(String locale) {
         countriesEnabled.get(Locale.forLanguageTag(locale).language)
     }
 
@@ -88,7 +88,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
                 null,
                 null,
                 List)?.collect {
-            new CountryHomeResponse(
+            new Country(
                     id: it.id,
                     name: it["config"]?.find({ config -> config["key"].contains("name-$locale")})?.value ?: it["config"]?.find({ config -> config["key"].contains("name-en")})?.value,
                     flag: it["config"]?.find({ config -> config["key"].contains("flag")})?.value,

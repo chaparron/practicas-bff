@@ -23,7 +23,7 @@ Mappings:
     prod:
       MinPoolSize: '2'
       MaxPoolSize: '4'
-      InstanceType: 'a1.large'
+      InstanceType: 'm5.large'
       HttpMaxConnections: '60'
       TasksPoolCoreSize: '500'
       MaxHeapSize: '-Xmx4096m'

@@ -1,7 +1,7 @@
 package bff.bridge
 
 import bff.model.CountryConfigurationEntry
-import bff.model.CountryHomeResponse
+import bff.model.Country
 
 interface CountryBridge {
 
@@ -9,5 +9,5 @@ interface CountryBridge {
 
     List<CountryConfigurationEntry> getCustomerCountryConfiguration(String accessToken)
 
-    List<CountryHomeResponse> getHomeCountries(String locale)
+    List<Country> getHomeCountries(String locale)
 }
