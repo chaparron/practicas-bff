@@ -14,4 +14,6 @@ interface SupplierOrderBridge {
 
     Product getProductByOrderItem(String accessToken, Long orderItemId)
 
+    PartialSummary getPartialSummaryByOrderItem(String accessToken, Long orderItemId)
+
 }

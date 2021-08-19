@@ -1,59 +1,59 @@
 input CancelOrderInput {
-    accessToken: String!
-    orderId: Int!
-    supplierOrderId: Int!
-    cancelOptionReason: CustomerCancelOptionReason!
-    comment: String
+  accessToken: String!
+  orderId: Int!
+  supplierOrderId: Int!
+  cancelOptionReason: CustomerCancelOptionReason!
+  comment: String
 }
 
 enum UserType {
-    SUPPLIER,
-    CUSTOMER
+  SUPPLIER,
+  CUSTOMER
 }
 
 enum CustomerCancelOptionReason {
-    REGRET
-    COMMODITY_DELAY
-    PRICE_DIFFERENCE
-    DELIVERY_DIFFERENCE
-    NO_MONEY
-    OTHER
+  REGRET
+  COMMODITY_DELAY
+  PRICE_DIFFERENCE
+  DELIVERY_DIFFERENCE
+  NO_MONEY
+  OTHER
 }
 
 enum SupplierCancelOptionReason {
-    INCORRECT_PRICE,
-    INCORRECT_TAX,
-    CUSTOMER_CLOSED,
-    INSUFFICIENT_AMOUNT,
-    CUSTOMER_REGRET,
-    NO_STOCK,
-    STORE_OUTSIDE_COVERAGE_AREA,
-    OTHERS,
-    ACCEPT_CANCELED_ORDER
+  INCORRECT_PRICE,
+  INCORRECT_TAX,
+  CUSTOMER_CLOSED,
+  INSUFFICIENT_AMOUNT,
+  CUSTOMER_REGRET,
+  NO_STOCK,
+  STORE_OUTSIDE_COVERAGE_AREA,
+  OTHERS,
+  ACCEPT_CANCELED_ORDER
 }
 
 
 enum OrderUpdateReason {
-    INVALID_SUPPLIER_ORDERS_STATUS,
-    ORDER_NOT_FOUND,
-    INVALID_SUPPLIER,
-    INVALID_DELIVERY_COST,
-    INVALID_PRODUCTS,
-    CANCEL_REQUESTED_SUPPLIER_MUST_CANCEL
+  INVALID_SUPPLIER_ORDERS_STATUS,
+  ORDER_NOT_FOUND,
+  INVALID_SUPPLIER,
+  INVALID_DELIVERY_COST,
+  INVALID_PRODUCTS,
+  CANCEL_REQUESTED_SUPPLIER_MUST_CANCEL
 }
 
 type OrderUpdateFailed {
-    reason: OrderUpdateReason
+  reason: OrderUpdateReason
 }
 
 type FinalOrderState {
-    orderId: Int!
-    supplierOrderId: Int!
-    cancelRequested: Boolean
-    canceledBy: UserType
-    customerCancellationReason: CustomerCancelOptionReason
-    supplierCancelOptionReason: SupplierCancelOptionReason
-    orderStatus: OrderStatus
+  orderId: Int!
+  supplierOrderId: Int!
+  cancelRequested: Boolean
+  canceledBy: UserType
+  customerCancellationReason: CustomerCancelOptionReason
+  supplierCancelOptionReason: SupplierCancelOptionReason
+  orderStatus: OrderStatus
 }
 
 union CancelOrderResult = OrderUpdateFailed | FinalOrderState
@@ -62,248 +62,254 @@ union CancelOrderResonResult = OrderUpdateFailed | Void
 
 
 enum SupplierOrderStatus {
-    PENDING,
-    CONFIRMED,
-    SHIPPED,
-    CANCELED
+  PENDING,
+  CONFIRMED,
+  SHIPPED,
+  CANCELED
 }
 
 enum FilterOrderStatus {
-    ALL,
-    OPEN,
-    CLOSED
+  ALL,
+  OPEN,
+  CLOSED
 }
 
 input FindOrdersInput {
-    accessToken: String!
-    orderId: Int
-    countryId: String
-    size: Int!,
-    page: Int!,
-    status: FilterOrderStatus
+  accessToken: String!
+  orderId: Int
+  countryId: String
+  size: Int!,
+  page: Int!,
+  status: FilterOrderStatus
 }
 
 input FindSupplierOrderInput {
-    accessToken: String!
-    orderId: Int
-    supplierOrderId: Int!
-    countryId: String
+  accessToken: String!
+  orderId: Int
+  supplierOrderId: Int!
+  countryId: String
 }
 
 input FindCustomerAndSupplierOrdersInput {
-    accessToken: String!
-    orderId: Int!
+  accessToken: String!
+  orderId: Int!
 }
 
 enum Direction {
-    ASC,
-    DESC
+  ASC,
+  DESC
 }
 
 type SortResult {
-    field: String
-    direction: Direction
+  field: String
+  direction: Direction
 }
 
 type Headers {
-    page: Int!
-    page_size: Int!
-    total: Int!
-    sort: SortResult
+  page: Int!
+  page_size: Int!
+  total: Int!
+  sort: SortResult
 }
 
 enum OrderStatus {
-    PENDING,
-    IN_PROGRESS,
-    FINISHED
+  PENDING,
+  IN_PROGRESS,
+  FINISHED
 }
 
 type OrderItems {
-    id: Int!
-    product: Product!
-    productTitle: String!
-    productEan: String!
-    price: Float!
-    quantity: Int!
-    subtotal: Float!
-    display: Display!
+  id: Int!
+  product: Product!
+  productTitle: String!
+  productEan: String!
+  price: Float!
+  quantity: Int!
+  subtotal: Float!
+  display: Display!
+  partialSummary: PartialSummary
+}
+
+type PartialSummary {
+  quantity: Int!
 }
 
 type OrderItemProduct {
-    id: Int!
-    name: String!
-    enabled: Boolean!
-    category: Category,
-    brand: Brand,
-    ean: String,
-    description: String,
-    images: [Image]!,
-    created: TimestampOutput,
-    manufacturer: Manufacturer,
-    title: String
+  id: Int!
+  name: String!
+  enabled: Boolean!
+  category: Category,
+  brand: Brand,
+  ean: String,
+  description: String,
+  images: [Image]!,
+  created: TimestampOutput,
+  manufacturer: Manufacturer,
+  title: String
 }
 
 
 enum RatingStatus {
-    ENABLED,
-    DISABLED,
-    REPORTED
+  ENABLED,
+  DISABLED,
+  REPORTED
 }
 
 type Rating {
-    id: Int!
-    supplier: Supplier!
-    customerName: String
-    created: TimestampOutput!
-    opinion: String
-    score: Int!
-    owner: RatingOwner!
-    status: RatingStatus!
-    percentage: Float
+  id: Int!
+  supplier: Supplier!
+  customerName: String
+  created: TimestampOutput!
+  opinion: String
+  score: Int!
+  owner: RatingOwner!
+  status: RatingStatus!
+  percentage: Float
 }
 
 
 type SupplierOrder {
-    id:Int!
-    supplier: Supplier!
-    status: SupplierOrderStatus!
-    created: TimestampOutput!
-    updated: TimestampOutput
-    shippedAt: TimestampOutput
-    shipAt: TimestampOutput
-    deliveryCost: Float!
-    total: Float!
-    subTotal: Float
-    credits_paid: Float
-    money_paid: Float
-    payment_pending: Float
-    total_wabipay: Float
-    service_fee: Float
-    discounts: Float
-    units: Int
-    products: [OrderItems!]!
-    rating: RatingEntry
-    canCustomerRate: Boolean
-    canSupplierRate: Boolean
-    customerRated: Boolean
-    supplierRated: Boolean
-    cancelRequested: Boolean
+  id:Int!
+  supplier: Supplier!
+  status: SupplierOrderStatus!
+  created: TimestampOutput!
+  updated: TimestampOutput
+  shippedAt: TimestampOutput
+  shipAt: TimestampOutput
+  deliveryCost: Float!
+  total: Float!
+  subTotal: Float
+  credits_paid: Float
+  money_paid: Float
+  payment_pending: Float
+  total_wabipay: Float
+  service_fee: Float
+  discounts: Float
+  units: Int
+  products: [OrderItems!]!
+  rating: RatingEntry
+  canCustomerRate: Boolean
+  canSupplierRate: Boolean
+  customerRated: Boolean
+  supplierRated: Boolean
+  availabilityDifference: Boolean!
+  cancelRequested: Boolean
 }
 
 
 type SupplierOrderResult {
-    id:Int!
-    order: Order!
-    supplier: Supplier!
-    status: SupplierOrderStatus!
-    created: TimestampOutput!
-    updated: TimestampOutput
-    shippedAt: TimestampOutput
-    shipAt: TimestampOutput
-    deliveryCost: Float!
-    total: Float!
-    subTotal: Float
-    credits_paid: Float
-    money_paid: Float
-    service_fee: Float
-    payment_pending: Float
-    localTaxes: Float
-    discounts: Float
-    discount_used: Float
-    total_wabipay: Float
-    amount: Float
-    units: Int
-    products: [OrderItems!]!
-    rating: RatingEntry
-    canCustomerRate: Boolean
-    canSupplierRate: Boolean
-    customerRated: Boolean
-    supplierRated: Boolean
-    cancelRequested: Boolean
-    summary: [Summary]
+  id:Int!
+  order: Order!
+  supplier: Supplier!
+  status: SupplierOrderStatus!
+  created: TimestampOutput!
+  updated: TimestampOutput
+  shippedAt: TimestampOutput
+  shipAt: TimestampOutput
+  deliveryCost: Float!
+  total: Float!
+  subTotal: Float
+  credits_paid: Float
+  money_paid: Float
+  service_fee: Float
+  payment_pending: Float
+  localTaxes: Float
+  discounts: Float
+  discount_used: Float
+  total_wabipay: Float
+  amount: Float
+  units: Int
+  products: [OrderItems!]!
+  rating: RatingEntry
+  canCustomerRate: Boolean
+  canSupplierRate: Boolean
+  customerRated: Boolean
+  supplierRated: Boolean
+  cancelRequested: Boolean
+  summary: [Summary]
 }
 
 type SupplierOrderAndOrderCancellations {
-    id:Int!
-    order: Order
-    orderCancellation: OrderCancellation
-    supplier: Supplier
-    status: SupplierOrderStatus
-    created: TimestampOutput
-    updated: TimestampOutput
-    shippedAt: TimestampOutput
-    shipAt: TimestampOutput
-    deliveryCost: Float
-    total: Float
-    subTotal: Float
-    credits_paid: Float
-    money_paid: Float
-    service_fee: Float
-    payment_pending: Float
-    localTaxes: Float
-    discounts: Float
-    discount_used: Float
-    total_wabipay: Float
-    amount: Float
-    units: Int
-    products: [OrderItems]
-    rating: RatingEntry
-    canCustomerRate: Boolean
-    canSupplierRate: Boolean
-    customerRated: Boolean
-    supplierRated: Boolean
-    cancelRequested: Boolean
-    summary: [Summary]
+  id:Int!
+  order: Order
+  orderCancellation: OrderCancellation
+  supplier: Supplier
+  status: SupplierOrderStatus
+  created: TimestampOutput
+  updated: TimestampOutput
+  shippedAt: TimestampOutput
+  shipAt: TimestampOutput
+  deliveryCost: Float
+  total: Float
+  subTotal: Float
+  credits_paid: Float
+  money_paid: Float
+  service_fee: Float
+  payment_pending: Float
+  localTaxes: Float
+  discounts: Float
+  discount_used: Float
+  total_wabipay: Float
+  amount: Float
+  units: Int
+  products: [OrderItems]
+  rating: RatingEntry
+  canCustomerRate: Boolean
+  canSupplierRate: Boolean
+  customerRated: Boolean
+  supplierRated: Boolean
+  cancelRequested: Boolean
+  summary: [Summary]
 }
 
 enum RatingOwner {
-    SUPPLIER,
-    CUSTOMER
+  SUPPLIER,
+  CUSTOMER
 }
 
 type RatingEntry {
-    SUPPLIER: Rating
-    CUSTOMER: Rating
+  SUPPLIER: Rating
+  CUSTOMER: Rating
 }
 
 
 type OrderCancellation {
-    supplierOrderId: Int!
-    orderId: Int!
-    supplierId: Int!
-    userType: UserType!
-    customerCancelOptionReason: CustomerCancelOptionReason
-    supplierCancelOptionReason: SupplierCancelOptionReason
+  supplierOrderId: Int!
+  orderId: Int!
+  supplierId: Int!
+  userType: UserType!
+  customerCancelOptionReason: CustomerCancelOptionReason
+  supplierCancelOptionReason: SupplierCancelOptionReason
 }
 
 type Order {
-    id: Int!
-    customer: Customer!
-    status: OrderStatus!
-    created: TimestampOutput!
-    updated: TimestampOutput
-    deliveryAddress: AddressType!
-    workingDays: WorkingDays
-    supplierOrders: [SupplierOrder!]!
-    ordersCancellations: [OrderCancellation]
-    total_credits: Float
-    total_money: Float
-    total_service_fee: Float
-    total_pending: Float
-    total_discounts_used: Float
-    total_wabipay: Float
-    subTotal: Float
-    discounts: Float
-    total: Float
+  id: Int!
+  customer: Customer!
+  status: OrderStatus!
+  created: TimestampOutput!
+  updated: TimestampOutput
+  deliveryAddress: AddressType!
+  workingDays: WorkingDays
+  supplierOrders: [SupplierOrder!]!
+  ordersCancellations: [OrderCancellation]
+  total_credits: Float
+  total_money: Float
+  total_service_fee: Float
+  total_pending: Float
+  total_discounts_used: Float
+  total_wabipay: Float
+  subTotal: Float
+  discounts: Float
+  total: Float
 }
 
 enum CustomerOrderFindFailedReason {
-    ORDER_NOT_FOUND
+  ORDER_NOT_FOUND
 
 }
 
 type CustomerOrderFindFailed {
-    reason: CustomerOrderFindFailedReason
+  reason: CustomerOrderFindFailedReason
 }
 
 union CustomerOrdersResult = CustomerOrdersResponse | CustomerOrderFindFailed
@@ -313,272 +319,272 @@ union CustomerOrderResult = CustomerOrderResponse | CustomerOrderFindFailed
 union CustomerSupplierOrderResult = CustomerSupplierOrdersResponse | CustomerOrderFindFailed
 
 type CustomerOrdersResponse {
-    headers: Headers!
-    content: [Order]
+  headers: Headers!
+  content: [Order]
 }
 
 type CustomerOrderResponse {
-    supplierOrder: SupplierOrderResult
-    customer: Customer!
-    orderCancellation: OrderCancellation
+  supplierOrder: SupplierOrderResult
+  customer: Customer!
+  orderCancellation: OrderCancellation
 }
 
 type CustomerSupplierOrdersResponse {
-    supplierOrderAndOrderCancellations: [SupplierOrderAndOrderCancellations]
-    customer: Customer!
+  supplierOrderAndOrderCancellations: [SupplierOrderAndOrderCancellations]
+  customer: Customer!
 }
 
 enum CartFailedReason {
-    FORBIDDEN,
-    BAD_REQUEST,
-    INVALID_ADDRESS,
-    EMPTY_PRODUCTS,
-    PRODUCTS_UNAVAILABLE
+  FORBIDDEN,
+  BAD_REQUEST,
+  INVALID_ADDRESS,
+  EMPTY_PRODUCTS,
+  PRODUCTS_UNAVAILABLE
 }
 
 type CartFailed {
-    reason: CartFailedReason
+  reason: CartFailedReason
 }
 
 union CartResult = Cart | CartFailed
 
 type Cart {
-    availableProducts: [ProductCart]!
-    suppliers: [Supplier]!
+  availableProducts: [ProductCart]!
+  suppliers: [Supplier]!
 }
 
 type ProductCart {
-    product: Product!
-    supplierPrices: [SupplierPrice]!
+  product: Product!
+  supplierPrices: [SupplierPrice]!
 }
 
 type SupplierPrice {
-    id: Int!
-    name: String
-    price: Float
-    minUnits: Int
-    maxUnits: Int
-    display: Display
-    avatar: String!
-    configuration: SupplierProductConfiguration
-    deliveryZone: DeliveryZone
+  id: Int!
+  name: String
+  price: Float
+  minUnits: Int
+  maxUnits: Int
+  display: Display
+  avatar: String!
+  configuration: SupplierProductConfiguration
+  deliveryZone: DeliveryZone
 
 }
 
 input RefreshCartInput {
-    accessToken: String!
-    products: [Int]
+  accessToken: String!
+  products: [Int]
 }
 
 enum PlaceOrderFailedReason {
-    DELIVERY_COST_HAS_CHANGED,
-    INVALID_CUSTOMER,
-    BAD_REQUEST,
-    PRODUCT_PRICES_HAS_CHANGED,
-    SUPPLIER_AVAILABILITY_HAS_CHANGED,
-    INVALID_SUPPLIER_ORDER,
-    INVALID_ORDER,
-    MIN_UNITS_NO_REACHED,
-    MAX_UNITS_EXCEEDED,
-    MIN_AMOUNT_NO_REACHED,
-    MAX_AMOUNT_EXCEEDED,
-    MAX_ALLOWED_PRODUCT_EXCEEDED,
-    PRODUCTS_UNAVAILABLE,
-    INVALID_COUPON
+  DELIVERY_COST_HAS_CHANGED,
+  INVALID_CUSTOMER,
+  BAD_REQUEST,
+  PRODUCT_PRICES_HAS_CHANGED,
+  SUPPLIER_AVAILABILITY_HAS_CHANGED,
+  INVALID_SUPPLIER_ORDER,
+  INVALID_ORDER,
+  MIN_UNITS_NO_REACHED,
+  MAX_UNITS_EXCEEDED,
+  MIN_AMOUNT_NO_REACHED,
+  MAX_AMOUNT_EXCEEDED,
+  MAX_ALLOWED_PRODUCT_EXCEEDED,
+  PRODUCTS_UNAVAILABLE,
+  INVALID_COUPON
 }
 
 union PlaceOrderResult = Void | PlaceOrderFailed
 
 type PlaceOrderFailed {
-    reason: PlaceOrderFailedReason
+  reason: PlaceOrderFailedReason
 }
 
 input OrderInput {
-    supplierId: Int!
-    deliveryCost: Float!
-    deliveryZoneId: Int!
-    products: [ProductOrderInput]!
+  supplierId: Int!
+  deliveryCost: Float!
+  deliveryZoneId: Int!
+  products: [ProductOrderInput]!
 }
 
 input PlaceOrderInput {
-    accessToken: String!
-    wabiPayAccessToken: String!
-    coupons: [String]
-    orders: [OrderInput]!
+  accessToken: String!
+  wabiPayAccessToken: String!
+  coupons: [String]
+  orders: [OrderInput]!
 }
 
 input ValidateOrderInput {
-    accessToken: String!
-    orders: [OrderInput]!
+  accessToken: String!
+  orders: [OrderInput]!
 }
 
 union ValidateOrderResult = ValidateOrderResponse | ValidateOrderFailed
 
 
 type ValidateOrderFailed {
-    reason: ValidateOrderFailedReason
+  reason: ValidateOrderFailedReason
 }
 
 enum ValidateOrderFailedReason {
-    INVALID_ORDER
+  INVALID_ORDER
 }
 
 type ValidateOrderResponse {
-    errors: [OrderError]
+  errors: [OrderError]
 }
 
 type OrderError {
-    error: OrderErrorType!
-    supplierId: Int!
-    productId: Int!
-    units: Int
-    prevValue: Float
-    actualValue: Float
+  error: OrderErrorType!
+  supplierId: Int!
+  productId: Int!
+  units: Int
+  prevValue: Float
+  actualValue: Float
 }
 
 enum OrderErrorType {
-    PRODUCT_PRICES_HAS_CHANGED,
-    MIN_UNITS_NO_REACHED,
-    MAX_UNITS_EXCEEDED,
-    MAX_ALLOWED_PRODUCT_EXCEEDED,
-    MAX_AMOUNT_EXCEEDED,
-    MIN_AMOUNT_NO_REACHED,
-    SUPPLIER_UNAVAILABLE,
-    DELIVERY_COST_CHANGED,
-    INVALID_DELIVERY_ZONE
-    PRODUCT_UNAVAILABLE
+  PRODUCT_PRICES_HAS_CHANGED,
+  MIN_UNITS_NO_REACHED,
+  MAX_UNITS_EXCEEDED,
+  MAX_ALLOWED_PRODUCT_EXCEEDED,
+  MAX_AMOUNT_EXCEEDED,
+  MIN_AMOUNT_NO_REACHED,
+  SUPPLIER_UNAVAILABLE,
+  DELIVERY_COST_CHANGED,
+  INVALID_DELIVERY_ZONE
+  PRODUCT_UNAVAILABLE
 }
 
 input ProductOrderInput {
-    productId: Int!
-    quantity: Int!
-    units: Int
-    price: Float!
+  productId: Int!
+  quantity: Int!
+  units: Int
+  price: Float!
 }
 
 enum SupplierFailedReason {
-    NOT_FOUND
+  NOT_FOUND
 }
 
 input GetSupplierInput {
-    accessToken: String!
-    supplierId: Int!
+  accessToken: String!
+  supplierId: Int!
 }
 
 type SupplierFailed {
-    reason: SupplierFailedReason
+  reason: SupplierFailedReason
 }
 
 union SupplierResponse = Supplier | SupplierFailed
 
 type SupplierRatingsResponse {
-    headers: Headers!
-    content: [Rating]!
+  headers: Headers!
+  content: [Rating]!
 }
 
 input GetSupplierRatingsInput {
-    page: Int
-    size: Int
-    accessToken: String!
-    supplierId: Int!
+  page: Int
+  size: Int
+  accessToken: String!
+  supplierId: Int!
 }
 
 input GetSupplierOrderInput {
-    accessToken: String!
-    supplierOrderId: Int!
+  accessToken: String!
+  supplierOrderId: Int!
 }
 
 input OrderSummaryInput {
-    accessToken: String!
-    wabiPayAccessToken: String
-    products: [SupplierCartProductInput]!
-    coupons: [String]
+  accessToken: String!
+  wabiPayAccessToken: String
+  products: [SupplierCartProductInput]!
+  coupons: [String]
 }
 
 input SupplierCartProductInput {
-    supplierId: Int!
-    deliveryZoneId: Int!
-    items: [CartItemInput]!
+  supplierId: Int!
+  deliveryZoneId: Int!
+  items: [CartItemInput]!
 }
 
 input GetSupplierOrdersInput {
-    accessToken: String!
-    orderId: ID!
+  accessToken: String!
+  orderId: ID!
 }
 
 input CartItemInput {
-    productId: Int!
-    units: Int
-    quantity: Int!
+  productId: Int!
+  units: Int
+  quantity: Int!
 }
 
 type OrderSummaryResponse {
-    orderSummary: [OrderSummary]
+  orderSummary: [OrderSummary]
 }
 
 type OrderSummary {
-    supplier: Supplier!
-    summary: [Summary]
+  supplier: Supplier!
+  summary: [Summary]
 }
 
 enum CartSummaryItemType {
-    # IBB Component price
-    IBB,
-    # Only product prices
-    PRODUCTS_TOTAL,
-    # Product prices plus product taxes
-    SUBTOTAL,
-    # Product prices no IVA
-    NET_SUBTOTAL,
-    # Supplier delivery cost
-    DELIVERY_COST,
-    # Order final price
-    ORDER_TOTAL,
-    # Wabi Credits
-    CREDITS_USED,
-    #Money used
-    WABIMONEY_USED,
-    PAYMENT_PENDING,
-    DISCOUNT,
+  # IBB Component price
+  IBB,
+  # Only product prices
+  PRODUCTS_TOTAL,
+  # Product prices plus product taxes
+  SUBTOTAL,
+  # Product prices no IVA
+  NET_SUBTOTAL,
+  # Supplier delivery cost
+  DELIVERY_COST,
+  # Order final price
+  ORDER_TOTAL,
+  # Wabi Credits
+  CREDITS_USED,
+  #Money used
+  WABIMONEY_USED,
+  PAYMENT_PENDING,
+  DISCOUNT,
 
-    DISCOUNT_USED,
+  DISCOUNT_USED,
 
-    TOTAL_BILLED
+  TOTAL_BILLED
 
-    SERVICE_FEE
-    #Max ammount allowed to pay with wabipay
-    MAX_AMOUNT_WABIPAY_ALLOWED
+  SERVICE_FEE
+  #Max ammount allowed to pay with wabipay
+  MAX_AMOUNT_WABIPAY_ALLOWED
 
 }
 
 type Summary {
-    type: CartSummaryItemType!
-    value: Float!
-    metadata: [MetaEntry]
+  type: CartSummaryItemType!
+  value: Float!
+  metadata: [MetaEntry]
 }
 
 type MetaEntry {
-    key: String!,
-    value: String!
+  key: String!,
+  value: String!
 }
 
 enum SupplierOrderFailedReason {
-    NOT_FOUND
+  NOT_FOUND
 }
 
 type SupplierOrderFailed {
-    reason: SupplierOrderFailedReason
+  reason: SupplierOrderFailedReason
 }
 
 enum SummaryFailedReason {
-    NOT_FOUND
-    PRODUCT_AVAILABILITY_HAS_CHANGED
-    PRODUCTS_UNAVAILABLE,
-    INVALID_COUPON
+  NOT_FOUND
+  PRODUCT_AVAILABILITY_HAS_CHANGED
+  PRODUCTS_UNAVAILABLE,
+  INVALID_COUPON
 }
 
 type SummaryFailed {
-    reason: SummaryFailedReason
+  reason: SummaryFailedReason
 }
 
 union SupplierOrderResponse = SupplierOrder | SupplierOrderFailed
