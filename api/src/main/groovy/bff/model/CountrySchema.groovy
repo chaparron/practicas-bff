@@ -2,66 +2,58 @@ package bff.model
 
 import bff.service.ImageSizeEnum
 
-interface CountryConfigurationResponse {}
-
-enum CountryConfigurationFailedResult {
-    COUNTRY_NOT_FOUND
-
-    def build() {
-        return new CountryConfigurationFailed(reason: this)
-    }
+class Country {
+    String id
+    String name
+    String flag
+    LegalUrlsCountry legalUrls
+    Detail detail
+    Language language
+    ContactInfo contactInfo
+    Currency currency
+    Fee fee
+    WabiPay wabiPay
 }
 
-class CountryConfigurationFailed implements CountryConfigurationResponse {
-    CountryConfigurationFailedResult reason
+class Detail {
+    String phonePrefix
+    String countryCode
 }
 
-class CountryConfiguration implements CountryConfigurationResponse {
-
-    CountryBasicInfo countryBasicInfo
-    CountryContactInfo countryContactInfo
-    CountryCurrency currency
-    LegalUrlsCountry legalUrlsCountry
-    CountryPaymentInfo countryPayment
+class Language{
+    String language
+    String locale
     List<CountryTranslation> translations = []
 }
 
-class CountryBasicInfo {
-
-    String language
-    String locale
-    String countryCode
-    BigDecimal lat
-    BigDecimal lng
-    String flag
-}
-
-class CountryContactInfo {
-
+class ContactInfo {
     String whatsappNumber
     String phoneNumber
     String direction
 }
 
-class CountryCurrency {
-
+class Currency {
     String currencySymbol
     String currencyCode
 }
 
 class CountryTranslation {
     String name
+    String language
     String value
 }
 
-class CountryPaymentInfo {
+class WabiPay {
     Boolean wabiPayEnabled
     Boolean wabiPayCreditEnabled
     Boolean wabiPayMoneyEnabled
     Boolean wabiPayWcToMoneyWhenReleasingEnabled
-    Boolean displayFeeOnSupplierAdm
+}
+
+class Fee{
     String serviceFeeType
     BigDecimal serviceFee
+    Boolean displayFeeOnSupplierAdm
 }
 
 class CountryConfigurationEntry {
@@ -71,13 +63,6 @@ class CountryConfigurationEntry {
 
 class CountryHomeInput {
     String locale
-}
-
-class Country {
-    String id
-    String name
-    String flag
-    LegalUrlsCountry legalUrls
 }
 
 enum CountryFlagSize implements ImageSizeEnum {

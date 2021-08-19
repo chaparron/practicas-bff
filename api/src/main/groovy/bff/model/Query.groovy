@@ -260,7 +260,7 @@ class Query implements GraphQLQueryResolver {
         countryBridge.getHomeCountries(input.locale)
     }
 
-    CountryConfigurationResponse getCountry(String countryId) {
+    Country getCountry(String countryId) {
         countryBridge.getCountry(countryId)
     }
 

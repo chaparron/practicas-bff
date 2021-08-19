@@ -77,7 +77,7 @@ type Query {
 
   getHomeCountries(input: CountryHomeInput!): [Country!]
 
-  getCountry(countryId: String!): CountryConfigurationResponse
+  getCountry(countryId: String!): Country
 
   #rating
 
@@ -117,68 +117,10 @@ type Query {
   getFavoriteProducts(input: GetFavoriteProductsInput!): [FavoriteProductResult]
 }
 
-type CountryConfiguration {
-
-  countryBasicInfo:CountryBasicInfo
-  countryContactInfo:CountryContactInfo
-  currency:CountryCurrency
-  legalUrlsCountry:LegalUrlsCountry
-  countryPayment:CountryPaymentInfo
-  translations:[CountryTranslation]
-}
-
-type CountryBasicInfo{
-
-  language:String
-  locale:String
-  countryCode:String
-  lat:Float
-  lng:Float
-  flag:String
-}
-
-type CountryContactInfo{
-
-  whatsappNumber:String
-  phoneNumber:String
-  direction:String
-}
-
-type CountryCurrency{
-
-  currencySymbol:String
-  currencyCode:String
-}
-
-type CountryTranslation{
-  name:String
-  value:String
-}
-
-type CountryPaymentInfo {
-  wabiPayEnabled:Boolean
-  wabiPayCreditEnabled:Boolean
-  wabiPayMoneyEnabled:Boolean
-  wabiPayWcToMoneyWhenReleasingEnabled:Boolean
-  displayFeeOnSupplierAdm:Boolean
-  serviceFeeType:Boolean
-  serviceFee:Float
-}
-
 type CountryConfigurationEntry {
   key: String
   value: String
 }
-
-type CountryConfigurationFailed {
-  reason: CountryConfigurationFailedResult
-}
-
-enum CountryConfigurationFailedResult {
-  COUNTRY_NOT_FOUND
-}
-
-union CountryConfigurationResponse =  CountryConfiguration | CountryConfigurationFailed
 
 input CountryHomeInput {
   locale: String!
@@ -189,6 +131,53 @@ type Country {
   name: String!
   flag(size: CountryFlagSize!): String!
   legalUrls: LegalUrlsCountry
+  detail:Detail
+  language:Language
+  contactInfo:ContactInfo
+  currency:Currency
+  fee:Fee
+  wabiPay:WabiPay
+}
+
+type Detail {
+  phonePrefix:String
+  countryCode:String
+}
+
+type Language{
+  language:String
+  locale:String
+  translations: [CountryTranslation]
+}
+
+type ContactInfo {
+  whatsappNumber:String
+  phoneNumber:String
+  direction:String
+}
+
+type Currency {
+  currencySymbol:String
+  currencyCode:String
+}
+
+type CountryTranslation {
+  name:String
+  language:String
+  value:String
+}
+
+type WabiPay {
+  wabiPayEnabled:Boolean
+  wabiPayCreditEnabled:Boolean
+  wabiPayMoneyEnabled:Boolean
+  wabiPayWcToMoneyWhenReleasingEnabled:Boolean
+}
+
+type Fee{
+  serviceFeeType:String
+  serviceFee:Float
+  displayFeeOnSupplierAdm:Boolean
 }
 
 enum CountryFlagSize {
