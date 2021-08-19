@@ -244,6 +244,7 @@ class SupplierOrder implements SupplierOrderResponse {
     Boolean customerRated
     Boolean supplierRated
     Boolean cancelRequested
+    Boolean availabilityDifference
     RatingEntry rating
     HashMap<RatingOwner, Rating> ratings
 }
@@ -284,6 +285,7 @@ class SupplierOrderResult {
 }
 
 
+// TODO: verificar Front
 class SupplierOrderAndOrderCancellations {
     String accessToken
     Order order
@@ -350,6 +352,13 @@ class OrderItem {
     BigDecimal subtotal
     Display display
     Product product
+    PartialSummary partialSummary
+}
+
+class PartialSummary {
+    Long orderItemId
+    Long productDisplayId
+    Integer quantity
 }
 
 enum PlaceOrderFailedReason {

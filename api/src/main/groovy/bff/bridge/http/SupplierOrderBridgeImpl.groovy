@@ -104,4 +104,21 @@ class SupplierOrderBridgeImpl implements SupplierOrderBridge {
         //r.category = r.category.id
         r
     }
+
+    @Override
+    PartialSummary getPartialSummaryByOrderItem(String accessToken, Long orderItemId) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/orderitem/${orderItemId}/partialSummary"))
+                .toUriString().toURI()
+
+        def partialSummaries = http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , PartialSummary).body
+
+        partialSummaries
+    }
+
+
 }

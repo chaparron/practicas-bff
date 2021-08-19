@@ -14,6 +14,7 @@ class SupplierOrderResultResolver implements GraphQLResolver<SupplierOrderResult
     @Autowired
     SupplierOrderBridge supplierOrderBridge
 
+
     RatingEntry rating(SupplierOrderResult supplierOrderRes) {
         if (!supplierOrderRes.rating && supplierOrderRes.ratings && supplierOrderRes.ratings.size() > 0) {
             def supplierRating = supplierOrderRes.ratings.get(RatingOwner.SUPPLIER)
@@ -29,4 +30,6 @@ class SupplierOrderResultResolver implements GraphQLResolver<SupplierOrderResult
         }
         supplierOrderRes.rating?:supplierOrderBridge.getRatingBySupplierOrderId(supplierOrderRes.accessToken, supplierOrderRes.id)
     }
+
+
 }
