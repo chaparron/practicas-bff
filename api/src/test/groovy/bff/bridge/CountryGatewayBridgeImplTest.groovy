@@ -70,6 +70,135 @@ class CountryGatewayBridgeImplTest {
             "    ]\n" +
             "}"
 
+    private static String homeCountriesResponse = "[\n" +
+            "  {\n" +
+            "    \"id\": \"eg\",\n" +
+            "    \"config\": [\n" +
+            "      {\n" +
+            "        \"key\": \"name\",\n" +
+            "        \"value\": \"Egipto\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"name-ar\",\n" +
+            "        \"value\": \"Egipto\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"name-en\",\n" +
+            "        \"value\": \"Egypt\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"flag\",\n" +
+            "        \"value\": \"7ab0fd14-efa9-11eb-9a03-0242ac1300eg.png\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"tyc\",\n" +
+            "        \"value\": \"https://wabi.force.com/wabi2b/s/article/Wabi2b-Store-Egypt-T-C?language=ar_EG\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"pp\",\n" +
+            "        \"value\": \"https://wabi.force.com/wabi2b/s/article/Wabi2b-Store-Egypt-P-P?language=ar_EG\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"cookies\",\n" +
+            "        \"value\": \"https://wabi.force.com/wabi2b/s/article/Wabi2b-Store-Egypt-P-C?language=ar_EG\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"faqs\",\n" +
+            "        \"value\": \"https://wabi.force.com/wabi2b/s/topic/0TO2E00000029SOWAY/preguntas-frecuentes?language=ar_EG\",\n" +
+            "        \"private\": false\n" +
+            "      }\n" +
+            "    ],\n" +
+            "    \"enabled\": true\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"id\": \"ph\",\n" +
+            "    \"config\": [\n" +
+            "      {\n" +
+            "        \"key\": \"name\",\n" +
+            "        \"value\": \"Philippines\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"name-ar\",\n" +
+            "        \"value\": \"فيلبيني\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"name-en\",\n" +
+            "        \"value\": \"Philippines\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"flag\",\n" +
+            "        \"value\": \"7ab0fd14-efa9-11eb-9a03-0242ac1300ph.png\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"tyc\",\n" +
+            "        \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Philipines-T-C?language=en_US\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"pp\",\n" +
+            "        \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Philipines-P-P?language=en_US\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"cookies\",\n" +
+            "        \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Algeria-P-C?language=en_US\",\n" +
+            "        \"private\": false\n" +
+            "      }\n" +
+            "    ],\n" +
+            "    \"enabled\": true\n" +
+            "  },\n" +
+            "  {\n" +
+            "    \"id\": \"ma\",\n" +
+            "    \"config\": [\n" +
+            "      {\n" +
+            "        \"key\": \"name\",\n" +
+            "        \"value\": \"Morocco\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"name-ar\",\n" +
+            "        \"value\": \"المغرب\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"name-en\",\n" +
+            "        \"value\": \"Morocco\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"flag\",\n" +
+            "        \"value\": \"7ab0fd14-efa9-11eb-9a03-0242ac1300ma.png\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"tyc\",\n" +
+            "        \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Morocco-T-C?language=en_US\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"pp\",\n" +
+            "        \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Morocco-P-P?language=en_US\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"cookies\",\n" +
+            "        \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Morocco-P-C?language=en_US\",\n" +
+            "        \"private\": false\n" +
+            "      }\n" +
+            "    ],\n" +
+            "    \"enabled\": true\n" +
+            "  }]"
     @Before
     void init() {
         Mockito.when(cacheConfiguration.countries).thenReturn(1L)
@@ -167,6 +296,60 @@ class CountryGatewayBridgeImplTest {
 
 
         Mockito.verify(httpBridge, Mockito.times(1))
+                .get(
+                        (URI)Mockito.any(URI.class),
+                        (String)Mockito.isNull(),
+                        Mockito.isNull(),
+                        Mockito.any(Class.class))
+    }
+
+    @Test
+    void checkHomeCountriesOrderByCountryName() {
+        Mockito.when(
+                httpBridge.get(
+                        (URI)Mockito.any(URI.class),
+                        (String)Mockito.isNull(),
+                        Mockito.isNull(),
+                        Mockito.any(Class.class)))
+                .thenReturn(
+                        new JsonSlurper().parseText(homeCountriesResponse) as List)
+
+        def countriesHome = countryBridge.getHomeCountries("es")
+        Assert.assertNotNull(countriesHome)
+        Assert.assertFalse(countriesHome.empty)
+        Assert.assertTrue(countriesHome.size()==3)
+        Assert.assertEquals("Egypt",countriesHome.get(0).name)
+        Assert.assertEquals("Morocco",countriesHome.get(1).name)
+        Assert.assertEquals("Philippines",countriesHome.get(2).name)
+
+
+        countriesHome = countryBridge.getHomeCountries("es-ES")
+        Assert.assertNotNull(countriesHome)
+        Assert.assertFalse(countriesHome.empty)
+        Assert.assertTrue(countriesHome.size()==3)
+        Assert.assertEquals("Egypt",countriesHome.get(0).name)
+        Assert.assertEquals("Morocco",countriesHome.get(1).name)
+        Assert.assertEquals("Philippines",countriesHome.get(2).name)
+
+        countriesHome = countryBridge.getHomeCountries("ar")
+        Assert.assertNotNull(countriesHome)
+        Assert.assertFalse(countriesHome.empty)
+        Assert.assertTrue(countriesHome.size()==3)
+        Assert.assertEquals("Egipto",countriesHome.get(0).name)
+        Assert.assertEquals("المغرب",countriesHome.get(1).name)
+        Assert.assertEquals("فيلبيني",countriesHome.get(2).name)
+
+
+        countriesHome = countryBridge.getHomeCountries("ar-AR")
+        Assert.assertNotNull(countriesHome)
+        Assert.assertFalse(countriesHome.empty)
+        Assert.assertTrue(countriesHome.size()==3)
+        Assert.assertEquals("Egipto",countriesHome.get(0).name)
+        Assert.assertEquals("المغرب",countriesHome.get(1).name)
+        Assert.assertEquals("فيلبيني",countriesHome.get(2).name)
+
+
+        Mockito.verify(httpBridge, Mockito.times(2))
                 .get(
                         (URI)Mockito.any(URI.class),
                         (String)Mockito.isNull(),
