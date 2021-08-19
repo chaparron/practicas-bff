@@ -1,258 +1,317 @@
-
 type Query {
 
-    # Find Customer by Id
-    myProfile(input: CustomerInput!): Customer!
+  # Find Customer by Id
+  myProfile(input: CustomerInput!): Customer!
 
-    search (input: SearchInput!): SearchResult
+  search (input: SearchInput!): SearchResult
 
-    searchV2 (input: SearchInput!): SearchResponse
+  searchV2 (input: SearchInput!): SearchResponse
 
-    previewSearch (input: PreviewSearchInput!): PreviewSearchResponse
+  previewSearch (input: PreviewSearchInput!): PreviewSearchResponse
 
-    productDetail(input: ProductInput!): ProductResult
+  productDetail(input: ProductInput!): ProductResult
 
-    productDetailByEan(input: ProductEanInput!): ProductResult
+  productDetailByEan(input: ProductEanInput!): ProductResult
 
-    findRootCategories(input: AccessTokenInput!): [Category]
+  findRootCategories(input: AccessTokenInput!): [Category]
 
-    # Verify Email
-    verifyEmail(input: VerifyEmailInput!): VerifyEmailResult!
+  # Verify Email
+  verifyEmail(input: VerifyEmailInput!): VerifyEmailResult!
 
-    # Resend email for verification.
-    resendVerifyEmail(input : AccessTokenInput!): ResendVerifyEmailResult!
+  # Resend email for verification.
+  resendVerifyEmail(input : AccessTokenInput!): ResendVerifyEmailResult!
 
-    # Resend sms for Verification
-    resendVerifySMS(input: AccessTokenInput!) : ResendVerifySMSResult!
+  # Resend sms for Verification
+  resendVerifySMS(input: AccessTokenInput!) : ResendVerifySMSResult!
 
-    # Get all the Customer's addersses, according accessToken
-    findAddresses(input: AccessTokenInput) : [AddressType]
+  # Get all the Customer's addersses, according accessToken
+  findAddresses(input: AccessTokenInput) : [AddressType]
 
-    # Get a Customer adderss, according accessToken and id
-    getAddress(input: AddressIdInput!): AddressResponse
+  # Get a Customer adderss, according accessToken and id
+  getAddress(input: AddressIdInput!): AddressResponse
 
-    getPreferredAddress(input: AccessTokenInput!): AddressResponse
+  getPreferredAddress(input: AccessTokenInput!): AddressResponse
 
-    getCancelOptions(input: AccessTokenInput!): [CustomerCancelOptionReason]
+  getCancelOptions(input: AccessTokenInput!): [CustomerCancelOptionReason]
 
-    # Find customer orders
-    findCustomerOrders(input: FindOrdersInput!): CustomerOrdersResult!
+  # Find customer orders
+  findCustomerOrders(input: FindOrdersInput!): CustomerOrdersResult!
 
-    # Find unique customer order.
-    findCustomerOrder(input: FindSupplierOrderInput!): CustomerOrderResult!
+  # Find unique customer order.
+  findCustomerOrder(input: FindSupplierOrderInput!): CustomerOrderResult!
 
-    findCustomerAndSupplierOrders(input : FindCustomerAndSupplierOrdersInput) : CustomerSupplierOrderResult!
+  findCustomerAndSupplierOrders(input : FindCustomerAndSupplierOrdersInput) : CustomerSupplierOrderResult!
 
-    # Get new prices and supplier availabities
-    refreshCart(input: RefreshCartInput!): CartResult!
+  # Get new prices and supplier availabities
+  refreshCart(input: RefreshCartInput!): CartResult!
 
-    # Validate username
-    validateUsername(input: ValidateUsernameInput!): Boolean!
+  # Validate username
+  validateUsername(input: ValidateUsernameInput!): Boolean!
 
-    # Validate fields
-    validate(input: ValidateInput!): Boolean!
+  # Validate fields
+  validate(input: ValidateInput!): Boolean!
 
-    getPendingRatesCount(input: AccessTokenInput!): Int
+  getPendingRatesCount(input: AccessTokenInput!): Int
 
-    customerHasOrders(input: AccessTokenInput!): Boolean
+  customerHasOrders(input: AccessTokenInput!): Boolean
 
-    getSupplierRatings(input: GetSupplierRatingsInput!): SupplierRatingsResponse
+  getSupplierRatings(input: GetSupplierRatingsInput!): SupplierRatingsResponse
 
 
-    getSupplierOrdersPendingToRate(input: AccessTokenInput!): [SupplierOrder]
+  getSupplierOrdersPendingToRate(input: AccessTokenInput!): [SupplierOrder]
 
-    getSupplierOrders(input: GetSupplierOrdersInput!): [SupplierOrder]
+  getSupplierOrders(input: GetSupplierOrdersInput!): [SupplierOrder]
 
-    # -- Pending queries
-    getSupplier(input: GetSupplierInput!): SupplierResponse
+  # -- Pending queries
+  getSupplier(input: GetSupplierInput!): SupplierResponse
 
-    getHomeBrands(input: GetHomeBrandsInput!): GetHomeBrandsResponse
+  getHomeBrands(input: GetHomeBrandsInput!): GetHomeBrandsResponse
 
-    previewHomeBrands(input: CoordinatesInput!): GetHomeBrandsResponse
+  previewHomeBrands(input: CoordinatesInput!): GetHomeBrandsResponse
 
-    previewRootCategories(input: CoordinatesInput!): RootCategoriesResponse
+  previewRootCategories(input: CoordinatesInput!): RootCategoriesResponse
 
-    getCountryConfiguration(countryId: String!): [CountryConfigurationEntry]
+  getCountryConfiguration(countryId: String!): [CountryConfigurationEntry]
 
-    getCustomerCountryConfiguration(accessToken: String!): [CountryConfigurationEntry]
+  getCustomerCountryConfiguration(accessToken: String!): [CountryConfigurationEntry]
 
-    getHomeCountries(input: CountryHomeInput!): [Country!]
+  getHomeCountries(input: CountryHomeInput!): [Country!]
 
-    #rating
+  getCountry(countryId: String!): CountryConfigurationResponse
 
-    # Find supplier order rating
-    getSupplierOrder(input: GetSupplierOrderInput!): SupplierOrderResponse
+  #rating
 
-    #findOrderRatings
+  # Find supplier order rating
+  getSupplierOrder(input: GetSupplierOrderInput!): SupplierOrderResponse
 
-    #findSupplierRatings
+  #findOrderRatings
 
-    getPromotions(input:PromotionInput!) : PromotionResponse
+  #findSupplierRatings
 
-    previewPromotions(input: CoordinatesInput!): PromotionResult
+  getPromotions(input:PromotionInput!) : PromotionResponse
 
-    getStatesByCountry(input: String!): [State]
+  previewPromotions(input: CoordinatesInput!): PromotionResult
 
-    getOrderPriceSummary(input: OrderSummaryInput!) : SummaryResult
+  getStatesByCountry(input: String!): [State]
 
-    getLandingPromotion(input: GetLandingPromotionInput!): GetLandingPromotionResult
+  getOrderPriceSummary(input: OrderSummaryInput!) : SummaryResult
 
-    previewLandingPromotion(input: CoordinatesInput!): GetLandingPromotionResult
+  getLandingPromotion(input: GetLandingPromotionInput!): GetLandingPromotionResult
 
-    getBannerDialog(input: String!): BannerDialogResult
+  previewLandingPromotion(input: CoordinatesInput!): GetLandingPromotionResult
 
-    validateOrder(input: ValidateOrderInput!): ValidateOrderResult
+  getBannerDialog(input: String!): BannerDialogResult
 
-    previewHomeSuppliers(input: CoordinatesInput!): HomeSupplierResult
+  validateOrder(input: ValidateOrderInput!): ValidateOrderResult
 
-    getSuppliersThatHasSuggestedOrders(input: AccessTokenInput!): [SuppliersNameResult]
+  previewHomeSuppliers(input: CoordinatesInput!): HomeSupplierResult
 
-    getSuggestedOrder(input: GetSuggestedOrderInput!): SuggestedOrderResult
+  getSuppliersThatHasSuggestedOrders(input: AccessTokenInput!): [SuppliersNameResult]
 
-    findPendingRateSinceLastLogin(input: AccessTokenInput!): [SupplierOrder]
+  getSuggestedOrder(input: GetSuggestedOrderInput!): SuggestedOrderResult
 
-    getFrequentProducts(input: GetFrequentProductsInput!): [FrequentProductResult]
+  findPendingRateSinceLastLogin(input: AccessTokenInput!): [SupplierOrder]
 
-    getFavoriteProducts(input: GetFavoriteProductsInput!): [FavoriteProductResult]
+  getFrequentProducts(input: GetFrequentProductsInput!): [FrequentProductResult]
+
+  getFavoriteProducts(input: GetFavoriteProductsInput!): [FavoriteProductResult]
+}
+
+type CountryConfiguration {
+
+  countryBasicInfo:CountryBasicInfo
+  countryContactInfo:CountryContactInfo
+  currency:CountryCurrency
+  legalUrlsCountry:LegalUrlsCountry
+  countryPayment:CountryPaymentInfo
+  translations:[CountryTranslation]
+}
+
+type CountryBasicInfo{
+
+  language:String
+  locale:String
+  countryCode:String
+  lat:Float
+  lng:Float
+  flag:String
+}
+
+type CountryContactInfo{
+
+  whatsappNumber:String
+  phoneNumber:String
+  direction:String
+}
+
+type CountryCurrency{
+
+  currencySymbol:String
+  currencyCode:String
+}
+
+type CountryTranslation{
+  name:String
+  value:String
+}
+
+type CountryPaymentInfo {
+  wabiPayEnabled:Boolean
+  wabiPayCreditEnabled:Boolean
+  wabiPayMoneyEnabled:Boolean
+  wabiPayWcToMoneyWhenReleasingEnabled:Boolean
+  displayFeeOnSupplierAdm:Boolean
+  serviceFeeType:Boolean
+  serviceFee:Float
 }
 
 type CountryConfigurationEntry {
-    key: String
-    value: String
+  key: String
+  value: String
 }
+
+type CountryConfigurationFailed {
+  reason: CountryConfigurationFailedResult
+}
+
+enum CountryConfigurationFailedResult {
+  COUNTRY_NOT_FOUND
+}
+
+union CountryConfigurationResponse =  CountryConfiguration | CountryConfigurationFailed
 
 input CountryHomeInput {
   locale: String!
 }
 
 type Country {
-    id: String!
-    name: String!
-    flag(size: CountryFlagSize!): String!
-    legalUrls: LegalUrlsCountry
+  id: String!
+  name: String!
+  flag(size: CountryFlagSize!): String!
+  legalUrls: LegalUrlsCountry
 }
 
 enum CountryFlagSize {
-    SIZE_30x20, SIZE_60x40, SIZE_120x80
+  SIZE_30x20, SIZE_60x40, SIZE_120x80
 }
 
 type LegalUrlsCountry {
-    tyc: String
-    pp: String
-    cookies: String
-    faqs: String
+  tyc: String
+  pp: String
+  cookies: String
+  faqs: String
 }
 
 type Mutation {
-    # User login
-    login(input: LoginInput!): LoginResult!
+  # User login
+  login(input: LoginInput!): LoginResult!
 
-    # Refresh Credential from a logged user
-    refreshCredentials(input: RefreshCredentialsInput!): RefreshCredentialsResult!
+  # Refresh Credential from a logged user
+  refreshCredentials(input: RefreshCredentialsInput!): RefreshCredentialsResult!
 
-    # Change password from an existing user
-    changePassword(input: ChangePasswordInput!): ChangePasswordResult
+  # Change password from an existing user
+  changePassword(input: ChangePasswordInput!): ChangePasswordResult
 
-    # Reset password request
-    resetPassword(input: ResetPasswordRequestInput!): Void!
+  # Reset password request
+  resetPassword(input: ResetPasswordRequestInput!): Void!
 
-    # Reset password confirm
-    resetPasswordConfirm(input: ResetPasswordConfirmInput!): ConfirmPasswordResult!
+  # Reset password confirm
+  resetPasswordConfirm(input: ResetPasswordConfirmInput!): ConfirmPasswordResult!
 
-    # Update Customer Profile
-    updateProfile(input: CustomerUpdateInput!): CustomerUpdateResult!
+  # Update Customer Profile
+  updateProfile(input: CustomerUpdateInput!): CustomerUpdateResult!
 
-    # Verify Customer phone
-    verifyPhone(input: VerifyPhoneInput!): VerifyPhoneResult!
+  # Verify Customer phone
+  verifyPhone(input: VerifyPhoneInput!): VerifyPhoneResult!
 
-    # Set Preferred Customer address
-    setPreferredAddress(input: PreferredAddressInput!): PreferredAddressResult!
+  # Set Preferred Customer address
+  setPreferredAddress(input: PreferredAddressInput!): PreferredAddressResult!
 
-    # Add new Customer address
-    addAddress(input: AddressTypeUpsertInput!): AddAddressResult!
+  # Add new Customer address
+  addAddress(input: AddressTypeUpsertInput!): AddAddressResult!
 
-    # Cancel pending orders
-    cancelOrder(input: CancelOrderInput!): CancelOrderResult!
+  # Cancel pending orders
+  cancelOrder(input: CancelOrderInput!): CancelOrderResult!
 
-    # Cancel Reason
-    cancelOrderReason(input : CancelOrderInput!) : CancelOrderResonResult!
+  # Cancel Reason
+  cancelOrderReason(input : CancelOrderInput!) : CancelOrderResonResult!
 
-    # Update Customer address
-    updateAddress(input: AddressTypeUpsertInput!) : UpdateAddressResult!
+  # Update Customer address
+  updateAddress(input: AddressTypeUpsertInput!) : UpdateAddressResult!
 
-    # Delete Customer address
-    deleteAddress(input: AddressIdInput!) : DeleteAddressResult!
+  # Delete Customer address
+  deleteAddress(input: AddressIdInput!) : DeleteAddressResult!
 
-    # Creates an order
-    placeOrder(input: PlaceOrderInput!): PlaceOrderResult
+  # Creates an order
+  placeOrder(input: PlaceOrderInput!): PlaceOrderResult
 
-    #registro
-    signIn(input: SignInInput!): SignInResult
+  #registro
+  signIn(input: SignInInput!): SignInResult
 
-    # Registro
-    # El upload de imágenes / archivos solo permite los siguientes formatos:
-    # JPEG, PNG, PDF.
-    # En caso contrario, el error será: UNSUPPORTED_MEDIA_TYPE
-    uploadVerificationDocument(input: Document!): UploadDocumentResult
+  # Registro
+  # El upload de imágenes / archivos solo permite los siguientes formatos:
+  # JPEG, PNG, PDF.
+  # En caso contrario, el error será: UNSUPPORTED_MEDIA_TYPE
+  uploadVerificationDocument(input: Document!): UploadDocumentResult
 
-    customerRateSupplier(input: CustomerRateSupplierInput!): CustomerRateSupplierResult
+  customerRateSupplier(input: CustomerRateSupplierInput!): CustomerRateSupplierResult
 
-    customerReportRate(input: CustomerReportRateInput!): CustomerReportRateResult
+  customerReportRate(input: CustomerReportRateInput!): CustomerReportRateResult
 
-    enableWhatsApp(input: AccessTokenInput!): Void!
+  enableWhatsApp(input: AccessTokenInput!): Void!
 
-    disableWhatsApp(input: AccessTokenInput!): Void!
+  disableWhatsApp(input: AccessTokenInput!): Void!
 
-    userDevice(input: UserDeviceInput!): Void!
+  userDevice(input: UserDeviceInput!): Void!
 
-    deleteUserDevice(input: AccessTokenInput!): Void!
+  deleteUserDevice(input: AccessTokenInput!): Void!
 
-    markSuggestionAsRead(input: MarkSuggestionInput !): Void!
+  markSuggestionAsRead(input: MarkSuggestionInput !): Void!
 
-    acceptTc(input: AcceptTcInput!): Void!
+  acceptTc(input: AcceptTcInput!): Void!
 
-    markProductAsFavorite(input: ProductToMarkAsFavoriteInput): Void!
+  markProductAsFavorite(input: ProductToMarkAsFavoriteInput): Void!
 
-    unmarkProductAsFavorite(input: ProductToUnmarkAsFavoriteInput): Void!
+  unmarkProductAsFavorite(input: ProductToUnmarkAsFavoriteInput): Void!
 }
 
 input CustomerRateSupplierInput {
-    accessToken: String!
-    supplierOrderId: Int!,
-    supplierId: Int!,
-    score: Int!
-    opinion: String
+  accessToken: String!
+  supplierOrderId: Int!,
+  supplierId: Int!,
+  score: Int!
+  opinion: String
 }
 
 input CustomerReportRateInput {
-    accessToken: String!
-    rateId: Int!
+  accessToken: String!
+  rateId: Int!
 }
 
 
 enum CustomerRateSupplierFailedReason {
-    SUPPLIER_ALREADY_RATED_BY_CUSTOMER,
-    INVALID_RATE,
-    INVALID_SUPPLIER_ORDER
-    INVALID_SUPPLIER_ID
-    INVALID_SCORE
+  SUPPLIER_ALREADY_RATED_BY_CUSTOMER,
+  INVALID_RATE,
+  INVALID_SUPPLIER_ORDER
+  INVALID_SUPPLIER_ID
+  INVALID_SCORE
 
 }
 
 enum CustomerReportRateFailedResult {
-    RATE_NOT_FOUND
+  RATE_NOT_FOUND
 }
 
 type CustomerReportRateFailer {
-    reason: CustomerReportRateFailedResult!
+  reason: CustomerReportRateFailedResult!
 }
 
 type CustomerRateSupplierFailed {
-    reason: CustomerRateSupplierFailedReason!
+  reason: CustomerRateSupplierFailedReason!
 }
 
 type CustomerReportRateFailed {
-    reason: CustomerReportRateFailedResult!
+  reason: CustomerReportRateFailedResult!
 }
 
 union CustomerRateSupplierResult = Void | CustomerRateSupplierFailed
@@ -261,233 +320,233 @@ union CustomerReportRateResult = Void | CustomerReportRateFailed
 
 
 enum PageSize {
-    ZERO
-    ONE
-    TEN
-    TWENTY
-    FIFTY
-    ONE_HUNDRED
+  ZERO
+  ONE
+  TEN
+  TWENTY
+  FIFTY
+  ONE_HUNDRED
 }
 
 enum UsernameRegistrationReason {
-    INVALID_FIRST_NAME,
-    INVALID_LAST_NAME,
-    INVALID_USERNAME,
-    DUPLICATE_USERNAME,
-    INVALID_FIRST_NAME_LENGTH,
-    INVALID_LAST_NAME_LENGTH,
-    INVALID_USERNAME_LENGTH
+  INVALID_FIRST_NAME,
+  INVALID_LAST_NAME,
+  INVALID_USERNAME,
+  DUPLICATE_USERNAME,
+  INVALID_FIRST_NAME_LENGTH,
+  INVALID_LAST_NAME_LENGTH,
+  INVALID_USERNAME_LENGTH
 }
 
 enum CompleteProfileReason {
-    # Generic Error
-    PROFILE_ERROR
+  # Generic Error
+  PROFILE_ERROR
 }
 
 enum Gender {
-    MALE
-    FEMALE
-    OTHER
+  MALE
+  FEMALE
+  OTHER
 }
 
 input PageInput {
-    # número de pagina comienza en 1
-    number: Int!
-    size: PageSize!
+  # número de pagina comienza en 1
+  number: Int!
+  size: PageSize!
 }
 
 input ListUsersInput {
-    query: String
-    page: PageInput!
-    accessToken: String!
+  query: String
+  page: PageInput!
+  accessToken: String!
 }
 
 input ListMyFavoritesInput {
-    page: PageInput!
-    accessToken: String!
+  page: PageInput!
+  accessToken: String!
 }
 
 input CompleteProfileInput {
-    document: String!
-    phone: String!
-    address: String!
-    recaptchaResponse: String!
-    accessToken: String!
+  document: String!
+  phone: String!
+  address: String!
+  recaptchaResponse: String!
+  accessToken: String!
 }
 
 input UsernameInput {
-    userId: ID!
-    accessToken: String!
+  userId: ID!
+  accessToken: String!
 }
 
 
 input ListGroupsInput {
-    authType: AuthType!
-    accessToken: String!
+  authType: AuthType!
+  accessToken: String!
 }
 
 
 # Se requiere un ID sin accessToken
 input IdInput {
-    id: ID!
+  id: ID!
 }
 
 input UserInput {
-    id: ID!
-    accessToken: String!
+  id: ID!
+  accessToken: String!
 }
 
 input UploadImageInput {
-    encodedFile: String!
-    accessToken: String!
+  encodedFile: String!
+  accessToken: String!
 
 }
 
 input AccessTokenInput {
-    accessToken: String!
+  accessToken: String!
 }
 
 type UsernameRegistrationFailed {
-    reason: UsernameRegistrationReason!
+  reason: UsernameRegistrationReason!
 }
 
 type RegisterFailed {
-    registerReason: RegisterFailureReason!
+  registerReason: RegisterFailureReason!
 }
 
 type ProfileCredentials {
-    accessToken: String!
+  accessToken: String!
 }
 
 type CompleteProfileFailed {
-    reason: CompleteProfileReason
+  reason: CompleteProfileReason
 }
 
 type Sort{
-    field: String!
-    direction: String!
+  field: String!
+  direction: String!
 }
 type Facet{
-    id: String!
-    name: String!
-    slices: [Slices]
+  id: String!
+  name: String!
+  slices: [Slices]
 }
 
 type Slices{
-    size: Int!
-    obj: Slice
+  size: Int!
+  obj: Slice
 }
 
 type Slice {
-    id: String!
-    name: String!
-    key: String!
+  id: String!
+  name: String!
+  key: String!
 }
 
 input UpdateBoostInput {
-    id: ID!
-    boost: ID!
-    accessToken: String!
+  id: ID!
+  boost: ID!
+  accessToken: String!
 }
 
 input FacetFilter{
-    key: String!
-    value: String!
+  key: String!
+  value: String!
 }
 
 input ValidateUsernameInput{
-    id: ID
-    username: String!
+  id: ID
+  username: String!
 }
 
 input ValidateInput{
-    id: ID
-    value: String!
-    country_id: String!
-    accessToken: String
-    validationType: ValidationType!
+  id: ID
+  value: String!
+  country_id: String!
+  accessToken: String
+  validationType: ValidationType!
 }
 
 input UserDeviceInput{
-    pushToken: String!
-    accessToken: String!
-    os: String
-    appVersion: String
+  pushToken: String!
+  accessToken: String!
+  os: String
+  appVersion: String
 }
 
 input CoordinatesInput {
-    lat: Float!
-    lng: Float!
-    countryId: String
+  lat: Float!
+  lng: Float!
+  countryId: String
 }
 
 input MarkSuggestionInput {
-   accessToken: String!
-   supplierIds: [Int]!
+  accessToken: String!
+  supplierIds: [Int]!
 }
 
 enum ValidationType{
-      USER_PHONE,
-      USER_CELL_PHONE,
-      USER_USERNAME,
-      CUSTOMER_LEGAL_ID,
-      CUSTOMER_LINE_PHONE
+  USER_PHONE,
+  USER_CELL_PHONE,
+  USER_USERNAME,
+  CUSTOMER_LEGAL_ID,
+  CUSTOMER_LINE_PHONE
 }
 
 
 enum AddAddressFailedReason {
-    INVALID_GOOGLE_ADDRESS,
-    INVALID_LATITUDE,
-    INVALID_LONGITUDE,
-    CUSTOMER_ALREADY_HAS_LEGAL_ADDRESS
-    INVALID_STATE,
-    INVALID_ADDRESSES
+  INVALID_GOOGLE_ADDRESS,
+  INVALID_LATITUDE,
+  INVALID_LONGITUDE,
+  CUSTOMER_ALREADY_HAS_LEGAL_ADDRESS
+  INVALID_STATE,
+  INVALID_ADDRESSES
 }
 
 
 type AddAddressFailed {
-    reason: AddAddressFailedReason!
+  reason: AddAddressFailedReason!
 }
 
 enum DeleteAddressFailedResult {
-    NOT_ADDRESS_CUSTOMER
+  NOT_ADDRESS_CUSTOMER
 }
 
 type SiteConfigurationFailed {
-    reason: SiteConfigurationFailedReason!
+  reason: SiteConfigurationFailedReason!
 }
 
 enum SiteConfigurationFailedReason {
-    NOT_FOUND
+  NOT_FOUND
 }
 
 type DeleteAddressFailed {
-    reason: DeleteAddressFailedResult!
+  reason: DeleteAddressFailedResult!
 }
 
 type BannerDialog {
-    dialog: Dialog
-    banner: Banner
+  dialog: Dialog
+  banner: Banner
 }
 
 type Dialog {
-    image: String
-    dialogContent: [DialogContent]!
+  image: String
+  dialogContent: [DialogContent]!
 }
 
 type Banner {
-    bannerContent: [BannerContent]!
+  bannerContent: [BannerContent]!
 }
 
 type BannerContent {
-    content: String
-    lang: String!
+  content: String
+  lang: String!
 }
 
 type DialogContent {
-    title: String
-    text: String
-    lang: String!
+  title: String
+  text: String
+  lang: String!
 }
 
 

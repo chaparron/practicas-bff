@@ -70,6 +70,8 @@ class Main {
                 .add(ValidateOrderFailed.class)
                 .add(PreviewHomeSupplierResponse.class)
                 .add(PreviewHomeSupplierFailed.class)
+                .add(CountryConfiguration.class)
+                .add(CountryConfigurationFailed.class)
     }
 
     /**

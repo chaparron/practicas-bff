@@ -138,7 +138,6 @@ class Query implements GraphQLQueryResolver {
     }
 
 
-
     List<Address> findAddresses(AccessTokenInput accessTokenInput) {
         customerBridge.findAddresses(accessTokenInput)
     }
@@ -261,6 +260,9 @@ class Query implements GraphQLQueryResolver {
         countryBridge.getHomeCountries(input.locale)
     }
 
+    CountryConfigurationResponse getCountry(String countryId) {
+        countryBridge.getCountry(countryId)
+    }
 
     List<Category> findRootCategories(AccessTokenInput accessTokenInput) {
         categoryBridge.findRootCategories(accessTokenInput.accessToken)
@@ -351,23 +353,23 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
-    List<SuppliersNameResult> getSuppliersThatHasSuggestedOrders(AccessTokenInput accessTokenInput){
+    List<SuppliersNameResult> getSuppliersThatHasSuggestedOrders(AccessTokenInput accessTokenInput) {
         customerBridge.getSuppliersThatHasSuggestedOrders(accessTokenInput.accessToken)
     }
 
-    SuggestedOrderResult getSuggestedOrder(GetSuggestedOrderInput input){
+    SuggestedOrderResult getSuggestedOrder(GetSuggestedOrderInput input) {
         customerBridge.getSuggestedOrder(input)
     }
 
-    List<SupplierOrder> findPendingRateSinceLastLogin(AccessTokenInput input){
+    List<SupplierOrder> findPendingRateSinceLastLogin(AccessTokenInput input) {
         customerBridge.findPendingRateSinceLastLogin(input.accessToken)
     }
 
-    List<FrequentProductResult> getFrequentProducts(GetFrequentProductsInput getFrequentProductsInput){
+    List<FrequentProductResult> getFrequentProducts(GetFrequentProductsInput getFrequentProductsInput) {
         recommendOrderBridge.getFrequentProducts(getFrequentProductsInput)
     }
 
-    List<FavoriteProductResult> getFavoriteProducts(GetFavoriteProductsInput getFavoriteProductsInput){
+    List<FavoriteProductResult> getFavoriteProducts(GetFavoriteProductsInput getFavoriteProductsInput) {
         recommendOrderBridge.getFavoriteProductsUpdatedByApi(getFavoriteProductsInput)
     }
 

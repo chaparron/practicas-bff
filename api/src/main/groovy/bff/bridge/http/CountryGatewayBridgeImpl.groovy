@@ -3,7 +3,13 @@ package bff.bridge.http
 import bff.bridge.CountryBridge
 import bff.configuration.CacheConfigurationProperties
 import bff.model.Country
+import bff.model.CountryBasicInfo
+import bff.model.CountryConfiguration
 import bff.model.CountryConfigurationEntry
+import bff.model.CountryContactInfo
+import bff.model.CountryCurrency
+import bff.model.CountryPaymentInfo
+import bff.model.CountryTranslation
 import bff.model.LegalUrlsCountry
 import bff.service.HttpBridge
 import com.github.benmanes.caffeine.cache.CacheLoader
@@ -33,13 +39,15 @@ class CountryGatewayBridgeImpl implements CountryBridge {
     @Autowired
     private CacheConfigurationProperties cacheConfiguration
 
-    private LoadingCache<String, List<CountryConfigurationEntry>> countryCache
+    private LoadingCache<String, List<CountryConfigurationEntry>> countryEntryCache
 
     private LoadingCache<String, List<Country>> countriesEnabledCache
 
+    private LoadingCache<String, CountryConfiguration> countryConfigurationCache
+
     @PostConstruct
     void init() {
-        countryCache = Caffeine.newBuilder()
+        countryEntryCache = Caffeine.newBuilder()
                 .expireAfterWrite(cacheConfiguration.countries, TimeUnit.HOURS)
                 .build(
                         new CacheLoader<String, List<CountryConfigurationEntry>>() {
@@ -60,11 +68,22 @@ class CountryGatewayBridgeImpl implements CountryBridge {
                             }
                         }
                 )
+
+        countryConfigurationCache = Caffeine.newBuilder()
+                .expireAfterWrite(cacheConfiguration.countries, TimeUnit.HOURS)
+                .build(
+                        new CacheLoader<String, CountryConfiguration>() {
+                            @Override
+                            CountryConfiguration load(String key) throws Exception {
+                                getUnCachedCountry(key)
+                            }
+                        }
+                )
     }
 
     @Override
     List<CountryConfigurationEntry> getCountryConfiguration(String countryId) {
-        countryCache.get(countryId)
+        countryEntryCache.get(countryId)
     }
 
     @Override
@@ -87,6 +106,11 @@ class CountryGatewayBridgeImpl implements CountryBridge {
         countriesEnabledCache.get(Locale.forLanguageTag(locale).language)
     }
 
+    @Override
+    CountryConfiguration getCountry(String countryId) {
+        countryConfigurationCache.get(countryId)
+    }
+
     private def getUnCachedCountryConfiguration(String countryId) {
 
         def requestUri = UriComponentsBuilder.fromUri(regionalConfigUrl.resolve(PUBLIC_COUNTRY_ENDPOINT))
@@ -103,6 +127,70 @@ class CountryGatewayBridgeImpl implements CountryBridge {
                 ?.collect {
                     new CountryConfigurationEntry(key: it.key, value: it.value)
                 }
+    }
+
+    def getUnCachedCountry(String countryId) {
+
+        def countryConfiguration = new CountryConfiguration()
+
+        def requestUri = UriComponentsBuilder.fromUri(regionalConfigUrl.resolve(PUBLIC_COUNTRY_ENDPOINT))
+                .path("/{countryId}")
+                .buildAndExpand(countryId)
+                .toUriString()
+                .toURI()
+
+        def params = httpBridge.get(
+                requestUri,
+                null
+        )
+                ?.config
+
+        params.each({
+            if (it["key"].contains("name"))
+                countryConfiguration.translations.add(new CountryTranslation(
+                        name: it["key"],
+                        value: it["value"])
+                )
+        })
+
+        countryConfiguration.countryBasicInfo = new CountryBasicInfo(
+                language: params.find({ it["key"] == "language" })?.value,
+                locale: params.find({ it["key"] == "locale" })?.value,
+                countryCode: params.find({ it["key"] == "country_code" })?.value,
+                lat: new BigDecimal(params.find({ it["key"] == "lat" })?.value),
+                lng: new BigDecimal(params.find({ it["key"] == "lng" })?.value),
+                flag: params.find({ it["key"] == "flag" })?.value,
+        )
+
+        countryConfiguration.countryContactInfo = new CountryContactInfo(
+                whatsappNumber: params.find({ it["key"] == "whatsapp_number" })?.value,
+                phoneNumber: params.find({ it["key"] == "phone_number" })?.value,
+                direction: params.find({ it["key"] == "direction" })?.value
+        )
+
+        countryConfiguration.currency = new CountryCurrency(
+                currencyCode: params.find({ it["key"] == "currency_code" })?.value,
+                currencySymbol: params.find({ it["key"] == "currency" })?.value
+        )
+
+        countryConfiguration.legalUrlsCountry = new LegalUrlsCountry(
+                tyc: params.find({ it["key"] == "tyc" })?.value,
+                pp: params.find({ it["key"] == "pp" })?.value,
+                cookies: params.find({ it["key"] == "cookies" })?.value,
+                faqs: params.find({ it["key"] == "faqs" })?.value
+        )
+
+        countryConfiguration.countryPayment = new CountryPaymentInfo(
+                wabiPayEnabled: params.find({ it["key"] == "wabipay_enabled" })?.value,
+                wabiPayCreditEnabled: params.find({ it["key"] == "wabipay_wabicredits_enabled" })?.value,
+                wabiPayMoneyEnabled: params.find({ it["key"] == "wabipay_money_enabled" })?.value,
+                wabiPayWcToMoneyWhenReleasingEnabled: params.find({ it["key"] == "wabipay_convert_wc_to_money_when_releasing" })?.value,
+                displayFeeOnSupplierAdm: params.find({ it["key"] == "display_fee_on_supplier_adm" })?.value,
+                serviceFeeType: params.find({ it["key"] == "service_fee_type" })?.value,
+                serviceFee: new BigDecimal(params.find({ it["key"] == "service_fee" })?.value)
+        )
+
+        return countryConfiguration
     }
 
     private def getUnCachedHomeCountries(String locale) {
