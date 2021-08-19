@@ -2,8 +2,8 @@ package bff.bridge.http
 
 import bff.bridge.CountryBridge
 import bff.configuration.CacheConfigurationProperties
-import bff.model.CountryConfigurationEntry
 import bff.model.Country
+import bff.model.CountryConfigurationEntry
 import bff.model.LegalUrlsCountry
 import bff.service.HttpBridge
 import com.github.benmanes.caffeine.cache.CacheLoader
@@ -17,6 +17,13 @@ import javax.annotation.PostConstruct
 import java.util.concurrent.TimeUnit
 
 class CountryGatewayBridgeImpl implements CountryBridge {
+
+    private static final String SELF_COUNTRY_ENDPOINT = "country/me"
+
+    private static final String PUBLIC_COUNTRY_ENDPOINT = "country/public"
+
+    private static final String PUBLIC_ENABLED_COUNTRY_ENDPOINT = "country/public/enabled"
+
     @Autowired
     private HttpBridge httpBridge
 
@@ -28,7 +35,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
 
     private LoadingCache<String, List<CountryConfigurationEntry>> countryCache
 
-    private LoadingCache<String, List<Country>> countriesEnabled
+    private LoadingCache<String, List<Country>> countriesEnabledCache
 
     @PostConstruct
     void init() {
@@ -43,7 +50,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
                         }
                 )
 
-        countriesEnabled = Caffeine.newBuilder()
+        countriesEnabledCache = Caffeine.newBuilder()
                 .expireAfterWrite(cacheConfiguration.countries, TimeUnit.HOURS)
                 .build(
                         new CacheLoader<String, List<Country>>() {
@@ -62,43 +69,69 @@ class CountryGatewayBridgeImpl implements CountryBridge {
 
     @Override
     List<CountryConfigurationEntry> getCustomerCountryConfiguration(String accessToken) {
-        httpBridge.get(
-                UriComponentsBuilder.fromUri(regionalConfigUrl.resolve("country/me")).toUriString().toURI(),
-                "Bearer $accessToken")?.config?.collect {
-            new CountryConfigurationEntry(key: it.key, value: it.value)
-        }
-    }
 
-    private def getUnCachedCountryConfiguration(String countryId) {
+        def requestUri = UriComponentsBuilder.fromUri(regionalConfigUrl.resolve(SELF_COUNTRY_ENDPOINT)).toUriString().toURI()
+
         httpBridge.get(
-                UriComponentsBuilder.fromUri(regionalConfigUrl.resolve("country/public/$countryId")).toUriString().toURI(),
-                null)?.config?.collect {
-            new CountryConfigurationEntry(key: it.key, value: it.value)
-        }
+                requestUri,
+                "Bearer $accessToken"
+        )
+                ?.config
+                ?.collect {
+                    new CountryConfigurationEntry(key: it.key, value: it.value)
+                }
     }
 
     @Override
     List<Country> getHomeCountries(String locale) {
-        countriesEnabled.get(Locale.forLanguageTag(locale).language)
+        countriesEnabledCache.get(Locale.forLanguageTag(locale).language)
+    }
+
+    private def getUnCachedCountryConfiguration(String countryId) {
+
+        def requestUri = UriComponentsBuilder.fromUri(regionalConfigUrl.resolve(PUBLIC_COUNTRY_ENDPOINT))
+                .path("/{countryId}")
+                .buildAndExpand(countryId)
+                .toUriString()
+                .toURI()
+
+        httpBridge.get(
+                requestUri,
+                null
+        )
+                ?.config
+                ?.collect {
+                    new CountryConfigurationEntry(key: it.key, value: it.value)
+                }
     }
 
     private def getUnCachedHomeCountries(String locale) {
+
+        def requestUri = UriComponentsBuilder.fromUri(regionalConfigUrl.resolve(PUBLIC_ENABLED_COUNTRY_ENDPOINT))
+                .queryParam("keys", "name-en,name-$locale,flag,tyc,pp,cookies,faqs")
+                .toUriString()
+                .toURI()
+
         httpBridge.get(
-                UriComponentsBuilder.fromUri(regionalConfigUrl.resolve("country/public/enabled?keys=name-en,name-$locale,flag,tyc,pp,cookies,faqs")).toUriString().toURI(),
+                requestUri,
                 null,
                 null,
-                List)?.collect {
-            new Country(
-                    id: it.id,
-                    name: it["config"]?.find({ config -> config["key"].contains("name-$locale")})?.value ?: it["config"]?.find({ config -> config["key"].contains("name-en")})?.value,
-                    flag: it["config"]?.find({ config -> config["key"].contains("flag")})?.value,
-                    legalUrls: new LegalUrlsCountry(
-                            tyc: it["config"]?.find({ config -> config["key"].contains("tyc")})?.value,
-                            pp: it["config"]?.find({ config -> config["key"].contains("pp")})?.value,
-                            cookies: it["config"]?.find({ config -> config["key"].contains("cookies")})?.value,
-                            faqs: it["config"]?.find({ config -> config["key"].contains("faqs")})?.value,
+                List
+        )
+                ?.collect {
+                    new Country(
+                            id: it.id,
+                            name: it["config"]?.find({ config -> config["key"].contains("name-$locale") })?.value ?: it["config"]?.find({ config -> config["key"].contains("name-en") })?.value,
+                            flag: it["config"]?.find({ config -> config["key"].contains("flag") })?.value,
+                            legalUrls: new LegalUrlsCountry(
+                                    tyc: it["config"]?.find({ config -> config["key"].contains("tyc") })?.value,
+                                    pp: it["config"]?.find({ config -> config["key"].contains("pp") })?.value,
+                                    cookies: it["config"]?.find({ config -> config["key"].contains("cookies") })?.value,
+                                    faqs: it["config"]?.find({ config -> config["key"].contains("faqs") })?.value,
+                            )
                     )
-            )
-        }
+                }
+                ?.sort({ it.name })
+
     }
 }
