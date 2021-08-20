@@ -1,0 +1,77 @@
+type CountryConfigurationEntry {
+  key: String
+  value: String
+}
+
+input CountryHomeInput {
+  locale: String!
+}
+
+type Country {
+  id: String!
+  name: String!
+  flag(size: CountryFlagSize!): String!
+  legalUrls: [LegalUrl]!
+  detail:Detail!
+  language:Language!
+  contactInfo:ContactInfo!
+  currency:Currency!
+  fee:Fee!
+  wabiPay:WabiPay!
+}
+
+type Detail {
+  countryCode:String
+}
+
+type Language{
+  language:String!
+  locale:String!
+  direction:String!
+  translations: [CountryTranslation]!
+}
+
+type ContactInfo {
+  whatsappNumber:String!
+  phoneNumber:String!
+}
+
+type Currency {
+  symbol:String!
+  code:String!
+}
+
+type CountryTranslation {
+  language:String!
+  value:String!
+}
+
+type WabiPay {
+  enabled:Boolean!
+  creditEnabled:Boolean!
+  moneyEnabled:Boolean!
+  wcToMoneyWhenReleasingEnabled:Boolean!
+}
+
+type Fee{
+  serviceFeeType:String!
+  serviceFee:Float!
+  displayFeeOnSupplierAdm:Boolean!
+}
+
+type LegalUrl{
+  type:String!
+  value:String!
+  label:String!
+}
+
+enum CountryFlagSize {
+  SIZE_30x20, SIZE_60x40, SIZE_120x80
+}
+
+type LegalUrlsCountry {
+  tyc: String
+  pp: String
+  cookies: String
+  faqs: String
+}
