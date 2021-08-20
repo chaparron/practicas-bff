@@ -11,7 +11,7 @@ interface AuthServerBridge {
 
     Credentials userRegistration(String name, String surname, String username, String password, String repeatPassword)
 
-    void resetPassword(String username)
+    Boolean resetPassword(String username)
 
     def resetPasswordConfirm(String token, String password, Long user_id)
 
