@@ -1,5 +1,6 @@
 package bff.bridge
 
+import bff.bridge.data.CountryGatewayBridgeImplTestData
 import bff.bridge.http.CountryGatewayBridgeImpl
 import bff.configuration.CacheConfigurationProperties
 import bff.service.HttpBridge
@@ -15,7 +16,7 @@ import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner.class)
-class CountryGatewayBridgeImplTest {
+class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
 
     @Mock
     private HttpBridge httpBridge
@@ -26,179 +27,6 @@ class CountryGatewayBridgeImplTest {
     @InjectMocks
     private CountryGatewayBridgeImpl countryBridge = new CountryGatewayBridgeImpl()
 
-    private static String countryEsPublicStr =
-            "{\n" +
-            "    \"id\": \"es\",\n" +
-            "    \"config\": [\n" +
-            "        {\n" +
-            "            \"key\": \"name\",\n" +
-            "            \"value\": \"España\",\n" +
-            "            \"private\": false\n" +
-            "        },\n" +
-            "        {\n" +
-            "            \"key\": \"name-en\",\n" +
-            "            \"value\": \"Spain\",\n" +
-            "            \"private\": false\n" +
-            "        },\n" +
-            "        {\n" +
-            "            \"key\": \"locale\",\n" +
-            "            \"value\": \"es_ES\",\n" +
-            "            \"private\": false\n" +
-            "        }\n" +
-            "    ]\n" +
-            "}"
-
-    private static String countryArPublicStr =
-            "{\n" +
-            "    \"id\": \"ar\",\n" +
-            "    \"config\": [\n" +
-            "        {\n" +
-            "            \"key\": \"name\",\n" +
-            "            \"value\": \"Argentina\",\n" +
-            "            \"private\": false\n" +
-            "        },\n" +
-            "        {\n" +
-            "            \"key\": \"name-en\",\n" +
-            "            \"value\": \"Argentina\",\n" +
-            "            \"private\": false\n" +
-            "        },\n" +
-            "        {\n" +
-            "            \"key\": \"locale\",\n" +
-            "            \"value\": \"es_AR\",\n" +
-            "            \"private\": false\n" +
-            "        }\n" +
-            "    ]\n" +
-            "}"
-
-    private static String homeCountriesResponse = "[\n" +
-            "  {\n" +
-            "    \"id\": \"eg\",\n" +
-            "    \"config\": [\n" +
-            "      {\n" +
-            "        \"key\": \"name\",\n" +
-            "        \"value\": \"Egipto\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"name-ar\",\n" +
-            "        \"value\": \"Egipto\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"name-en\",\n" +
-            "        \"value\": \"Egypt\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"flag\",\n" +
-            "        \"value\": \"7ab0fd14-efa9-11eb-9a03-0242ac1300eg.png\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"tyc\",\n" +
-            "        \"value\": \"https://wabi.force.com/wabi2b/s/article/Wabi2b-Store-Egypt-T-C?language=ar_EG\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"pp\",\n" +
-            "        \"value\": \"https://wabi.force.com/wabi2b/s/article/Wabi2b-Store-Egypt-P-P?language=ar_EG\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"cookies\",\n" +
-            "        \"value\": \"https://wabi.force.com/wabi2b/s/article/Wabi2b-Store-Egypt-P-C?language=ar_EG\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"faqs\",\n" +
-            "        \"value\": \"https://wabi.force.com/wabi2b/s/topic/0TO2E00000029SOWAY/preguntas-frecuentes?language=ar_EG\",\n" +
-            "        \"private\": false\n" +
-            "      }\n" +
-            "    ],\n" +
-            "    \"enabled\": true\n" +
-            "  },\n" +
-            "  {\n" +
-            "    \"id\": \"ph\",\n" +
-            "    \"config\": [\n" +
-            "      {\n" +
-            "        \"key\": \"name\",\n" +
-            "        \"value\": \"Philippines\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"name-ar\",\n" +
-            "        \"value\": \"فيلبيني\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"name-en\",\n" +
-            "        \"value\": \"Philippines\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"flag\",\n" +
-            "        \"value\": \"7ab0fd14-efa9-11eb-9a03-0242ac1300ph.png\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"tyc\",\n" +
-            "        \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Philipines-T-C?language=en_US\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"pp\",\n" +
-            "        \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Philipines-P-P?language=en_US\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"cookies\",\n" +
-            "        \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Algeria-P-C?language=en_US\",\n" +
-            "        \"private\": false\n" +
-            "      }\n" +
-            "    ],\n" +
-            "    \"enabled\": true\n" +
-            "  },\n" +
-            "  {\n" +
-            "    \"id\": \"ma\",\n" +
-            "    \"config\": [\n" +
-            "      {\n" +
-            "        \"key\": \"name\",\n" +
-            "        \"value\": \"Morocco\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"name-ar\",\n" +
-            "        \"value\": \"المغرب\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"name-en\",\n" +
-            "        \"value\": \"Morocco\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"flag\",\n" +
-            "        \"value\": \"7ab0fd14-efa9-11eb-9a03-0242ac1300ma.png\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"tyc\",\n" +
-            "        \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Morocco-T-C?language=en_US\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"pp\",\n" +
-            "        \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Morocco-P-P?language=en_US\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"cookies\",\n" +
-            "        \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Morocco-P-C?language=en_US\",\n" +
-            "        \"private\": false\n" +
-            "      }\n" +
-            "    ],\n" +
-            "    \"enabled\": true\n" +
-            "  }]"
     @Before
     void init() {
         Mockito.when(cacheConfiguration.countries).thenReturn(1L)
@@ -211,32 +39,32 @@ class CountryGatewayBridgeImplTest {
         Mockito.when(
                 httpBridge.get(
                         (URI) ArgumentMatchers.any(URI.class),
-                        (String)ArgumentMatchers.isNull()))
+                        (String) ArgumentMatchers.isNull()))
                 .thenReturn(
                         new JsonSlurper().parseText(countryEsPublicStr) as Map)
 
         def countryConfigs = countryBridge.getCountryConfiguration("es")
         Assert.assertNotNull(countryConfigs)
         Assert.assertFalse(countryConfigs.empty)
-        Assert.assertTrue(countryConfigs.size()==3)
+        Assert.assertTrue(countryConfigs.size() == 3)
 
         countryConfigs = countryBridge.getCountryConfiguration("es")
         Assert.assertNotNull(countryConfigs)
         Assert.assertFalse(countryConfigs.empty)
-        Assert.assertTrue(countryConfigs.size()==3)
+        Assert.assertTrue(countryConfigs.size() == 3)
 
         Mockito.verify(httpBridge, Mockito.times(1))
                 .get(
                         (URI) ArgumentMatchers.any(URI.class),
-                        (String)ArgumentMatchers.isNull())
+                        (String) ArgumentMatchers.isNull())
     }
 
     @Test
     void getCountryConfiguration_NoResponse() {
         Mockito.when(
                 httpBridge.get(
-                        (URI)ArgumentMatchers.any(URI.class),
-                        (String)ArgumentMatchers.isNull()))
+                        (URI) ArgumentMatchers.any(URI.class),
+                        (String) ArgumentMatchers.isNull()))
                 .thenReturn(null)
 
         def countryConfigs = countryBridge.getCountryConfiguration("es")
@@ -257,14 +85,14 @@ class CountryGatewayBridgeImplTest {
 
         Assert.assertNotNull(countryConfigs)
         Assert.assertFalse(countryConfigs.empty)
-        Assert.assertTrue(countryConfigs.size()==3)
+        Assert.assertTrue(countryConfigs.size() == 3)
     }
 
     @Test
     void getCustomerCountryConfiguration_NoResponse() {
         Mockito.when(
                 httpBridge.get(
-                        (URI)ArgumentMatchers.any(URI.class),
+                        (URI) ArgumentMatchers.any(URI.class),
                         ArgumentMatchers.anyString()))
                 .thenReturn(null)
 
@@ -277,8 +105,8 @@ class CountryGatewayBridgeImplTest {
     void getHomeCountries() {
         Mockito.when(
                 httpBridge.get(
-                        (URI)Mockito.any(URI.class),
-                        (String)Mockito.isNull(),
+                        (URI) Mockito.any(URI.class),
+                        (String) Mockito.isNull(),
                         Mockito.isNull(),
                         Mockito.any(Class.class)))
                 .thenReturn(
@@ -287,18 +115,18 @@ class CountryGatewayBridgeImplTest {
         def countriesHome = countryBridge.getHomeCountries("es")
         Assert.assertNotNull(countriesHome)
         Assert.assertFalse(countriesHome.empty)
-        Assert.assertTrue(countriesHome.size()==2)
+        Assert.assertTrue(countriesHome.size() == 2)
 
         countriesHome = countryBridge.getHomeCountries("es-ES")
         Assert.assertNotNull(countriesHome)
         Assert.assertFalse(countriesHome.empty)
-        Assert.assertTrue(countriesHome.size()==2)
+        Assert.assertTrue(countriesHome.size() == 2)
 
 
         Mockito.verify(httpBridge, Mockito.times(1))
                 .get(
-                        (URI)Mockito.any(URI.class),
-                        (String)Mockito.isNull(),
+                        (URI) Mockito.any(URI.class),
+                        (String) Mockito.isNull(),
                         Mockito.isNull(),
                         Mockito.any(Class.class))
     }
@@ -307,8 +135,8 @@ class CountryGatewayBridgeImplTest {
     void checkHomeCountriesOrderByCountryName() {
         Mockito.when(
                 httpBridge.get(
-                        (URI)Mockito.any(URI.class),
-                        (String)Mockito.isNull(),
+                        (URI) Mockito.any(URI.class),
+                        (String) Mockito.isNull(),
                         Mockito.isNull(),
                         Mockito.any(Class.class)))
                 .thenReturn(
@@ -317,43 +145,81 @@ class CountryGatewayBridgeImplTest {
         def countriesHome = countryBridge.getHomeCountries("es")
         Assert.assertNotNull(countriesHome)
         Assert.assertFalse(countriesHome.empty)
-        Assert.assertTrue(countriesHome.size()==3)
-        Assert.assertEquals("Egypt",countriesHome.get(0).name)
-        Assert.assertEquals("Morocco",countriesHome.get(1).name)
-        Assert.assertEquals("Philippines",countriesHome.get(2).name)
+        Assert.assertTrue(countriesHome.size() == 3)
+        Assert.assertEquals("Egypt", countriesHome.get(0).name)
+        Assert.assertEquals("Morocco", countriesHome.get(1).name)
+        Assert.assertEquals("Philippines", countriesHome.get(2).name)
 
 
         countriesHome = countryBridge.getHomeCountries("es-ES")
         Assert.assertNotNull(countriesHome)
         Assert.assertFalse(countriesHome.empty)
-        Assert.assertTrue(countriesHome.size()==3)
-        Assert.assertEquals("Egypt",countriesHome.get(0).name)
-        Assert.assertEquals("Morocco",countriesHome.get(1).name)
-        Assert.assertEquals("Philippines",countriesHome.get(2).name)
+        Assert.assertTrue(countriesHome.size() == 3)
+        Assert.assertEquals("Egypt", countriesHome.get(0).name)
+        Assert.assertEquals("Morocco", countriesHome.get(1).name)
+        Assert.assertEquals("Philippines", countriesHome.get(2).name)
 
         countriesHome = countryBridge.getHomeCountries("ar")
         Assert.assertNotNull(countriesHome)
         Assert.assertFalse(countriesHome.empty)
-        Assert.assertTrue(countriesHome.size()==3)
-        Assert.assertEquals("Egipto",countriesHome.get(0).name)
-        Assert.assertEquals("المغرب",countriesHome.get(1).name)
-        Assert.assertEquals("فيلبيني",countriesHome.get(2).name)
+        Assert.assertTrue(countriesHome.size() == 3)
+        Assert.assertEquals("Egipto", countriesHome.get(0).name)
+        Assert.assertEquals("المغرب", countriesHome.get(1).name)
+        Assert.assertEquals("فيلبيني", countriesHome.get(2).name)
 
 
         countriesHome = countryBridge.getHomeCountries("ar-AR")
         Assert.assertNotNull(countriesHome)
         Assert.assertFalse(countriesHome.empty)
-        Assert.assertTrue(countriesHome.size()==3)
-        Assert.assertEquals("Egipto",countriesHome.get(0).name)
-        Assert.assertEquals("المغرب",countriesHome.get(1).name)
-        Assert.assertEquals("فيلبيني",countriesHome.get(2).name)
+        Assert.assertTrue(countriesHome.size() == 3)
+        Assert.assertEquals("Egipto", countriesHome.get(0).name)
+        Assert.assertEquals("المغرب", countriesHome.get(1).name)
+        Assert.assertEquals("فيلبيني", countriesHome.get(2).name)
 
 
         Mockito.verify(httpBridge, Mockito.times(2))
                 .get(
-                        (URI)Mockito.any(URI.class),
-                        (String)Mockito.isNull(),
+                        (URI) Mockito.any(URI.class),
+                        (String) Mockito.isNull(),
                         Mockito.isNull(),
                         Mockito.any(Class.class))
+    }
+
+    @Test
+    void getCountryNewResponseMap() {
+
+        Mockito.when(
+                httpBridge.get(
+                        (URI) ArgumentMatchers.any(URI.class),
+                        (String) ArgumentMatchers.isNull()))
+                .thenReturn(
+                        new JsonSlurper().parseText(publicCountryResponse) as Map)
+
+        def country = countryBridge.getCountry("ru")
+        Assert.assertNotNull(country)
+
+        country = countryBridge.getCountry("ar")
+        Assert.assertNotNull(country)
+
+        country = countryBridge.getCountry("ru")
+        Assert.assertNotNull(country)
+        Assert.assertNotNull(country.legalUrls)
+        Assert.assertNotNull(country.detail)
+        Assert.assertNotNull(country.language)
+        Assert.assertNotNull(country.language.translations)
+        Assert.assertNotNull(country.contactInfo)
+        Assert.assertNotNull(country.currency)
+        Assert.assertNotNull(country.fee)
+        Assert.assertNotNull(country.wabiPay)
+
+        Assert.assertEquals("ru-RU", country.language.locale)
+        Assert.assertEquals(8, country.language.translations.size())
+        Assert.assertEquals("WABICREDITS_PERCENTAGE", country.fee.serviceFeeType)
+        Assert.assertEquals("+7", country.detail.phonePrefix)
+
+        Mockito.verify(httpBridge, Mockito.times(2))
+                .get(
+                        (URI) ArgumentMatchers.any(URI.class),
+                        (String) ArgumentMatchers.isNull())
     }
 }

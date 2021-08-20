@@ -1,5 +1,6 @@
 package bff.bridge
 
+import bff.bridge.data.CategoryBridgeImplTestData
 import bff.bridge.http.CategoryBridgeImpl
 import bff.configuration.CacheConfigurationProperties
 import bff.model.Category
@@ -19,12 +20,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
 @RunWith(MockitoJUnitRunner.class)
-class CategoryBridgeImplTest {
-    private static final String JWT_AR = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48"
-    private static final String JWT_ES = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJlcyJ9XX19.2n-uzIWGZMqK53Kea-tzHjnMw8fl2PD-fXbR3zYwAQU"
-    private static final CoordinatesInput COORD_INPUT_AR = new CoordinatesInput(lat: 1, lng: 1, countryId: "ar")
-    private static final CoordinatesInput COORD_INPUT_ES = new CoordinatesInput(lat: 2, lng: 2, countryId: "es")
-    private static final CoordinatesInput COORD_INPUT_AR_NO_COUNTRY_ID = new CoordinatesInput(lat: 1, lng: 1)
+class CategoryBridgeImplTest extends CategoryBridgeImplTestData{
 
     @Mock
     RestOperations http
@@ -34,11 +30,6 @@ class CategoryBridgeImplTest {
 
     @InjectMocks
     CategoryBridgeImpl categoryBridge = new CategoryBridgeImpl(root: new URI("http://localhost:3000/"))
-
-    private final def CATEGORIES_API_RESPONSE = [
-            new Category(id: 1L, parentId: 1L, name: "Test1", enabled: true),
-            new Category(id: 2L, parentId: 2L, name: "Test2", enabled: true)
-    ]
 
     @Before
     void init() {

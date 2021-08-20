@@ -185,7 +185,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
         def fee = new Fee(
                 displayFeeOnSupplierAdm: params.find({ it["key"] == "display_fee_on_supplier_adm" })?.value,
                 serviceFeeType: params.find({ it["key"] == "service_fee_type" })?.value,
-                serviceFee: new BigDecimal(params.find({ it["key"] == "service_fee" })?.value)
+                serviceFee: new BigDecimal(params.find({ it["key"] == "service_fee" })?.value?:0)
         )
 
         def wabiPay = new WabiPay(
