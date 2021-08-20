@@ -94,7 +94,7 @@ class AuthServerBridgeImpl implements AuthServerBridge {
     }
 
     @Override
-    void resetPassword(String username) {
+    Boolean resetPassword(String username) {
         try {
             http.exchange(
                     RequestEntity.method(HttpMethod.POST, root.resolve('/user/password/reset/request'))
@@ -104,7 +104,7 @@ class AuthServerBridgeImpl implements AuthServerBridge {
                                     username: username
                             ]
                     )
-                    , Map)
+                    , Boolean).body
         } catch (RestClientException e) {
             throw new RuntimeException("failed to reset password", e)
         }
