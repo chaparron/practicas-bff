@@ -11,13 +11,13 @@ type Country {
   id: String!
   name: String!
   flag(size: CountryFlagSize!): String!
-  legalUrls: [LegalUrl]!
-  detail:Detail!
-  language:Language!
-  contactInfo:ContactInfo!
-  currency:Currency!
-  fee:Fee!
-  wabiPay:WabiPay!
+  legalUrls: [LegalUrl]
+  detail:Detail
+  language:Language
+  contactInfo:ContactInfo
+  currency:Currency
+  fee:Fee
+  wabiPay:WabiPay
 }
 
 type Detail {
@@ -60,9 +60,9 @@ type Fee{
 }
 
 type LegalUrl{
-  type:String!
-  value:String!
-  label:String!
+  type:String
+  value:String
+  label:String
 }
 
 enum CountryFlagSize {

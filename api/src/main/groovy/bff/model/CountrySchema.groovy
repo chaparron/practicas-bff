@@ -6,7 +6,7 @@ class Country {
     String id
     String name
     String flag
-    LegalUrlsCountry legalUrls
+    List<LegalUrl> legalUrls = []
     Detail detail
     Language language
     ContactInfo contactInfo
@@ -16,44 +16,48 @@ class Country {
 }
 
 class Detail {
-    String phonePrefix
     String countryCode
 }
 
 class Language{
     String language
     String locale
+    String direction
     List<CountryTranslation> translations = []
 }
 
 class ContactInfo {
     String whatsappNumber
     String phoneNumber
-    String direction
 }
 
 class Currency {
-    String currencySymbol
-    String currencyCode
+    String symbol
+    String code
 }
 
 class CountryTranslation {
-    String name
     String language
     String value
 }
 
 class WabiPay {
-    Boolean wabiPayEnabled
-    Boolean wabiPayCreditEnabled
-    Boolean wabiPayMoneyEnabled
-    Boolean wabiPayWcToMoneyWhenReleasingEnabled
+    Boolean enabled
+    Boolean creditEnabled
+    Boolean moneyEnabled
+    Boolean wcToMoneyWhenReleasingEnabled
 }
 
 class Fee{
     String serviceFeeType
     BigDecimal serviceFee
     Boolean displayFeeOnSupplierAdm
+}
+
+class LegalUrl{
+    String type
+    String value
+    String label
 }
 
 class CountryConfigurationEntry {

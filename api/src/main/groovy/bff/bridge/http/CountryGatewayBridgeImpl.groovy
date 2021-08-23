@@ -9,15 +9,16 @@ import bff.model.Currency
 import bff.model.Detail
 import bff.model.Fee
 import bff.model.Language
+import bff.model.LegalUrl
 import bff.model.WabiPay
 import bff.model.CountryTranslation
-import bff.model.LegalUrlsCountry
 import bff.service.HttpBridge
 import com.github.benmanes.caffeine.cache.CacheLoader
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.MessageSource
 import org.springframework.web.util.UriComponentsBuilder
 
 import javax.annotation.PostConstruct
@@ -39,6 +40,9 @@ class CountryGatewayBridgeImpl implements CountryBridge {
 
     @Autowired
     private CacheConfigurationProperties cacheConfiguration
+
+    @Autowired
+    private MessageSource messageSource
 
     private LoadingCache<String, List<CountryConfigurationEntry>> countryEntryCache
 
@@ -148,51 +152,63 @@ class CountryGatewayBridgeImpl implements CountryBridge {
         params.each({
             if (it["key"].matches("^name-[a-zA-Z]{2}"))
                 translations.add(new CountryTranslation(
-                        name: it["key"],
                         language: Locale.forLanguageTag(it["key"].toString().split("-")[1]).language,
                         value: it["value"])
                 )
         })
 
-        def legalUrls = new LegalUrlsCountry(
-                tyc: params.find({ it["key"] == "tyc" })?.value,
-                pp: params.find({ it["key"] == "pp" })?.value,
-                cookies: params.find({ it["key"] == "cookies" })?.value,
-                faqs: params.find({ it["key"] == "faqs" })?.value
-        )
+        def targetLocale = Locale.forLanguageTag(params.find({ it["key"] == "locale" })?.value)
+
+        def legalUrls = [
+                new LegalUrl(
+                        type: "tyc",
+                        label: messageSource.getMessage("terms", null, targetLocale),
+                        value: params.find({ it["key"] == "tyc" })?.value),
+                new LegalUrl(
+                        type: "pp",
+                        label: messageSource.getMessage("pp", null, targetLocale),
+                        value: params.find({ it["key"] == "pp" })?.value),
+                new LegalUrl(
+                        type: "cookies",
+                        label: messageSource.getMessage("cookie_privacy", null, targetLocale),
+                        value: params.find({ it["key"] == "cookies" })?.value),
+                new LegalUrl(
+                        type: "faqs",
+                        label: messageSource.getMessage("terms", null, targetLocale),
+                        value: params.find({ it["key"] == "faqs" })?.value)
+        ]
 
         def detail = new Detail(
-                phonePrefix: params.find({ it["key"] == "country_code" })?.value,
-                countryCode: Locale.forLanguageTag(countryId).language
+                countryCode: params.find({ it["key"] == "country_code" })?.value,
         )
 
         def language = new Language(
                 language: params.find({ it["key"] == "language" })?.value,
                 locale: params.find({ it["key"] == "locale" })?.value,
+                direction: params.find({ it["key"] == "direction" })?.value,
                 translations: translations
         )
 
         def contactInfo = new ContactInfo(
                 whatsappNumber: params.find({ it["key"] == "whatsapp_number" })?.value,
                 phoneNumber: params.find({ it["key"] == "phone_number" })?.value,
-                direction: params.find({ it["key"] == "direction" })?.value
         )
 
         def currency = new Currency(
-                currencyCode: params.find({ it["key"] == "currency_code" })?.value,
-                currencySymbol: params.find({ it["key"] == "currency" })?.value
+                code: params.find({ it["key"] == "currency_code" })?.value,
+                symbol: params.find({ it["key"] == "currency" })?.value
         )
         def fee = new Fee(
                 displayFeeOnSupplierAdm: params.find({ it["key"] == "display_fee_on_supplier_adm" })?.value,
                 serviceFeeType: params.find({ it["key"] == "service_fee_type" })?.value,
-                serviceFee: new BigDecimal(params.find({ it["key"] == "service_fee" })?.value?:0)
+                serviceFee: new BigDecimal(params.find({ it["key"] == "service_fee" })?.value ?: 0)
         )
 
         def wabiPay = new WabiPay(
-                wabiPayEnabled: params.find({ it["key"] == "wabipay_enabled" })?.value,
-                wabiPayCreditEnabled: params.find({ it["key"] == "wabipay_wabicredits_enabled" })?.value,
-                wabiPayMoneyEnabled: params.find({ it["key"] == "wabipay_money_enabled" })?.value,
-                wabiPayWcToMoneyWhenReleasingEnabled: params.find({ it["key"] == "wabipay_convert_wc_to_money_when_releasing" })?.value,
+                enabled: params.find({ it["key"] == "wabipay_enabled" })?.value,
+                creditEnabled: params.find({ it["key"] == "wabipay_wabicredits_enabled" })?.value,
+                moneyEnabled: params.find({ it["key"] == "wabipay_money_enabled" })?.value,
+                wcToMoneyWhenReleasingEnabled: params.find({ it["key"] == "wabipay_convert_wc_to_money_when_releasing" })?.value,
         )
 
         return new Country(
@@ -212,7 +228,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
     private def getUnCachedHomeCountries(String locale) {
 
         def requestUri = UriComponentsBuilder.fromUri(regionalConfigUrl.resolve(PUBLIC_ENABLED_COUNTRY_ENDPOINT))
-                .queryParam("keys", "name-en,name-$locale,flag,tyc,pp,cookies,faqs")
+                .queryParam("keys", "name-en,name-$locale,flag,tyc,pp,cookies,faqs,locale")
                 .toUriString()
                 .toURI()
 
@@ -223,16 +239,29 @@ class CountryGatewayBridgeImpl implements CountryBridge {
                 List
         )
                 ?.collect {
+                    def targetLocale = Locale.forLanguageTag(it["config"]?.find({ it["key"] == "locale" })?.value)
                     new Country(
                             id: it.id,
-                            name: it["config"]?.find({ config -> config["key"].contains("name-$locale") })?.value ?: it["config"]?.find({ config -> config["key"].contains("name-en") })?.value,
+                            name: it["config"]?.find({ config -> config["key"].contains("name-$targetLocale") })?.value ?: it["config"]?.find({ config -> config["key"].contains("name-en") })?.value,
                             flag: it["config"]?.find({ config -> config["key"].contains("flag") })?.value,
-                            legalUrls: new LegalUrlsCountry(
-                                    tyc: it["config"]?.find({ config -> config["key"].contains("tyc") })?.value,
-                                    pp: it["config"]?.find({ config -> config["key"].contains("pp") })?.value,
-                                    cookies: it["config"]?.find({ config -> config["key"].contains("cookies") })?.value,
-                                    faqs: it["config"]?.find({ config -> config["key"].contains("faqs") })?.value,
-                            )
+                            legalUrls: [
+                                    new LegalUrl(
+                                            type: "tyc",
+                                            label: messageSource.getMessage("terms", null, targetLocale),
+                                            value: it["config"]?.find({ it["key"] == "tyc" })?.value),
+                                    new LegalUrl(
+                                            type: "pp",
+                                            label: messageSource.getMessage("pp", null, targetLocale),
+                                            value: it["config"]?.find({ it["key"] == "pp" })?.value),
+                                    new LegalUrl(
+                                            type: "cookies",
+                                            label: messageSource.getMessage("cookie_privacy", null, targetLocale),
+                                            value: it["config"]?.find({ it["key"] == "cookies" })?.value),
+                                    new LegalUrl(
+                                            type: "faqs",
+                                            label: messageSource.getMessage("terms", null, targetLocale),
+                                            value: it["config"]?.find({ it["key"] == "faqs" })?.value)
+                            ]
                     )
                 }
                 ?.sort(
