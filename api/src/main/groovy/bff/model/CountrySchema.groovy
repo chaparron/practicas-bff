@@ -55,7 +55,7 @@ class Fee{
 }
 
 class LegalUrl{
-    String type
+    LegalUrlType type
     String value
     String label
 }
@@ -69,6 +69,13 @@ class CountryHomeInput {
     String locale
 }
 
+enum LegalUrlType {
+    PRIVACY_POLICY,
+    TERMS_AND_CONDITIONS,
+    COOKIES,
+    FAQS
+}
+
 enum CountryFlagSize implements ImageSizeEnum {
     SIZE_30x20, SIZE_60x40, SIZE_120x80
 
@@ -76,11 +83,4 @@ enum CountryFlagSize implements ImageSizeEnum {
     String value() {
         name().substring("SIZE_".length())
     }
-}
-
-class LegalUrlsCountry {
-    String tyc
-    String pp
-    String cookies
-    String faqs
 }

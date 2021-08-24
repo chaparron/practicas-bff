@@ -9,6 +9,7 @@ import bff.model.Detail
 import bff.model.Fee
 import bff.model.Language
 import bff.model.LegalUrl
+import bff.model.LegalUrlType
 import bff.model.WabiPay
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
@@ -116,19 +117,19 @@ class CountryMapperImpl implements CountryMapper {
 
         return [
                 new LegalUrl(
-                        type: "tyc",
+                        type: LegalUrlType.TERMS_AND_CONDITIONS,
                         label: messageSource.getMessage("terms", null, targetLocale),
                         value: params.find({ it["key"] == "tyc" })?.value),
                 new LegalUrl(
-                        type: "pp",
+                        type: LegalUrlType.PRIVACY_POLICY,
                         label: messageSource.getMessage("pp", null, targetLocale),
                         value: params.find({ it["key"] == "pp" })?.value),
                 new LegalUrl(
-                        type: "cookies",
+                        type: LegalUrlType.COOKIES,
                         label: messageSource.getMessage("cookie_privacy", null, targetLocale),
                         value: params.find({ it["key"] == "cookies" })?.value),
                 new LegalUrl(
-                        type: "faqs",
+                        type: LegalUrlType.FAQS,
                         label: messageSource.getMessage("terms", null, targetLocale),
                         value: params.find({ it["key"] == "faqs" })?.value)
         ]

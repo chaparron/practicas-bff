@@ -1,6 +1,6 @@
 type CountryConfigurationEntry {
-  key: String
-  value: String
+  key: String!
+  value: String!
 }
 
 input CountryHomeInput {
@@ -11,17 +11,17 @@ type Country {
   id: String!
   name: String!
   flag(size: CountryFlagSize!): String!
-  legalUrls: [LegalUrl]
-  detail:Detail
-  language:Language
-  contactInfo:ContactInfo
-  currency:Currency
-  fee:Fee
-  wabiPay:WabiPay
+  legalUrls: [LegalUrl]!
+  detail:Detail!
+  language:Language!
+  contactInfo:ContactInfo!
+  currency:Currency!
+  fee:Fee!
+  wabiPay:WabiPay!
 }
 
 type Detail {
-  countryCode:String
+  countryCode:String!
 }
 
 type Language{
@@ -60,18 +60,18 @@ type Fee{
 }
 
 type LegalUrl{
-  type:String
-  value:String
-  label:String
+  type:LegalUrlType!
+  value:String!
+  label:String!
+}
+
+enum LegalUrlType {
+  PRIVACY_POLICY,
+  TERMS_AND_CONDITIONS,
+  COOKIES,
+  FAQS
 }
 
 enum CountryFlagSize {
   SIZE_30x20, SIZE_60x40, SIZE_120x80
-}
-
-type LegalUrlsCountry {
-  tyc: String
-  pp: String
-  cookies: String
-  faqs: String
 }
