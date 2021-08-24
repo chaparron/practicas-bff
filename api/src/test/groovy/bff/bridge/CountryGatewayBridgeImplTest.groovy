@@ -3,6 +3,7 @@ package bff.bridge
 import bff.bridge.data.CountryGatewayBridgeImplTestData
 import bff.bridge.http.CountryGatewayBridgeImpl
 import bff.configuration.CacheConfigurationProperties
+import bff.mapper.CountryMapper
 import bff.service.HttpBridge
 import groovy.json.JsonSlurper
 import org.junit.Assert
@@ -14,6 +15,10 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
+import org.springframework.context.MessageSource
+import org.springframework.context.support.AbstractMessageSource
+
+import java.text.MessageFormat
 
 @RunWith(MockitoJUnitRunner.class)
 class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
@@ -27,10 +32,18 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
     @InjectMocks
     private CountryGatewayBridgeImpl countryBridge = new CountryGatewayBridgeImpl()
 
+    CountryMapper countryMapper = new CountryMapper();
+
     @Before
     void init() {
         Mockito.when(cacheConfiguration.countries).thenReturn(1L)
         countryBridge.regionalConfigUrl = new URI("http://localhost:3000/")
+        countryMapper.messageSource = new AbstractMessageSource() {
+            protected MessageFormat resolveCode(String code, Locale locale) {
+                return new MessageFormat("");
+            }
+        }
+        countryBridge.countryMapper = countryMapper
         countryBridge.init()
     }
 
@@ -146,7 +159,7 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
         Assert.assertNotNull(countriesHome)
         Assert.assertFalse(countriesHome.empty)
         Assert.assertTrue(countriesHome.size() == 3)
-        Assert.assertEquals("Egypt", countriesHome.get(0).name)
+        Assert.assertEquals("Egipto", countriesHome.get(0).name)
         Assert.assertEquals("Morocco", countriesHome.get(1).name)
         Assert.assertEquals("Philippines", countriesHome.get(2).name)
 
@@ -155,7 +168,7 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
         Assert.assertNotNull(countriesHome)
         Assert.assertFalse(countriesHome.empty)
         Assert.assertTrue(countriesHome.size() == 3)
-        Assert.assertEquals("Egypt", countriesHome.get(0).name)
+        Assert.assertEquals("Egipto", countriesHome.get(0).name)
         Assert.assertEquals("Morocco", countriesHome.get(1).name)
         Assert.assertEquals("Philippines", countriesHome.get(2).name)
 
@@ -164,8 +177,8 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
         Assert.assertFalse(countriesHome.empty)
         Assert.assertTrue(countriesHome.size() == 3)
         Assert.assertEquals("Egipto", countriesHome.get(0).name)
-        Assert.assertEquals("المغرب", countriesHome.get(1).name)
-        Assert.assertEquals("فيلبيني", countriesHome.get(2).name)
+        Assert.assertEquals("Morocco", countriesHome.get(1).name)
+        Assert.assertEquals("Philippines", countriesHome.get(2).name)
 
 
         countriesHome = countryBridge.getHomeCountries("ar-AR")
@@ -173,8 +186,8 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
         Assert.assertFalse(countriesHome.empty)
         Assert.assertTrue(countriesHome.size() == 3)
         Assert.assertEquals("Egipto", countriesHome.get(0).name)
-        Assert.assertEquals("المغرب", countriesHome.get(1).name)
-        Assert.assertEquals("فيلبيني", countriesHome.get(2).name)
+        Assert.assertEquals("Morocco", countriesHome.get(1).name)
+        Assert.assertEquals("Philippines", countriesHome.get(2).name)
 
 
         Mockito.verify(httpBridge, Mockito.times(2))
@@ -215,7 +228,7 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
         Assert.assertEquals("ru-RU", country.language.locale)
         Assert.assertEquals(8, country.language.translations.size())
         Assert.assertEquals("WABICREDITS_PERCENTAGE", country.fee.serviceFeeType)
-        Assert.assertEquals("+7", country.detail.phonePrefix)
+        Assert.assertEquals("+7", country.detail.countryCode)
 
         Mockito.verify(httpBridge, Mockito.times(2))
                 .get(

@@ -56,6 +56,11 @@ abstract class CountryGatewayBridgeImplTestData {
             "        \"private\": false\n" +
             "      },\n" +
             "      {\n" +
+            "        \"key\": \"locale\",\n" +
+            "        \"value\": \"ar-EG\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
             "        \"key\": \"name-ar\",\n" +
             "        \"value\": \"Egipto\",\n" +
             "        \"private\": false\n" +
@@ -102,6 +107,11 @@ abstract class CountryGatewayBridgeImplTestData {
             "        \"private\": false\n" +
             "      },\n" +
             "      {\n" +
+            "        \"key\": \"locale\",\n" +
+            "        \"value\": \"ms-MY\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
             "        \"key\": \"name-ar\",\n" +
             "        \"value\": \"فيلبيني\",\n" +
             "        \"private\": false\n" +
@@ -140,6 +150,11 @@ abstract class CountryGatewayBridgeImplTestData {
             "      {\n" +
             "        \"key\": \"name\",\n" +
             "        \"value\": \"Morocco\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"locale\",\n" +
+            "        \"value\": \"ar-MA\",\n" +
             "        \"private\": false\n" +
             "      },\n" +
             "      {\n" +

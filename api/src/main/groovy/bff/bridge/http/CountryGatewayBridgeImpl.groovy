@@ -25,7 +25,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
     private static final String PUBLIC_ENABLED_COUNTRY_ENDPOINT = "country/public/enabled"
 
     @Autowired
-    private CountryMapper countryMapper
+    CountryMapper countryMapper
 
     @Autowired
     private HttpBridge httpBridge

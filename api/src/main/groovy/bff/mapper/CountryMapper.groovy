@@ -47,7 +47,7 @@ class CountryMapper {
     public static final String PARAM_FAQS = "faqs"
 
     @Autowired
-    private final MessageSource messageSource
+    MessageSource messageSource
 
     /**
      * Build Country Object from original API params
