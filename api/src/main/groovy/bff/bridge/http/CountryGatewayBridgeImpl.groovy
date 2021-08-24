@@ -2,7 +2,7 @@ package bff.bridge.http
 
 import bff.bridge.CountryBridge
 import bff.configuration.CacheConfigurationProperties
-import bff.mapper.impl.CountryMapperImpl
+import bff.mapper.CountryMapper
 import bff.model.Country
 import bff.model.CountryConfigurationEntry
 import bff.service.HttpBridge
@@ -25,7 +25,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
     private static final String PUBLIC_ENABLED_COUNTRY_ENDPOINT = "country/public/enabled"
 
     @Autowired
-    private CountryMapperImpl countryMapper
+    private CountryMapper countryMapper
 
     @Autowired
     private HttpBridge httpBridge
@@ -183,7 +183,10 @@ class CountryGatewayBridgeImpl implements CountryBridge {
                 List
         )
                 ?.collect {
-                    return countryMapper.buildCountryListFromMapParams(it)
+                    return countryMapper.buildCountryFromParams(
+                            locale,
+                            it.config as ArrayList
+                    )
                 }
                 ?.sort(
                         false,
