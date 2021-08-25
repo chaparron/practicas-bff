@@ -45,22 +45,21 @@ class CountryMapper {
     public static final String PARAM_COOKIES = "cookies"
     public static final String PARAM_FAQ = "faq"
     public static final String PARAM_FAQS = "faqs"
+    public static final String PARAM_COUNTRY_CODE = "country_code"
 
     @Autowired
     MessageSource messageSource
 
     /**
      * Build Country Object from original API params
-     * @param countryId The country id
      * @param params The original API parameters
      * @return Country
      */
     Country buildCountryFromParams(
-            String countryId,
             ArrayList params
     ) {
         return new Country(
-                id: countryId,
+                id: buildCountryId(params),
                 name: params.find({ it[PARAM_KEY] == PARAM_NAME })?.value,
                 flag: params.find({ it[PARAM_KEY] == PARAM_FLAG })?.value,
                 legalUrls: buildLegalUrls(params),
@@ -71,6 +70,10 @@ class CountryMapper {
                 fee: buildFee(params),
                 wabiPay: buildWabiPay(params)
         )
+    }
+
+    private String buildCountryId(ArrayList params) {
+        Locale.forLanguageTag(params.find({ it[PARAM_KEY] == PARAM_LOCALE })?.value).country
     }
 
     private WabiPay buildWabiPay(Object params) {
@@ -123,7 +126,7 @@ class CountryMapper {
 
     private Detail buildDetail(Object params) {
         return new Detail(
-                countryCode: params.find({ it[PARAM_KEY] == "country_code" })?.value
+                countryCode: params.find({ it[PARAM_KEY] == PARAM_COUNTRY_CODE })?.value
         )
     }
 

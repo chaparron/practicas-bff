@@ -24,6 +24,8 @@ class CountryGatewayBridgeImpl implements CountryBridge {
 
     private static final String PUBLIC_ENABLED_COUNTRY_ENDPOINT = "country/public/enabled"
 
+    public static final String ENDPOINT_COUNTRY_ID = "/{countryId}"
+
     @Autowired
     CountryMapper countryMapper
 
@@ -111,7 +113,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
     private def getUnCachedCountryConfiguration(String countryId) {
 
         def requestUri = UriComponentsBuilder.fromUri(regionalConfigUrl.resolve(PUBLIC_COUNTRY_ENDPOINT))
-                .path("/{countryId}")
+                .path(ENDPOINT_COUNTRY_ID)
                 .buildAndExpand(countryId)
                 .toUriString()
                 .toURI()
@@ -129,7 +131,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
     def getUnCachedCountry(String countryId) {
 
         def requestUri = UriComponentsBuilder.fromUri(regionalConfigUrl.resolve(PUBLIC_COUNTRY_ENDPOINT))
-                .path("/{countryId}")
+                .path(ENDPOINT_COUNTRY_ID)
                 .buildAndExpand(countryId)
                 .toUriString()
                 .toURI()
@@ -141,7 +143,6 @@ class CountryGatewayBridgeImpl implements CountryBridge {
                 ?.config
 
         return countryMapper.buildCountryFromParams(
-                countryId,
                 params as ArrayList
         )
     }
@@ -151,7 +152,8 @@ class CountryGatewayBridgeImpl implements CountryBridge {
         def requestUri = UriComponentsBuilder.fromUri(regionalConfigUrl.resolve(PUBLIC_ENABLED_COUNTRY_ENDPOINT))
                 .queryParam(
                         "keys",
-                        "name-en,name-$locale," +
+                        "name-en," +
+                                "name-$locale," +
                                 "flag," +
                                 "tyc," +
                                 "pp," +
@@ -184,7 +186,6 @@ class CountryGatewayBridgeImpl implements CountryBridge {
         )
                 ?.collect {
                     return countryMapper.buildCountryFromParams(
-                            locale,
                             it.config as ArrayList
                     )
                 }

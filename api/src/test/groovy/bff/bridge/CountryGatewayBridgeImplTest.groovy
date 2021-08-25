@@ -32,7 +32,7 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
     @InjectMocks
     private CountryGatewayBridgeImpl countryBridge = new CountryGatewayBridgeImpl()
 
-    CountryMapper countryMapper = new CountryMapper();
+    CountryMapper countryMapper = new CountryMapper()
 
     @Before
     void init() {
@@ -40,7 +40,7 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
         countryBridge.regionalConfigUrl = new URI("http://localhost:3000/")
         countryMapper.messageSource = new AbstractMessageSource() {
             protected MessageFormat resolveCode(String code, Locale locale) {
-                return new MessageFormat("");
+                return new MessageFormat("")
             }
         }
         countryBridge.countryMapper = countryMapper
@@ -180,15 +180,16 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
         Assert.assertEquals("Morocco", countriesHome.get(1).name)
         Assert.assertEquals("Philippines", countriesHome.get(2).name)
 
-
         countriesHome = countryBridge.getHomeCountries("ar-AR")
         Assert.assertNotNull(countriesHome)
         Assert.assertFalse(countriesHome.empty)
         Assert.assertTrue(countriesHome.size() == 3)
         Assert.assertEquals("Egipto", countriesHome.get(0).name)
+        Assert.assertEquals("EG", countriesHome.get(0).id)
         Assert.assertEquals("Morocco", countriesHome.get(1).name)
+        Assert.assertEquals("MA", countriesHome.get(1).id)
         Assert.assertEquals("Philippines", countriesHome.get(2).name)
-
+        Assert.assertEquals("MY", countriesHome.get(2).id)
 
         Mockito.verify(httpBridge, Mockito.times(2))
                 .get(
@@ -225,6 +226,7 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
         Assert.assertNotNull(country.fee)
         Assert.assertNotNull(country.wabiPay)
 
+        Assert.assertEquals("RU", country.id)
         Assert.assertEquals("ru-RU", country.language.locale)
         Assert.assertEquals(8, country.language.translations.size())
         Assert.assertEquals("WABICREDITS_PERCENTAGE", country.fee.serviceFeeType)
