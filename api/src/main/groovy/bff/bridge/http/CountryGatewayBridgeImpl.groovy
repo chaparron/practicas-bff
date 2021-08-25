@@ -136,14 +136,14 @@ class CountryGatewayBridgeImpl implements CountryBridge {
                 .toUriString()
                 .toURI()
 
-        def params = httpBridge.get(
+        def response = httpBridge.get(
                 requestUri,
                 null
         )
-                ?.config
 
         return countryMapper.buildCountryFromParams(
-                params as ArrayList
+                response.id as String,
+                response.config as ArrayList
         )
     }
 
@@ -186,6 +186,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
         )
                 ?.collect {
                     return countryMapper.buildCountryFromParams(
+                            it.id as String,
                             it.config as ArrayList
                     )
                 }

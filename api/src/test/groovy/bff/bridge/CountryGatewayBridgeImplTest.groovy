@@ -185,11 +185,11 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
         Assert.assertFalse(countriesHome.empty)
         Assert.assertTrue(countriesHome.size() == 3)
         Assert.assertEquals("Egipto", countriesHome.get(0).name)
-        Assert.assertEquals("EG", countriesHome.get(0).id)
+        Assert.assertEquals("eg", countriesHome.get(0).id)
         Assert.assertEquals("Morocco", countriesHome.get(1).name)
-        Assert.assertEquals("MA", countriesHome.get(1).id)
+        Assert.assertEquals("ma", countriesHome.get(1).id)
         Assert.assertEquals("Philippines", countriesHome.get(2).name)
-        Assert.assertEquals("MY", countriesHome.get(2).id)
+        Assert.assertEquals("ph", countriesHome.get(2).id)
 
         Mockito.verify(httpBridge, Mockito.times(2))
                 .get(
@@ -226,7 +226,7 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
         Assert.assertNotNull(country.fee)
         Assert.assertNotNull(country.wabiPay)
 
-        Assert.assertEquals("RU", country.id)
+        Assert.assertEquals("ru", country.id)
         Assert.assertEquals("ru-RU", country.language.locale)
         Assert.assertEquals(8, country.language.translations.size())
         Assert.assertEquals("WABICREDITS_PERCENTAGE", country.fee.serviceFeeType)

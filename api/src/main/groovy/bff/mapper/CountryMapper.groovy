@@ -56,10 +56,11 @@ class CountryMapper {
      * @return Country
      */
     Country buildCountryFromParams(
+            String countryId,
             ArrayList params
     ) {
         return new Country(
-                id: buildCountryId(params),
+                id: countryId,
                 name: params.find({ it[PARAM_KEY] == PARAM_NAME })?.value,
                 flag: params.find({ it[PARAM_KEY] == PARAM_FLAG })?.value,
                 legalUrls: buildLegalUrls(params),
@@ -70,10 +71,6 @@ class CountryMapper {
                 fee: buildFee(params),
                 wabiPay: buildWabiPay(params)
         )
-    }
-
-    private String buildCountryId(ArrayList params) {
-        Locale.forLanguageTag(params.find({ it[PARAM_KEY] == PARAM_LOCALE })?.value).country
     }
 
     private WabiPay buildWabiPay(Object params) {
