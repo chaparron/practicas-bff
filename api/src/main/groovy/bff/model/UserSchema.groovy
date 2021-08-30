@@ -4,6 +4,14 @@ import groovy.transform.ToString
 
 interface LoginResult {}
 
+interface SignedChallengeDemandResult {}
+
+interface ChallengeDemandResult {}
+
+interface SignedChallengeAnswerResult{}
+
+interface ChallengeAnswerResult{}
+
 interface RefreshCredentialsResult {}
 
 interface ChangePasswordResult {}
@@ -17,6 +25,7 @@ class User {
     String lastName
     Boolean acceptWhatsApp
     String phone
+    String email
     UserCredentials credentials
 }
 
@@ -28,6 +37,28 @@ class LoginInput {
     String username
     String password
     Site site
+}
+
+class SignedChallengeDemandInput {
+    String countryCode
+    String phone
+    String accessToken
+}
+
+class SignedChallengeAnswer {
+    String challengeId
+    String challengeAnswer
+    String accessToken
+}
+
+class ChallengeDemandInput {
+    String countryCode
+    String phone
+}
+
+class ChallengeAnswer{
+    String challengeId
+    String challengeAnswer
 }
 
 @ToString()
@@ -45,10 +76,18 @@ class Credentials {
     String expiresIn
 }
 
-class GenericCredentials implements LoginResult , SignInResult{
+class GenericCredentials implements LoginResult, SignInResult, SignedChallengeAnswerResult, ChallengeAnswerResult{
     String username
     Credentials credentials
     Customer customer
+}
+
+class UpgradeRequired implements LoginResult{
+    Credentials credentials
+}
+
+class Challenge implements SignedChallengeDemandResult, ChallengeDemandResult {
+    String challengeId
 }
 
 
@@ -73,11 +112,53 @@ enum Site {
 enum LoginFailureReason {
     FORBIDDEN,
     UNAUTHORIZED,
+    PASSWORDLESS_REQUIRED,
     DEPRECATED_LOGIN_SYSTEM
 
     def doThrow() {
         throw new LoginFailureException(loginFailureReason: this)
     }
+}
+
+enum SignedChallengeDemandFailureReason {
+    PHONE_ALREADY_EXISTS,
+    USER_ALREADY_USES_PASSWORDLESS
+
+    def doThrow() {
+        throw new SignedChallengeDemandFailureException(signedChallengeDemandFailureReason: this)
+    }
+}
+
+enum ChallengeDemandFailureReason {
+    UNKNOWN_PHONE
+
+    def doThrow() {
+        throw new ChallengeDemandFailureException(challengeDemandFailureReason: this)
+    }
+}
+
+enum ChallengeAnswerFailureReason {
+    UNAUTHORIZED,
+    UNKNOWN_CHALLENGE_ID,
+    CHALLENGE_DOES_NOT_BELONG_USER,
+    USER_ALREADY_USES_PASSWORDLESS,
+    INCORRECT_CODE,
+    INCORRECT_CODE_AND_MAX_ATTEMPTS_REACHED,
+    EXPIRED_CHALLENGE,
+    MAX_ATTEMPTS_REACHED
+
+    def doThrow() {
+        throw new ChallengeAnswerFailureException(challengeAnswerFailureReason: this.unifiedReason)
+    }
+
+    private ChallengeAnswerFailureReason getUnifiedReason(){
+        if ([UNKNOWN_CHALLENGE_ID, CHALLENGE_DOES_NOT_BELONG_USER, USER_ALREADY_USES_PASSWORDLESS,
+        INCORRECT_CODE, INCORRECT_CODE_AND_MAX_ATTEMPTS_REACHED].contains(this)){
+            return UNAUTHORIZED
+        }
+        return this
+    }
+
 }
 
 enum AuthType {
@@ -87,7 +168,8 @@ enum AuthType {
 
 
 enum ChangePasswordReason {
-    PASSWORD_MISMATCH
+    PASSWORD_MISMATCH,
+    CANNOT_CHANGE_PWD
 
     def doThrow() {
         throw new ChangePasswordException(changePasswordReason: this)
@@ -95,8 +177,18 @@ enum ChangePasswordReason {
 
 }
 
+enum ResetPasswordReason {
+    CANNOT_CHANGE_PWD
+
+    def doThrow() {
+        throw new ResetPasswordException(resetPasswordReason: this)
+    }
+
+}
+
 enum ConfirmPasswordReason {
-    TOKEN_EXPIRED
+    TOKEN_EXPIRED,
+    CANNOT_CHANGE_PWD
 
     def doThrow() {
         throw new ConfirmPasswordException(confirmPasswordReason: this)
@@ -108,8 +200,28 @@ class LoginFailed implements LoginResult , RefreshCredentialsResult {
     LoginFailureReason reason
 }
 
+class SignedChallengeDemandFailed implements SignedChallengeDemandResult {
+    SignedChallengeDemandFailureReason reason
+}
+
+class TooManyShipments implements SignedChallengeDemandResult, ChallengeDemandResult{
+    Integer waitTime
+}
+
+class ChallengeDemandFailed implements ChallengeDemandResult {
+    ChallengeDemandFailureReason reason
+}
+
+class ChallengeAnswerFailed implements ChallengeAnswerResult, SignedChallengeAnswerResult {
+    ChallengeAnswerFailureReason reason
+}
+
 class ChangePasswordFailed implements ChangePasswordResult {
     ChangePasswordReason reason
+}
+
+class ResetPasswordDemandFailed{
+    ResetPasswordReason reason
 }
 
 class ConfirmPasswordFailed implements ConfirmPasswordResult{

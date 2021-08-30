@@ -1,11 +1,20 @@
 package bff.bridge
 
+import bff.model.Challenge
 import bff.model.Credentials
 import bff.model.Site
 
 interface AuthServerBridge {
 
     Credentials login(String email, String password, Site site)
+
+    Challenge challengeRequestForChangeToPasswordlessAuthentication(String countryCode, String phone, String accessToken, String remoteAddress)
+
+    Credentials challengeAnswerForChangeToPasswordlessAuthentication(String challengeId, String challengeAnswer, String accessToken)
+
+    Challenge challengeRequestForPasswordlessLogin(String countryCode, String phone, String remoteAddress)
+
+    Credentials challengeAnswerForPasswordlessLogin(String challengeId, String challengeAnswer)
 
     Credentials refreshToken(String refreshToken)
 

@@ -3,6 +3,7 @@ package bff.bridge.http
 import bff.bridge.AuthServerBridge
 import bff.configuration.AccessToBackendDeniedException
 import bff.configuration.BadRequestErrorException
+import bff.configuration.BridgeHttpServerErrorException
 import bff.model.*
 import groovy.json.JsonBuilder
 import groovy.util.logging.Slf4j
@@ -42,10 +43,98 @@ class AuthServerBridgeImpl implements AuthServerBridge {
 
             //TODO: terminar el mapping del error en este caso
         } catch (BadRequestErrorException badRequestErrorException) {
+            LoginFailureReason.valueOf((String)badRequestErrorException.innerResponse).doThrow()
             badRequestErrorException.printStackTrace()
         }
     }
 
+    @Override
+    Challenge challengeRequestForChangeToPasswordlessAuthentication(String countryCode, String phone, String accessToken, String remoteAddress){
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/user/passwordless/authswitch/challenge")).toUriString().toURI()
+        try{
+            http.exchange(
+                    RequestEntity.method(HttpMethod.POST, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                            .header("Address-Received-In-Bff", remoteAddress)
+                            .body([countryCode : countryCode, phone : phone])
+                    , Challenge).body
+        }catch(AccessToBackendDeniedException accessToBackendDeniedException){
+            SignedChallengeDemandFailureReason.valueOf((String)accessToBackendDeniedException.cause.statusCode.name()).doThrow()
+            throw accessToBackendDeniedException
+        }catch (BadRequestErrorException badRequestErrorException) {
+            String innerResponse = (String)badRequestErrorException.innerResponse
+            if ("TOO_MANY_SHIPMENTS" == innerResponse){
+                int waitTime = ((BridgeHttpServerErrorException)badRequestErrorException.cause).responseHeaders.getFirst("wait-time").toInteger()
+                throw new TooManyShipmentsException(waitTime)
+            }
+            SignedChallengeDemandFailureReason.valueOf(innerResponse).doThrow()
+            badRequestErrorException.printStackTrace()
+        }
+    }
+
+    @Override
+    Credentials challengeAnswerForChangeToPasswordlessAuthentication(String challengeId, String challengeAnswer, String accessToken){
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/user/passwordless/authswitch/answer")).toUriString().toURI()
+        try{
+            def body = http.exchange(
+                    RequestEntity.method(HttpMethod.POST, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                            .body([challengeId : challengeId, challengeAnswer : challengeAnswer])
+                    , Map).body
+            mapCredentials body
+        }catch(AccessToBackendDeniedException accessToBackendDeniedException){
+            ChallengeAnswerFailureReason.valueOf((String)accessToBackendDeniedException.cause.statusCode.name()).doThrow()
+            throw accessToBackendDeniedException
+        }catch (BadRequestErrorException badRequestErrorException) {
+            ChallengeAnswerFailureReason.valueOf((String)badRequestErrorException.innerResponse).doThrow()
+            badRequestErrorException.printStackTrace()
+        }
+    }
+
+    @Override
+    Challenge challengeRequestForPasswordlessLogin(String countryCode, String phone, String remoteAddress){
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/user/passwordless/login/challenge")).toUriString().toURI()
+        try{
+            http.exchange(
+                    RequestEntity.method(HttpMethod.POST, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header("Address-Received-In-Bff", remoteAddress)
+                            .body([countryCode : countryCode, phone : phone])
+                    , Challenge).body
+        }catch(AccessToBackendDeniedException accessToBackendDeniedException){
+            ChallengeDemandFailureReason.valueOf((String)accessToBackendDeniedException.cause.statusCode.name()).doThrow()
+            throw accessToBackendDeniedException
+        }catch (BadRequestErrorException badRequestErrorException) {
+            String innerResponse = (String)badRequestErrorException.innerResponse
+            if ("TOO_MANY_SHIPMENTS" == innerResponse){
+                int waitTime = ((BridgeHttpServerErrorException)badRequestErrorException.cause).responseHeaders.getFirst("wait-time").toInteger()
+                throw new TooManyShipmentsException(waitTime)
+            }
+            ChallengeDemandFailureReason.valueOf((String)badRequestErrorException.innerResponse).doThrow()
+            badRequestErrorException.printStackTrace()
+        }
+    }
+
+    @Override
+    Credentials challengeAnswerForPasswordlessLogin(String challengeId, String challengeAnswer){
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/user/passwordless/login/answer")).toUriString().toURI()
+        try{
+            def body = http.exchange(
+                    RequestEntity.method(HttpMethod.POST, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body([challengeId : challengeId, challengeAnswer : challengeAnswer])
+                    , Map).body
+            mapCredentials body
+        }catch(AccessToBackendDeniedException accessToBackendDeniedException){
+            ChallengeAnswerFailureReason.valueOf((String)accessToBackendDeniedException.cause.statusCode.name()).doThrow()
+            throw accessToBackendDeniedException
+        }catch (BadRequestErrorException badRequestErrorException) {
+            ChallengeAnswerFailureReason.valueOf((String)badRequestErrorException.innerResponse).doThrow()
+            badRequestErrorException.printStackTrace()
+        }
+    }
 
     @Override
     Credentials refreshToken(String refreshToken) {
@@ -105,8 +194,8 @@ class AuthServerBridgeImpl implements AuthServerBridge {
                             ]
                     )
                     , Boolean).body
-        } catch (RestClientException e) {
-            throw new RuntimeException("failed to reset password", e)
+        } catch (BadRequestErrorException exception) {
+            ResetPasswordReason.valueOf((String)exception.innerResponse).doThrow()
         }
     }
 
@@ -124,8 +213,8 @@ class AuthServerBridgeImpl implements AuthServerBridge {
                             ]
                     ), Map
             )
-        } catch (BadRequestErrorException e) {
-            ConfirmPasswordReason.TOKEN_EXPIRED.doThrow()
+        } catch (BadRequestErrorException exception) {
+            ConfirmPasswordReason.valueOf((String)exception.innerResponse).doThrow()
         }
     }
 
@@ -143,8 +232,8 @@ class AuthServerBridgeImpl implements AuthServerBridge {
                             ]
                     ), Map
             )
-        } catch (BadRequestErrorException b) {
-            ChangePasswordReason.PASSWORD_MISMATCH.doThrow()
+        } catch (BadRequestErrorException exception) {
+            ChangePasswordReason.valueOf((String)exception.innerResponse).doThrow()
         }
     }
 

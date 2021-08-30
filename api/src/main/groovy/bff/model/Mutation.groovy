@@ -13,6 +13,8 @@ import bff.configuration.EntityNotFoundException
 import bff.configuration.NotAcceptableException
 import bff.model.utils.DataURL
 import com.coxautodev.graphql.tools.GraphQLMutationResolver
+import graphql.schema.DataFetchingEnvironment
+import graphql.servlet.GraphQLContext
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -48,6 +50,54 @@ class Mutation implements GraphQLMutationResolver {
         }
     }
 
+    SignedChallengeDemandResult challengeRequestForChangeToPasswordlessAuthentication(SignedChallengeDemandInput input, DataFetchingEnvironment env) {
+        GraphQLContext context = env.getContext()
+        String remoteAddress = context.httpServletRequest.get().getRemoteAddr()
+        try {
+            authServerBridge.challengeRequestForChangeToPasswordlessAuthentication(input.countryCode, input.phone, input.accessToken, remoteAddress)
+        } catch (TooManyShipmentsException tooManyShipmentsException){
+            tooManyShipmentsException.build()
+        } catch (SignedChallengeDemandFailureException signedChallengeDemandFailureException) {
+            signedChallengeDemandFailureException.build()
+        }
+    }
+
+    SignedChallengeAnswerResult challengeAnswerForChangeToPasswordlessAuthentication(SignedChallengeAnswer input){
+        try {
+            def credentials = authServerBridge.challengeAnswerForChangeToPasswordlessAuthentication(input.challengeId, input.challengeAnswer, input.accessToken)
+            new GenericCredentials(
+                    username: JwtToken.fromString(credentials.accessToken, DecoderName.USERNAME).name,
+                    credentials: credentials
+            )
+        } catch (ChallengeAnswerFailureException challengeAnswerFailureException) {
+            challengeAnswerFailureException.build()
+        }
+    }
+
+    ChallengeDemandResult challengeRequestForPasswordlessLogin(ChallengeDemandInput input, DataFetchingEnvironment env) {
+        GraphQLContext context = env.getContext()
+        String remoteAddress = context.httpServletRequest.get().getRemoteAddr()
+        try {
+            authServerBridge.challengeRequestForPasswordlessLogin(input.countryCode, input.phone, remoteAddress)
+        } catch (TooManyShipmentsException tooManyShipmentsException){
+            tooManyShipmentsException.build()
+        } catch (ChallengeDemandFailureException challengeDemandFailureException) {
+            challengeDemandFailureException.build()
+        }
+    }
+
+    ChallengeAnswerResult challengeAnswerForPasswordlessLogin(ChallengeAnswer input){
+        try {
+            def credentials = authServerBridge.challengeAnswerForPasswordlessLogin(input.challengeId, input.challengeAnswer)
+            new GenericCredentials(
+                    username: JwtToken.fromString(credentials.accessToken, DecoderName.USERNAME).name,
+                    credentials: credentials
+            )
+        } catch (ChallengeAnswerFailureException challengeAnswerFailureException) {
+            challengeAnswerFailureException.build()
+        }
+    }
+
     RefreshCredentialsResult refreshCredentials(RefreshCredentialsInput input) {
         try {
             def rawCredentials = authServerBridge.refreshToken(input.refreshToken)
@@ -64,21 +114,27 @@ class Mutation implements GraphQLMutationResolver {
         authServerBridge.login(email, password, site)
     }
 
-
     SignInResult signIn(SignInInput signInInput) {
         try {
-
             def rawCredentials = customerBridge.signIn(signInInput)
             new GenericCredentials(
                     username: JwtToken.fromString(rawCredentials.credentials.access_token, DecoderName.USERNAME).name,
                     credentials: rawCredentials.credentials.toCredentials(),
                     customer: rawCredentials.customer
             )
-
         } catch (ConflictErrorException conflictErrorException) {
             SignInFailedReason.valueOf((String) conflictErrorException.innerResponse).build()
         } catch (BadRequestErrorException conflictErrorException) {
             SignInFailedReason.valueOf((String) conflictErrorException.innerResponse).build()
+        }
+    }
+    PasswordlessSignUpResult passwordlessSignUp(PasswordlessSignUpInput passwordlessSignUpInput) {
+        try {
+            customerBridge.passwordlessSignUp(passwordlessSignUpInput)
+        } catch (ConflictErrorException conflictErrorException) {
+            PasswordlessSignUpFailedReason.valueOf((String) conflictErrorException.innerResponse).build()
+        } catch (BadRequestErrorException conflictErrorException) {
+            PasswordlessSignUpFailedReason.valueOf((String) conflictErrorException.innerResponse).build()
         }
     }
 
@@ -96,6 +152,13 @@ class Mutation implements GraphQLMutationResolver {
     CustomerUpdateResult updateProfile(CustomerUpdateInput customerUpdateInput) {
         try {
             customerBridge.updateProfile(customerUpdateInput)
+        } catch (CustomerException customerException) {
+            customerException.build()
+        }
+    }
+    CustomerUpdateResult updateProfileV2(CustomerUpdateInputV2 customerUpdateInput) {
+        try {
+            customerBridge.updateProfileV2(customerUpdateInput)
         } catch (CustomerException customerException) {
             customerException.build()
         }
@@ -154,10 +217,25 @@ class Mutation implements GraphQLMutationResolver {
         authServerBridge.userRegistration(name, surname, username, password, repeatPassword)
     }
 
-    Void resetPassword(ResetPasswordRequestInput input) {
-        authServerBridge.resetPassword(input.username)
-        Void.SUCCESS
+    ChangePasswordResult changePassword(ChangePasswordInput input) {
+        try {
+            authServerBridge.changePassword(input.currentPassword, input.newPassword, input.accessToken)
+            Void.SUCCESS
+        } catch (ChangePasswordException changePasswordException) {
+            changePasswordException.build()
+        }
     }
+
+    Void resetPassword(ResetPasswordRequestInput input) {
+        try{
+            authServerBridge.resetPassword(input.username)
+            Void.SUCCESS
+        }catch(ResetPasswordException resetPasswordException){
+            resetPasswordException.build()
+        }
+    }
+
+
 
     ConfirmPasswordResult resetPasswordConfirm(ResetPasswordConfirmInput input) {
         try {
@@ -165,15 +243,6 @@ class Mutation implements GraphQLMutationResolver {
             Void.SUCCESS
         } catch (ConfirmPasswordException confirmPasswordException) {
             confirmPasswordException.build()
-        }
-    }
-
-    ChangePasswordResult changePassword(ChangePasswordInput input) {
-        try {
-            authServerBridge.changePassword(input.currentPassword, input.newPassword, input.accessToken)
-            Void.SUCCESS
-        } catch (ChangePasswordException changePasswordException) {
-            changePasswordException.build()
         }
     }
 

@@ -28,19 +28,29 @@ enum CustomerErrorReason {
     INVALID_STATE
 }
 
-
-enum SignInFailedReason {
-    PHONE_ALREADY_EXIST
-    LEGAL_ID_ALREADY_EXIST
-    NAME_ALREADY_EXIST
-    USERNAME_ALREADY_EXIST
-    INVALID_ADDRESS
-    INVALID_ADDRESSES
-    INVALID_STATE
-    INVALID_PREFERRED_ADDRESS
-    INVALID_POSTAL_CODE
+enum SignInFailedReason{
+  PHONE_ALREADY_EXIST
+  LEGAL_ID_ALREADY_EXIST
+  NAME_ALREADY_EXIST
+  USERNAME_ALREADY_EXIST
+  INVALID_ADDRESS
+  INVALID_ADDRESSES
+  INVALID_STATE
+  INVALID_PREFERRED_ADDRESS
+  INVALID_POSTAL_CODE
 }
-
+enum PasswordlessSignUpFailedReason{
+  PHONE_ALREADY_EXIST
+  LEGAL_ID_ALREADY_EXIST
+  NAME_ALREADY_EXIST
+  USERNAME_ALREADY_EXIST
+  INVALID_ADDRESS
+  INVALID_ADDRESSES
+  INVALID_STATE
+  INVALID_PREFERRED_ADDRESS
+  EMAIL_ALREADY_EXIST
+  INVALID_POSTAL_CODE
+}
 
 enum DeliveryPreference {
     MORNING,
@@ -103,35 +113,58 @@ input AddressTypeUpsertInput {
     accessToken: String!
 }
 
+input UserCredentialsPasswordlessSignUpInput {
+    enabled: Boolean
+}
 input UserCredentialsSignInInput {
-    password: String!
-    enabled: Boolean!
+  password: String!
+  enabled: Boolean!
 }
 
-
-
 input SignInUserInput {
-    id: ID
-    username: String!
-    firstName: String!
-    lastName: String!
-    phone: String!
-    acceptWhatsApp: Boolean
-    credentials: UserCredentialsSignInInput!
+  id: ID
+  username: String!
+  firstName: String!
+  lastName: String!
+  phone: String!
+  acceptWhatsApp: Boolean
+  credentials: UserCredentialsSignInInput!
+}
+input PasswordlessSignUpUserInput {
+  id: ID
+  firstName: String!
+  lastName: String!
+  phone: String!
+  email: String
+  acceptWhatsApp: Boolean
+  credentials: UserCredentialsPasswordlessSignUpInput!
 }
 
 input SignInInput {
-    id: ID
-    name: String!
-    legalId: String!
-    linePhone: String
-    user: SignInUserInput!
-    addresses: [AddressTypeInput]!
-    verificationDocuments: [VerificationDocumentInput]!
-    workingDays: WorkingDaysInput
-    deliveryComment: String
-    country_id: String
-    marketingEnabled: Boolean
+  id: ID
+  name: String!
+  legalId: String!
+  linePhone: String
+  user: SignInUserInput!
+  addresses: [AddressTypeInput]!
+  verificationDocuments: [VerificationDocumentInput]!
+  workingDays: WorkingDaysInput
+  deliveryComment: String
+  country_id: String
+  marketingEnabled: Boolean
+}
+input PasswordlessSignUpInput {
+  id: ID
+  name: String!
+  legalId: String!
+  linePhone: String
+  user: PasswordlessSignUpUserInput!
+  addresses: [AddressTypeInput]!
+  verificationDocuments: [VerificationDocumentInput]!
+  workingDays: WorkingDaysInput
+  deliveryComment: String
+  country_id: String
+  marketingEnabled: Boolean
 }
 
 enum AddressFailedReason {
@@ -150,7 +183,6 @@ input AddressIdInput {
     accessToken: String!
 }
 
-
 input CustomerUpdateInput {
     phone: String
     username: String
@@ -160,6 +192,15 @@ input CustomerUpdateInput {
     verificationDocuments: [VerificationDocumentInput]
     accessToken: String!
     marketingEnabled: Boolean
+}
+input CustomerUpdateInputV2 {
+  username: String
+  acceptWhatsApp: Boolean
+  workingDays: WorkingDaysInput
+  deliveryComment: String
+  verificationDocuments: [VerificationDocumentInput]
+  accessToken: String!
+  marketingEnabled: Boolean
 }
 
 input VerifyEmailInput {
@@ -263,7 +304,10 @@ type CustomerErrorFailed {
 }
 
 type SignInFailed {
-    reason: SignInFailedReason!
+  reason: SignInFailedReason!
+}
+type PasswordlessSignUpFailed {
+  reason: PasswordlessSignUpFailedReason!
 }
 
 type SuppliersNameResult {

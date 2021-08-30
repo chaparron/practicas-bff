@@ -29,6 +29,38 @@ class LoginFailureException extends RuntimeException {
     }
 }
 
+class SignedChallengeDemandFailureException extends RuntimeException {
+    SignedChallengeDemandFailureReason signedChallengeDemandFailureReason
+    def build() {
+        new SignedChallengeDemandFailed(reason: this.signedChallengeDemandFailureReason)
+    }
+}
+
+class TooManyShipmentsException extends RuntimeException {
+    private int waitTime
+
+    TooManyShipmentsException(int secs){
+        this.waitTime = secs
+    }
+
+    def build(){
+        new TooManyShipments(waitTime: waitTime)
+    }
+}
+
+class ChallengeDemandFailureException extends RuntimeException {
+    ChallengeDemandFailureReason challengeDemandFailureReason
+    def build() {
+        new ChallengeDemandFailed(reason: this.challengeDemandFailureReason)
+    }
+}
+
+class ChallengeAnswerFailureException extends RuntimeException {
+    ChallengeAnswerFailureReason challengeAnswerFailureReason
+    def build() {
+        new ChallengeAnswerFailed(reason: this.challengeAnswerFailureReason)
+    }
+}
 
 class CustomerException extends RuntimeException {
     CustomerErrorReason customerErrorReason
@@ -41,6 +73,14 @@ class ChangePasswordException extends RuntimeException {
     ChangePasswordReason changePasswordReason
     def build() {
         new ChangePasswordFailed(reason: this.changePasswordReason)
+    }
+}
+
+class ResetPasswordException extends RuntimeException {
+    ResetPasswordReason resetPasswordReason
+
+    static def build() {
+        Void.ERROR_CANNOT_CHANGE_PWD
     }
 }
 

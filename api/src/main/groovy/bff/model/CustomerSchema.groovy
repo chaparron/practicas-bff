@@ -24,6 +24,7 @@ interface AddressResult {}
 interface AddAddressResult {}
 
 interface SignInResult {}
+interface PasswordlessSignUpResult {}
 
 enum CustomerStatus {
     PENDING,
@@ -88,6 +89,22 @@ enum SignInFailedReason {
         return new SignInFailed(reason: this)
     }
 }
+enum PasswordlessSignUpFailedReason {
+    PHONE_ALREADY_EXIST,
+    LEGAL_ID_ALREADY_EXIST,
+    NAME_ALREADY_EXIST,
+    USERNAME_ALREADY_EXIST,
+    INVALID_ADDRESS,
+    INVALID_ADDRESSES,
+    INVALID_STATE,
+    INVALID_PREFERRED_ADDRESS,
+    EMAIL_ALREADY_EXIST,
+    INVALID_POSTAL_CODE
+
+    def build() {
+        return new PasswordlessSignUpFailed(reason: this)
+    }
+}
 
 //TODO: refactor errores según web_store: Separarlos en enums correspondientes.
 class CustomerErrorFailed implements PreferredAddressResult, VerifyEmailResult, VerifyPhoneResult,
@@ -107,7 +124,7 @@ class CustomerType {
     String name
 }
 
-class Customer implements CustomerUpdateResult {
+class Customer implements CustomerUpdateResult, PasswordlessSignUpResult {
     String accessToken
     Long id
     String name
@@ -235,6 +252,9 @@ class DeleteAddressFailed implements DeleteAddressResult {
 class SignInFailed implements SignInResult {
     SignInFailedReason reason
 }
+class PasswordlessSignUpFailed implements PasswordlessSignUpResult {
+    PasswordlessSignUpFailedReason reason
+}
 
 class CustomerInput {
     String accessToken
@@ -247,6 +267,16 @@ class VerificationDocumentInput {
 
 class CustomerUpdateInput {
     String phone
+    String username
+    Boolean acceptWhatsApp
+    List<Address> address
+    WorkingDays workingDays
+    String deliveryComment
+    List<VerificationDocument> verificationDocuments
+    String accessToken
+    boolean marketingEnabled
+}
+class CustomerUpdateInputV2 {
     String username
     Boolean acceptWhatsApp
     List<Address> address
@@ -272,12 +302,10 @@ class HourRange {
     String to
 }
 
-
 class UserCredentialsSignInInput {
     String password
     Boolean enabled
 }
-
 
 class SignInUserInput {
     long id
@@ -288,6 +316,15 @@ class SignInUserInput {
     Boolean acceptWhatsApp
     UserCredentialsSignInInput credentials
 }
+class PasswordlessSignUpUserInput {
+    long id
+    String firstName
+    String lastName
+    String phone
+    String email
+    Boolean acceptWhatsApp
+    UserCredentialsSignInInput credentials
+}
 
 class SignInInput {
     Long id
@@ -295,6 +332,19 @@ class SignInInput {
     String legalId
     String linePhone
     SignInUserInput user
+    WorkingDays workingDays
+    String deliveryComment
+    String country_id
+    List<AddressInput> addresses
+    List<VerificationDocument> verificationDocuments
+    boolean marketingEnabled
+}
+class PasswordlessSignUpInput {
+    Long id
+    String name
+    String legalId
+    String linePhone
+    PasswordlessSignUpUserInput user
     WorkingDays workingDays
     String deliveryComment
     String country_id

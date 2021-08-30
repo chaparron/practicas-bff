@@ -121,6 +121,15 @@ type Mutation {
   # User login
   login(input: LoginInput!): LoginResult!
 
+  # Request for a challenge to change a user's login system, from classic login to passwordless login
+  challengeRequestForChangeToPasswordlessAuthentication(input: SignedChallengeDemandInput!): SignedChallengeDemandResult!
+  # Answer a challenge to change a user's login system, from classic login to passwordless login
+  challengeAnswerForChangeToPasswordlessAuthentication(input: SignedChallengeAnswer!): SignedChallengeAnswerResult!
+  # Request a challenge to login a user
+  challengeRequestForPasswordlessLogin(input: ChallengeDemandInput!): ChallengeDemandResult!
+  # Answer a challenge to login a user
+  challengeAnswerForPasswordlessLogin(input: ChallengeAnswer!): ChallengeAnswerResult!
+
   # Refresh Credential from a logged user
   refreshCredentials(input: RefreshCredentialsInput!): RefreshCredentialsResult!
 
@@ -135,6 +144,7 @@ type Mutation {
 
   # Update Customer Profile
   updateProfile(input: CustomerUpdateInput!): CustomerUpdateResult!
+  updateProfileV2(input: CustomerUpdateInputV2!): CustomerUpdateResult!
 
   # Verify Customer phone
   verifyPhone(input: VerifyPhoneInput!): VerifyPhoneResult!
@@ -162,6 +172,7 @@ type Mutation {
 
   #registro
   signIn(input: SignInInput!): SignInResult
+  passwordlessSignUp(input: PasswordlessSignUpInput!): PasswordlessSignUpResult
 
   # Registro
   # El upload de imágenes / archivos solo permite los siguientes formatos:
@@ -486,6 +497,7 @@ union DeleteAddressResult = DeleteAddressFailed | Void
 union AddAddressResult = AddAddressFailed | Void
 
 union SignInResult = SignInFailed | GenericCredentials
+union PasswordlessSignUpResult = PasswordlessSignUpFailed | Customer
 
 union BannerDialogResult = SiteConfigurationFailed | BannerDialog
 

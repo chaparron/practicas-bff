@@ -43,7 +43,7 @@ class CustomerBridgeImpl implements CustomerBridge {
     CustomerUpdateResult updateProfile(CustomerUpdateInput customerUpdateInput) {
         try {
             def body = http.exchange(
-                    RequestEntity.method(HttpMethod.PUT, root.resolve('/customer/me'))
+                    RequestEntity.method(HttpMethod.PUT, root.resolve('/classiclogin/customer/me'))
                             .contentType(MediaType.APPLICATION_JSON)
                             .header(HttpHeaders.AUTHORIZATION, "Bearer $customerUpdateInput.accessToken")
                             .body(
@@ -67,12 +67,48 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
+    CustomerUpdateResult updateProfileV2(CustomerUpdateInputV2 customerUpdateInput) {
+        try {
+            def body = http.exchange(
+                    RequestEntity.method(HttpMethod.PUT, root.resolve('/customer/me'))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, "Bearer $customerUpdateInput.accessToken")
+                            .body(
+                                    [
+                                            username                   : customerUpdateInput.username,
+                                            acceptWhatsApp             : customerUpdateInput.acceptWhatsApp,
+                                            adress                     : customerUpdateInput.address,
+                                            workingDays                : customerUpdateInput.workingDays,
+                                            deliveryComment            : customerUpdateInput.deliveryComment,
+                                            verificationDocuments      : customerUpdateInput.verificationDocuments,
+                                            marketingEnabled           : customerUpdateInput.marketingEnabled
+                                    ]
+                            ), Customer).body
+            body.accessToken = customerUpdateInput.accessToken
+            return body
+
+        } catch (ConflictErrorException conflictErrorException) {
+            mapCustomerError(conflictErrorException, "Update Customer Profile Error")
+        }
+    }
+
+    @Override
     CredentialsCustomerResponse signIn(SignInInput signInInput) {
         def body = http.exchange(
-                RequestEntity.method(HttpMethod.POST, root.resolve('/customer'))
+                RequestEntity.method(HttpMethod.POST, root.resolve('/classiclogin/customer'))
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(signInInput)
                 , CredentialsCustomerResponse).body
+        return body
+    }
+
+    @Override
+    Customer passwordlessSignUp(PasswordlessSignUpInput passwordlessSignUpInput) {
+        def body = http.exchange(
+                RequestEntity.method(HttpMethod.POST, root.resolve('/customer'))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(passwordlessSignUpInput)
+                , Customer).body
         return body
     }
 

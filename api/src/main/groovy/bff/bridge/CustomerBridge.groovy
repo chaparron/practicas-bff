@@ -8,8 +8,10 @@ interface CustomerBridge {
     Customer myProfile(String accessToken)
 
     CustomerUpdateResult updateProfile(CustomerUpdateInput customerUpdateInput)
+    CustomerUpdateResult updateProfileV2(CustomerUpdateInputV2 customerUpdateInput)
 
     CredentialsCustomerResponse signIn(SignInInput signInInput)
+    Customer passwordlessSignUp(PasswordlessSignUpInput passwordlessSignUpInput)
 
     Void verifyEmail(VerifyEmailInput verifyEmailInput)
 
