@@ -277,6 +277,7 @@ class SupplierOrderResult {
     Boolean customerRated
     Boolean supplierRated
     Boolean cancelRequested
+    Boolean availabilityDifference
     RatingEntry rating
     List<OrderItem> products
     HashMap<RatingOwner, Rating> ratings

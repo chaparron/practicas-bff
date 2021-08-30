@@ -226,6 +226,7 @@ type SupplierOrderResult {
   customerRated: Boolean
   supplierRated: Boolean
   cancelRequested: Boolean
+  availabilityDifference: Boolean!
   summary: [Summary]
 }
 
