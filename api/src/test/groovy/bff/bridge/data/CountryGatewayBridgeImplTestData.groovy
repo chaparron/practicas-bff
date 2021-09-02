@@ -55,6 +55,21 @@ abstract class CountryGatewayBridgeImplTestData {
             "        \"value\": \"Egipto\",\n" +
             "        \"private\": false\n" +
             "      },\n" +
+            "    {\n" +
+            "      \"key\": \"timezone\",\n" +
+            "      \"value\": \"Africa/Cairo\",\n" +
+            "      \"private\": false\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"key\": \"legalId\",\n" +
+            "      \"value\": \"TIN\",\n" +
+            "      \"private\": false\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"key\": \"legalMask\",\n" +
+            "      \"value\": \"000-000-000\",\n" +
+            "      \"private\": false\n" +
+            "    },\n" +
             "      {\n" +
             "        \"key\": \"locale\",\n" +
             "        \"value\": \"ar-EG\",\n" +
@@ -106,6 +121,21 @@ abstract class CountryGatewayBridgeImplTestData {
             "        \"value\": \"Philippines\",\n" +
             "        \"private\": false\n" +
             "      },\n" +
+            "    {\n" +
+            "      \"key\": \"timezone\",\n" +
+            "      \"value\": \"Asia/Manila\",\n" +
+            "      \"private\": false\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"key\": \"legalId\",\n" +
+            "      \"value\": \"TIN\",\n" +
+            "      \"private\": false\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"key\": \"legalMask\",\n" +
+            "      \"value\": \"000000000000\",\n" +
+            "      \"private\": false\n" +
+            "    },\n" +
             "      {\n" +
             "        \"key\": \"locale\",\n" +
             "        \"value\": \"ms-MY\",\n" +
@@ -152,6 +182,21 @@ abstract class CountryGatewayBridgeImplTestData {
             "        \"value\": \"Morocco\",\n" +
             "        \"private\": false\n" +
             "      },\n" +
+            "    {\n" +
+            "      \"key\": \"timezone\",\n" +
+            "      \"value\": \"Africa/Casablanca\",\n" +
+            "      \"private\": false\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"key\": \"legalId\",\n" +
+            "      \"value\": \"ICE\",\n" +
+            "      \"private\": false\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"key\": \"legalMask\",\n" +
+            "      \"value\": \"000000000000000\",\n" +
+            "      \"private\": false\n" +
+            "    },\n" +
             "      {\n" +
             "        \"key\": \"locale\",\n" +
             "        \"value\": \"ar-MA\",\n" +
@@ -197,6 +242,21 @@ abstract class CountryGatewayBridgeImplTestData {
             "    {\n" +
             "      \"key\": \"name\",\n" +
             "      \"value\": \"Rusia\",\n" +
+            "      \"private\": false\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"key\": \"timezone\",\n" +
+            "      \"value\": \"Europe/Moscow\",\n" +
+            "      \"private\": false\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"key\": \"legalId\",\n" +
+            "      \"value\": \"INN\",\n" +
+            "      \"private\": false\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"key\": \"legalMask\",\n" +
+            "      \"value\": \"000000000099999\",\n" +
             "      \"private\": false\n" +
             "    },\n" +
             "    {\n" +

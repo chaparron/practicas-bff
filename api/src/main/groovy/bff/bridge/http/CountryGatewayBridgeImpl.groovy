@@ -173,7 +173,10 @@ class CountryGatewayBridgeImpl implements CountryBridge {
                                 "wabipay_wabicredits_enabled," +
                                 "wabipay_enabled," +
                                 "currency_code," +
-                                "currency"
+                                "currency," +
+                                "legalId," +
+                                "legalMask," +
+                                "timezone"
                 )
                 .toUriString()
                 .toURI()
