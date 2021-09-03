@@ -8,6 +8,7 @@ import bff.model.Currency
 import bff.model.Detail
 import bff.model.Fee
 import bff.model.Language
+import bff.model.LegalDocumentInformation
 import bff.model.LegalUrl
 import bff.model.LegalUrlType
 import bff.model.WabiPay
@@ -46,6 +47,9 @@ class CountryMapper {
     public static final String PARAM_FAQ = "faq"
     public static final String PARAM_FAQS = "faqs"
     public static final String PARAM_COUNTRY_CODE = "country_code"
+    public static final String PARAM_LEGAL_ID = "legalId"
+    public static final String PARAM_LEGAL_MASK = "legalMask"
+    public static final String PARAM_TIMEZONE = "timezone"
 
     @Autowired
     MessageSource messageSource
@@ -69,7 +73,8 @@ class CountryMapper {
                 contactInfo: buildContactInfo(params),
                 currency: buildCurrency(params),
                 fee: buildFee(params),
-                wabiPay: buildWabiPay(params)
+                wabiPay: buildWabiPay(params),
+                legalDocumentInformation: buildLegalDocumentInformation(params)
         )
     }
 
@@ -123,7 +128,15 @@ class CountryMapper {
 
     private Detail buildDetail(Object params) {
         return new Detail(
-                countryCode: params.find({ it[PARAM_KEY] == PARAM_COUNTRY_CODE })?.value
+                countryCode: params.find({ it[PARAM_KEY] == PARAM_COUNTRY_CODE })?.value,
+                timezone: params.find({ it[PARAM_KEY] == PARAM_TIMEZONE })?.value
+        )
+    }
+
+    private LegalDocumentInformation buildLegalDocumentInformation(Object params) {
+        return new LegalDocumentInformation(
+                id: params.find({ it[PARAM_KEY] == PARAM_LEGAL_ID })?.value ?: "",
+                mask: params.find({ it[PARAM_KEY] == PARAM_LEGAL_MASK })?.value ?: "",
         )
     }
 

@@ -18,10 +18,12 @@ type Country {
   currency:Currency!
   fee:Fee!
   wabiPay:WabiPay!
+  legalDocumentInformation:LegalDocumentInformation!
 }
 
 type Detail {
   countryCode:String!
+  timezone:String!
 }
 
 type Language{
@@ -63,6 +65,11 @@ type LegalUrl{
   type:LegalUrlType!
   value:String!
   label:String!
+}
+
+type LegalDocumentInformation{
+  id:String!
+  mask:String!
 }
 
 enum LegalUrlType {

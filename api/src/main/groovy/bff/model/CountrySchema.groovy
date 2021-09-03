@@ -13,10 +13,12 @@ class Country {
     Currency currency
     Fee fee
     WabiPay wabiPay
+    LegalDocumentInformation legalDocumentInformation
 }
 
 class Detail {
     String countryCode
+    String timezone
 }
 
 class Language{
@@ -52,6 +54,11 @@ class Fee{
     String serviceFeeType
     BigDecimal serviceFee
     Boolean displayFeeOnSupplierAdm
+}
+
+class LegalDocumentInformation{
+    String id
+    String mask
 }
 
 class LegalUrl{
