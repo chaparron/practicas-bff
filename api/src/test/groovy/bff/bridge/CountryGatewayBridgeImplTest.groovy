@@ -186,20 +186,20 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
         Assert.assertEquals("Egipto", countriesHome.get(0).name)
         Assert.assertEquals("eg", countriesHome.get(0).id)
         Assert.assertEquals("Africa/Cairo", countriesHome.get(0).detail.timezone)
-        Assert.assertEquals("TIN", countriesHome.get(0).legalInfo.legalId)
-        Assert.assertEquals("000-000-000", countriesHome.get(0).legalInfo.legalMask)
+        Assert.assertEquals("TIN", countriesHome.get(0).legalDocumentInformation.id)
+        Assert.assertEquals("000-000-000", countriesHome.get(0).legalDocumentInformation.mask)
 
         Assert.assertEquals("Morocco", countriesHome.get(1).name)
         Assert.assertEquals("ma", countriesHome.get(1).id)
         Assert.assertEquals("Africa/Casablanca", countriesHome.get(1).detail.timezone)
-        Assert.assertEquals("ICE", countriesHome.get(1).legalInfo.legalId)
-        Assert.assertEquals("000000000000000", countriesHome.get(1).legalInfo.legalMask)
+        Assert.assertEquals("ICE", countriesHome.get(1).legalDocumentInformation.id)
+        Assert.assertEquals("000000000000000", countriesHome.get(1).legalDocumentInformation.mask)
 
         Assert.assertEquals("Philippines", countriesHome.get(2).name)
         Assert.assertEquals("ph", countriesHome.get(2).id)
         Assert.assertEquals("Asia/Manila", countriesHome.get(2).detail.timezone)
-        Assert.assertEquals("TIN", countriesHome.get(2).legalInfo.legalId)
-        Assert.assertEquals("000000000000", countriesHome.get(2).legalInfo.legalMask)
+        Assert.assertEquals("TIN", countriesHome.get(2).legalDocumentInformation.id)
+        Assert.assertEquals("000000000000", countriesHome.get(2).legalDocumentInformation.mask)
 
         Mockito.verify(httpBridge, Mockito.times(2))
                 .get(
@@ -235,7 +235,7 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
         Assert.assertNotNull(country.currency)
         Assert.assertNotNull(country.fee)
         Assert.assertNotNull(country.wabiPay)
-        Assert.assertNotNull(country.legalInfo)
+        Assert.assertNotNull(country.legalDocumentInformation)
 
         Assert.assertEquals("ru", country.id)
         Assert.assertEquals("ru-RU", country.language.locale)
