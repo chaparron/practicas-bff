@@ -13,7 +13,7 @@ class Country {
     Currency currency
     Fee fee
     WabiPay wabiPay
-    LegalInfo legalInfo
+    LegalDocumentInformation legalDocumentInformation
 }
 
 class Detail {
@@ -56,9 +56,9 @@ class Fee{
     Boolean displayFeeOnSupplierAdm
 }
 
-class LegalInfo{
-    String legalId
-    String legalMask
+class LegalDocumentInformation{
+    String id
+    String mask
 }
 
 class LegalUrl{

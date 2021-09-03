@@ -18,7 +18,7 @@ type Country {
   currency:Currency!
   fee:Fee!
   wabiPay:WabiPay!
-  legalInfo:LegalInfo!
+  legalDocumentInformation:LegalDocumentInformation!
 }
 
 type Detail {
@@ -67,9 +67,9 @@ type LegalUrl{
   label:String!
 }
 
-type LegalInfo{
-  legalId:String!
-  legalMask:String!
+type LegalDocumentInformation{
+  id:String!
+  mask:String!
 }
 
 enum LegalUrlType {

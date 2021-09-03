@@ -8,7 +8,7 @@ import bff.model.Currency
 import bff.model.Detail
 import bff.model.Fee
 import bff.model.Language
-import bff.model.LegalInfo
+import bff.model.LegalDocumentInformation
 import bff.model.LegalUrl
 import bff.model.LegalUrlType
 import bff.model.WabiPay
@@ -74,7 +74,7 @@ class CountryMapper {
                 currency: buildCurrency(params),
                 fee: buildFee(params),
                 wabiPay: buildWabiPay(params),
-                legalInfo: buildLegalInfo(params)
+                legalDocumentInformation: buildLegalDocumentInformation(params)
         )
     }
 
@@ -133,10 +133,10 @@ class CountryMapper {
         )
     }
 
-    private LegalInfo buildLegalInfo(Object params) {
-        return new LegalInfo(
-                legalId: params.find({ it[PARAM_KEY] == PARAM_LEGAL_ID })?.value,
-                legalMask: params.find({ it[PARAM_KEY] == PARAM_LEGAL_MASK })?.value,
+    private LegalDocumentInformation buildLegalDocumentInformation(Object params) {
+        return new LegalDocumentInformation(
+                id: params.find({ it[PARAM_KEY] == PARAM_LEGAL_ID })?.value ?: "",
+                mask: params.find({ it[PARAM_KEY] == PARAM_LEGAL_MASK })?.value ?: "",
         )
     }
 
