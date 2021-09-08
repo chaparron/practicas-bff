@@ -95,6 +95,7 @@ type BreadCrumb {
 }
 
 type PreviewProductSearch {
+    id: ID!
     name: String!
     enabled: Boolean!
     category: Category
