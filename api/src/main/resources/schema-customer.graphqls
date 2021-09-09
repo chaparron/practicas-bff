@@ -96,7 +96,7 @@ input AddressTypeInput {
     state: StateInput
     lat: Float!
     lon: Float!
-    postalCode: String
+    postalCode: String!
     additionalInfo: String
     addressType: AddressMode!
 }
@@ -107,7 +107,7 @@ input AddressTypeUpsertInput {
     state: StateInput
     lat: Float!
     lon: Float!
-    postalCode: String
+    postalCode: String!
     additionalInfo: String
     addressType: AddressMode!
     accessToken: String!
