@@ -134,6 +134,7 @@ input PasswordlessSignUpUserInput {
   id: ID
   firstName: String!
   lastName: String!
+  countryCode: String!
   phone: String!
   email: String
   acceptWhatsApp: Boolean

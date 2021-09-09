@@ -320,6 +320,7 @@ class PasswordlessSignUpUserInput {
     long id
     String firstName
     String lastName
+    String countryCode
     String phone
     String email
     Boolean acceptWhatsApp

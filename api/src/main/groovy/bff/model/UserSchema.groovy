@@ -8,9 +8,9 @@ interface SignedChallengeDemandResult {}
 
 interface ChallengeDemandResult {}
 
-interface SignedChallengeAnswerResult{}
+interface SignedChallengeAnswerResult {}
 
-interface ChallengeAnswerResult{}
+interface ChallengeAnswerResult {}
 
 interface RefreshCredentialsResult {}
 
@@ -24,6 +24,7 @@ class User {
     String firstName
     String lastName
     Boolean acceptWhatsApp
+    String countryCode
     String phone
     String email
     UserCredentials credentials
@@ -56,7 +57,7 @@ class ChallengeDemandInput {
     String phone
 }
 
-class ChallengeAnswer{
+class ChallengeAnswer {
     String challengeId
     String challengeAnswer
 }
@@ -76,13 +77,13 @@ class Credentials {
     String expiresIn
 }
 
-class GenericCredentials implements LoginResult, SignInResult, SignedChallengeAnswerResult, ChallengeAnswerResult{
+class GenericCredentials implements LoginResult, SignInResult, SignedChallengeAnswerResult, ChallengeAnswerResult {
     String username
     Credentials credentials
     Customer customer
 }
 
-class UpgradeRequired implements LoginResult{
+class UpgradeRequired implements LoginResult {
     Credentials credentials
 }
 
@@ -104,8 +105,8 @@ enum Site {
         this.permission = permission
     }
 
-    static Site fromPermission(String permission){
-        Site.values().find({it.permission == permission})
+    static Site fromPermission(String permission) {
+        values().find({ it.permission == permission })
     }
 }
 
@@ -140,10 +141,8 @@ enum ChallengeDemandFailureReason {
 enum ChallengeAnswerFailureReason {
     UNAUTHORIZED,
     UNKNOWN_CHALLENGE_ID,
-    CHALLENGE_DOES_NOT_BELONG_USER,
     USER_ALREADY_USES_PASSWORDLESS,
     INCORRECT_CODE,
-    INCORRECT_CODE_AND_MAX_ATTEMPTS_REACHED,
     EXPIRED_CHALLENGE,
     MAX_ATTEMPTS_REACHED
 
@@ -151,9 +150,9 @@ enum ChallengeAnswerFailureReason {
         throw new ChallengeAnswerFailureException(challengeAnswerFailureReason: this.unifiedReason)
     }
 
-    private ChallengeAnswerFailureReason getUnifiedReason(){
-        if ([UNKNOWN_CHALLENGE_ID, CHALLENGE_DOES_NOT_BELONG_USER, USER_ALREADY_USES_PASSWORDLESS,
-        INCORRECT_CODE, INCORRECT_CODE_AND_MAX_ATTEMPTS_REACHED].contains(this)){
+    private ChallengeAnswerFailureReason getUnifiedReason() {
+        if ([UNKNOWN_CHALLENGE_ID, USER_ALREADY_USES_PASSWORDLESS,
+             INCORRECT_CODE].contains(this)) {
             return UNAUTHORIZED
         }
         return this
@@ -196,7 +195,7 @@ enum ConfirmPasswordReason {
 
 }
 
-class LoginFailed implements LoginResult , RefreshCredentialsResult {
+class LoginFailed implements LoginResult, RefreshCredentialsResult {
     LoginFailureReason reason
 }
 
@@ -204,7 +203,7 @@ class SignedChallengeDemandFailed implements SignedChallengeDemandResult {
     SignedChallengeDemandFailureReason reason
 }
 
-class TooManyShipments implements SignedChallengeDemandResult, ChallengeDemandResult{
+class TooManyShipments implements SignedChallengeDemandResult, ChallengeDemandResult {
     Integer waitTime
 }
 
@@ -220,11 +219,11 @@ class ChangePasswordFailed implements ChangePasswordResult {
     ChangePasswordReason reason
 }
 
-class ResetPasswordDemandFailed{
+class ResetPasswordDemandFailed {
     ResetPasswordReason reason
 }
 
-class ConfirmPasswordFailed implements ConfirmPasswordResult{
+class ConfirmPasswordFailed implements ConfirmPasswordResult {
     ConfirmPasswordReason confirmPasswordReason
 }
 
@@ -235,6 +234,7 @@ class RefreshCredentialsInput {
 class ResetPasswordRequestInput {
     String username
 }
+
 class ResetPasswordConfirmInput {
     String token
     String password
