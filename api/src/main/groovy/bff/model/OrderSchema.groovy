@@ -291,6 +291,7 @@ class SupplierOrderAndOrderCancellations {
     String accessToken
     Order order
     OrderCancellation orderCancellation
+    OrderCancellation cancellationDetails
     Long id
     SupplierOrderStatus status
     Supplier supplier
@@ -321,6 +322,10 @@ class SupplierOrderAndOrderCancellations {
     HashMap<RatingOwner, Rating> ratings
     Map metadata
     List<Summary> summary
+
+    OrderCancellation getOrderCancellation() {
+        orderCancellation?:cancellationDetails
+    }
 }
 
 
