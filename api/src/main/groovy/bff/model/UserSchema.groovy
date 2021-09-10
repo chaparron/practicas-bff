@@ -122,8 +122,10 @@ enum LoginFailureReason {
 }
 
 enum SignedChallengeDemandFailureReason {
+
     PHONE_ALREADY_EXISTS,
-    USER_ALREADY_USES_PASSWORDLESS
+    USER_ALREADY_USES_PASSWORDLESS,
+    UNAUTHORIZED
 
     def doThrow() {
         throw new SignedChallengeDemandFailureException(signedChallengeDemandFailureReason: this)

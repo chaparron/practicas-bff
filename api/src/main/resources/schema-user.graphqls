@@ -23,6 +23,9 @@ enum SignedChallengeDemandFailureReason {
     PHONE_ALREADY_EXISTS
     # When a user who has already migrated to passwordless login uses this mutation. It should use 'challengeRequestForPasswordlessLogin'
     USER_ALREADY_USES_PASSWORDLESS
+
+    # Token is not valid
+    UNAUTHORIZED
 }
 
 enum ChallengeDemandFailureReason {
