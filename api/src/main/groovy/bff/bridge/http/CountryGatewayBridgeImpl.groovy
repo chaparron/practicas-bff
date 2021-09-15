@@ -154,6 +154,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
                         "keys",
                         "name-en," +
                                 "name-$locale," +
+                                "name," +
                                 "flag," +
                                 "tyc," +
                                 "pp," +
