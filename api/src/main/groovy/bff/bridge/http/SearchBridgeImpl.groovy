@@ -2,6 +2,7 @@ package bff.bridge.http
 
 
 import bff.bridge.SearchBridge
+import bff.configuration.BadRequestErrorException
 import bff.model.*
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -65,44 +66,52 @@ class SearchBridgeImpl implements SearchBridge {
 
     @Override
     SearchResponse searchV2(SearchInput searchInput) {
-        return search(searchInput)
+        try {
+            return search(searchInput)
+        } catch (BadRequestErrorException ex) {
+            return SearchFailedReason.valueOf((String) ex.innerResponse).build()
+        }
     }
 
     @Override
     SearchResponse previewSearch(PreviewSearchInput searchInput) {
-        def uri = UriComponentsBuilder.fromUri(root.resolve("/product"))
-                .queryParam("keyword", searchInput.keyword)
-                .queryParam("sort", searchInput.sort)
-                .queryParam("sort_direction", searchInput.sortDirection?.name())
-                .queryParam("category", searchInput.category)
-                .queryParam("page", searchInput.page)
-                .queryParam("size", searchInput.size)
-                .queryParam("brand", searchInput.brand)
-                .queryParam("tag", searchInput.tag)
-                .queryParam("lat", searchInput.lat)
-                .queryParam("lng", searchInput.lng)
-                .queryParam("countryId", searchInput.countryId)
+        try {
+            def uri = UriComponentsBuilder.fromUri(root.resolve("/product"))
+                    .queryParam("keyword", searchInput.keyword)
+                    .queryParam("sort", searchInput.sort)
+                    .queryParam("sort_direction", searchInput.sortDirection?.name())
+                    .queryParam("category", searchInput.category)
+                    .queryParam("page", searchInput.page)
+                    .queryParam("size", searchInput.size)
+                    .queryParam("brand", searchInput.brand)
+                    .queryParam("tag", searchInput.tag)
+                    .queryParam("lat", searchInput.lat)
+                    .queryParam("lng", searchInput.lng)
+                    .queryParam("countryId", searchInput.countryId)
 
-        searchInput.features?.each {
-            uri.queryParam("feature_${it.id}", it.value)
+            searchInput.features?.each {
+                uri.queryParam("feature_${it.id}", it.value)
+            }
+
+            def response = http.exchange(
+                    RequestEntity.method(HttpMethod.GET, uri.toUriString().toURI())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(searchInput)
+                    , PreviewSearchResultMapper).body
+
+            def result = new PreviewSearchResult(
+                    products: response.products,
+                    breadcrumb: response.breadcrumb,
+                    sort: response.sort,
+                    header: response.header,
+                    facets: response.facets
+            )
+
+            result.filters = transformFilters(result.filters)
+            result
+        } catch (BadRequestErrorException ex) {
+            return SearchFailedReason.valueOf((String) ex.innerResponse).build()
         }
-
-        def response = http.exchange(
-                RequestEntity.method(HttpMethod.GET, uri.toUriString().toURI())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(searchInput)
-                , PreviewSearchResultMapper).body
-
-        def result = new PreviewSearchResult(
-                products: response.products,
-                breadcrumb: response.breadcrumb,
-                sort: response.sort,
-                header: response.header,
-                facets: response.facets
-        )
-
-        result.filters = transformFilters(result.filters)
-        result
     }
 
     private static transformFilters(def filters) {

@@ -299,6 +299,10 @@ Resources:
           OptionName: resizer_url
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, ResizerUrl ]
 
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: GROCERY_LISTING_ENDPOINT
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-wabi2b-grocery-listing-ApiGatewayEndpoint"
 
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
