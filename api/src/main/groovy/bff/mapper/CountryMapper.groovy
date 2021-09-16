@@ -90,7 +90,8 @@ class CountryMapper {
     ) {
         return new Country(
                 id: countryId,
-                name: params.find({ it[PARAM_KEY] == "$PARAM_NAME-$locale" })?.value,
+                name: params.find({ it[PARAM_KEY] == "$PARAM_NAME-$locale" })?.value
+                        ?: params.find({ it[PARAM_KEY] == "$PARAM_NAME-en" })?.value,
                 flag: params.find({ it[PARAM_KEY] == PARAM_FLAG })?.value,
                 legalUrls: buildLegalUrls(params),
                 detail: buildDetail(params),
