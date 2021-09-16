@@ -150,34 +150,6 @@ class CountryGatewayBridgeImpl implements CountryBridge {
     private def getUnCachedHomeCountries(String locale) {
 
         def requestUri = UriComponentsBuilder.fromUri(regionalConfigUrl.resolve(PUBLIC_ENABLED_COUNTRY_ENDPOINT))
-                .queryParam(
-                        "keys",
-                        "name-en," +
-                                "name-$locale," +
-                                "flag," +
-                                "tyc," +
-                                "pp," +
-                                "cookies," +
-                                "faqs," +
-                                "locale," +
-                                "country_code," +
-                                "language," +
-                                "display_fee_on_supplier_adm," +
-                                "service_fee_type," +
-                                "service_fee," +
-                                "direction," +
-                                "phone_number," +
-                                "whatsapp_number," +
-                                "wabipay_convert_wc_to_money_when_releasing," +
-                                "wabipay_money_enabled," +
-                                "wabipay_wabicredits_enabled," +
-                                "wabipay_enabled," +
-                                "currency_code," +
-                                "currency," +
-                                "legalId," +
-                                "legalMask," +
-                                "timezone"
-                )
                 .toUriString()
                 .toURI()
 
@@ -188,9 +160,10 @@ class CountryGatewayBridgeImpl implements CountryBridge {
                 List
         )
                 ?.collect {
-                    return countryMapper.buildCountryFromParams(
+                    return countryMapper.buildCountryFromParamsWithLocale(
                             it.id as String,
-                            it.config as ArrayList
+                            it.config as ArrayList,
+                            locale
                     )
                 }
                 ?.sort(

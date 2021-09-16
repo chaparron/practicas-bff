@@ -77,12 +77,17 @@ abstract class CountryGatewayBridgeImplTestData {
             "      },\n" +
             "      {\n" +
             "        \"key\": \"name-ar\",\n" +
-            "        \"value\": \"Egipto\",\n" +
+            "        \"value\": \"مصر\",\n" +
             "        \"private\": false\n" +
             "      },\n" +
             "      {\n" +
             "        \"key\": \"name-en\",\n" +
             "        \"value\": \"Egypt\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"name-es\",\n" +
+            "        \"value\": \"Egipto\",\n" +
             "        \"private\": false\n" +
             "      },\n" +
             "      {\n" +
@@ -152,6 +157,11 @@ abstract class CountryGatewayBridgeImplTestData {
             "        \"private\": false\n" +
             "      },\n" +
             "      {\n" +
+            "        \"key\": \"name-es\",\n" +
+            "        \"value\": \"Filipinas\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
             "        \"key\": \"flag\",\n" +
             "        \"value\": \"7ab0fd14-efa9-11eb-9a03-0242ac1300ph.png\",\n" +
             "        \"private\": false\n" +
@@ -210,6 +220,11 @@ abstract class CountryGatewayBridgeImplTestData {
             "      {\n" +
             "        \"key\": \"name-en\",\n" +
             "        \"value\": \"Morocco\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"name-es\",\n" +
+            "        \"value\": \"Marruecos\",\n" +
             "        \"private\": false\n" +
             "      },\n" +
             "      {\n" +
