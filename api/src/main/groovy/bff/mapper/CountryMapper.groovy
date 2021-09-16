@@ -78,6 +78,31 @@ class CountryMapper {
         )
     }
 
+    /**
+     * Build Country Object from original API params with translated name
+     * @param params The original API parameters
+     * @return Country
+     */
+    Country buildCountryFromParamsWithLocale(
+            String countryId,
+            ArrayList params,
+            String locale
+    ) {
+        return new Country(
+                id: countryId,
+                name: params.find({ it[PARAM_KEY] == "$PARAM_NAME-$locale" })?.value,
+                flag: params.find({ it[PARAM_KEY] == PARAM_FLAG })?.value,
+                legalUrls: buildLegalUrls(params),
+                detail: buildDetail(params),
+                language: buildLanguage(params),
+                contactInfo: buildContactInfo(params),
+                currency: buildCurrency(params),
+                fee: buildFee(params),
+                wabiPay: buildWabiPay(params),
+                legalDocumentInformation: buildLegalDocumentInformation(params)
+        )
+    }
+
     private WabiPay buildWabiPay(Object params) {
         return new WabiPay(
                 enabled: params.find({ it[PARAM_KEY] == PARAM_WABIPAY_ENABLED })?.value,
