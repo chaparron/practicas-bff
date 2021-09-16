@@ -7,9 +7,10 @@ import bff.model.SearchResult
 
 interface SearchBridge {
 
-    SearchResult search(SearchInput searchInput)
+    SearchResult search(SearchInput input)
 
-    SearchResponse searchV2(SearchInput searchInput)
+    SearchResponse searchV2(SearchInput input)
 
-    SearchResponse previewSearch(PreviewSearchInput searchInput)
+    SearchResponse previewSearch(PreviewSearchInput input)
+
 }

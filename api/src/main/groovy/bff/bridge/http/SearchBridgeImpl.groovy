@@ -17,28 +17,28 @@ class SearchBridgeImpl implements SearchBridge {
     RestOperations http
 
     @Override
-    SearchResult search(SearchInput searchInput) {
+    SearchResult search(SearchInput input) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/product"))
-                .queryParam("address_id", searchInput.addressId)
-                .queryParam("keyword", searchInput.keyword)
-                .queryParam("sort", searchInput.sort)
-                .queryParam("sort_direction", searchInput.sortDirection?.name())
-                .queryParam("category", searchInput.category)
-                .queryParam("page", searchInput.page)
-                .queryParam("size", searchInput.size)
-                .queryParam("brand", searchInput.brand)
-                .queryParam("supplier", searchInput.supplier)
-                .queryParam("tag", searchInput.tag)
+                .queryParam("address_id", input.addressId)
+                .queryParam("keyword", input.keyword)
+                .queryParam("sort", input.sort)
+                .queryParam("sort_direction", input.sortDirection?.name())
+                .queryParam("category", input.category)
+                .queryParam("page", input.page)
+                .queryParam("size", input.size)
+                .queryParam("brand", input.brand)
+                .queryParam("supplier", input.supplier)
+                .queryParam("tag", input.tag)
 
-        searchInput.features?.each {
+        input.features?.each {
             uri.queryParam("feature_${it.id}", it.value)
         }
 
         def search = http.exchange(
                 RequestEntity.method(HttpMethod.GET, uri.toUriString().toURI())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer $searchInput.accessToken")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $input.accessToken")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(searchInput)
+                        .body(input)
                 , SearchResultMapper).body
 
         def result = new SearchResult(
@@ -51,13 +51,13 @@ class SearchBridgeImpl implements SearchBridge {
         )
 
         result.products.forEach {
-            it.accessToken = searchInput.accessToken
-            it.priceFrom?.accessToken = searchInput.accessToken
-            it.minUnitsPrice?.accessToken = searchInput.accessToken
-            it.highlightedPrice?.accessToken = searchInput.accessToken
+            it.accessToken = input.accessToken
+            it.priceFrom?.accessToken = input.accessToken
+            it.minUnitsPrice?.accessToken = input.accessToken
+            it.highlightedPrice?.accessToken = input.accessToken
 
             it.prices?.forEach { pr ->
-                pr.accessToken = searchInput.accessToken
+                pr.accessToken = input.accessToken
             }
         }
         result
@@ -65,38 +65,38 @@ class SearchBridgeImpl implements SearchBridge {
     }
 
     @Override
-    SearchResponse searchV2(SearchInput searchInput) {
+    SearchResponse searchV2(SearchInput input) {
         try {
-            return search(searchInput)
+            return search(input)
         } catch (BadRequestErrorException ex) {
             return SearchFailedReason.valueOf((String) ex.innerResponse).build()
         }
     }
 
     @Override
-    SearchResponse previewSearch(PreviewSearchInput searchInput) {
+    SearchResponse previewSearch(PreviewSearchInput input) {
         try {
             def uri = UriComponentsBuilder.fromUri(root.resolve("/product"))
-                    .queryParam("keyword", searchInput.keyword)
-                    .queryParam("sort", searchInput.sort)
-                    .queryParam("sort_direction", searchInput.sortDirection?.name())
-                    .queryParam("category", searchInput.category)
-                    .queryParam("page", searchInput.page)
-                    .queryParam("size", searchInput.size)
-                    .queryParam("brand", searchInput.brand)
-                    .queryParam("tag", searchInput.tag)
-                    .queryParam("lat", searchInput.lat)
-                    .queryParam("lng", searchInput.lng)
-                    .queryParam("countryId", searchInput.countryId)
+                    .queryParam("keyword", input.keyword)
+                    .queryParam("sort", input.sort)
+                    .queryParam("sort_direction", input.sortDirection?.name())
+                    .queryParam("category", input.category)
+                    .queryParam("page", input.page)
+                    .queryParam("size", input.size)
+                    .queryParam("brand", input.brand)
+                    .queryParam("tag", input.tag)
+                    .queryParam("lat", input.lat)
+                    .queryParam("lng", input.lng)
+                    .queryParam("countryId", input.countryId)
 
-            searchInput.features?.each {
+            input.features?.each {
                 uri.queryParam("feature_${it.id}", it.value)
             }
 
             def response = http.exchange(
                     RequestEntity.method(HttpMethod.GET, uri.toUriString().toURI())
                             .contentType(MediaType.APPLICATION_JSON)
-                            .body(searchInput)
+                            .body(input)
                     , PreviewSearchResultMapper).body
 
             def result = new PreviewSearchResult(
