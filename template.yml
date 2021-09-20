@@ -20,6 +20,7 @@ Mappings:
       ApiRoot: 'https://api-qa.wabi2b.com/'
       SecurityGroups: '{{resolve:ssm:/foundation/qa/beanstalk/security_groups:1}}'
       ResizerUrl: 'https://resizer-qa.wabi2b.com/'
+      GroceryListingEnabled: "false"
     prod:
       MinPoolSize: '2'
       MaxPoolSize: '4'
@@ -33,6 +34,7 @@ Mappings:
       ApiRoot: 'https://api.wabi2b.com/'
       SecurityGroups: '{{resolve:ssm:/foundation/prod/beanstalk/security_groups:1}}'
       ResizerUrl: 'https://resizer.wabi2b.com/'
+      GroceryListingEnabled: "false"
 Resources:
 
   Wabi2bCertificate:
@@ -299,6 +301,14 @@ Resources:
           OptionName: resizer_url
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, ResizerUrl ]
 
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: GROCERY_LISTING_ENDPOINT
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-wabi2b-grocery-listing-ApiGatewayEndpoint"
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: GROCERY_LISTING_ENABLED
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, GroceryListingEnabled ]
 
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
