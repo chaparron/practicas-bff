@@ -168,6 +168,10 @@ class Customer implements CustomerUpdateResult, PasswordlessSignUpResult {
         DeliveryPreference.NO_PREFERENCE
     }
 
+    Address preferredDeliveryAddress() {
+        addresses.find { it.preferred && it.addressType == AddressMode.DELIVERY }
+    }
+
     private static int getHours(String strTime) {
         if (!StringUtils.isEmpty(strTime)) {
             String[] time = strTime.split(':')
@@ -175,6 +179,7 @@ class Customer implements CustomerUpdateResult, PasswordlessSignUpResult {
         }
         -1
     }
+
 }
 
 class State {
