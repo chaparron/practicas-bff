@@ -77,8 +77,7 @@ class Mutation implements GraphQLMutationResolver {
     }
 
     ChallengeDemandResult challengeRequestForPasswordlessLogin(ChallengeDemandInput input, DataFetchingEnvironment env) {
-        GraphQLContext context = env.getContext()
-        String remoteAddress = context.httpServletRequest.get().getRemoteAddr()
+        def remoteAddress = DeviceIdentifierService.identifySource(env)
         try {
             authServerBridge.challengeRequestForPasswordlessLogin(input.countryCode, input.phone, remoteAddress)
         } catch (TooManyShipmentsException tooManyShipmentsException){
