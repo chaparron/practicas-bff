@@ -220,6 +220,7 @@ type User {
     phone: String
     email: String
     credentials: UserCredentials
+    usesPasswordless: Boolean
 }
 
 
