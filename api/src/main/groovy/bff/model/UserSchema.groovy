@@ -28,6 +28,7 @@ class User {
     String phone
     String email
     UserCredentials credentials
+    Boolean usesPasswordless
 }
 
 class UserCredentials {

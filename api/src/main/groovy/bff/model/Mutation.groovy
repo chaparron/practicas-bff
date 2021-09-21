@@ -12,6 +12,7 @@ import bff.configuration.ConflictErrorException
 import bff.configuration.EntityNotFoundException
 import bff.configuration.NotAcceptableException
 import bff.model.utils.DataURL
+import bff.service.DeviceIdentifierService
 import com.coxautodev.graphql.tools.GraphQLMutationResolver
 import graphql.schema.DataFetchingEnvironment
 import graphql.servlet.GraphQLContext
@@ -51,8 +52,9 @@ class Mutation implements GraphQLMutationResolver {
     }
 
     SignedChallengeDemandResult challengeRequestForChangeToPasswordlessAuthentication(SignedChallengeDemandInput input, DataFetchingEnvironment env) {
-        GraphQLContext context = env.getContext()
-        String remoteAddress = context.httpServletRequest.get().getRemoteAddr()
+
+        def remoteAddress = DeviceIdentifierService.identifySource(env)
+
         try {
             authServerBridge.challengeRequestForChangeToPasswordlessAuthentication(input.countryCode, input.phone, input.accessToken, remoteAddress)
         } catch (TooManyShipmentsException tooManyShipmentsException){
@@ -75,8 +77,7 @@ class Mutation implements GraphQLMutationResolver {
     }
 
     ChallengeDemandResult challengeRequestForPasswordlessLogin(ChallengeDemandInput input, DataFetchingEnvironment env) {
-        GraphQLContext context = env.getContext()
-        String remoteAddress = context.httpServletRequest.get().getRemoteAddr()
+        def remoteAddress = DeviceIdentifierService.identifySource(env)
         try {
             authServerBridge.challengeRequestForPasswordlessLogin(input.countryCode, input.phone, remoteAddress)
         } catch (TooManyShipmentsException tooManyShipmentsException){
