@@ -322,6 +322,7 @@ class SupplierOrderAndOrderCancellations {
     HashMap<RatingOwner, Rating> ratings
     Map metadata
     List<Summary> summary
+    List<Summary> orderedSummary
 
     OrderCancellation getOrderCancellation() {
         orderCancellation?:cancellationDetails

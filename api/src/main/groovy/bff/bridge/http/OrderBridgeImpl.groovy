@@ -149,6 +149,107 @@ class OrderBridgeImpl implements OrderBridge {
                         }
                 )
             }
+
+            // TODO: Implement order Summary - Mock for IOS schema
+            it.orderedSummary = [
+                    new Summary(
+                            type: CartSummaryItemType.PRODUCTS_TOTAL,
+                            value: 30650,
+                            metadata: []
+                    ),
+                    new Summary(
+                            type: CartSummaryItemType.IBB,
+                            value: 1664.28,
+                            metadata: [
+                                    new MetaEntry(
+                                            key: "usingDefaultAliquot",
+                                            value: "true"),
+                                    new MetaEntry(
+                                            key: "aliquot",
+                                            value: "6"),
+                                    new MetaEntry(
+                                            key: "NET_SUBTOTAL",
+                                            value: "27738.0")
+                            ]
+                    ),
+                    new Summary(
+                            type: CartSummaryItemType.DELIVERY_COST,
+                            value: 0,
+                            metadata: [
+                                    new MetaEntry(
+                                            key: "usingDefaultAliquot",
+                                            value: "true"),
+                                    new MetaEntry(
+                                            key: "aliquot",
+                                            value: "3")
+                            ]
+                    ),
+                    new Summary(
+                            type: CartSummaryItemType.DISCOUNT,
+                            value: 0,
+                            metadata: [
+                                    new MetaEntry(
+                                            key: "usingDefaultAliquot",
+                                            value: "false")
+                            ]
+                    ),
+                    new Summary(
+                            type: CartSummaryItemType.MAX_AMOUNT_WABIPAY_ALLOWED,
+                            value: 30650,
+                            metadata: [
+                                    new MetaEntry(
+                                            key: "usingDefaultAliquot",
+                                            value: "true"),
+                                    new MetaEntry(
+                                            key: "aliquot",
+                                            value: "2"),
+                                    new MetaEntry(
+                                            key: "NET_SUBTOTAL",
+                                            value: "27738.0")
+                            ]
+                    ),
+                    new Summary(
+                            type: CartSummaryItemType.CREDITS_USED,
+                            value: 0,
+                            metadata: []
+                    ),
+                    new Summary(
+                            type: CartSummaryItemType.WABIMONEY_USED,
+                            value: 0,
+                            metadata: [
+                                    new MetaEntry(
+                                            key: "usingDefaultAliquot",
+                                            value: "true"),
+                                    new MetaEntry(
+                                            key: "aliquot",
+                                            value: "1"
+                                    )
+                            ]
+                    ),
+                    new Summary(
+                            type: CartSummaryItemType.ORDER_TOTAL,
+                            value: 30650,
+                            metadata: []
+                    ),
+                    new Summary(
+                            type: CartSummaryItemType.SERVICE_FEE,
+                            value: 30650,
+                            metadata: []
+                    ),
+                    new Summary(
+                            type: CartSummaryItemType.PAYMENT_PENDING,
+                            value: 30650,
+                            metadata: [
+                                    new MetaEntry(
+                                            key: "usingDefaultAliquot",
+                                            value: "true"),
+                                    new MetaEntry(
+                                            key: "aliquot",
+                                            value: "7"
+                                    )
+                            ]
+                    )
+            ]
         }
 
         customerOrderResponse

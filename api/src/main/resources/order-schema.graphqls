@@ -261,6 +261,7 @@ type SupplierOrderAndOrderCancellations {
   supplierRated: Boolean
   cancelRequested: Boolean
   summary: [Summary]
+  orderedSummary: [Summary]
 }
 
 enum RatingOwner {
