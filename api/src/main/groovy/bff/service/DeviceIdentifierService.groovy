@@ -19,7 +19,7 @@ class DeviceIdentifierService {
 
         String submittedIp = request.getHeader("X-Forwarded-For")
         def candidateIPs = submittedIp?:request.getRemoteAddr()
-        def singleIp = getLeftMostAddress(candidateIPs)
+        def singleIp = getBeforeLastAddress(candidateIPs)
         if (singleIp  == "127.0.0.1") { // Useful when bff is running locally
             log.info("Could not correctly detect the remote address, returning a random IP")
             def random = new Random()
@@ -37,6 +37,14 @@ class DeviceIdentifierService {
         def hasManyIps = source.indexOf(",") != -1
         if (hasManyIps) {
             source.split(",").collect { it.trim() }.first()
+        }
+        return source
+    }
+
+    private static String getBeforeLastAddress(String source) {
+        def hasManyIps = source.indexOf(",") != -1
+        if (hasManyIps && source.split(",").size() > 1) {
+            source.split(",").collect { it.trim() }[-2]
         }
         return source
     }
