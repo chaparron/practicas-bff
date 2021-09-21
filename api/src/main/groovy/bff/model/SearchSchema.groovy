@@ -251,7 +251,7 @@ class Price {
     SupplierProductConfiguration configuration
 }
 
-
+@EqualsAndHashCode
 class Display {
     Integer id
     String ean
@@ -275,6 +275,7 @@ class WabipayConfiguration {
     Integer order_percentage_cap
 }
 
+@EqualsAndHashCode
 class Supplier implements SupplierResponse {
     String accessToken
     Long id

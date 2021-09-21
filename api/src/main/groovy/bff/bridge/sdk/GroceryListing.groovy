@@ -67,26 +67,10 @@ class GroceryListing implements SearchBridge {
                         field: input.sort ?: "DEFAULT",
                         direction: (input.sortDirection ?: ASC).name()
                 ),
-                breadcrumb: [],
-                filters: [],
+                breadcrumb: breadCrumb(request, response),
+                filters: filters(request, response),
                 facets: facets(request, response),
-                products: asJava(response.hits()).collect {
-                    def prices = prices(it)
-                    new ProductSearch(
-                            id: it.id().toLong(),
-                            name: it.name().defaultEntry(),
-                            category: category(it),
-                            brand: brand(it),
-                            ean: ean(it),
-                            description: toJava(it.description()).map { it.defaultEntry() }.orElse(null),
-                            images: images(it),
-                            displays: displays(it),
-                            prices: prices,
-                            minUnitsPrice: prices.min { it.minUnits },
-                            highlightedPrice: prices.min { it.unitValue },
-                            title: it.name().defaultEntry()
-                    )
-                }
+                products: products(response)
         )
     }
 
@@ -129,22 +113,19 @@ class GroceryListing implements SearchBridge {
                         field: input.sort ?: "DEFAULT",
                         direction: (input.sortDirection ?: ASC).name()
                 ),
-                breadcrumb: [],
-                filters: [],
+                breadcrumb: breadCrumb(request, response),
+                filters: filters(request, response),
                 facets: facets(request, response),
-                products: asJava(response.hits()).collect {
+                products: products(response).collect {
                     new PreviewProductSearch(
-                            id: it.id().toLong(),
-                            name: it.name().defaultEntry(),
-                            enabled: true,
-                            category: category(it),
-                            brand: brand(it),
-                            ean: ean(it),
-                            description: toJava(it.description()).map { it.defaultEntry() }.orElse(null),
-                            images: images(it),
-                            created: null,
-                            manufacturer: manufacturer(it),
-                            prices: prices(it).collect {
+                            id: it.id,
+                            name: it.name,
+                            category: it.category,
+                            brand: it.brand,
+                            ean: it.ean,
+                            description: it.description,
+                            images: it.images,
+                            prices: it.prices.collect {
                                 new PreviewPrice(
                                         id: it.id,
                                         value: it.value,
@@ -153,16 +134,14 @@ class GroceryListing implements SearchBridge {
                                         minUnits: it.minUnits
                                 )
                             },
-                            suppliers: suppliers(it).collect {
+                            suppliers: it.prices.collect { it.supplier }.toSet().toList().collect {
                                 new PreviewSupplier(
                                         id: it.id,
                                         name: it.name,
-                                        legalName: it.legalName,
                                         avatar: it.avatar
                                 )
                             },
-                            title: it.name().defaultEntry(),
-                            country_id: null
+                            title: it.title
                     )
                 }
         )
@@ -206,16 +185,35 @@ class GroceryListing implements SearchBridge {
         }
     }
 
-    private static Category category(AvailableProduct product) {
-        new Category(
-                id: product.categorization().last().id().toLong(),
-                parentId: toJava(product.categorization().last().parent())
-                        .map { it.toLong() }
-                        .orElse(null),
-                name: product.categorization().last().name().defaultEntry(),
-                enabled: true,
-                isLeaf: true
-        )
+    private static List<ProductSearch> products(ProductQueryResponse response) {
+        asJava(response.hits()).collect {
+            def prices = asJava(it.options()).collect { price(it) }
+            def displays = asJava(it.options()).collect { display(it) }.toSet().toList()
+            new ProductSearch(
+                    id: it.id().toLong(),
+                    name: it.name().defaultEntry(),
+                    category: new Category(
+                            id: it.categorization().last().id().toLong(),
+                            parentId: toJava(it.categorization().last().parent())
+                                    .map { it.toLong() }.orElse(null),
+                            name: it.categorization().last().name().defaultEntry(),
+                            enabled: true,
+                            isLeaf: true
+                    ),
+                    brand: new Brand(
+                            id: it.brand().id().toLong(),
+                            name: it.brand().name().defaultEntry()
+                    ),
+                    ean: displays.find { it.units == 1 }?.ean,
+                    description: toJava(it.description()).map { it.defaultEntry() }.orElse(null),
+                    images: asJava(it.images().zipWithIndex()).collect { new Image(id: it._1()) },
+                    displays: displays,
+                    prices: prices,
+                    minUnitsPrice: prices.min { it.minUnits },
+                    highlightedPrice: prices.min { it.unitValue },
+                    title: it.name().defaultEntry()
+            )
+        }
     }
 
     private static Price price(AvailableOption option) {
@@ -225,7 +223,7 @@ class GroceryListing implements SearchBridge {
                 value: option.price().toBigDecimal(),
                 unitValue: option.price() / option.display().units(),
                 minUnits: option.requiredPurchaseUnits()._1() as Integer,
-                maxUnits: toJava(option.requiredPurchaseUnits()._2()).map { it as Integer }.orElse(null),
+                maxUnits: toJava(option.requiredPurchaseUnits()._2()).map { it as Integer }.orElse(0),
                 display: display(option),
                 configuration: null
         )
@@ -245,40 +243,6 @@ class GroceryListing implements SearchBridge {
                 id: option.display().id().toInteger(),
                 ean: option.display().ean(),
                 units: option.display().units()
-        )
-    }
-
-    private static List<Price> prices(AvailableProduct product) {
-        asJava(product.options()).collect { price(it) }
-    }
-
-    private static List<Display> displays(AvailableProduct product) {
-        asJava(product.options()).collect { display(it) }
-    }
-
-    private static List<Supplier> suppliers(AvailableProduct product) {
-        asJava(product.options()).collect { supplier(it) }
-    }
-
-    private static List<Image> images(AvailableProduct product) {
-        asJava(product.images().zipWithIndex()).collect {
-            new Image(
-                    id: it._1()
-            )
-        }
-    }
-
-    private static String ean(AvailableProduct product) {
-        asJava(product.options())
-                .collect { it.display() }
-                .find { it.units() == 1 }
-                ?.ean()
-    }
-
-    private static Brand brand(AvailableProduct product) {
-        new Brand(
-                id: product.brand().id().toLong(),
-                name: product.brand().name().defaultEntry()
         )
     }
 
@@ -364,6 +328,134 @@ class GroceryListing implements SearchBridge {
                                     }
                             )
                         }
+    }
+
+    private static List<Filter> filters(ProductQueryRequest request, response) {
+        categoryFilter(request, response) +
+                brandFilter(request, response) +
+                supplierFilter(request, response) +
+                featuresFilter(request, response)
+    }
+
+    private static List<Filter> categoryFilter(ProductQueryRequest request, ProductQueryResponse response) {
+        ofNullable(breadCrumb(request, response).last())
+                .map {
+                    [
+                            new Filter(
+                                    key: "category",
+                                    values: [
+                                            new FilterItem(
+                                                    id: it.id,
+                                                    name: it.name
+                                            )
+                                    ]
+                            )
+                    ]
+                }
+                .orElse([])
+    }
+
+    private static List<Filter> brandFilter(ProductQueryRequest request, ProductQueryResponse response) {
+        toJava(request.filtering().byBrand())
+                .map { asJava(it.values()) }
+                .flatMap { filtered ->
+                    ofNullable(
+                            toJava(response.aggregations().brands())
+                                    .map { asJava(it.hits()).collect { it._1() } }
+                                    .orElse([])
+                                    .findAll { filtered.contains(it.id()) }
+                    ).map {
+                        it.collect {
+                            new Filter(
+                                    key: "brand",
+                                    values: [
+                                            new FilterItem(
+                                                    id: it.id() as Integer,
+                                                    name: it.name().defaultEntry()
+                                            )
+                                    ]
+                            )
+                        }
+                    }
+                }
+                .orElse([])
+    }
+
+    private static List<Filter> supplierFilter(ProductQueryRequest request, ProductQueryResponse response) {
+        toJava(request.filtering().bySupplier())
+                .map { asJava(it.values()) }
+                .flatMap { filtered ->
+                    ofNullable(
+                            toJava(response.aggregations().suppliers())
+                                    .map { asJava(it.hits()).collect { it._1() } }
+                                    .orElse([])
+                                    .findAll { filtered.contains(it.id()) }
+                    ).map {
+                        it.collect {
+                            new Filter(
+                                    key: "supplier",
+                                    values: [
+                                            new FilterItem(
+                                                    id: it.id() as Integer,
+                                                    name: it.name()
+                                            )
+                                    ]
+                            )
+                        }
+                    }
+                }
+                .orElse([])
+    }
+
+    private static List<Filter> featuresFilter(ProductQueryRequest request, ProductQueryResponse response) {
+        toJava(request.filtering().byFeatures())
+                .map { asJava(it.values().toList()) }
+                .map { filtered ->
+                    filtered.collect { t ->
+                        toJava(response.aggregations().features())
+                                .flatMap {
+                                    toJava(it.features().get(t._1()))
+                                            .map {
+                                                asJava(it.hits())
+                                                        .findAll { value ->
+                                                            asJava(t._2()).any { it == value._1().id() }
+                                                        }
+                                                        .collect {
+                                                            new Filter(
+                                                                    key: "feature_" + t._1(),
+                                                                    values: [
+                                                                            new FilterItem(
+                                                                                    id: it._1().id() as Integer,
+                                                                                    name: ""
+                                                                            )
+                                                                    ]
+                                                            )
+                                                        }
+                                            }
+                                }
+                                .orElse([])
+                    }.flatten() as List<Filter>
+                }
+                .orElse([])
+    }
+
+    private static List<BreadCrumb> breadCrumb(ProductQueryRequest request, ProductQueryResponse response) {
+        toJava(response.hits().headOption())
+                .map {
+                    asJava(it.categorization())
+                            .takeWhile { category ->
+                                toJava(request.filtering().byCategory())
+                                        .map { it.contains(category.id()) }
+                                        .orElse(false)
+                            }
+                            .collect {
+                                new BreadCrumb(
+                                        id: it.id() as Integer,
+                                        name: it.name().defaultEntry()
+                                )
+                            }
+                }
+                .orElse([])
     }
 
 }
