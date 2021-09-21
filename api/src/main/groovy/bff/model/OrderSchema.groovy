@@ -520,6 +520,7 @@ enum SummaryFailedReason {
 
 class OrderSummaryResponse implements SummaryResult {
     List<OrderSummary> orderSummary
+    List<OrderSummary> orderedOrderSummary
 }
 
 class OrderSummary {

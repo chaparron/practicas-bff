@@ -262,6 +262,145 @@ class OrderBridgeImpl implements OrderBridge {
             }
         }
 
+        // TODO: implement api - just for qa ios application
+        response.orderedOrderSummary = [
+                new OrderSummary(
+                        summary: [
+                                new Summary(
+                                    type: CartSummaryItemType.PRODUCTS_TOTAL,
+                                    value: 30650,
+                                    metadata: []
+                                ),
+                                new Summary(
+                                        type: CartSummaryItemType.IBB,
+                                        value: 1664.28,
+                                        metadata: [
+                                                new MetaEntry(
+                                                    key: "usingDefaultAliquot",
+                                                    value: "true"),
+                                                new MetaEntry(
+                                                        key: "aliquot",
+                                                        value: "6"),
+                                                new MetaEntry(
+                                                        key: "NET_SUBTOTAL",
+                                                        value: "27738.0")
+                                        ]
+                                ),
+                                new Summary(
+                                        type: CartSummaryItemType.DELIVERY_COST,
+                                        value: 0,
+                                        metadata: [
+                                                new MetaEntry(
+                                                        key: "usingDefaultAliquot",
+                                                        value: "true"),
+                                                new MetaEntry(
+                                                        key: "aliquot",
+                                                        value: "3")
+                                        ]
+                                ),
+                                new Summary(
+                                        type: CartSummaryItemType.DISCOUNT,
+                                        value: 0,
+                                        metadata: [
+                                                new MetaEntry(
+                                                        key: "usingDefaultAliquot",
+                                                        value: "false")
+                                        ]
+                                ),
+                                new Summary(
+                                        type: CartSummaryItemType.MAX_AMOUNT_WABIPAY_ALLOWED,
+                                        value: 30650,
+                                        metadata: [
+                                                new MetaEntry(
+                                                        key: "usingDefaultAliquot",
+                                                        value: "true"),
+                                                new MetaEntry(
+                                                        key: "aliquot",
+                                                        value: "2"),
+                                                new MetaEntry(
+                                                        key: "NET_SUBTOTAL",
+                                                        value: "27738.0")
+                                        ]
+                                ),
+                                new Summary(
+                                        type: CartSummaryItemType.CREDITS_USED,
+                                        value: 0,
+                                        metadata: []
+                                ),
+                                new Summary(
+                                        type: CartSummaryItemType.WABIMONEY_USED,
+                                        value: 0,
+                                        metadata: [
+                                                new MetaEntry(
+                                                    key: "usingDefaultAliquot",
+                                                    value: "true"),
+                                                new MetaEntry(
+                                                     key: "aliquot",
+                                                     value: "1"
+                                                )
+                                        ]
+                                ),
+                                new Summary(
+                                        type: CartSummaryItemType.ORDER_TOTAL,
+                                        value: 30650,
+                                        metadata: []
+                                ),
+                                new Summary(
+                                        type: CartSummaryItemType.SERVICE_FEE,
+                                        value: 30650,
+                                        metadata: []
+                                ),
+                                new Summary(
+                                        type: CartSummaryItemType.PAYMENT_PENDING,
+                                        value: 30650,
+                                        metadata: [
+                                                new MetaEntry(
+                                                        key: "usingDefaultAliquot",
+                                                        value: "true"),
+                                                new MetaEntry(
+                                                        key: "aliquot",
+                                                        value: "7"
+                                                )
+                                        ]
+                                )
+                        ],
+                        supplier: new Supplier(
+                                id: 446,
+                                name: "CAROMAR",
+                                legalName: "Supplier - legal test mock",
+                                avatar: "f95e6bbe-5e96-45aa-b791-50a30776a699.jpg",
+                                enabled: true,
+                                phone: "01541012365",
+                                legalId: "0125547400",
+                                address: "Altamirano Gutierrez 5560",
+                                postalCode: "1254",
+                                maxAmount: 150000,
+                                minAmount: 2000,
+                                country_id: "ar",
+                                averageDeliveryDay: "Monday",
+                                orderPercentageCap: 23,
+                                rating: new RatingScore(
+                                        average: 21,
+                                        count: 2,
+                                        percentage: 9
+                                ),
+                                deliveryZones: [
+                                        new DeliveryZone(
+                                                id: 1,
+                                                minAmount: 1000,
+                                                maxAmount: 1500000,
+                                                deliveryCost: 250
+                                        )
+                                ],
+                                wabipayConfiguration: new WabipayConfiguration(
+                                        use_wabipay_cap: false,
+                                        order_percentage_cap: 0
+                                )
+
+                        )
+                )
+        ]
+
         response
 
     }

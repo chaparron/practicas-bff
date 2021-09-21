@@ -521,6 +521,7 @@ input CartItemInput {
 
 type OrderSummaryResponse {
   orderSummary: [OrderSummary]
+  orderedOrderSummary: [OrderSummary]
 }
 
 type OrderSummary {
