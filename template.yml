@@ -298,6 +298,11 @@ Resources:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-recommendedOrder-ApiRootURL"
 
         - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: phone_notifier_url
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-phoneNotifier-ApiRootURL"
+
+        - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: resizer_url
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, ResizerUrl ]
 

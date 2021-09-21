@@ -115,6 +115,9 @@ type Query {
   getFrequentProducts(input: GetFrequentProductsInput!): [FrequentProductResult]
 
   getFavoriteProducts(input: GetFavoriteProductsInput!): [FavoriteProductResult]
+
+  isValidPhone(input: IsValidPhoneInput!): Boolean
+
 }
 
 type Mutation {

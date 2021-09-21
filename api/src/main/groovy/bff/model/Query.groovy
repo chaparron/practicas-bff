@@ -54,6 +54,9 @@ class Query implements GraphQLQueryResolver {
     @Autowired
     RecommendedOrderBridge recommendOrderBridge
 
+    @Autowired
+    PhoneNotifierBridge phoneNotifierBridge
+
 
     Customer myProfile(CustomerInput customerInput) {
         customerBridge.myProfile(customerInput.accessToken)
@@ -371,6 +374,10 @@ class Query implements GraphQLQueryResolver {
 
     List<FavoriteProductResult> getFavoriteProducts(GetFavoriteProductsInput getFavoriteProductsInput) {
         recommendOrderBridge.getFavoriteProductsUpdatedByApi(getFavoriteProductsInput)
+    }
+
+    Boolean isValidPhone(IsValidPhoneInput input) {
+        phoneNotifierBridge.isValidPhone(input.countryCode, input.phone)
     }
 
 }

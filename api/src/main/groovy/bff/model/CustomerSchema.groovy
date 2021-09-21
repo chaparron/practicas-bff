@@ -487,3 +487,8 @@ class ProductToUnmarkAsFavoriteInput{
     String accessToken
     Long productId
 }
+
+class IsValidPhoneInput {
+    String phone
+    String countryCode
+}

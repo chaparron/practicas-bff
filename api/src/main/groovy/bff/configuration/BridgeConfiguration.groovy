@@ -17,6 +17,9 @@ class BridgeConfiguration {
     @Value('${api.root}')
     URI root
 
+    @Value('${phone.notifier.url}')
+    URI phone_notifier_url
+
     @Bean
     AuthServerBridge authServerBridge() {
         new AuthServerBridgeImpl(
@@ -136,6 +139,14 @@ class BridgeConfiguration {
         new RecommendedOrderBridgeImpl(
                 http: http,
                 root: root
+        )
+    }
+
+    @Bean
+    PhoneNotifierBridge phoneNotifierBridge() {
+        new PhoneNotifierBridgeImpl(
+                http: http,
+                root: phone_notifier_url
         )
     }
 }
