@@ -338,7 +338,9 @@ class GroceryListing implements SearchBridge {
     }
 
     private static List<Filter> categoryFilter(ProductQueryRequest request, ProductQueryResponse response) {
-        ofNullable(breadCrumb(request, response).last())
+        def breadCrumb = breadCrumb(request, response)
+        if (breadCrumb.isEmpty()) []
+        else ofNullable(breadCrumb.last())
                 .map {
                     [
                             new Filter(
