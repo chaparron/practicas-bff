@@ -206,6 +206,10 @@ Resources:
           OptionName: SPRING_TASK_EXECUTION_POOL_CORESIZE
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, TasksPoolCoreSize ]
 
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: ERRORS_EXPOSE
+          Value: true
+
         - Namespace: aws:elasticbeanstalk:environment:process:default
           OptionName: DeregistrationDelay
           Value: 20

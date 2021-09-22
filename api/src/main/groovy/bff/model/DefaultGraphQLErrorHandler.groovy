@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component
 @Slf4j
 class DefaultGraphQLErrorHandler implements GraphQLErrorHandler {
 
-    @Value('${errors.expose:false}')
+    @Value('${errors.expose:true}')
     boolean exposeAllErrors
 
     @Override
