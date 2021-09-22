@@ -48,8 +48,7 @@ enum UsernameRegistrationReason {
 }
 
 enum VoidReason {
-    SUCCESS,
-    ERROR_CANNOT_CHANGE_PWD
+    SUCCESS
 }
 
 enum EntityType {
