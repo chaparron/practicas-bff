@@ -6,7 +6,7 @@ import bff.model.*
 import scala.Option
 import wabi2b.grocery.listing.sdk.*
 
-import static bff.model.SortInput.ASC
+import static bff.model.SortInput.DESC
 import static java.util.Optional.ofNullable
 import static scala.jdk.javaapi.CollectionConverters.asJava
 import static scala.jdk.javaapi.CollectionConverters.asScala
@@ -20,7 +20,7 @@ class GroceryListing implements SearchBridge {
 
     @Override
     SearchResult search(SearchInput input) {
-        return searchV2(input) as SearchResult
+        searchV2(input) as SearchResult
     }
 
     @Override
@@ -29,6 +29,7 @@ class GroceryListing implements SearchBridge {
         def deliveryAddress = customer.preferredDeliveryAddress()
         def request =
                 ([
+                        sorting(input.sort, input.sortDirection, input.keyword),
                         termFiltering(input.keyword),
                         brandFiltering(input.brand),
                         categoryFiltering(input.category),
@@ -63,10 +64,7 @@ class GroceryListing implements SearchBridge {
                         pageSize: input.size,
                         currentPage: input.page
                 ),
-                sort: new Sort(
-                        field: input.sort ?: "DEFAULT",
-                        direction: (input.sortDirection ?: ASC).name()
-                ),
+                sort: sort(request),
                 breadcrumb: breadCrumb(request, response),
                 filters: filters(request, response),
                 facets: facets(request, response),
@@ -78,6 +76,7 @@ class GroceryListing implements SearchBridge {
     SearchResponse previewSearch(PreviewSearchInput input) {
         def request =
                 ([
+                        sorting(input.sort, input.sortDirection, input.keyword),
                         termFiltering(input.keyword),
                         brandFiltering(input.brand),
                         categoryFiltering(input.category),
@@ -109,10 +108,7 @@ class GroceryListing implements SearchBridge {
                         pageSize: input.size,
                         currentPage: input.page
                 ),
-                sort: new Sort(
-                        field: input.sort ?: "DEFAULT",
-                        direction: (input.sortDirection ?: ASC).name()
-                ),
+                sort: sort(request),
                 breadcrumb: breadCrumb(request, response),
                 filters: filters(request, response),
                 facets: facets(request, response),
@@ -185,6 +181,58 @@ class GroceryListing implements SearchBridge {
         }
     }
 
+    private static Optional<Closure<ProductQueryRequest>> sorting(String maybeSort,
+                                                                  SortInput maybeDirection,
+                                                                  String maybeKeyword) {
+        ofNullable(maybeSort)
+                .map { sort ->
+                    { ProductQueryRequest r ->
+                        switch (sort) {
+                            case "DEFAULT":
+                            case "TITLE":
+                                r.sortedAlphabetically(
+                                        ofNullable(maybeDirection).map { direction ->
+                                            switch (direction) {
+                                                case DESC:
+                                                    false
+                                                    break
+                                                default:
+                                                    true
+                                                    break
+                                            }
+                                        }.orElse(true),
+                                        Option.empty()
+                                )
+                                break
+                            case "RECENT":
+                                r.sortedByLastAvailabilityUpdate()
+                                break
+                            case "PRICE":
+                                r.sortedByUnitPrice(
+                                        ofNullable(maybeDirection).map { direction ->
+                                            switch (direction) {
+                                                case DESC:
+                                                    false
+                                                    break
+                                                default:
+                                                    true
+                                                    break
+                                            }
+                                        }.orElse(true)
+                                )
+                                break
+                            default:
+                                r
+                                break
+                        }
+                    }
+                }
+                .map { Optional.of(it) }
+                .orElseGet {
+                    ofNullable(maybeKeyword).map { { ProductQueryRequest r -> r.sortedByRelevance() } }
+                }
+    }
+
     private static List<ProductSearch> products(ProductQueryResponse response) {
         asJava(response.hits()).collect {
             def prices = asJava(it.options()).collect { price(it) }
@@ -248,86 +296,132 @@ class GroceryListing implements SearchBridge {
 
     private static List<Facet> facets(ProductQueryRequest request, ProductQueryResponse response) {
         [
-                // categories facet
-                toJava(response.aggregations().categories())
-                        .filter { request.filtering().byCategory().isEmpty() }
-                        .map {
-                            new Facet(
-                                    id: "category",
-                                    name: "category",
-                                    slices: asJava(it.hits()).collect {
-                                        new Slices(
-                                                size: it._2() as Long,
-                                                obj: new Slice(
-                                                        id: it._1().id(),
-                                                        name: it._1().name().defaultEntry(),
-                                                        key: it._1().id()
-                                                )
-                                        )
-                                    }
-                            )
-                        },
-                // brands facet
-                toJava(response.aggregations().brands())
-                        .filter { request.filtering().byBrand().isEmpty() }
-                        .map {
-                            new Facet(
-                                    id: "brand",
-                                    name: "brand",
-                                    slices: asJava(it.hits()).collect {
-                                        new Slices(
-                                                size: it._2() as Long,
-                                                obj: new Slice(
-                                                        id: it._1().id(),
-                                                        name: it._1().name().defaultEntry(),
-                                                        key: it._1().id()
-                                                )
-                                        )
-                                    }
-                            )
-                        },
-                // suppliers facet
-                toJava(response.aggregations().suppliers())
-                        .filter { request.filtering().bySupplier().isEmpty() }
-                        .map {
-                            new Facet(
-                                    id: "supplier",
-                                    name: "supplier",
-                                    slices: asJava(it.hits()).collect {
-                                        new Slices(
-                                                size: it._2() as Long,
-                                                obj: new Slice(
-                                                        id: it._1().id(),
-                                                        name: it._1().name(),
-                                                        key: it._1().id()
-                                                )
-                                        )
-                                    }
-                            )
-                        }
+                categoriesFacet(request, response),
+                brandsFacet(request, response),
+                suppliersFacet(request, response)
         ]
                 .findAll { it.isPresent() }
                 .collect { it.get() } +
-                // features facets
-                toJava(response.aggregations().features().map { asJava(it.features().toList()) })
-                        .orElse([])
-                        .findAll { t -> !request.filtering().byFeatures().exists { it.contains(t._1()) } }
-                        .collect {
-                            new Facet(
-                                    id: "feature_" + it._1(),
-                                    name: it._2().name().defaultEntry(),
-                                    slices: asJava(it._2().hits()).collect {
-                                        new Slices(
-                                                size: it._2() as Long,
-                                                obj: new Slice(
-                                                        id: it._1().id(),
-                                                        name: it._1().toString(),
-                                                        key: it._1().id()
-                                                )
+                featuresFacet(request, response)
+    }
+
+    private static Optional<Facet> suppliersFacet(ProductQueryRequest request, ProductQueryResponse response) {
+        toJava(response.aggregations().suppliers())
+                .filter { request.filtering().bySupplier().isEmpty() }
+                .map {
+                    new Facet(
+                            id: "supplier",
+                            name: "supplier",
+                            slices: asJava(it.hits()).collect {
+                                new Slices(
+                                        size: it._2() as Long,
+                                        obj: new Slice(
+                                                id: it._1().id(),
+                                                name: it._1().name(),
+                                                key: it._1().id()
                                         )
-                                    }
-                            )
-                        }
+                                )
+                            }
+                    )
+                }
+    }
+
+    private static List<Facet> featuresFacet(ProductQueryRequest request, ProductQueryResponse response) {
+        toJava(response.aggregations().features().map { asJava(it.features().toList()) })
+                .orElse([])
+                .findAll { t -> !request.filtering().byFeatures().exists { it.contains(t._1()) } }
+                .collect {
+                    new Facet(
+                            id: "feature_" + it._1(),
+                            name: it._2().name().defaultEntry(),
+                            slices: asJava(it._2().hits()).collect { value ->
+                                new Slices(
+                                        size: value._2() as Long,
+                                        obj: new Slice(
+                                                id: value._1().id(),
+                                                name: singleValueName(value._1()),
+                                                key: value._1().id()
+                                        )
+                                )
+                            }
+                    )
+                }
+    }
+
+    private static String singleValueName(SingleValue value) {
+        Optional.of(value)
+                .filter { it instanceof IntValue }
+                .map { it as IntValue }
+                .map {
+                    Optional.of(
+                            it.value().toString() +
+                                    toJava(it.measureUnit())
+                                            .map { " " + it.name() }
+                                            .orElse("")
+                    )
+                }
+                .orElseGet {
+                    Optional.of(value)
+                            .filter { it instanceof DoubleValue }
+                            .map { it as DoubleValue }
+                            .map {
+                                Optional.of(
+                                        it.value().toString() +
+                                                toJava(it.measureUnit())
+                                                        .map { " " + it.name() }
+                                                        .orElse("")
+                                )
+                            }
+                            .orElseGet {
+                                Optional.of(value)
+                                        .filter { it instanceof StringValue }
+                                        .map { it as StringValue }
+                                        .map { it.value().defaultEntry() }
+                            }
+                }
+                .orElse("")
+    }
+
+    private static Optional<Facet> brandsFacet(ProductQueryRequest request, ProductQueryResponse response) {
+        toJava(response.aggregations().brands())
+                .filter { request.filtering().byBrand().isEmpty() }
+                .map {
+                    new Facet(
+                            id: "brand",
+                            name: "brand",
+                            slices: asJava(it.hits()).collect {
+                                new Slices(
+                                        size: it._2() as Long,
+                                        obj: new Slice(
+                                                id: it._1().id(),
+                                                name: it._1().name().defaultEntry(),
+                                                key: it._1().id()
+                                        )
+                                )
+                            }
+                    )
+                }
+    }
+
+    private static Optional<Facet> categoriesFacet(ProductQueryRequest request, ProductQueryResponse response) {
+        toJava(response.aggregations().categories())
+                .filter { request.filtering().byCategory().isEmpty() }
+                .map {
+                    new Facet(
+                            id: "category",
+                            name: "category",
+                            slices: asJava(it.hits()).collect {
+                                new Slices(
+                                        size: it._2() as Long,
+                                        obj: new Slice(
+                                                id: it._1().id(),
+                                                name: it._1().name().defaultEntry(),
+                                                key: it._1().id()
+                                        )
+                                )
+                            }
+                    )
+                }
     }
 
     private static List<Filter> filters(ProductQueryRequest request, response) {
@@ -428,7 +522,7 @@ class GroceryListing implements SearchBridge {
                                                                     values: [
                                                                             new FilterItem(
                                                                                     id: it._1().id() as Integer,
-                                                                                    name: ""
+                                                                                    name: singleValueName(it._1())
                                                                             )
                                                                     ]
                                                             )
@@ -439,6 +533,34 @@ class GroceryListing implements SearchBridge {
                     }.flatten() as List<Filter>
                 }
                 .orElse([])
+    }
+
+    private static Sort sort(ProductQueryRequest request) {
+        def defaultAsc = new Tuple("DEFAULT", "ASC")
+        def maybeSorting = toJava(request.sorting())
+        def maybeByRelevance = maybeSorting
+                .filter { it instanceof ByRelevance$ }
+                .map { Optional.of(defaultAsc) }
+        def maybeByLasAvailabilityUpdate = maybeSorting
+                .filter { it instanceof ByLastAvailabilityUpdate$ }
+                .map { Optional.of(new Tuple("RECENT", "ASC")) }
+        def maybeByUnitPrice = maybeSorting
+                .filter { it instanceof ByUnitPrice }
+                .map { it as ByUnitPrice }
+                .map { Optional.of(new Tuple("PRICE", it.asc() ? "ASC" : "DESC")) }
+        def maybeAlphabetically = maybeSorting
+                .filter { it instanceof Alphabetically }
+                .map { it as Alphabetically }
+                .map { new Tuple("TITLE", it.asc() ? "ASC" : "DESC") }
+        def sort =
+                maybeByRelevance.orElseGet {
+                    maybeByLasAvailabilityUpdate.orElseGet {
+                        maybeByUnitPrice.orElseGet {
+                            maybeAlphabetically
+                        }
+                    }
+                }.orElse(defaultAsc)
+        new Sort(field: sort.first(), direction: sort.last())
     }
 
     private static List<BreadCrumb> breadCrumb(ProductQueryRequest request, ProductQueryResponse response) {
