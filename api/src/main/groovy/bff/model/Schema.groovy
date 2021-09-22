@@ -85,7 +85,6 @@ class Void implements ChangePasswordResult,
         CustomerRateSupplierResult,
         CustomerReportRateResult {
     static final SUCCESS = new Void(voidReason: VoidReason.SUCCESS)
-    static final ERROR_CANNOT_CHANGE_PWD = new Void(voidReason: VoidReason.ERROR_CANNOT_CHANGE_PWD)
     VoidReason voidReason
     Integer id
     EntityType entityType
