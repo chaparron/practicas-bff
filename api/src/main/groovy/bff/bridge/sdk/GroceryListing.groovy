@@ -28,7 +28,7 @@ class GroceryListing implements SearchBridge {
         def customer = customerBridge.myProfile(input.accessToken)
         def deliveryAddress = customer.preferredDeliveryAddress()
         def request =
-                [new RequestFilteringBuilder(input), new RequestSortingBuilder(input)]
+                [new FilteringBuilder(input), new SortingBuilder(input)]
                         .inject(
                                 availableProductsIn(
                                         new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble())
@@ -49,7 +49,7 @@ class GroceryListing implements SearchBridge {
     @Override
     SearchResponse previewSearch(PreviewSearchInput input) {
         def request =
-                [new RequestFilteringBuilder(input), new RequestSortingBuilder(input)]
+                [new FilteringBuilder(input), new SortingBuilder(input)]
                         .inject(
                                 availableProductsIn(new Coordinate(input.lat.toDouble(), input.lng.toDouble()))
                                         .sized(input.size)
@@ -71,7 +71,7 @@ interface RequestBuilder {
 
 }
 
-class RequestFilteringBuilder implements RequestBuilder {
+class FilteringBuilder implements RequestBuilder {
 
     String keyword
     Integer category
@@ -80,7 +80,7 @@ class RequestFilteringBuilder implements RequestBuilder {
     String tag
     List<FeatureInput> features
 
-    RequestFilteringBuilder(SearchInput input) {
+    FilteringBuilder(SearchInput input) {
         this.keyword = input.keyword
         this.category = input.category
         this.brand = input.brand
@@ -89,7 +89,7 @@ class RequestFilteringBuilder implements RequestBuilder {
         this.features = input.features
     }
 
-    RequestFilteringBuilder(PreviewSearchInput input) {
+    FilteringBuilder(PreviewSearchInput input) {
         this.keyword = input.keyword
         this.category = input.category
         this.brand = input.brand
@@ -155,19 +155,19 @@ class RequestFilteringBuilder implements RequestBuilder {
 
 }
 
-class RequestSortingBuilder implements RequestBuilder {
+class SortingBuilder implements RequestBuilder {
 
     String maybeSort
     SortInput maybeDirection
     String maybeKeyword
 
-    RequestSortingBuilder(SearchInput input) {
+    SortingBuilder(SearchInput input) {
         this.maybeSort = input.sort
         this.maybeDirection = input.sortDirection
         this.maybeKeyword = input.keyword
     }
 
-    RequestSortingBuilder(PreviewSearchInput input) {
+    SortingBuilder(PreviewSearchInput input) {
         this.maybeSort = input.sort
         this.maybeDirection = input.sortDirection
         this.maybeKeyword = input.keyword
@@ -225,6 +225,7 @@ class RequestSortingBuilder implements RequestBuilder {
 }
 
 abstract class ResponseMapper {
+
     ProductQueryRequest request
 
     ResponseMapper(ProductQueryRequest request) {
@@ -356,16 +357,11 @@ abstract class ResponseMapper {
                     new Facet(
                             id: "feature_" + it._1(),
                             name: it._2().name().defaultEntry(),
-                            slices: asJava(it._2().hits()).collect { value ->
-                                new Slices(
-                                        size: value._2() as Long,
-                                        obj: new Slice(
-                                                id: value._1().id(),
-                                                name: singleValueName(value._1()),
-                                                key: value._1().id()
-                                        )
-                                )
-                            }
+                            slices:
+                                    asJava(it._2().hits())
+                                            .collect { slice(it) }
+                                            .findAll { it.isPresent() }
+                                            .collect { it.get() }
                     )
                 }
     }
@@ -497,13 +493,16 @@ abstract class ResponseMapper {
                                                         .findAll { value ->
                                                             asJava(t._2()).any { it == value._1().id() }
                                                         }
+                                                        .collect { slice(it) }
+                                                        .findAll { it.isPresent() }
+                                                        .collect { it.get() }
                                                         .collect {
                                                             new Filter(
                                                                     key: "feature_" + t._1(),
                                                                     values: [
                                                                             new FilterItem(
-                                                                                    id: it._1().id() as Integer,
-                                                                                    name: singleValueName(it._1())
+                                                                                    id: it.obj.id as Integer,
+                                                                                    name: it.obj.name
                                                                             )
                                                                     ]
                                                             )
@@ -546,38 +545,33 @@ abstract class ResponseMapper {
         )
     }
 
-    protected static String singleValueName(SingleValue value) {
-        Optional.of(value)
-                .filter { it instanceof IntValue }
-                .map { it as IntValue }
-                .map {
-                    Optional.of(
-                            it.value().toString() +
-                                    toJava(it.measureUnit())
-                                            .map { " " + it.name() }
-                                            .orElse("")
+    protected static slice(scala.Tuple2<SingleValue, Object> value) {
+        def name = {
+            if (value._1() instanceof IntValue) {
+                def intValue = (value._1() as IntValue)
+                intValue.value().toString() +
+                        toJava(intValue.measureUnit()).map { " " + it.name() }.orElse("")
+            } else if (value._1() instanceof DoubleValue) {
+                def doubleValue = (value._1() as DoubleValue)
+                doubleValue.value().toString() +
+                        toJava(doubleValue.measureUnit()).map { " " + it.name() }.orElse("")
+            } else (value._1() as StringValue).value().defaultEntry()
+        }
+        Optional
+                .of(value)
+                .filter { t ->
+                    [IntValue, DoubleValue, StringValue].any { t._1() in it }
+                }
+                .map { t ->
+                    new Slices(
+                            size: t._2() as Long,
+                            obj: new Slice(
+                                    id: t._1().id(),
+                                    key: t._1().id(),
+                                    name: name()
+                            )
                     )
                 }
-                .orElseGet {
-                    Optional.of(value)
-                            .filter { it instanceof DoubleValue }
-                            .map { it as DoubleValue }
-                            .map {
-                                Optional.of(
-                                        it.value().toString() +
-                                                toJava(it.measureUnit())
-                                                        .map { " " + it.name() }
-                                                        .orElse("")
-                                )
-                            }
-                            .orElseGet {
-                                Optional.of(value)
-                                        .filter { it instanceof StringValue }
-                                        .map { it as StringValue }
-                                        .map { it.value().defaultEntry() }
-                            }
-                }
-                .orElse("")
     }
 
 }
@@ -644,13 +638,6 @@ class PreviewSearchResultMapper extends ResponseMapper {
                                         unitValue: it.unitValue,
                                         display: it.display,
                                         minUnits: it.minUnits
-                                )
-                            },
-                            suppliers: it.prices.collect { it.supplier }.toSet().toList().collect {
-                                new PreviewSupplier(
-                                        id: it.id,
-                                        name: it.name,
-                                        avatar: it.avatar
                                 )
                             },
                             title: it.title
