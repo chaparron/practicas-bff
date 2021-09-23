@@ -7,8 +7,6 @@ enum Site {
 
 enum VoidReason {
     SUCCESS
-    # When a user who has already migrated to passwordless login tries to change his password
-    ERROR_CANNOT_CHANGE_PWD
 }
 
 enum LoginFailureReason {

@@ -195,7 +195,7 @@ class AuthServerBridgeImpl implements AuthServerBridge {
                     )
                     , Boolean).body
         } catch (BadRequestErrorException exception) {
-            ResetPasswordReason.valueOf((String)exception.innerResponse).doThrow()
+            throw new RuntimeException((String) exception.innerResponse)
         }
     }
 

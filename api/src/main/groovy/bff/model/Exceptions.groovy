@@ -17,13 +17,15 @@ class CurrentPasswordMismatch extends RuntimeException {}
 @InheritConstructors
 class UsernameRegistrationException extends RuntimeException {
     UsernameRegistrationReason reason
+
     def build() {
-        new UsernameRegistrationFailed( reason : this.reason)
+        new UsernameRegistrationFailed(reason: this.reason)
     }
 }
 
 class LoginFailureException extends RuntimeException {
     LoginFailureReason loginFailureReason
+
     def build() {
         new LoginFailed(reason: this.loginFailureReason)
     }
@@ -31,6 +33,7 @@ class LoginFailureException extends RuntimeException {
 
 class SignedChallengeDemandFailureException extends RuntimeException {
     SignedChallengeDemandFailureReason signedChallengeDemandFailureReason
+
     def build() {
         new SignedChallengeDemandFailed(reason: this.signedChallengeDemandFailureReason)
     }
@@ -39,17 +42,18 @@ class SignedChallengeDemandFailureException extends RuntimeException {
 class TooManyShipmentsException extends RuntimeException {
     private int waitTime
 
-    TooManyShipmentsException(int secs){
+    TooManyShipmentsException(int secs) {
         this.waitTime = secs
     }
 
-    def build(){
+    def build() {
         new TooManyShipments(waitTime: waitTime)
     }
 }
 
 class ChallengeDemandFailureException extends RuntimeException {
     ChallengeDemandFailureReason challengeDemandFailureReason
+
     def build() {
         new ChallengeDemandFailed(reason: this.challengeDemandFailureReason)
     }
@@ -57,6 +61,7 @@ class ChallengeDemandFailureException extends RuntimeException {
 
 class ChallengeAnswerFailureException extends RuntimeException {
     ChallengeAnswerFailureReason challengeAnswerFailureReason
+
     def build() {
         new ChallengeAnswerFailed(reason: this.challengeAnswerFailureReason)
     }
@@ -64,6 +69,7 @@ class ChallengeAnswerFailureException extends RuntimeException {
 
 class CustomerException extends RuntimeException {
     CustomerErrorReason customerErrorReason
+
     def build() {
         new CustomerErrorFailed(customerErrorReason: this.customerErrorReason)
     }
@@ -71,6 +77,7 @@ class CustomerException extends RuntimeException {
 
 class ChangePasswordException extends RuntimeException {
     ChangePasswordReason changePasswordReason
+
     def build() {
         new ChangePasswordFailed(reason: this.changePasswordReason)
     }
@@ -78,21 +85,19 @@ class ChangePasswordException extends RuntimeException {
 
 class ResetPasswordException extends RuntimeException {
     ResetPasswordReason resetPasswordReason
-
-    static def build() {
-        Void.ERROR_CANNOT_CHANGE_PWD
-    }
 }
 
 class ConfirmPasswordException extends RuntimeException {
     ConfirmPasswordReason confirmPasswordReason
+
     def build() {
         new ConfirmPasswordFailed(confirmPasswordReason: this.confirmPasswordReason)
     }
- }
+}
 
 class WebRegisterException extends RuntimeException {
     RegisterFailureReason registerReason
+
     def build() {
         new RegisterFailed(registerReason: this.registerReason)
     }

@@ -2,11 +2,7 @@ package bff.model
 
 import bff.DecoderName
 import bff.JwtToken
-import bff.bridge.AuthServerBridge
-import bff.bridge.CustomerBridge
-import bff.bridge.DocumentBridge
-import bff.bridge.OrderBridge
-import bff.bridge.RecommendedOrderBridge
+import bff.bridge.*
 import bff.configuration.BadRequestErrorException
 import bff.configuration.ConflictErrorException
 import bff.configuration.EntityNotFoundException
@@ -15,7 +11,6 @@ import bff.model.utils.DataURL
 import bff.service.DeviceIdentifierService
 import com.coxautodev.graphql.tools.GraphQLMutationResolver
 import graphql.schema.DataFetchingEnvironment
-import graphql.servlet.GraphQLContext
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -57,14 +52,14 @@ class Mutation implements GraphQLMutationResolver {
 
         try {
             authServerBridge.challengeRequestForChangeToPasswordlessAuthentication(input.countryCode, input.phone, input.accessToken, remoteAddress)
-        } catch (TooManyShipmentsException tooManyShipmentsException){
+        } catch (TooManyShipmentsException tooManyShipmentsException) {
             tooManyShipmentsException.build()
         } catch (SignedChallengeDemandFailureException signedChallengeDemandFailureException) {
             signedChallengeDemandFailureException.build()
         }
     }
 
-    SignedChallengeAnswerResult challengeAnswerForChangeToPasswordlessAuthentication(SignedChallengeAnswer input){
+    SignedChallengeAnswerResult challengeAnswerForChangeToPasswordlessAuthentication(SignedChallengeAnswer input) {
         try {
             def credentials = authServerBridge.challengeAnswerForChangeToPasswordlessAuthentication(input.challengeId, input.challengeAnswer, input.accessToken)
             new GenericCredentials(
@@ -80,14 +75,14 @@ class Mutation implements GraphQLMutationResolver {
         def remoteAddress = DeviceIdentifierService.identifySource(env)
         try {
             authServerBridge.challengeRequestForPasswordlessLogin(input.countryCode, input.phone, remoteAddress)
-        } catch (TooManyShipmentsException tooManyShipmentsException){
+        } catch (TooManyShipmentsException tooManyShipmentsException) {
             tooManyShipmentsException.build()
         } catch (ChallengeDemandFailureException challengeDemandFailureException) {
             challengeDemandFailureException.build()
         }
     }
 
-    ChallengeAnswerResult challengeAnswerForPasswordlessLogin(ChallengeAnswer input){
+    ChallengeAnswerResult challengeAnswerForPasswordlessLogin(ChallengeAnswer input) {
         try {
             def credentials = authServerBridge.challengeAnswerForPasswordlessLogin(input.challengeId, input.challengeAnswer)
             new GenericCredentials(
@@ -129,6 +124,7 @@ class Mutation implements GraphQLMutationResolver {
             SignInFailedReason.valueOf((String) conflictErrorException.innerResponse).build()
         }
     }
+
     PasswordlessSignUpResult passwordlessSignUp(PasswordlessSignUpInput passwordlessSignUpInput) {
         try {
             customerBridge.passwordlessSignUp(passwordlessSignUpInput)
@@ -157,6 +153,7 @@ class Mutation implements GraphQLMutationResolver {
             customerException.build()
         }
     }
+
     CustomerUpdateResult updateProfileV2(CustomerUpdateInputV2 customerUpdateInput) {
         try {
             customerBridge.updateProfileV2(customerUpdateInput)
@@ -228,14 +225,9 @@ class Mutation implements GraphQLMutationResolver {
     }
 
     Void resetPassword(ResetPasswordRequestInput input) {
-        try{
-            authServerBridge.resetPassword(input.username)
-            Void.SUCCESS
-        }catch(ResetPasswordException resetPasswordException){
-            resetPasswordException.build()
-        }
+        authServerBridge.resetPassword(input.username)
+        Void.SUCCESS
     }
-
 
 
     ConfirmPasswordResult resetPasswordConfirm(ResetPasswordConfirmInput input) {
@@ -328,19 +320,19 @@ class Mutation implements GraphQLMutationResolver {
         }
     }
 
-    Void markSuggestionAsRead(MarkSuggestionInput input){
+    Void markSuggestionAsRead(MarkSuggestionInput input) {
         customerBridge.markSuggestionAsRead(input.accessToken, input.supplierIds)
     }
 
-    Void acceptTc(AcceptTcInput input){
+    Void acceptTc(AcceptTcInput input) {
         customerBridge.acceptTc(input)
     }
 
-    Void markProductAsFavorite(ProductToMarkAsFavoriteInput productToMarkAsFavoriteInput){
+    Void markProductAsFavorite(ProductToMarkAsFavoriteInput productToMarkAsFavoriteInput) {
         recommendedOrderBridge.markProductAsFavorite(productToMarkAsFavoriteInput)
     }
 
-    Void unmarkProductAsFavorite(ProductToUnmarkAsFavoriteInput productToUnmarkAsFavoriteInput){
+    Void unmarkProductAsFavorite(ProductToUnmarkAsFavoriteInput productToUnmarkAsFavoriteInput) {
         recommendedOrderBridge.unmarkProductAsFavorite(productToUnmarkAsFavoriteInput)
     }
 }
