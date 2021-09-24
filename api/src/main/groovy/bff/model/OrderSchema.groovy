@@ -537,20 +537,36 @@ class Summary {
 }
 
 enum CartSummaryItemType {
-    IBB,
-    SUBTOTAL,
-    PRODUCTS_TOTAL,
-    NET_SUBTOTAL,
-    DELIVERY_COST,
-    ORDER_TOTAL,
-    CREDITS_USED,
-    WABIMONEY_USED,
-    PAYMENT_PENDING,
-    DISCOUNT,
-    DISCOUNT_USED,
-    TOTAL_BILLED,
-    SERVICE_FEE,
-    MAX_AMOUNT_WABIPAY_ALLOWED
+    IBB(2, true),
+    SUBTOTAL(11, false),
+    PRODUCTS_TOTAL(1, true),
+    NET_SUBTOTAL(12, false),
+    DELIVERY_COST(3, true),
+    ORDER_TOTAL(8, true),
+    CREDITS_USED(6, true),
+    WABIMONEY_USED(7, true),
+    PAYMENT_PENDING(10, true),
+    DISCOUNT(4, true),
+    DISCOUNT_USED(13, false),
+    TOTAL_BILLED(14, false),
+    SERVICE_FEE(9, true),
+    MAX_AMOUNT_WABIPAY_ALLOWED(5, true)
+
+    private int position
+    private Boolean visibleToSummary
+
+    CartSummaryItemType(int position, Boolean visibleToSummary) {
+        this.position = position
+        this.visibleToSummary = visibleToSummary
+    }
+
+    Boolean getVisibleToSummary() {
+        this.visibleToSummary
+    }
+
+    int getPosition() {
+        this.position
+    }
 
 }
 
