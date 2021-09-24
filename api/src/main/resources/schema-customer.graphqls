@@ -50,6 +50,7 @@ enum PasswordlessSignUpFailedReason{
   INVALID_PREFERRED_ADDRESS
   EMAIL_ALREADY_EXIST
   INVALID_POSTAL_CODE
+  INVALID_COUNTRY
 }
 
 enum DeliveryPreference {
