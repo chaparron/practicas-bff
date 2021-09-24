@@ -114,6 +114,21 @@ abstract class CountryGatewayBridgeImplTestData {
             "        \"key\": \"faqs\",\n" +
             "        \"value\": \"https://wabi.force.com/wabi2b/s/topic/0TO2E00000029SOWAY/preguntas-frecuentes?language=ar_EG\",\n" +
             "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"about\",\n" +
+            "        \"value\": \"https://wabi.force.com/wabi2b/s/topic/0TO2E00000029SOWAY/preguntas-frecuentes?language=ar_EG\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"operation\",\n" +
+            "        \"value\": \"https://wabi.force.com/wabi2b/s/topic/0TO2E00000029SOWAY/preguntas-frecuentes?language=ar_EG\",\n" +
+            "        \"private\": false\n" +
+            "      },\n" +
+            "      {\n" +
+            "        \"key\": \"complaint\",\n" +
+            "        \"value\": \"https://wabi.force.com/wabi2b/s/topic/0TO2E00000029SOWAY/preguntas-frecuentes?language=ar_EG\",\n" +
+            "        \"private\": false\n" +
             "      }\n" +
             "    ],\n" +
             "    \"enabled\": true\n" +
@@ -230,21 +245,6 @@ abstract class CountryGatewayBridgeImplTestData {
             "      {\n" +
             "        \"key\": \"flag\",\n" +
             "        \"value\": \"7ab0fd14-efa9-11eb-9a03-0242ac1300ma.png\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"tyc\",\n" +
-            "        \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Morocco-T-C?language=en_US\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"pp\",\n" +
-            "        \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Morocco-P-P?language=en_US\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"cookies\",\n" +
-            "        \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Morocco-P-C?language=en_US\",\n" +
             "        \"private\": false\n" +
             "      }\n" +
             "    ],\n" +

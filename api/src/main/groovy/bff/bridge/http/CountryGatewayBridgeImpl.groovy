@@ -47,7 +47,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
     @PostConstruct
     void init() {
         countryEntryCache = Caffeine.newBuilder()
-                .expireAfterWrite(cacheConfiguration.countries, TimeUnit.HOURS)
+                .expireAfterWrite(cacheConfiguration.countries, TimeUnit.MINUTES)
                 .build(
                         new CacheLoader<String, List<CountryConfigurationEntry>>() {
                             @Override
@@ -58,7 +58,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
                 )
 
         countriesEnabledCache = Caffeine.newBuilder()
-                .expireAfterWrite(cacheConfiguration.countries, TimeUnit.HOURS)
+                .expireAfterWrite(cacheConfiguration.countries, TimeUnit.MINUTES)
                 .build(
                         new CacheLoader<String, List<Country>>() {
                             @Override
@@ -69,7 +69,7 @@ class CountryGatewayBridgeImpl implements CountryBridge {
                 )
 
         countryConfigurationCache = Caffeine.newBuilder()
-                .expireAfterWrite(cacheConfiguration.countries, TimeUnit.HOURS)
+                .expireAfterWrite(cacheConfiguration.countries, TimeUnit.MINUTES)
                 .build(
                         new CacheLoader<String, Country>() {
                             @Override

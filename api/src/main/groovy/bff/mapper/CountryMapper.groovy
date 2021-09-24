@@ -46,6 +46,9 @@ class CountryMapper {
     public static final String PARAM_COOKIES = "cookies"
     public static final String PARAM_FAQ = "faq"
     public static final String PARAM_FAQS = "faqs"
+    public static final String PARAM_ABOUT = "about"
+    public static final String PARAM_OPERATION = "operation"
+    public static final String PARAM_COMPLAINT = "complaint"
     public static final String PARAM_COUNTRY_CODE = "country_code"
     public static final String PARAM_LEGAL_ID = "legalId"
     public static final String PARAM_LEGAL_MASK = "legalMask"
@@ -166,25 +169,38 @@ class CountryMapper {
         )
     }
 
-    def private buildLegalUrls(Object params) {
-        def targetLocale = Locale.forLanguageTag(params.find({ it[PARAM_KEY] == PARAM_LOCALE })?.value)
-        return [
-                new LegalUrl(
-                        type: LegalUrlType.TERMS_AND_CONDITIONS,
-                        label: messageSource.getMessage(PARAM_TERMS, null, targetLocale),
-                        value: params.find({ it[PARAM_KEY] == PARAM_TYC })?.value ?: ""),
-                new LegalUrl(
-                        type: LegalUrlType.PRIVACY_POLICY,
-                        label: messageSource.getMessage(PARAM_PP, null, targetLocale),
-                        value: params.find({ it[PARAM_KEY] == PARAM_PP })?.value ?: ""),
-                new LegalUrl(
-                        type: LegalUrlType.COOKIES,
-                        label: messageSource.getMessage(PARAM_COOKIE_PRIVACY, null, targetLocale),
-                        value: params.find({ it[PARAM_KEY] == PARAM_COOKIES })?.value ?: ""),
-                new LegalUrl(
-                        type: LegalUrlType.FAQS,
-                        label: messageSource.getMessage(PARAM_FAQ, null, targetLocale),
-                        value: params.find({ it[PARAM_KEY] == PARAM_FAQS })?.value ?: "")
-        ]
+    def private buildLegalUrls(ArrayList params) {
+        def targetLocale = Locale.forLanguageTag(params.find({ it[PARAM_KEY] == PARAM_LOCALE })?.value ?: "en")
+
+        def legalUrls = []
+        params.find({ it[PARAM_KEY] == PARAM_TYC })?.with{
+            legalUrls.add(getLegalUrl(it, LegalUrlType.TERMS_AND_CONDITIONS, PARAM_TERMS, targetLocale))
+        }
+        params.find({ it[PARAM_KEY] == PARAM_PP })?.with{
+            legalUrls.add(getLegalUrl(it, LegalUrlType.PRIVACY_POLICY, PARAM_PP, targetLocale))
+        }
+        params.find({ it[PARAM_KEY] == PARAM_COOKIES })?.with{
+            legalUrls.add(getLegalUrl(it, LegalUrlType.COOKIES, PARAM_COOKIE_PRIVACY, targetLocale))
+        }
+        params.find({ it[PARAM_KEY] == PARAM_FAQS })?.with{
+            legalUrls.add(getLegalUrl(it, LegalUrlType.FAQS, PARAM_FAQ, targetLocale))
+        }
+        params.find({ it[PARAM_KEY] == PARAM_ABOUT })?.with{
+            legalUrls.add(getLegalUrl(it, LegalUrlType.ABOUT, PARAM_ABOUT, targetLocale))
+        }
+        params.find({ it[PARAM_KEY] == PARAM_OPERATION })?.with{
+            legalUrls.add(getLegalUrl(it, LegalUrlType.OPERATION, PARAM_OPERATION, targetLocale))
+        }
+        params.find({ it[PARAM_KEY] == PARAM_COMPLAINT })?.with{
+            legalUrls.add(getLegalUrl(it, LegalUrlType.COMPLAINT, PARAM_COMPLAINT, targetLocale))
+        }
+        return legalUrls
+    }
+
+    private getLegalUrl(Object url, LegalUrlType type, String label, Locale locale) {
+        new LegalUrl(
+                type: type,
+                label: messageSource.getMessage(label, null, locale),
+                value: url.value)
     }
 }

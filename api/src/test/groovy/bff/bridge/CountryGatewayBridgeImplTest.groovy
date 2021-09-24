@@ -4,6 +4,7 @@ import bff.bridge.data.CountryGatewayBridgeImplTestData
 import bff.bridge.http.CountryGatewayBridgeImpl
 import bff.configuration.CacheConfigurationProperties
 import bff.mapper.CountryMapper
+import bff.model.LegalUrlType
 import bff.service.HttpBridge
 import groovy.json.JsonSlurper
 import org.junit.Assert
@@ -255,5 +256,46 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
                 .get(
                         (URI) ArgumentMatchers.any(URI.class),
                         (String) ArgumentMatchers.isNull())
+    }
+
+    @Test
+    void 'check legal urls'() {
+        Mockito.when(
+                httpBridge.get(
+                        (URI) Mockito.any(URI.class),
+                        (String) Mockito.isNull(),
+                        Mockito.isNull(),
+                        Mockito.any(Class.class)))
+                .thenReturn(
+                        new JsonSlurper().parseText(homeCountriesResponse) as List)
+
+        def countriesHome = countryBridge.getHomeCountries("es")
+        Assert.assertNotNull(countriesHome)
+        Assert.assertFalse(countriesHome.empty)
+        Assert.assertTrue(countriesHome.size() == 3)
+
+        def countryEG = countriesHome.find {it.id == "eg"}
+        Assert.assertEquals("Egipto", countryEG?.name)
+        Assert.assertNotNull(countryEG?.legalUrls)
+        Assert.assertFalse(countryEG?.legalUrls?.isEmpty())
+        Assert.assertNotNull(countryEG?.legalUrls?.find {it?.type == LegalUrlType.TERMS_AND_CONDITIONS})
+        Assert.assertNotNull(countryEG?.legalUrls?.find {it?.type == LegalUrlType.PRIVACY_POLICY})
+        Assert.assertNotNull(countryEG?.legalUrls?.find {it?.type == LegalUrlType.COOKIES})
+        Assert.assertNotNull(countryEG?.legalUrls?.find {it?.type == LegalUrlType.FAQS})
+        Assert.assertNotNull(countryEG?.legalUrls?.find {it?.type == LegalUrlType.ABOUT})
+        Assert.assertNotNull(countryEG?.legalUrls?.find {it?.type == LegalUrlType.OPERATION})
+        Assert.assertNotNull(countryEG?.legalUrls?.find {it?.type == LegalUrlType.COMPLAINT})
+
+        def countryMA = countriesHome.find {it.id == "ma"}
+        Assert.assertEquals("Marruecos", countryMA?.name)
+        Assert.assertNotNull(countryMA?.legalUrls)
+        Assert.assertTrue(countryMA?.legalUrls?.isEmpty())
+        Assert.assertNull(countryMA?.legalUrls?.find {it?.type == LegalUrlType.TERMS_AND_CONDITIONS})
+        Assert.assertNull(countryMA?.legalUrls?.find {it?.type == LegalUrlType.PRIVACY_POLICY})
+        Assert.assertNull(countryMA?.legalUrls?.find {it?.type == LegalUrlType.COOKIES})
+        Assert.assertNull(countryMA?.legalUrls?.find {it?.type == LegalUrlType.FAQS})
+        Assert.assertNull(countryMA?.legalUrls?.find {it?.type == LegalUrlType.ABOUT})
+        Assert.assertNull(countryMA?.legalUrls?.find {it?.type == LegalUrlType.OPERATION})
+        Assert.assertNull(countryMA?.legalUrls?.find {it?.type == LegalUrlType.COMPLAINT})
     }
 }

@@ -80,7 +80,10 @@ enum LegalUrlType {
     PRIVACY_POLICY,
     TERMS_AND_CONDITIONS,
     COOKIES,
-    FAQS
+    FAQS,
+    ABOUT,
+    OPERATION,
+    COMPLAINT
 }
 
 enum CountryFlagSize implements ImageSizeEnum {

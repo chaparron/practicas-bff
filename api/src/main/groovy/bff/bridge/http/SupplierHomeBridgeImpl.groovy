@@ -36,7 +36,7 @@ class SupplierHomeBridgeImpl implements SupplierHomeBridge {
     @PostConstruct
     void init() {
         supplierCache = Caffeine.newBuilder()
-                .expireAfterWrite(cacheConfiguration.suppliers, TimeUnit.HOURS)
+                .expireAfterWrite(cacheConfiguration.suppliers, TimeUnit.MINUTES)
                 .build(
                         new CacheLoader<String, List<PreviewSupplier>>() {
                             @Override

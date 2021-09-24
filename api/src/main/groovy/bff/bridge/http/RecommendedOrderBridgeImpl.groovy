@@ -45,7 +45,7 @@ class RecommendedOrderBridgeImpl implements RecommendedOrderBridge{
     @PostConstruct
     void init(){
         favoritesCache = Caffeine.newBuilder()
-        .expireAfterWrite(cacheConfiguration.favorites, TimeUnit.HOURS)
+        .expireAfterWrite(cacheConfiguration.favorites, TimeUnit.MINUTES)
         .build(
                 new CacheLoader<String, List<FavoriteProductResult>>() {
 

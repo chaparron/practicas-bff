@@ -37,7 +37,7 @@ class CategoryBridgeImpl implements CategoryBridge {
     @PostConstruct
     void init() {
         categoryCache = Caffeine.newBuilder()
-                .expireAfterWrite(cacheConfiguration.categories, TimeUnit.HOURS)
+                .expireAfterWrite(cacheConfiguration.categories, TimeUnit.MINUTES)
                 .build(
                         new CacheLoader<String, List<Category>>() {
                             @Override

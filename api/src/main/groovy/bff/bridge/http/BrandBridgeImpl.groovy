@@ -38,7 +38,7 @@ class BrandBridgeImpl implements BrandBridge {
     void init() {
         brandCache = Caffeine
                 .newBuilder()
-                .expireAfterWrite(cacheConfiguration.brands, TimeUnit.HOURS)
+                .expireAfterWrite(cacheConfiguration.brands, TimeUnit.MINUTES)
                 .build(new CacheLoader<String, List<Brand>>() {
                     @Override
                     List<Brand> load(@NotNull String key) throws Exception {

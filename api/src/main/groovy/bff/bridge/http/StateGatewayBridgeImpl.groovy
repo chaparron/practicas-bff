@@ -29,7 +29,7 @@ class StateGatewayBridgeImpl implements StateBridge {
     @PostConstruct
     void init() {
         stateCache = Caffeine.newBuilder()
-                .expireAfterWrite(cacheConfiguration.states, TimeUnit.HOURS)
+                .expireAfterWrite(cacheConfiguration.states, TimeUnit.MINUTES)
                 .build(
                         new CacheLoader<String, List<State>>() {
                             @Override
