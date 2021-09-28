@@ -31,7 +31,8 @@ class GroceryListing implements SearchBridge {
                 [new FilteringBuilder(input), new SortingBuilder(input)]
                         .inject(
                                 availableProductsIn(
-                                        new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble())
+                                        new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
+                                        Option.apply(customer.country_id)
                                 )
                                         .forCustomer(customer.id.toString(), customer.customerType.code)
                                         .sized(input.size)
@@ -51,7 +52,10 @@ class GroceryListing implements SearchBridge {
         def request =
                 [new FilteringBuilder(input), new SortingBuilder(input)]
                         .inject(
-                                availableProductsIn(new Coordinate(input.lat.toDouble(), input.lng.toDouble()))
+                                availableProductsIn(
+                                        new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
+                                        Option.empty()
+                                )
                                         .sized(input.size)
                                         .aggregatedByBrands(10)
                                         .aggregatedByCategories(1, false)
