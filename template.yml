@@ -20,7 +20,7 @@ Mappings:
       ApiRoot: 'https://api-qa.wabi2b.com/'
       SecurityGroups: '{{resolve:ssm:/foundation/qa/beanstalk/security_groups:1}}'
       ResizerUrl: 'https://resizer-qa.wabi2b.com/'
-      GroceryListingEnabled: "false"
+      GroceryListingEnabled: "true"
     prod:
       MinPoolSize: '2'
       MaxPoolSize: '4'
