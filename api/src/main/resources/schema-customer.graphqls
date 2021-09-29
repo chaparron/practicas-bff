@@ -51,6 +51,7 @@ enum PasswordlessSignUpFailedReason{
   EMAIL_ALREADY_EXIST
   INVALID_POSTAL_CODE
   INVALID_COUNTRY
+  INVALID_CAPTCHA
 }
 
 enum DeliveryPreference {
@@ -167,6 +168,7 @@ input PasswordlessSignUpInput {
   deliveryComment: String
   country_id: String
   marketingEnabled: Boolean
+  captchaToken: String!
 }
 
 enum AddressFailedReason {

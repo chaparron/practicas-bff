@@ -11,7 +11,7 @@ interface CustomerBridge {
     CustomerUpdateResult updateProfileV2(CustomerUpdateInputV2 customerUpdateInput)
 
     CredentialsCustomerResponse signIn(SignInInput signInInput)
-    Customer passwordlessSignUp(PasswordlessSignUpInput passwordlessSignUpInput)
+    Customer passwordlessSignUp(PasswordlessSignUpInput passwordlessSignUpInput, String remoteAddress)
 
     Void verifyEmail(VerifyEmailInput verifyEmailInput)
 

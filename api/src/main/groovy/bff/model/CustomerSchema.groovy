@@ -99,8 +99,8 @@ enum PasswordlessSignUpFailedReason {
     INVALID_STATE,
     INVALID_PREFERRED_ADDRESS,
     EMAIL_ALREADY_EXIST,
-    INVALID_POSTAL_CODE,
-    INVALID_COUNTRY
+    INVALID_COUNTRY,
+    INVALID_CAPTCHA
 
     def build() {
         return new PasswordlessSignUpFailed(reason: this)
@@ -358,6 +358,7 @@ class PasswordlessSignUpInput {
     List<AddressInput> addresses
     List<VerificationDocument> verificationDocuments
     boolean marketingEnabled
+    String captchaToken
 }
 
 class VerifyEmailInput {

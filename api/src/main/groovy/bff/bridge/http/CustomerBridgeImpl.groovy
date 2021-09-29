@@ -103,10 +103,12 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    Customer passwordlessSignUp(PasswordlessSignUpInput passwordlessSignUpInput) {
+    Customer passwordlessSignUp(PasswordlessSignUpInput passwordlessSignUpInput, String remoteAddress) {
         def body = http.exchange(
                 RequestEntity.method(HttpMethod.POST, root.resolve('/customer'))
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Address-Received-In-Bff", remoteAddress)
+                        .header("Recaptcha-Token",  passwordlessSignUpInput.captchaToken)
                         .body(passwordlessSignUpInput)
                 , Customer).body
         return body

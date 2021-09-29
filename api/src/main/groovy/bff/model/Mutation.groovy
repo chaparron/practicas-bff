@@ -125,9 +125,10 @@ class Mutation implements GraphQLMutationResolver {
         }
     }
 
-    PasswordlessSignUpResult passwordlessSignUp(PasswordlessSignUpInput passwordlessSignUpInput) {
+    PasswordlessSignUpResult passwordlessSignUp(PasswordlessSignUpInput passwordlessSignUpInput, DataFetchingEnvironment env) {
         try {
-            customerBridge.passwordlessSignUp(passwordlessSignUpInput)
+            def remoteAddress = DeviceIdentifierService.identifySource(env)
+            customerBridge.passwordlessSignUp(passwordlessSignUpInput, remoteAddress)
         } catch (ConflictErrorException conflictErrorException) {
             PasswordlessSignUpFailedReason.valueOf((String) conflictErrorException.innerResponse).build()
         } catch (BadRequestErrorException conflictErrorException) {
