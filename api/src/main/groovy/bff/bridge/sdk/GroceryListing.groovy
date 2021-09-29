@@ -102,54 +102,65 @@ class FilteringBuilder implements RequestBuilder {
     }
 
     ProductQueryRequest apply(ProductQueryRequest request) {
-        ([
-                termFiltering(keyword),
-                brandFiltering(brand),
-                categoryFiltering(category),
-                supplierFiltering(supplier),
-                promotionFiltering(tag)
-        ]
-                .findAll { it.isPresent() }
-                .collect { it.get() } +
-                featuresFiltering(features)
+        (
+                [
+                        termFiltering(),
+                        brandFiltering(),
+                        categoryFiltering(),
+                        supplierFiltering(),
+                        promotionFiltering()
+                ] + featuresFiltering()
         )
-                .inject(
-                        request,
-                        { acc, filter -> filter(acc) }
-                )
+                .inject(request, { acc, filter -> filter(acc) })
     }
 
-    private static Optional<Closure<ProductQueryRequest>> termFiltering(String maybeTerm) {
-        ofNullable(maybeTerm).map { term ->
-            { ProductQueryRequest r -> r.filteredByTerm(term, Option.empty(), TypeAhead$.MODULE$) }
-        }
+    private def identity = { ProductQueryRequest r -> r }
+
+    private Closure<ProductQueryRequest> termFiltering() {
+        ofNullable(keyword)
+                .map { term ->
+                    { ProductQueryRequest r -> r.filteredByTerm(term, Option.empty(), TypeAhead$.MODULE$) }
+                }
+                .orElse(identity)
     }
 
-    private static Optional<Closure<ProductQueryRequest>> categoryFiltering(Integer maybeCategory) {
-        ofNullable(maybeCategory).map { category ->
-            { ProductQueryRequest r -> r.filteredByCategory(category.toString(), asScala([] as List<String>).toSeq()) }
-        }
+    private Closure<ProductQueryRequest> categoryFiltering() {
+        ofNullable(category)
+                .map { category ->
+                    { ProductQueryRequest r ->
+                        r.filteredByCategory(category.toString(), asScala([] as List<String>).toSeq())
+                    }
+                }
+                .orElse(identity)
     }
 
-    private static Optional<Closure<ProductQueryRequest>> brandFiltering(Integer maybeBrand) {
-        ofNullable(maybeBrand).map { brand ->
-            { ProductQueryRequest r -> r.filteredByBrand(brand.toString(), asScala([] as List<String>).toSeq()) }
-        }
+    private Closure<ProductQueryRequest> brandFiltering() {
+        ofNullable(brand)
+                .map { brand ->
+                    { ProductQueryRequest r ->
+                        r.filteredByBrand(brand.toString(), asScala([] as List<String>).toSeq())
+                    }
+                }
+                .orElse(identity)
     }
 
-    private static Optional<Closure<ProductQueryRequest>> supplierFiltering(Integer maybeSupplier) {
-        ofNullable(maybeSupplier).map { supplier ->
-            { ProductQueryRequest r -> r.filteredBySupplier(supplier.toString(), asScala([] as List<String>).toSeq()) }
-        }
+    private Closure<ProductQueryRequest> supplierFiltering() {
+        ofNullable(supplier)
+                .map { supplier ->
+                    { ProductQueryRequest r ->
+                        r.filteredBySupplier(supplier.toString(), asScala([] as List<String>).toSeq())
+                    }
+                }
+                .orElse(identity)
     }
 
-    private static Optional<Closure<ProductQueryRequest>> promotionFiltering(String maybePromotion) {
-        ofNullable(maybePromotion).map { promotion ->
-            { ProductQueryRequest r -> r.filteredByPromotion(promotion) }
-        }
+    private Closure<ProductQueryRequest> promotionFiltering() {
+        ofNullable(tag)
+                .map { promotion -> { ProductQueryRequest r -> r.filteredByPromotion(promotion) } }
+                .orElse(identity)
     }
 
-    private static List<Closure<ProductQueryRequest>> featuresFiltering(List<FeatureInput> features) {
+    private List<Closure<ProductQueryRequest>> featuresFiltering() {
         features.collect { feature ->
             { ProductQueryRequest r ->
                 r.filteredByFeature(feature.id, feature.value, asScala([] as List<String>).toSeq())
@@ -316,12 +327,15 @@ abstract class ResponseMapper {
     protected List<BreadCrumb> breadCrumb(ProductQueryResponse response) {
         toJava(response.hits().headOption())
                 .map {
-                    asJava(it.categorization())
-                            .takeWhile { category ->
-                                toJava(request.filtering().byCategory())
-                                        .map { it.contains(category.id()) }
-                                        .orElse(false)
-                            }
+                    def categorization = asJava(it.categorization())
+                    def index = categorization.findLastIndexOf { category ->
+                        toJava(request.filtering().byCategory())
+                                .map { asJava(it.values()).first() }
+                                .map { it == category.id() }
+                                .orElse(false)
+                    }
+                    categorization
+                            .take(index + 1)
                             .collect {
                                 new BreadCrumb(
                                         id: it.id() as Integer,
@@ -391,9 +405,8 @@ abstract class ResponseMapper {
                 }
     }
 
-    protected Optional<Facet> categoriesFacet(ProductQueryResponse response) {
+    protected static Optional<Facet> categoriesFacet(ProductQueryResponse response) {
         toJava(response.aggregations().categories())
-                .filter { request.filtering().byCategory().isEmpty() }
                 .map {
                     new Facet(
                             id: "category",
