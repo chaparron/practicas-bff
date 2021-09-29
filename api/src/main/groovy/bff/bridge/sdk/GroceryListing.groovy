@@ -295,7 +295,8 @@ abstract class ResponseMapper {
     }
 
     protected List<Filter> filters(ProductQueryResponse response) {
-        categoryFilter(response) +
+        termFilter() +
+                categoryFilter(response) +
                 brandFilter(response) +
                 supplierFilter(response) +
                 featuresFilter(response)
@@ -428,6 +429,19 @@ abstract class ResponseMapper {
                             }
                     )
                 }
+    }
+
+    protected List<Filter> termFilter() {
+        toJava(request.filtering().byTerm())
+                .map {
+                    [
+                            new Filter(
+                                    key: "keyword",
+                                    value: it.text()
+                            )
+                    ]
+                }
+                .orElse([])
     }
 
     protected List<Filter> categoryFilter(ProductQueryResponse response) {
