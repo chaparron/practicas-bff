@@ -56,7 +56,7 @@ class GroceryListing implements SearchBridge {
                         .inject(
                                 availableProductsIn(
                                         new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
-                                        Option.empty()
+                                        Option.apply(input.countryId)
                                 )
                                         .sized(input.size)
                                         .aggregatedByBrands(10)
@@ -277,7 +277,8 @@ abstract class ResponseMapper {
                     prices: prices,
                     minUnitsPrice: prices.min { it.minUnits },
                     highlightedPrice: prices.min { it.unitValue },
-                    title: it.name().defaultEntry()
+                    title: it.name().defaultEntry(),
+                    country_id: it.manufacturer().country()
             )
         }
     }
@@ -664,7 +665,8 @@ class PreviewSearchResultMapper extends ResponseMapper {
                                         minUnits: it.minUnits
                                 )
                             },
-                            title: it.title
+                            title: it.title,
+                            suppliers: []
                     )
                 }
         )
