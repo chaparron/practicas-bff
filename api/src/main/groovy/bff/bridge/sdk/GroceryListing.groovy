@@ -541,7 +541,10 @@ abstract class ResponseMapper {
                 minUnits: option.requiredPurchaseUnits()._1() as Integer,
                 maxUnits: toJava(option.requiredPurchaseUnits()._2()).map { it as Integer }.orElse(0),
                 display: display(option),
-                configuration: null
+                configuration: new SupplierProductConfiguration(
+                        // TODO start using mapped field from sdk
+                        disableMinAmountCount: false
+                )
         )
     }
 
