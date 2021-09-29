@@ -572,7 +572,11 @@ abstract class ResponseMapper {
                 id: option.supplier().id().toInteger(),
                 name: option.supplier().name(),
                 legalName: null,
-                avatar: toJava(option.supplier().avatar()).orElse(null)
+                avatar: toJava(option.supplier().avatar()).orElse(null),
+                // Using default value for old clients compatibility.
+                deliveryZones: [],
+                // Using default value for old clients compatibility.
+                averageDeliveryDay: null
         )
     }
 
@@ -680,6 +684,7 @@ class PreviewSearchResultMapper extends ResponseMapper {
                                 )
                             },
                             title: it.title,
+                            // Using default value for old clients compatibility.
                             suppliers: []
                     )
                 }
