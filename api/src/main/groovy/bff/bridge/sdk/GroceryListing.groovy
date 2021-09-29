@@ -37,7 +37,7 @@ class GroceryListing implements SearchBridge {
                                         .forCustomer(customer.id.toString(), customer.customerType.code)
                                         .sized(input.size)
                                         .aggregatedByBrands(10)
-                                        .aggregatedByCategories(1, false)
+                                        .aggregatedByCategories(1, true)
                                         .aggregatedBySuppliers(10)
                                         .aggregatedByFeatures(),
                                 { request, builder -> builder.apply(request) }
@@ -58,7 +58,7 @@ class GroceryListing implements SearchBridge {
                                 )
                                         .sized(input.size)
                                         .aggregatedByBrands(10)
-                                        .aggregatedByCategories(1, false)
+                                        .aggregatedByCategories(1, true)
                                         .aggregatedByFeatures(),
                                 { request, builder -> builder.apply(request) }
                         )
