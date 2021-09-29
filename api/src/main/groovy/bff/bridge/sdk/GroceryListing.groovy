@@ -37,7 +37,7 @@ class GroceryListing implements SearchBridge {
                                         .forCustomer(customer.id.toString(), customer.customerType.code)
                                         .sized(input.size)
                                         .aggregatedByBrands(10)
-                                        .aggregatedByCategories(1, false)
+                                        .aggregatedByCategories(1, true)
                                         .aggregatedBySuppliers(10)
                                         .aggregatedByFeatures(),
                                 { request, builder -> builder.apply(request) }
@@ -58,7 +58,7 @@ class GroceryListing implements SearchBridge {
                                 )
                                         .sized(input.size)
                                         .aggregatedByBrands(10)
-                                        .aggregatedByCategories(1, false)
+                                        .aggregatedByCategories(1, true)
                                         .aggregatedByFeatures(),
                                 { request, builder -> builder.apply(request) }
                         )
@@ -541,7 +541,10 @@ abstract class ResponseMapper {
                 minUnits: option.requiredPurchaseUnits()._1() as Integer,
                 maxUnits: toJava(option.requiredPurchaseUnits()._2()).map { it as Integer }.orElse(0),
                 display: display(option),
-                configuration: null
+                configuration: new SupplierProductConfiguration(
+                        // TODO start using mapped field from sdk
+                        disableMinAmountCount: false
+                )
         )
     }
 
