@@ -43,7 +43,9 @@ class GroceryListing implements SearchBridge {
                                 { request, builder -> builder.apply(request) }
                         )
 
-        def response = sdk.query(request.offset((input.page - 1) * input.size))
+        def response = sdk.query(
+                request.offset((ofNullable(input.page).orElse(1) - 1) * input.size)
+        )
         return new SearchResultMapper(input, request).map(response)
     }
 
@@ -63,7 +65,9 @@ class GroceryListing implements SearchBridge {
                                 { request, builder -> builder.apply(request) }
                         )
 
-        def response = sdk.query(request.offset((input.page - 1) * input.size))
+        def response = sdk.query(
+                request.offset((ofNullable(input.page).orElse(1) - 1) * input.size)
+        )
         return new PreviewSearchResultMapper(input, request).map(response)
     }
 
@@ -610,7 +614,7 @@ class SearchResultMapper extends ResponseMapper {
                 header: new Header(
                         total: response.total().toInteger(),
                         pageSize: input.size,
-                        currentPage: input.page
+                        currentPage: ofNullable(input.page).orElse(1)
                 ),
                 sort: sort(),
                 breadcrumb: breadCrumb(response),
@@ -636,7 +640,7 @@ class PreviewSearchResultMapper extends ResponseMapper {
                 header: new Header(
                         total: response.total().toInteger(),
                         pageSize: input.size,
-                        currentPage: input.page
+                        currentPage: ofNullable(input.page).orElse(1)
                 ),
                 sort: sort(),
                 breadcrumb: breadCrumb(response),
