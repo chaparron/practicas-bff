@@ -270,9 +270,9 @@ abstract class ResponseMapper {
                             id: it.brand().id().toLong(),
                             name: it.brand().name().defaultEntry()
                     ),
-                    ean: displays.find { it.units == 1 }?.ean,
+                    ean: displays.sort { it.units }.first().ean,
                     description: toJava(it.description()).map { it.defaultEntry() }.orElse(null),
-                    images: asJava(it.images().zipWithIndex()).collect { new Image(id: it._1()) },
+                    images: asJava(it.images()).collect { new Image(id: it) },
                     displays: displays,
                     prices: prices,
                     minUnitsPrice: prices.min { it.minUnits },
