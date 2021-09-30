@@ -44,7 +44,7 @@ class DeviceIdentifierService {
     private static String getBeforeLastAddress(String source) {
         def hasManyIps = source.indexOf(",") != -1
         if (hasManyIps && source.split(",").size() > 1) {
-            source.split(",").collect { it.trim() }[-2]
+            return source.split(",").collect { it.trim() }[-2]
         }
         return source
     }
