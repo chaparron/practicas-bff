@@ -140,6 +140,7 @@ class PreviewProductSearch implements ProductResult {
     Manufacturer manufacturer
     List<PreviewPrice> prices
     List<PreviewSupplier> suppliers
+    Integer totalNumberOfSuppliers
     String title
     String country_id
 }

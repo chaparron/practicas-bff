@@ -684,6 +684,8 @@ class PreviewSearchResultMapper extends ResponseMapper {
                                 )
                             },
                             title: it.title,
+                            country_id: it.country_id,
+                            totalNumberOfSuppliers: it.prices.collect { it.supplier }.toSet().size(),
                             // Using default value for old clients compatibility.
                             suppliers: []
                     )

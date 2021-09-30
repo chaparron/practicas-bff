@@ -108,6 +108,7 @@ type PreviewProductSearch {
     prices: [PreviewPrice]
     title: String
     suppliers: [PreviewSupplier]
+    totalNumberOfSuppliers: Int!
     country_id: String!
 }
 
