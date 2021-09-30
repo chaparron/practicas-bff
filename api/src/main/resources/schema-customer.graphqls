@@ -287,7 +287,9 @@ type Customer {
     rating: RatingScore
     level: Int
     missingDocuments: [String]
-    country_id: String!
+    # Needed for temporal retrocompatibility:
+    @deprecated country_id: String!
+    country: Country!
     customerType: CustomerType!
     hasOrders: Boolean
     marketingEnabled: Boolean!

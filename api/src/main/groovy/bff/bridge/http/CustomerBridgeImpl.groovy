@@ -48,14 +48,14 @@ class CustomerBridgeImpl implements CustomerBridge {
                             .header(HttpHeaders.AUTHORIZATION, "Bearer $customerUpdateInput.accessToken")
                             .body(
                                     [
-                                            phone                      : customerUpdateInput.phone,
-                                            username                   : customerUpdateInput.username,
-                                            acceptWhatsApp             : customerUpdateInput.acceptWhatsApp,
-                                            adress                     : customerUpdateInput.address,
-                                            workingDays                : customerUpdateInput.workingDays,
-                                            deliveryComment            : customerUpdateInput.deliveryComment,
-                                            verificationDocuments      : customerUpdateInput.verificationDocuments,
-                                            marketingEnabled           : customerUpdateInput.marketingEnabled
+                                            phone                : customerUpdateInput.phone,
+                                            username             : customerUpdateInput.username,
+                                            acceptWhatsApp       : customerUpdateInput.acceptWhatsApp,
+                                            adress               : customerUpdateInput.address,
+                                            workingDays          : customerUpdateInput.workingDays,
+                                            deliveryComment      : customerUpdateInput.deliveryComment,
+                                            verificationDocuments: customerUpdateInput.verificationDocuments,
+                                            marketingEnabled     : customerUpdateInput.marketingEnabled
                                     ]
                             ), Customer).body
             body.accessToken = customerUpdateInput.accessToken
@@ -75,13 +75,13 @@ class CustomerBridgeImpl implements CustomerBridge {
                             .header(HttpHeaders.AUTHORIZATION, "Bearer $customerUpdateInput.accessToken")
                             .body(
                                     [
-                                            username                   : customerUpdateInput.username,
-                                            acceptWhatsApp             : customerUpdateInput.acceptWhatsApp,
-                                            adress                     : customerUpdateInput.address,
-                                            workingDays                : customerUpdateInput.workingDays,
-                                            deliveryComment            : customerUpdateInput.deliveryComment,
-                                            verificationDocuments      : customerUpdateInput.verificationDocuments,
-                                            marketingEnabled           : customerUpdateInput.marketingEnabled
+                                            username             : customerUpdateInput.username,
+                                            acceptWhatsApp       : customerUpdateInput.acceptWhatsApp,
+                                            adress               : customerUpdateInput.address,
+                                            workingDays          : customerUpdateInput.workingDays,
+                                            deliveryComment      : customerUpdateInput.deliveryComment,
+                                            verificationDocuments: customerUpdateInput.verificationDocuments,
+                                            marketingEnabled     : customerUpdateInput.marketingEnabled
                                     ]
                             ), Customer).body
             body.accessToken = customerUpdateInput.accessToken
@@ -385,7 +385,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                             .build()
                     , Boolean).body
         }
-        catch(Exception ex) {
+        catch (Exception ex) {
             //Hide this exception temporally.
         }
         return false
@@ -560,11 +560,11 @@ class CustomerBridgeImpl implements CustomerBridge {
         Void.SUCCESS
     }
 
-    List<SuppliersNameResult> getSuppliersThatHasSuggestedOrders(String accessToken){
+    List<SuppliersNameResult> getSuppliersThatHasSuggestedOrders(String accessToken) {
         def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplier/suggestedOrder")).toUriString()
         def uri = url.toURI()
 
-       http.exchange(
+        http.exchange(
                 RequestEntity.method(HttpMethod.GET, uri)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(AUTHORIZATION, "Bearer $accessToken")
@@ -572,7 +572,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                 , new ParameterizedTypeReference<List<SuppliersNameResult>>() {}).body
     }
 
-    SuggestedOrderResult getSuggestedOrder(GetSuggestedOrderInput input){
+    SuggestedOrderResult getSuggestedOrder(GetSuggestedOrderInput input) {
         def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplier/suggestedOrder/${input.supplierId}")).toUriString()
         def uri = url.toURI()
 
@@ -612,7 +612,7 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    List<SupplierOrder> findPendingRateSinceLastLogin(String accessToken){
+    List<SupplierOrder> findPendingRateSinceLastLogin(String accessToken) {
         def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/rating/pending/latest")).toUriString()
         def uri = url.toURI()
 

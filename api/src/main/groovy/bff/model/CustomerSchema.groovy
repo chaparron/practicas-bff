@@ -146,6 +146,7 @@ class Customer implements CustomerUpdateResult, PasswordlessSignUpResult {
     List<String> missingDocuments
     List<VerificationDocument> verificationDocuments
     String country_id
+    Country country
 
     DeliveryPreference getDeliveryPreference() {
         if (workingDays.hours) {
