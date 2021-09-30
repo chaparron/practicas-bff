@@ -666,6 +666,8 @@ class PreviewSearchResultMapper extends ResponseMapper {
                 filters: filters(response),
                 facets: facets(response),
                 products: products(response).collect {
+                    def suppliers =
+                            it.prices.collect {new PreviewSupplier(id: it.supplier.id, name: "") }.toSet()
                     new PreviewProductSearch(
                             id: it.id,
                             name: it.name,
@@ -685,9 +687,8 @@ class PreviewSearchResultMapper extends ResponseMapper {
                             },
                             title: it.title,
                             country_id: it.country_id,
-                            totalNumberOfSuppliers: it.prices.collect { it.supplier }.toSet().size(),
-                            // Using default value for old clients compatibility.
-                            suppliers: []
+                            totalNumberOfSuppliers: suppliers.size(),
+                            suppliers: suppliers.toList()
                     )
                 }
         )

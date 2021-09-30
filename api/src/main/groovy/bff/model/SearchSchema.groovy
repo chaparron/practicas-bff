@@ -139,6 +139,12 @@ class PreviewProductSearch implements ProductResult {
     TimestampOutput created
     Manufacturer manufacturer
     List<PreviewPrice> prices
+    /**
+     * @deprecated Suppliers list should not be used in search preview due private information.
+     * Use {@link PreviewProductSearch#totalNumberOfSuppliers} instead to retrieve the total number
+     * of available suppliers for the given product.
+     */
+    @Deprecated
     List<PreviewSupplier> suppliers
     Integer totalNumberOfSuppliers
     String title
@@ -153,6 +159,7 @@ class PreviewPrice {
     Integer minUnits
 }
 
+@EqualsAndHashCode
 class PreviewSupplier {
     Long id
     String name
