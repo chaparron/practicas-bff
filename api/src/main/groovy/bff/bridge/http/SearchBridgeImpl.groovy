@@ -107,6 +107,9 @@ class SearchBridgeImpl implements SearchBridge {
                     facets: response.facets
             )
 
+            result.products.forEach {
+                it.totalNumberOfSuppliers = it.suppliers.size()
+            }
             result.filters = transformFilters(result.filters)
             result
         } catch (BadRequestErrorException ex) {
