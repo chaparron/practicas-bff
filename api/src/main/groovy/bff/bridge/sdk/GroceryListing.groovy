@@ -348,6 +348,7 @@ abstract class ResponseMapper {
                                         name: it.name().defaultEntry()
                                 )
                             }
+                    .reverse()
                 }
                 .orElse([])
     }
@@ -447,7 +448,7 @@ abstract class ResponseMapper {
     protected List<Filter> categoryFilter(ProductQueryResponse response) {
         def breadCrumb = breadCrumb(response)
         if (breadCrumb.isEmpty()) []
-        else ofNullable(breadCrumb.last())
+        else ofNullable(breadCrumb.first())
                 .map {
                     [
                             new Filter(
