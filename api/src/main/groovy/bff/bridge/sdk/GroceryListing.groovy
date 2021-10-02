@@ -123,7 +123,7 @@ class FilteringBuilder implements RequestBuilder {
     private Closure<ProductQueryRequest> termFiltering() {
         ofNullable(keyword)
                 .map { term ->
-                    { ProductQueryRequest r -> r.filteredByTerm(term, Option.empty(), TypeAhead$.MODULE$) }
+                    { ProductQueryRequest r -> r.filteredByTerm(term, Option.empty(), FullText$.MODULE$) }
                 }
                 .orElse(identity)
     }
