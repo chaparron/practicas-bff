@@ -348,7 +348,7 @@ abstract class ResponseMapper {
                                         name: it.name().defaultEntry()
                                 )
                             }
-                    .reverse()
+                            .reverse()
                 }
                 .orElse([])
     }
@@ -389,6 +389,7 @@ abstract class ResponseMapper {
                                             .collect { it.get() }
                     )
                 }
+                .sort { it.name }
     }
 
     protected Optional<Facet> brandsFacet(ProductQueryResponse response) {
@@ -668,7 +669,7 @@ class PreviewSearchResultMapper extends ResponseMapper {
                 facets: facets(response),
                 products: products(response).collect {
                     def suppliers =
-                            it.prices.collect {new PreviewSupplier(id: it.supplier.id, name: "") }.toSet()
+                            it.prices.collect { new PreviewSupplier(id: it.supplier.id, name: "") }.toSet()
                     new PreviewProductSearch(
                             id: it.id,
                             name: it.name,
