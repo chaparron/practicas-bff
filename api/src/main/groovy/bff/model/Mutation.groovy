@@ -13,6 +13,7 @@ import com.coxautodev.graphql.tools.GraphQLMutationResolver
 import graphql.schema.DataFetchingEnvironment
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 @Slf4j
@@ -34,8 +35,10 @@ class Mutation implements GraphQLMutationResolver {
     @Autowired
     RecommendedOrderBridge recommendedOrderBridge
 
+    @Value('${environment:}')
+    String environment
+
     // TODO: remove
-    // Empty list means that all countries support legacy login
     private final List<String> legacyCountries = []
 
     LoginResult login(LoginInput input) {
@@ -356,6 +359,14 @@ class Mutation implements GraphQLMutationResolver {
     }
 
     private Boolean countrySupportLegacy(String country) {
-        return legacyCountries.isEmpty() || legacyCountries.contains(country)
+        return emptyListDisableCountryCheck() || legacyCountries.contains(country)
+    }
+
+    private Boolean emptyListDisableCountryCheck() {
+        return legacyCountries.isEmpty() && isQA()
+    }
+
+    private Boolean isQA() {
+        return environment == "qa"
     }
 }

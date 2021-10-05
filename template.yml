@@ -210,6 +210,10 @@ Resources:
           OptionName: ERRORS_EXPOSE
           Value: true
 
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: environment
+          Value: !Ref EnvironmentStackName
+
         - Namespace: aws:elasticbeanstalk:environment:process:default
           OptionName: DeregistrationDelay
           Value: 20
