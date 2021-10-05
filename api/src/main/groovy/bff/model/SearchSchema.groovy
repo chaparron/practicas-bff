@@ -42,6 +42,32 @@ class PreviewSearchResult implements SearchResponse {
     List<Facet> facets
 }
 
+class Suggestions {
+    List<SuggestedProduct> products
+    List<SuggestedBrand> brands
+    List<SuggestedCategory> categories
+    List<SuggestedSupplier> suppliers
+}
+
+class SuggestedProduct {
+    Integer id
+    String name
+}
+
+class SuggestedBrand {
+    Integer id
+    String name
+}
+
+class SuggestedCategory {
+    Integer id
+    String name
+}
+
+class SuggestedSupplier {
+    Integer id
+    String name
+}
 
 class PreviewSearchResultMapper {
     Header header
@@ -111,6 +137,11 @@ class SearchInput {
     Integer supplier
     String tag
     List<FeatureInput> features
+}
+
+class SuggestInput {
+    String accessToken
+    String keyword
 }
 
 class FeatureInput {

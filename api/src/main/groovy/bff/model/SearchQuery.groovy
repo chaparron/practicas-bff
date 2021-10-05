@@ -33,6 +33,10 @@ class SearchQuery implements GraphQLQueryResolver {
         return bridge(dfe).previewSearch(searchInput)
     }
 
+    Suggestions suggest(SuggestInput input) {
+        return groceryListing.suggest(input)
+    }
+
     private SearchBridge bridge(DataFetchingEnvironment dfe) {
         return (groceryListingEnabled || DataFetchingEnvironments.experimentalMode(dfe))
                 ? groceryListing

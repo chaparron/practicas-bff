@@ -12,6 +12,7 @@ import static scala.jdk.javaapi.CollectionConverters.asJava
 import static scala.jdk.javaapi.CollectionConverters.asScala
 import static scala.jdk.javaapi.OptionConverters.toJava
 import static wabi2b.grocery.listing.sdk.ProductQueryRequest.availableProductsIn
+import static wabi2b.grocery.listing.sdk.SuggestionQueryRequestBuilder.availableSuggestionsIn
 
 class GroceryListing implements SearchBridge {
 
@@ -71,6 +72,38 @@ class GroceryListing implements SearchBridge {
                 request.offset((ofNullable(input.page).orElse(1) - 1) * input.size)
         )
         return new PreviewSearchResultMapper(input, request).map(response)
+    }
+
+    Suggestions suggest(SuggestInput input) {
+        def customer = customerBridge.myProfile(input.accessToken)
+        def deliveryAddress = customer.preferredDeliveryAddress()
+        def request =
+                availableSuggestionsIn(
+                        new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
+                        Option.apply(customer.country_id)
+                )
+                        .forTerm(input.keyword, Option.empty())
+                        .fetchingProducts(5, ByRelevance$.MODULE$)
+                        .fetchingBrands(5, ByRelevance$.MODULE$)
+                        .fetchingCategories(5, ByRelevance$.MODULE$)
+                        .fetchingSuppliers(5, ByRelevance$.MODULE$)
+                        .forCustomer(customer.id.toString(), customer.customerType.code)
+
+        def response = sdk.query(request)
+        new Suggestions(
+                products: asJava(response.products()).collect {
+                    new SuggestedProduct(id: it.id().toInteger(), name: it.name().defaultEntry())
+                },
+                brands: asJava(response.brands()).collect {
+                    new SuggestedBrand(id: it.id().toInteger(), name: it.name().defaultEntry())
+                },
+                categories: asJava(response.categories()).collect {
+                    new SuggestedCategory(id: it.id().toInteger(), name: it.name().defaultEntry())
+                },
+                suppliers: asJava(response.suppliers()).collect {
+                    new SuggestedSupplier(id: it.id().toInteger(), name: it.name())
+                }
+        )
     }
 
 }
@@ -565,8 +598,7 @@ abstract class ResponseMapper {
                 maxUnits: toJava(option.requiredPurchaseUnits()._2()).map { it as Integer }.orElse(0),
                 display: display(option),
                 configuration: new SupplierProductConfiguration(
-                        // TODO start using mapped field from sdk
-                        disableMinAmountCount: false
+                        disableMinAmountCount: option.minPurchaseAmountCountDisabled()
                 )
         )
     }

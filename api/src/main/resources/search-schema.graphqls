@@ -28,6 +28,11 @@ input PreviewSearchInput {
     countryId: String
 }
 
+input SuggestInput {
+  accessToken: String!,
+  keyword: String!,
+}
+
 input FeatureInput {
     id: String,
     value: String
@@ -70,6 +75,33 @@ type PreviewSearchResult {
     filters: [Filter]
     products: [PreviewProductSearch]
     facets: [Facet]
+}
+
+type Suggestions {
+  products: [SuggestedProduct!]!
+  brands: [SuggestedBrand!]!
+  categories: [SuggestedCategory!]!
+  suppliers: [SuggestedSupplier!]!
+}
+
+type SuggestedProduct {
+  id: Int!
+  name: String!
+}
+
+type SuggestedBrand {
+  id: Int!
+  name: String!
+}
+
+type SuggestedCategory {
+  id: Int!
+  name: String!
+}
+
+type SuggestedSupplier {
+  id: Int!
+  name: String!
 }
 
 type Filter{

@@ -9,6 +9,8 @@ type Query {
 
   previewSearch (input: PreviewSearchInput!): PreviewSearchResponse
 
+  suggest(input: SuggestInput!): Suggestions!
+
   productDetail(input: ProductInput!): ProductResult
 
   productDetailByEan(input: ProductEanInput!): ProductResult
