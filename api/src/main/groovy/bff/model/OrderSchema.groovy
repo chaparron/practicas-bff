@@ -537,21 +537,20 @@ class Summary {
 }
 
 enum CartSummaryItemType {
-    IBB(2, true),
-    SUBTOTAL(11, false),
     PRODUCTS_TOTAL(1, true),
-    NET_SUBTOTAL(12, false),
+    IBB(2, true),
     DELIVERY_COST(3, true),
-    ORDER_TOTAL(8, true),
+    SUBTOTAL(4, true),
+    DISCOUNT(5, true),
     CREDITS_USED(6, true),
     WABIMONEY_USED(7, true),
-    PAYMENT_PENDING(10, true),
-    DISCOUNT(4, true),
+    SERVICE_FEE(8, true),
+    PAYMENT_PENDING(9, true),
+    MAX_AMOUNT_WABIPAY_ALLOWED(10, false),
+    ORDER_TOTAL(11, false),
+    NET_SUBTOTAL(12, false),
     DISCOUNT_USED(13, false),
-    TOTAL_BILLED(14, false),
-    SERVICE_FEE(9, true),
-    MAX_AMOUNT_WABIPAY_ALLOWED(5, true)
-
+    TOTAL_BILLED(14, false)
     private int position
     private Boolean visibleToSummary
 
