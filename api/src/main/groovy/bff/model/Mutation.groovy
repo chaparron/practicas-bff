@@ -34,13 +34,15 @@ class Mutation implements GraphQLMutationResolver {
     @Autowired
     RecommendedOrderBridge recommendedOrderBridge
 
+    // TODO: remove
+    // Empty list means that all countries support legacy login
+    private final List<String> legacyCountries = []
+
     LoginResult login(LoginInput input) {
         try {
             def credentials = passwordLogin(input.username, input.password, input.site)
-            new GenericCredentials(
-                    username: JwtToken.fromString(credentials.accessToken, DecoderName.USERNAME).name,
-                    credentials: credentials
-            )
+            return resolveCredentialsResponse(credentials, input.supportLegacy)
+
         } catch (LoginFailureException loginException) {
             loginException.build()
         }
@@ -335,5 +337,25 @@ class Mutation implements GraphQLMutationResolver {
 
     Void unmarkProductAsFavorite(ProductToUnmarkAsFavoriteInput productToUnmarkAsFavoriteInput) {
         recommendedOrderBridge.unmarkProductAsFavorite(productToUnmarkAsFavoriteInput)
+    }
+
+    private LoginResult resolveCredentialsResponse(Credentials credentials, Boolean deviceSupportLegacy) {
+        def decodedUsername = JwtToken.fromString(credentials.accessToken, DecoderName.USERNAME)
+        String country = JwtToken.countryFromString(credentials.accessToken)
+
+        if (countrySupportLegacy(country) && deviceSupportLegacy) {
+            return new LegacyCredentials(
+                    username: decodedUsername.name,
+                    credentials: credentials
+            )
+        }
+        return new GenericCredentials(
+                username: decodedUsername.name,
+                credentials: credentials
+        )
+    }
+
+    private Boolean countrySupportLegacy(String country) {
+        return legacyCountries.isEmpty() || legacyCountries.contains(country)
     }
 }

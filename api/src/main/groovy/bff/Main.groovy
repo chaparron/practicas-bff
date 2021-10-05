@@ -78,6 +78,7 @@ class Main {
                 .add(ValidateOrderFailed.class)
                 .add(PreviewHomeSupplierResponse.class)
                 .add(PreviewHomeSupplierFailed.class)
+                .add(LegacyCredentials.class)
     }
 
     /**

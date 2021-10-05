@@ -1,5 +1,8 @@
 package bff.model
 
+import cats.kernel.Eq
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.InheritConstructors
 import groovy.transform.ToString
 
 interface LoginResult {}
@@ -38,6 +41,7 @@ class UserCredentials {
 class LoginInput {
     String username
     String password
+    Boolean supportLegacy
     Site site
 }
 
@@ -77,6 +81,10 @@ class Credentials {
     String scope
     String expiresIn
 }
+
+@InheritConstructors
+@EqualsAndHashCode
+class LegacyCredentials extends GenericCredentials {}
 
 class GenericCredentials implements LoginResult, SignInResult, SignedChallengeAnswerResult, ChallengeAnswerResult {
     String username

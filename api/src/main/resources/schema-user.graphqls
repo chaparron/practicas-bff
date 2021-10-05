@@ -1,163 +1,170 @@
 enum Site {
-    CUSTOMER
-    SUPPLIER
-    MANUFACTURER
-    BO
+  CUSTOMER
+  SUPPLIER
+  MANUFACTURER
+  BO
 }
 
 enum VoidReason {
-    SUCCESS
+  SUCCESS
 }
 
 enum LoginFailureReason {
-    FORBIDDEN
-    UNAUTHORIZED
-    # When a user who already uses passwordless tries to log in with his email and a password
-    PASSWORDLESS_REQUIRED
+  FORBIDDEN
+  UNAUTHORIZED
+  # When a user who already uses passwordless tries to log in with his email and a password
+  PASSWORDLESS_REQUIRED
 }
 
 enum SignedChallengeDemandFailureReason {
-    # When the user tries to migrate to passwordless login using a "countryCode-phone" that is occupied by another user
-    PHONE_ALREADY_EXISTS
-    # When a user who has already migrated to passwordless login uses this mutation. It should use 'challengeRequestForPasswordlessLogin'
-    USER_ALREADY_USES_PASSWORDLESS
+  # When the user tries to migrate to passwordless login using a "countryCode-phone" that is occupied by another user
+  PHONE_ALREADY_EXISTS
+  # When a user who has already migrated to passwordless login uses this mutation. It should use 'challengeRequestForPasswordlessLogin'
+  USER_ALREADY_USES_PASSWORDLESS
 
-    # Token is not valid
-    UNAUTHORIZED
+  # Token is not valid
+  UNAUTHORIZED
 }
 
 enum ChallengeDemandFailureReason {
-    # When no user exists with the provided 'countryCode-phone'
-    UNKNOWN_PHONE
+  # When no user exists with the provided 'countryCode-phone'
+  UNKNOWN_PHONE
 }
 
 enum ChallengeAnswerFailureReason {
-    # When the provided SMS code is incorrect or the challengeId does not exist.
-    UNAUTHORIZED
-    # Challenge id do not exist for this user
-    UNKNOWN_CHALLENGE_ID
-    # User already answer this challenge and is verified
-    USER_ALREADY_USES_PASSWORDLESS,
+  # When the provided SMS code is incorrect or the challengeId does not exist.
+  UNAUTHORIZED
+  # Challenge id do not exist for this user
+  UNKNOWN_CHALLENGE_ID
+  # User already answer this challenge and is verified
+  USER_ALREADY_USES_PASSWORDLESS,
 
-    INCORRECT_CODE,
-    # When the challengeId that has been provided has already expired
-    EXPIRED_CHALLENGE
-    # When the limit of failures allowed to validate the SMS code has been reached
-    MAX_ATTEMPTS_REACHED
+  INCORRECT_CODE,
+  # When the challengeId that has been provided has already expired
+  EXPIRED_CHALLENGE
+  # When the limit of failures allowed to validate the SMS code has been reached
+  MAX_ATTEMPTS_REACHED
 }
 
 enum RegisterFailureReason {
-    PASSWORD_MISMATCH
-    DUPLICATE_USERNAME
-    INVALID_NAME
-    INVALID_SURNAME
-    INVALID_VERIFICATION_DOCUMENTS
-    MISSING_REQUIRED_VERIFICATION_DOCUMENT
+  PASSWORD_MISMATCH
+  DUPLICATE_USERNAME
+  INVALID_NAME
+  INVALID_SURNAME
+  INVALID_VERIFICATION_DOCUMENTS
+  MISSING_REQUIRED_VERIFICATION_DOCUMENT
 }
 
 enum AuthType {
-    USER
-    ADMIN
+  USER
+  ADMIN
 }
 enum ChangePasswordReason {
-    PASSWORD_MISMATCH
-    # When a user who has already migrated to passwordless login tries to change his password
-    CANNOT_CHANGE_PWD
+  PASSWORD_MISMATCH
+  # When a user who has already migrated to passwordless login tries to change his password
+  CANNOT_CHANGE_PWD
 }
 
 enum ResetPasswordReason {
-    # When a user who has already migrated to passwordless login tries to reset his password
-    CANNOT_CHANGE_PWD
+  # When a user who has already migrated to passwordless login tries to reset his password
+  CANNOT_CHANGE_PWD
 }
 
 enum ConfirmPasswordReason {
-    TOKEN_EXPIRED
-    # When a user who has already migrated to passwordless login tries to confirm his password
-    CANNOT_CHANGE_PWD
+  TOKEN_EXPIRED
+  # When a user who has already migrated to passwordless login tries to confirm his password
+  CANNOT_CHANGE_PWD
 }
 
 enum EntityType {
-    CUSTOMER,
-    USER
+  CUSTOMER,
+  USER
 }
 
 input ChangePasswordInput {
-    currentPassword: String!
-    newPassword: String!
-    accessToken: String!
+  currentPassword: String!
+  newPassword: String!
+  accessToken: String!
 }
 
 input ResetPasswordRequestInput {
-    username: String!
+  username: String!
 }
 
 input ResetPasswordConfirmInput {
-    token: String!
-    password: String!
-    user_id: ID!
+  token: String!
+  password: String!
+  user_id: ID!
 }
 
 input RefreshCredentialsInput {
-    refreshToken: String!
+  refreshToken: String!
 }
 
 input LoginInput {
-    username: String!
-    password: String!
-    site: Site!
+  username: String!
+  password: String!
+  supportLegacy: Boolean
+  site: Site!
 }
 
 input SignedChallengeDemandInput {
-    # International telephone prefix for 'phone'
-    countryCode: String!
-    phone: String!
-    accessToken: String!
+  # International telephone prefix for 'phone'
+  countryCode: String!
+  phone: String!
+  accessToken: String!
 }
 
 input SignedChallengeAnswer {
-    challengeId: String!
-    challengeAnswer: String!
-    accessToken: String!
+  challengeId: String!
+  challengeAnswer: String!
+  accessToken: String!
 }
 
 input ChallengeDemandInput {
-    # International telephone prefix for 'phone'
-    countryCode: String!
-    phone: String!
+  # International telephone prefix for 'phone'
+  countryCode: String!
+  phone: String!
 }
 
 input ChallengeAnswer{
-    challengeId: String!
-    challengeAnswer: String!
+  challengeId: String!
+  challengeAnswer: String!
 }
 
 input PhoneInput {
-    phone: String!
+  phone: String!
 }
 
 type Void {
-    voidReason: VoidReason!
-    entityType: EntityType
-    id: ID
+  voidReason: VoidReason!
+  entityType: EntityType
+  id: ID
 }
 
 type GenericCredentials {
-    username: String!
-    credentials: Credentials!
-    customer: Customer
+  username: String!
+  credentials: Credentials!
+  customer: Customer
+}
+
+type LegacyCredentials {
+  username: String!
+  credentials: Credentials!
+  customer: Customer
 }
 
 # It will be used in the future, when the classic login is no longer available
 type UpgradeRequired {
-    credentials: Credentials!
+  credentials: Credentials!
 }
 
 type Challenge {
-    challengeId: String!
+  challengeId: String!
 }
 
 type LoginFailed {
-    reason: LoginFailureReason!
+  reason: LoginFailureReason!
 }
 
 type SignedChallengeDemandFailed{
@@ -165,60 +172,60 @@ type SignedChallengeDemandFailed{
 }
 
 type ChallengeDemandFailed{
-    reason: ChallengeDemandFailureReason!
+  reason: ChallengeDemandFailureReason!
 }
 
 type ChallengeAnswerFailed {
-    reason: ChallengeAnswerFailureReason!
+  reason: ChallengeAnswerFailureReason!
 }
 
 # When the SMS sending service indicates there have been too many messages for a phone or for an IP
 type TooManyShipments{
-    # Time to wait in seconds
-    waitTime: Int!
+  # Time to wait in seconds
+  waitTime: Int!
 }
 
 type RefreshCredentials {
-    accessToken: String!
-    refreshToken: String!
+  accessToken: String!
+  refreshToken: String!
 }
 
 type Credentials {
-    accessToken: String!
-    refreshToken: String!
-    tokenType: String!
-    scope: String!
-    expiresIn: String!
+  accessToken: String!
+  refreshToken: String!
+  tokenType: String!
+  scope: String!
+  expiresIn: String!
 }
 
 
 type ChangePasswordFailed {
-    reason: ChangePasswordReason!
+  reason: ChangePasswordReason!
 }
 
 type ResetPasswordDemandFailed {
-    reason: ResetPasswordReason!
+  reason: ResetPasswordReason!
 }
 
 type ConfirmPasswordFailed {
-    confirmPasswordReason: ConfirmPasswordReason!
+  confirmPasswordReason: ConfirmPasswordReason!
 }
 
 type UserCredentials {
-    enabled: Boolean
+  enabled: Boolean
 }
 
 type User {
-    id: ID!
-    username: String
-    firstName: String
-    lastName: String
-    acceptWhatsApp: Boolean
-    countryCode: String
-    phone: String
-    email: String
-    credentials: UserCredentials
-    usesPasswordless: Boolean
+  id: ID!
+  username: String
+  firstName: String
+  lastName: String
+  acceptWhatsApp: Boolean
+  countryCode: String
+  phone: String
+  email: String
+  credentials: UserCredentials
+  usesPasswordless: Boolean
 }
 
 
@@ -226,7 +233,7 @@ union ChangePasswordResult = ChangePasswordFailed | Void
 
 union ConfirmPasswordResult = ConfirmPasswordFailed | Void
 
-union LoginResult = LoginFailed | GenericCredentials | UpgradeRequired
+union LoginResult = LoginFailed | GenericCredentials | UpgradeRequired  | LegacyCredentials
 
 union SignedChallengeDemandResult = SignedChallengeDemandFailed | Challenge | TooManyShipments
 
