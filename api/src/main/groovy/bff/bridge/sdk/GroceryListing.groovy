@@ -196,6 +196,7 @@ class FilteringBuilder implements RequestBuilder {
 
     private Closure<ProductQueryRequest> promotionFiltering() {
         ofNullable(tag)
+                .filter { !it.isEmpty() }
                 .map { promotion -> { ProductQueryRequest r -> r.filteredByPromotion(promotion) } }
                 .orElse(identity)
     }
