@@ -266,7 +266,7 @@ class SortingBuilder implements RequestBuilder {
                             )
                             break
                         default:
-                            r
+                            request
                             break
                     }
                 }
