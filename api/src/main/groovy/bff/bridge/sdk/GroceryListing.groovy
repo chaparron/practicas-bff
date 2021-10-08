@@ -157,6 +157,7 @@ class FilteringBuilder implements RequestBuilder {
 
     private Closure<ProductQueryRequest> termFiltering() {
         ofNullable(keyword)
+                .filter { !it.isEmpty() }
                 .map { term ->
                     { ProductQueryRequest r -> r.filteredByTerm(term, Option.empty(), FullText$.MODULE$) }
                 }
