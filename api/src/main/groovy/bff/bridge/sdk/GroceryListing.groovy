@@ -67,6 +67,7 @@ class GroceryListing implements SearchBridge {
                                         .fetchingOptions(50),
                                 { request, builder -> builder.apply(request) }
                         )
+        println(request)
         def response = sdk.query(request.offset(page.offset))
         return new PreviewSearchResultMapper(input, request).map(response)
     }
@@ -110,18 +111,18 @@ class Page {
     Integer size
     Integer offset
 
-    Page(Integer number, Integer size) {
-        this.number = ofNullable(number).orElse(1)
-        this.size = ofNullable(size).orElse(10)
-        this.offset = (this.number - 1) * this.size
-    }
-
     Page(SearchInput input) {
         this(input.page, input.size)
     }
 
     Page(PreviewSearchInput input) {
         this(input.page, input.size)
+    }
+
+    private Page(Integer number, Integer size) {
+        this.number = ofNullable(number).orElse(1)
+        this.size = ofNullable(size).orElse(10)
+        this.offset = (this.number - 1) * this.size
     }
 
 }
@@ -134,28 +135,33 @@ interface RequestBuilder {
 
 class FilteringBuilder implements RequestBuilder {
 
-    String keyword
-    Integer category
-    Integer brand
-    Integer supplier
-    String tag
+    Optional<String> maybeKeyword
+    Optional<Integer> maybeCategory
+    Optional<Integer> maybeBrand
+    Optional<Integer> maybeSupplier
+    Optional<String> maybePromotion
     List<FeatureInput> features
 
     FilteringBuilder(SearchInput input) {
-        this.keyword = input.keyword
-        this.category = input.category
-        this.brand = input.brand
-        this.supplier = input.supplier
-        this.tag = input.tag
-        this.features = input.features
+        this(input.keyword, input.category, input.brand, input.supplier, input.tag, input.features)
     }
 
     FilteringBuilder(PreviewSearchInput input) {
-        this.keyword = input.keyword
-        this.category = input.category
-        this.brand = input.brand
-        this.tag = input.tag
-        this.features = input.features
+        this(input.keyword, input.category, input.brand, null, input.tag, input.features)
+    }
+
+    private FilteringBuilder(String keyword,
+                             Integer category,
+                             Integer brand,
+                             Integer supplier,
+                             String promotion,
+                             List<FeatureInput> features) {
+        this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }
+        this.maybeCategory = ofNullable(category)
+        this.maybeBrand = ofNullable(brand)
+        this.maybeSupplier = ofNullable(supplier)
+        this.maybePromotion = ofNullable(promotion).filter { !it.isEmpty() }
+        this.features = features
     }
 
     ProductQueryRequest apply(ProductQueryRequest request) {
@@ -174,8 +180,7 @@ class FilteringBuilder implements RequestBuilder {
     private def identity = { ProductQueryRequest r -> r }
 
     private Closure<ProductQueryRequest> termFiltering() {
-        ofNullable(keyword)
-                .filter { !it.isEmpty() }
+        maybeKeyword
                 .map { term ->
                     { ProductQueryRequest r -> r.filteredByTerm(term, Option.empty(), FullText$.MODULE$) }
                 }
@@ -183,7 +188,7 @@ class FilteringBuilder implements RequestBuilder {
     }
 
     private Closure<ProductQueryRequest> categoryFiltering() {
-        ofNullable(category)
+        maybeCategory
                 .map { category ->
                     { ProductQueryRequest r ->
                         r.filteredByCategory(category.toString(), asScala([] as List<String>).toSeq())
@@ -193,7 +198,7 @@ class FilteringBuilder implements RequestBuilder {
     }
 
     private Closure<ProductQueryRequest> brandFiltering() {
-        ofNullable(brand)
+        maybeBrand
                 .map { brand ->
                     { ProductQueryRequest r ->
                         r.filteredByBrand(brand.toString(), asScala([] as List<String>).toSeq())
@@ -203,7 +208,7 @@ class FilteringBuilder implements RequestBuilder {
     }
 
     private Closure<ProductQueryRequest> supplierFiltering() {
-        ofNullable(supplier)
+        maybeSupplier
                 .map { supplier ->
                     { ProductQueryRequest r ->
                         r.filteredBySupplier(supplier.toString(), asScala([] as List<String>).toSeq())
@@ -213,8 +218,7 @@ class FilteringBuilder implements RequestBuilder {
     }
 
     private Closure<ProductQueryRequest> promotionFiltering() {
-        ofNullable(tag)
-                .filter { !it.isEmpty() }
+        maybePromotion
                 .map { promotion -> { ProductQueryRequest r -> r.filteredByPromotion(promotion) } }
                 .orElse(identity)
     }
@@ -231,58 +235,43 @@ class FilteringBuilder implements RequestBuilder {
 
 class SortingBuilder implements RequestBuilder {
 
-    String maybeSort
-    SortInput maybeDirection
-    String maybeKeyword
+    Optional<String> maybeSort
+    Optional<SortInput> maybeDirection
+    Optional<String> maybeKeyword
 
     SortingBuilder(SearchInput input) {
-        this.maybeSort = input.sort
-        this.maybeDirection = input.sortDirection
-        this.maybeKeyword = input.keyword
+        this(input.sort, input.sortDirection, input.keyword)
     }
 
     SortingBuilder(PreviewSearchInput input) {
-        this.maybeSort = input.sort
-        this.maybeDirection = input.sortDirection
-        this.maybeKeyword = input.keyword
+        this(input.sort, input.sortDirection, input.keyword)
+    }
+
+    private SortingBuilder(String sort,
+                           SortInput direction,
+                           String keyword) {
+        this.maybeSort = ofNullable(sort).filter { !it.isEmpty() }
+        this.maybeDirection = ofNullable(direction)
+        this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }
     }
 
     ProductQueryRequest apply(ProductQueryRequest request) {
-        ofNullable(maybeSort)
+        maybeSort
                 .map { sort ->
                     switch (sort) {
                         case "DEFAULT":
+                            maybeKeyword
+                                    .map { sortedByRelevance(request) }
+                                    .orElse(sortedAlphabetically(request))
+                            break
                         case "TITLE":
-                            request.sortedAlphabetically(
-                                    ofNullable(maybeDirection).map { direction ->
-                                        switch (direction) {
-                                            case DESC:
-                                                false
-                                                break
-                                            default:
-                                                true
-                                                break
-                                        }
-                                    }.orElse(true),
-                                    Option.empty()
-                            )
+                            sortedAlphabetically(request)
                             break
                         case "RECENT":
-                            request.sortedByLastAvailabilityUpdate()
+                            sortedByLastAvailabilityUpdate(request)
                             break
                         case "PRICE":
-                            request.sortedByUnitPrice(
-                                    ofNullable(maybeDirection).map { direction ->
-                                        switch (direction) {
-                                            case DESC:
-                                                false
-                                                break
-                                            default:
-                                                true
-                                                break
-                                        }
-                                    }.orElse(true)
-                            )
+                            sortedByUnitPrice(request)
                             break
                         default:
                             request
@@ -290,10 +279,47 @@ class SortingBuilder implements RequestBuilder {
                     }
                 }
                 .map { Optional.of(it) }
-                .orElseGet {
-                    ofNullable(maybeKeyword).map { request.sortedByRelevance() }
-                }
+                .orElseGet { maybeKeyword.map { sortedByRelevance(request) } }
                 .orElse(request)
+    }
+
+    private static ProductQueryRequest sortedByRelevance(ProductQueryRequest request) {
+        request.sortedByRelevance()
+    }
+
+    private static ProductQueryRequest sortedByLastAvailabilityUpdate(ProductQueryRequest request) {
+        request.sortedByLastAvailabilityUpdate()
+    }
+
+    private ProductQueryRequest sortedByUnitPrice(ProductQueryRequest request) {
+        request.sortedByUnitPrice(
+                maybeDirection.map { direction ->
+                    switch (direction) {
+                        case DESC:
+                            false
+                            break
+                        default:
+                            true
+                            break
+                    }
+                }.orElse(true)
+        )
+    }
+
+    private ProductQueryRequest sortedAlphabetically(ProductQueryRequest request) {
+        request.sortedAlphabetically(
+                maybeDirection.map { direction ->
+                    switch (direction) {
+                        case DESC:
+                            false
+                            break
+                        default:
+                            true
+                            break
+                    }
+                }.orElse(true),
+                Option.empty()
+        )
     }
 
 }
