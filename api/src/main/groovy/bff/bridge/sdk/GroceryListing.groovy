@@ -26,8 +26,10 @@ class GroceryListing implements SearchBridge {
 
     @Override
     SearchResponse searchV2(SearchInput input) {
+        def page = new Page(input)
         def customer = customerBridge.myProfile(input.accessToken)
         def deliveryAddress = customer.preferredDeliveryAddress()
+
         def request =
                 [new FilteringBuilder(input), new SortingBuilder(input)]
                         .inject(
@@ -36,7 +38,7 @@ class GroceryListing implements SearchBridge {
                                         Option.apply(customer.country_id)
                                 )
                                         .forCustomer(customer.id.toString(), customer.customerType.code)
-                                        .sized(input.size)
+                                        .sized(page.size)
                                         .aggregatedByBrands(10)
                                         .aggregatedByCategories(1, true)
                                         .aggregatedBySuppliers(10)
@@ -44,15 +46,13 @@ class GroceryListing implements SearchBridge {
                                         .fetchingOptions(50),
                                 { request, builder -> builder.apply(request) }
                         )
-
-        def response = sdk.query(
-                request.offset((ofNullable(input.page).orElse(1) - 1) * input.size)
-        )
+        def response = sdk.query(request.offset(page.offset))
         return new SearchResultMapper(input, request).map(response)
     }
 
     @Override
     SearchResponse previewSearch(PreviewSearchInput input) {
+        def page = new Page(input)
         def request =
                 [new FilteringBuilder(input), new SortingBuilder(input)]
                         .inject(
@@ -60,17 +60,14 @@ class GroceryListing implements SearchBridge {
                                         new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
                                         Option.apply(input.countryId)
                                 )
-                                        .sized(input.size)
+                                        .sized(page.size)
                                         .aggregatedByBrands(10)
                                         .aggregatedByCategories(1, true)
                                         .aggregatedByFeatures()
                                         .fetchingOptions(50),
                                 { request, builder -> builder.apply(request) }
                         )
-
-        def response = sdk.query(
-                request.offset((ofNullable(input.page).orElse(1) - 1) * input.size)
-        )
+        def response = sdk.query(request.offset(page.offset))
         return new PreviewSearchResultMapper(input, request).map(response)
     }
 
@@ -88,7 +85,6 @@ class GroceryListing implements SearchBridge {
                         .fetchingCategories(5, ByRelevance$.MODULE$)
                         .fetchingSuppliers(5, ByRelevance$.MODULE$)
                         .forCustomer(customer.id.toString(), customer.customerType.code)
-
         def response = sdk.query(request)
         new Suggestions(
                 products: asJava(response.products()).collect {
@@ -104,6 +100,28 @@ class GroceryListing implements SearchBridge {
                     new SuggestedSupplier(id: it.id().toInteger(), name: it.name())
                 }
         )
+    }
+
+}
+
+class Page {
+
+    Integer number
+    Integer size
+    Integer offset
+
+    Page(Integer number, Integer size) {
+        this.number = ofNullable(number).orElse(1)
+        this.size = ofNullable(size).orElse(10)
+        this.offset = (this.number - 1) * this.size
+    }
+
+    Page(SearchInput input) {
+        this(input.page, input.size)
+    }
+
+    Page(PreviewSearchInput input) {
+        this(input.page, input.size)
     }
 
 }
@@ -670,8 +688,8 @@ class SearchResultMapper extends ResponseMapper {
         new SearchResult(
                 header: new Header(
                         total: response.total().toInteger(),
-                        pageSize: input.size,
-                        currentPage: ofNullable(input.page).orElse(1)
+                        pageSize: request.size(),
+                        currentPage: new Page(input).number
                 ),
                 sort: sort(),
                 breadcrumb: breadCrumb(response),
@@ -696,8 +714,8 @@ class PreviewSearchResultMapper extends ResponseMapper {
         new PreviewSearchResult(
                 header: new Header(
                         total: response.total().toInteger(),
-                        pageSize: input.size,
-                        currentPage: ofNullable(input.page).orElse(1)
+                        pageSize: request.size(),
+                        currentPage: new Page(input).number
                 ),
                 sort: sort(),
                 breadcrumb: breadCrumb(response),
