@@ -48,8 +48,6 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
     }
 
     protected void handleError(ClientHttpResponse response, HttpStatus statusCode) throws IOException {
-        def innerResponse = response.body.with { new JsonSlurper().parse(it) }
-
         switch (statusCode.series()) {
             case HttpStatus.Series.CLIENT_ERROR:
 
@@ -59,6 +57,7 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
 
 
                 } else if (statusCode == HttpStatus.BAD_REQUEST) {
+                    def innerResponse = response.body.with { new JsonSlurper().parse(it) }
                     BadRequestErrorException badRequestErrorException = new BadRequestErrorException(response.getStatusText(), new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
                         response.getHeaders(), getResponseBody(response), getCharset(response)))
 
@@ -85,6 +84,7 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
                     throw badRequestErrorException
 
                 } else if (statusCode == HttpStatus.CONFLICT) {
+                    def innerResponse = response.body.with { new JsonSlurper().parse(it) }
                     ConflictErrorException conflictErrorException = new ConflictErrorException(response.getStatusText(), new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
                         response.getHeaders(), getResponseBody(response), getCharset(response)))
 
@@ -94,12 +94,14 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
                     }
                     throw conflictErrorException
                 } else if (statusCode == HttpStatus.NOT_FOUND) {
+                    def innerResponse = response.body.with { new JsonSlurper().parse(it) }
                     EntityNotFoundException entityNotFoundException = new EntityNotFoundException(response.getStatusText(), new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
                         response.getHeaders(), getResponseBody(response), getCharset(response)))
                     entityNotFoundException.innerResponse = innerResponse?.error
                     throw entityNotFoundException
 
                 } else if (statusCode == HttpStatus.UNSUPPORTED_MEDIA_TYPE) {
+                    def innerResponse = response.body.with { new JsonSlurper().parse(it) }
                     NotAcceptableException notAcceptableException = new NotAcceptableException(response.getStatusText(),
                             new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
                             response.getHeaders(), getResponseBody(response), getCharset(response)))
