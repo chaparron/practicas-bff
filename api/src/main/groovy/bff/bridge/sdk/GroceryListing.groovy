@@ -10,7 +10,7 @@ import static bff.model.SortInput.DESC
 import static java.util.Optional.ofNullable
 import static scala.jdk.javaapi.CollectionConverters.asJava
 import static scala.jdk.javaapi.CollectionConverters.asScala
-import static scala.jdk.javaapi.OptionConverters.toJava
+import static scala.jdk.javaapi.OptionConverters.*
 import static wabi2b.grocery.listing.sdk.ProductQueryRequest.availableProductsIn
 import static wabi2b.grocery.listing.sdk.SuggestionQueryRequestBuilder.availableSuggestionsIn
 
@@ -67,7 +67,6 @@ class GroceryListing implements SearchBridge {
                                         .fetchingOptions(50),
                                 { request, builder -> builder.apply(request) }
                         )
-        println(request)
         def response = sdk.query(request.offset(page.offset))
         return new PreviewSearchResultMapper(input, request).map(response)
     }
@@ -76,15 +75,24 @@ class GroceryListing implements SearchBridge {
         def customer = customerBridge.myProfile(input.accessToken)
         def deliveryAddress = customer.preferredDeliveryAddress()
         def request =
-                availableSuggestionsIn(
-                        new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
-                        Option.apply(customer.country_id)
+                ([
+                        input.maybeProducts.map { { b -> b.fetchingProducts(it, ByRelevance$.MODULE$) } },
+                        input.maybeCategories.map { { b -> b.fetchingCategories(it, ByRelevance$.MODULE$) } },
+                        input.maybeBrands.map { { b -> b.fetchingBrands(it, ByRelevance$.MODULE$) } },
+                        input.maybeSuppliers.map { { b -> b.fetchingSuppliers(it, ByRelevance$.MODULE$) } }
+                ]
+                        .collect { it.orElse({ r -> r }) }
+                        .inject(
+                                availableSuggestionsIn(
+                                        new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
+                                        Option.apply(customer.country_id)
+                                ).forTerm(
+                                        input.keyword,
+                                        toScala(ofNullable(input.languageTag).map { it.language })
+                                ),
+                                { request, builder -> builder(request) }
+                        ) as SuggestionQueryRequest
                 )
-                        .forTerm(input.keyword, Option.empty())
-                        .fetchingProducts(5, ByRelevance$.MODULE$)
-                        .fetchingBrands(5, ByRelevance$.MODULE$)
-                        .fetchingCategories(5, ByRelevance$.MODULE$)
-                        .fetchingSuppliers(5, ByRelevance$.MODULE$)
                         .forCustomer(customer.id.toString(), customer.customerType.code)
         def response = sdk.query(request)
         new Suggestions(

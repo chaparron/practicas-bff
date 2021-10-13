@@ -206,6 +206,10 @@ type Mutation {
   unmarkProductAsFavorite(input: ProductToUnmarkAsFavoriteInput): Void!
 }
 
+scalar NonEmptyString
+scalar LanguageTag
+scalar NonNegIntLessThan10
+
 input CustomerRateSupplierInput {
   accessToken: String!
   supplierOrderId: Int!,

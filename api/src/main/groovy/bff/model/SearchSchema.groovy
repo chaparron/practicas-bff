@@ -3,6 +3,11 @@ package bff.model
 import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import sun.util.locale.LanguageTag
+
+import static java.util.Optional.empty
+import static java.util.Optional.of
+import static java.util.Optional.ofNullable
 
 interface ProductResult {}
 
@@ -43,10 +48,28 @@ class PreviewSearchResult implements SearchResponse {
 }
 
 class Suggestions {
-    List<SuggestedProduct> products
-    List<SuggestedBrand> brands
-    List<SuggestedCategory> categories
-    List<SuggestedSupplier> suppliers
+
+    private List<SuggestedProduct> products
+    private List<SuggestedBrand> brands
+    private List<SuggestedCategory> categories
+    private List<SuggestedSupplier> suppliers
+
+    List<SuggestedProduct> products(Integer size) {
+        this.products.take(size)
+    }
+
+    List<SuggestedBrand> brands(Integer size) {
+        this.brands.take(size)
+    }
+
+    List<SuggestedCategory> categories(Integer size) {
+        this.categories.take(size)
+    }
+
+    List<SuggestedSupplier> suppliers(Integer size) {
+        this.suppliers.take(size)
+    }
+
 }
 
 class SuggestedProduct {
@@ -140,8 +163,35 @@ class SearchInput {
 }
 
 class SuggestInput {
+
     String accessToken
     String keyword
+    LanguageTag languageTag
+    Optional<Integer> maybeProducts = empty()
+    Optional<Integer> maybeBrands = empty()
+    Optional<Integer> maybeCategories = empty()
+    Optional<Integer> maybeSuppliers = empty()
+
+    def forProducts(Integer size) {
+        this.maybeProducts = of(size)
+        return this
+    }
+
+    def forBrands(Integer size) {
+        this.maybeBrands = of(size)
+        return this
+    }
+
+    def forCategories(Integer size) {
+        this.maybeCategories = of(size)
+        return this
+    }
+
+    def forSuppliers(Integer size) {
+        this.maybeSuppliers = of(size)
+        return this
+    }
+
 }
 
 class FeatureInput {

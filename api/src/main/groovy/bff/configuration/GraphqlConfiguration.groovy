@@ -11,13 +11,19 @@ import graphql.execution.instrumentation.parameters.*
 import graphql.execution.instrumentation.tracing.TracingInstrumentation
 import graphql.execution.instrumentation.tracing.TracingSupport
 import graphql.language.Document
+import graphql.language.IntValue
 import graphql.language.OperationDefinition
+import graphql.language.StringValue
+import graphql.schema.*
 import graphql.validation.ValidationError
 import groovy.util.logging.Slf4j
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import sun.util.locale.LanguageTag
 
 import java.util.concurrent.CompletableFuture
+
+import static java.util.Optional.of
 
 @Configuration
 @Slf4j
@@ -135,5 +141,175 @@ class GraphqlConfiguration {
             }
         }
     }
+
+    @Bean
+    GraphQLScalarType nonEmptyString() {
+        Scalars.nonEmptyString
+    }
+
+    @Bean
+    GraphQLScalarType languageTag() {
+        Scalars.languageTag
+    }
+
+    @Bean
+    GraphQLScalarType nonNegIntLessThan10() {
+        Scalars.nonNegIntLessThan10
+    }
+
+}
+
+class Scalars {
+
+    public static final GraphQLScalarType nonEmptyString =
+            GraphQLScalarType
+                    .newScalar()
+                    .name("NonEmptyString")
+                    .description("Built-in Non Empty String")
+                    .coercing(
+                            new Coercing<String, String>() {
+                                @Override
+                                String serialize(Object input) {
+                                    try {
+                                        return convert(input)
+                                    }
+                                    catch (IllegalArgumentException ignored) {
+                                        throw new CoercingSerializeException("Expected a Non Empty String but was '$input'.")
+                                    }
+                                }
+
+                                @Override
+                                String parseValue(Object input) {
+                                    try {
+                                        return convert(input)
+                                    }
+                                    catch (IllegalArgumentException ignored) {
+                                        throw new CoercingParseValueException("Expected a Non Empty String but was '$input'.")
+                                    }
+                                }
+
+                                @Override
+                                String parseLiteral(Object input) {
+                                    if (!(input instanceof StringValue)) {
+                                        throw new CoercingParseLiteralException("Expected AST type 'StringValue' but was '${input.class.simpleName}'.")
+                                    }
+                                    try {
+                                        return convert(input)
+                                    }
+                                    catch (IllegalArgumentException ignored) {
+                                        throw new CoercingParseLiteralException("Expected a Non Empty String but was '$input'.")
+                                    }
+                                }
+
+                                private String convert(input) {
+                                    def value = input.toString()
+                                    if (value.trim().isEmpty()) throw new IllegalArgumentException()
+                                    return value
+                                }
+                            }
+                    )
+                    .build()
+
+    public static final GraphQLScalarType languageTag =
+            GraphQLScalarType
+                    .newScalar()
+                    .name("LanguageTag")
+                    .description("Built-in IETF BCP 47 language tag")
+                    .coercing(
+                            new Coercing<LanguageTag, LanguageTag>() {
+                                @Override
+                                LanguageTag serialize(Object input) {
+                                    try {
+                                        return convert(input)
+                                    }
+                                    catch (IllegalArgumentException ignored) {
+                                        throw new CoercingSerializeException("Expected a Language-Tag but was '$input'.")
+                                    }
+                                }
+
+                                @Override
+                                LanguageTag parseValue(Object input) {
+                                    try {
+                                        return convert(input)
+                                    }
+                                    catch (IllegalArgumentException ignored) {
+                                        throw new CoercingParseValueException("Expected a Language-Tag but was '$input'.")
+                                    }
+                                }
+
+                                @Override
+                                LanguageTag parseLiteral(Object input) {
+                                    if (!(input instanceof StringValue)) {
+                                        throw new CoercingParseLiteralException("Expected AST type 'StringValue' but was '${input.class.simpleName}'.")
+                                    }
+                                    try {
+                                        return convert(((StringValue) input).getValue())
+                                    }
+                                    catch (IllegalArgumentException ignored) {
+                                        throw new CoercingParseLiteralException("Expected a Language-Tag but was '$input'.")
+                                    }
+                                }
+
+                                private LanguageTag convert(input) {
+                                    of(LanguageTag.parse(input.toString(), null))
+                                            .filter { !it.toString().trim().isEmpty() }
+                                            .orElseThrow { throw new IllegalArgumentException() }
+                                }
+                            }
+                    )
+                    .build()
+
+    public static final GraphQLScalarType nonNegIntLessThan10 =
+            GraphQLScalarType
+                    .newScalar()
+                    .name("NonNegIntLessThan10")
+                    .description("Built-in non negative integer less than 10")
+                    .coercing(
+                            new Coercing<Integer, Integer>() {
+                                @Override
+                                Integer serialize(Object input) {
+                                    try {
+                                        return convert(input)
+                                    }
+                                    catch (IllegalArgumentException ignored) {
+                                        throw new CoercingSerializeException("Expected a NonNegIntLessThan10 but was '$input'.")
+                                    }
+                                }
+
+                                @Override
+                                Integer parseValue(Object input) {
+                                    try {
+                                        return convert(input)
+                                    }
+                                    catch (IllegalArgumentException ignored) {
+                                        throw new CoercingParseValueException("Expected a NonNegIntLessThan10 but was '$input'.")
+                                    }
+                                }
+
+                                @Override
+                                Integer parseLiteral(Object input) {
+                                    if (!(input instanceof IntValue)) {
+                                        throw new CoercingParseLiteralException("Expected AST type 'IntValue' but was '${input.class.simpleName}'.")
+                                    }
+                                    try {
+                                        return convert(((IntValue) input).getValue())
+                                    }
+                                    catch (IllegalArgumentException ignored) {
+                                        throw new CoercingParseLiteralException("Expected a Language-Tag but was '$input'.")
+                                    }
+                                }
+
+                                private Integer convert(input) {
+                                    try {
+                                        def number = (input as Integer)
+                                        if (number < 1 || number > 10) throw new IllegalArgumentException()
+                                        return number
+                                    } catch (ClassCastException ignored) {
+                                        throw new IllegalAccessException()
+                                    }
+                                }
+                            }
+                    )
+                    .build()
 
 }

@@ -29,8 +29,9 @@ input PreviewSearchInput {
 }
 
 input SuggestInput {
-  accessToken: String!,
-  keyword: String!,
+  accessToken: NonEmptyString!,
+  keyword: NonEmptyString!,
+  languageTag: LanguageTag
 }
 
 input FeatureInput {
@@ -78,30 +79,30 @@ type PreviewSearchResult {
 }
 
 type Suggestions {
-  products: [SuggestedProduct!]!
-  brands: [SuggestedBrand!]!
-  categories: [SuggestedCategory!]!
-  suppliers: [SuggestedSupplier!]!
+  products(size: NonNegIntLessThan10!): [SuggestedProduct!]!
+  brands(size: NonNegIntLessThan10!): [SuggestedBrand!]!
+  categories(size: NonNegIntLessThan10!): [SuggestedCategory!]!
+  suppliers(size: NonNegIntLessThan10!): [SuggestedSupplier!]!
 }
 
 type SuggestedProduct {
   id: Int!
-  name: String!
+  name: NonEmptyString!
 }
 
 type SuggestedBrand {
   id: Int!
-  name: String!
+  name: NonEmptyString!
 }
 
 type SuggestedCategory {
   id: Int!
-  name: String!
+  name: NonEmptyString!
 }
 
 type SuggestedSupplier {
   id: Int!
-  name: String!
+  name: NonEmptyString!
 }
 
 type Filter{
