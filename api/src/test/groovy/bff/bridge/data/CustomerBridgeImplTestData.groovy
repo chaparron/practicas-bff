@@ -15,9 +15,12 @@ import bff.model.Language
 import bff.model.LegalDocumentInformation
 import bff.model.LegalUrl
 import bff.model.LegalUrlType
+import bff.model.TimestampOutput
 import bff.model.User
 import bff.model.WabiPay
 import bff.model.WorkingDays
+
+import java.time.Instant
 
 abstract class CustomerBridgeImplTestData {
     protected static final Customer CUSTOMER = new Customer(
@@ -27,7 +30,7 @@ abstract class CustomerBridgeImplTestData {
             legalId: "legalId",
             linePhone: "linePhone",
             customerStatus: CustomerStatus.APPROVED,
-            user: new User(id: 2),
+            user: new User(id: 2, created: new TimestampOutput(Instant.now().toString())),
             smsVerification: false,
             emailVerification: true,
             workingDays: new WorkingDays(days: [new Day(dayIndex: 0, selected: true)], hours: [new HourRange(from: "from 1", to: "to 1")]),

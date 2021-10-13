@@ -226,6 +226,7 @@ type User {
   email: String
   credentials: UserCredentials
   usesPasswordless: Boolean
+  created: TimestampOutput
 }
 
 

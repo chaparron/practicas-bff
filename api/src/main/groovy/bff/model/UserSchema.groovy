@@ -32,6 +32,7 @@ class User {
     String email
     UserCredentials credentials
     Boolean usesPasswordless
+    TimestampOutput created
 }
 
 class UserCredentials {
