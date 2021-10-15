@@ -195,7 +195,7 @@ class AuthServerBridgeImpl implements AuthServerBridge {
                     )
                     , Boolean).body
         } catch (BadRequestErrorException exception) {
-            throw new RuntimeException((String) exception.innerResponse)
+            throw new SilentException((String) exception.innerResponse)
         }
     }
 

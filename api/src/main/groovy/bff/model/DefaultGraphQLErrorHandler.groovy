@@ -41,6 +41,14 @@ class DefaultGraphQLErrorHandler implements GraphQLErrorHandler {
         unwrap(error.exception, error)
     }
 
+    /**
+     * When silent exception is thrown, the call to NewRelic is not made.
+     * This error must be always be thrown.
+     */
+    private List<GraphQLError> unwrap(SilentException cause, ExceptionWhileDataFetching error) {
+        [GenericError.exposeGenericError(cause, error)]
+    }
+
 
     private List<GraphQLError> unwrap(Throwable cause, ExceptionWhileDataFetching error) {
         NewRelic.noticeError(cause)

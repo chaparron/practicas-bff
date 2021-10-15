@@ -14,6 +14,12 @@ class InvalidPassword extends RuntimeException {}
 class CurrentPasswordMismatch extends RuntimeException {}
 
 
+
+// when throwing this exceptions the new relic call is omitted
+@InheritConstructors
+class SilentException extends  RuntimeException {
+}
+
 @InheritConstructors
 class UsernameRegistrationException extends RuntimeException {
     UsernameRegistrationReason reason
