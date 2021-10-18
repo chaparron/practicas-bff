@@ -201,10 +201,10 @@ type Mutation {
 
   acceptTc(input: AcceptTcInput!): Void!
 
-  ## Mock Implemented
+  # Mock Implemented - Developing Feature
   markProductAsFavorite(input: FavoriteProductInput): Boolean!
 
-  ## Mock Implemented
+  # Mock Implemented - Developing Feature
   unmarkFavoriteProduct(input: FavoriteProductInput): Boolean!
 }
 
