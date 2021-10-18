@@ -3,6 +3,7 @@ package bff.bridge.http
 import bff.bridge.RecommendedOrderBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.CacheConfigurationProperties
+import bff.model.FavoriteProductInput
 import bff.model.FavoriteProductResult
 import bff.model.FrequentProductResult
 import bff.model.GetFavoriteProductsInput
@@ -13,7 +14,9 @@ import bff.model.Void
 import com.github.benmanes.caffeine.cache.CacheLoader
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
+import com.sun.org.apache.xpath.internal.operations.Bool
 import groovy.util.logging.Slf4j
+import org.apache.el.parser.BooleanNode
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.ParameterizedTypeReference
@@ -42,6 +45,8 @@ class RecommendedOrderBridgeImpl implements RecommendedOrderBridge{
 
     private LoadingCache<String, List<FavoriteProductResult>> favoritesCache
 
+    private final static String FAVORITE_PRODUCTS = "favoriteproducts"
+
     @PostConstruct
     void init(){
         favoritesCache = Caffeine.newBuilder()
@@ -62,6 +67,19 @@ class RecommendedOrderBridgeImpl implements RecommendedOrderBridge{
         favoritesCache.get(getFavoriteProductsInput.accessToken)
     }
 
+    @Override
+    Boolean markProductAsFavorite(FavoriteProductInput favoriteProductInput) {
+        favoriteProductMock(favoriteProductInput)
+    }
+
+    @Override
+    Boolean unmarkFavoriteProduct(FavoriteProductInput favoriteProductInput) {
+        favoriteProductMock(favoriteProductInput)
+    }
+
+    private static Boolean favoriteProductMock(FavoriteProductInput favoriteProductInput) {
+        favoriteProductInput.productId
+    }
 
     private List<FavoriteProductResult> getUncachedFavoriteProducts(String accessToken) {
         URI uri = UriComponentsBuilder.fromUri(apiGatewayUrl.resolve("favoriteproducts"))
@@ -80,8 +98,7 @@ class RecommendedOrderBridgeImpl implements RecommendedOrderBridge{
             throw new UnsupportedOperationException("Get Favorite Products  - Backend Error", badRequestException)
         }
     }
-
-    @Override
+    
     Void markProductAsFavorite(ProductToMarkAsFavoriteInput productToMarkAsFavoriteInput) {
         URI uri = UriComponentsBuilder.fromUri(apiGatewayUrl.resolve("favoriteproducts"))
                 .toUriString().toURI()
@@ -101,7 +118,6 @@ class RecommendedOrderBridgeImpl implements RecommendedOrderBridge{
         }
     }
 
-    @Override
     Void unmarkProductAsFavorite(ProductToUnmarkAsFavoriteInput productToUnmarkAsFavoriteInput) {
         URI uri = UriComponentsBuilder.fromUri(apiGatewayUrl.resolve("favoriteproducts/${productToUnmarkAsFavoriteInput.productId}"))
                 .toUriString().toURI()

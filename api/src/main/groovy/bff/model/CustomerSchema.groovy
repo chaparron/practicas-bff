@@ -460,6 +460,11 @@ class FavoriteProductResult {
     String categoryTitle
 }
 
+class FavoriteProductInput {
+    Long productId
+    String accessToken
+}
+
 class ProductToMarkAsFavoriteInput {
     String accessToken
     Long productId

@@ -334,12 +334,12 @@ class Mutation implements GraphQLMutationResolver {
         customerBridge.acceptTc(input)
     }
 
-    Void markProductAsFavorite(ProductToMarkAsFavoriteInput productToMarkAsFavoriteInput) {
-        recommendedOrderBridge.markProductAsFavorite(productToMarkAsFavoriteInput)
+    Boolean markProductAsFavorite(FavoriteProductInput favoriteProductInput) {
+        recommendedOrderBridge.markProductAsFavorite(favoriteProductInput)
     }
 
-    Void unmarkProductAsFavorite(ProductToUnmarkAsFavoriteInput productToUnmarkAsFavoriteInput) {
-        recommendedOrderBridge.unmarkProductAsFavorite(productToUnmarkAsFavoriteInput)
+    Boolean unmarkFavoriteProduct(FavoriteProductInput favoriteProductInput) {
+        recommendedOrderBridge.unmarkFavoriteProduct(favoriteProductInput)
     }
 
     private LoginResult resolveCredentialsResponse(Credentials credentials, Boolean deviceSupportLegacy) {

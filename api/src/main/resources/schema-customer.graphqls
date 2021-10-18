@@ -381,17 +381,8 @@ type FavoriteProductResult {
     categoryTitle: String!
 }
 
-input ProductToMarkAsFavoriteInput {
+input FavoriteProductInput {
     accessToken: String!
-    productId: Int!,
-    productEan: String,
-    productImageId: String,
-    productTitle: String!,
-    categoryTitle: String!
-}
-
-input ProductToUnmarkAsFavoriteInput{
-    accessToken: String!
-    productId: Int!,
+    productId: ID!,
 }
 

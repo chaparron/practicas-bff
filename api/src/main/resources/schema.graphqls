@@ -201,9 +201,11 @@ type Mutation {
 
   acceptTc(input: AcceptTcInput!): Void!
 
-  markProductAsFavorite(input: ProductToMarkAsFavoriteInput): Void!
+  ## Mock Implemented
+  markProductAsFavorite(input: FavoriteProductInput): Boolean!
 
-  unmarkProductAsFavorite(input: ProductToUnmarkAsFavoriteInput): Void!
+  ## Mock Implemented
+  unmarkFavoriteProduct(input: FavoriteProductInput): Boolean!
 }
 
 scalar NonEmptyString
