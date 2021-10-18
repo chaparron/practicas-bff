@@ -261,7 +261,6 @@ class ProductSearch implements ProductResult {
     List<Feature> features
     List<Image> images
     List<Display> displays
-    TimestampOutput created
     Manufacturer manufacturer
     List<Price> prices
     Price priceFrom

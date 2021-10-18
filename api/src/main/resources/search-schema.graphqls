@@ -170,7 +170,6 @@ type ProductSearch {
     description: String
     images: [Image]!
     displays: [Display]
-    created: TimestampOutput!
     manufacturer: Manufacturer
     prices: [Price]
     title: String
