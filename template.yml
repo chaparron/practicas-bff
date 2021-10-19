@@ -54,7 +54,7 @@ Resources:
     Type: AWS::ElasticBeanstalk::Environment
     Properties:
       ApplicationName: !Ref BeanstalkApplication
-      EnvironmentName: !Sub '${EnvironmentStackName}-wabi2b-bff-env-linux2'
+      EnvironmentName: !Sub '${EnvironmentStackName}-wabi2b-bff-env'
       SolutionStackName: 64bit Amazon Linux 2 v3.2.6 running Corretto 11
       OptionSettings:
 
