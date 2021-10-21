@@ -367,7 +367,9 @@ abstract class ResponseMapper {
                     minUnitsPrice: prices.min { it.minUnits },
                     highlightedPrice: prices.min { it.unitValue },
                     title: it.name().defaultEntry(),
-                    country_id: it.manufacturer().country()
+                    country_id: it.manufacturer().country(),
+                    // TODO add mapping
+                    favorite: false
             )
         }
     }
