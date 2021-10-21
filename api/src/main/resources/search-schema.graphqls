@@ -79,10 +79,10 @@ type PreviewSearchResult {
 }
 
 type Suggestions {
-  products(size: NonNegIntLessThan10!): [SuggestedProduct!]!
-  brands(size: NonNegIntLessThan10!): [SuggestedBrand!]!
-  categories(size: NonNegIntLessThan10!): [SuggestedCategory!]!
-  suppliers(size: NonNegIntLessThan10!): [SuggestedSupplier!]!
+  products(size: PosIntEqualsOrLessThan10!): [SuggestedProduct!]!
+  brands(size: PosIntEqualsOrLessThan10!): [SuggestedBrand!]!
+  categories(size: PosIntEqualsOrLessThan10!): [SuggestedCategory!]!
+  suppliers(size: PosIntEqualsOrLessThan10!): [SuggestedSupplier!]!
 }
 
 type SuggestedProduct {

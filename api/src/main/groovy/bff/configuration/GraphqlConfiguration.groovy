@@ -153,8 +153,8 @@ class GraphqlConfiguration {
     }
 
     @Bean
-    GraphQLScalarType nonNegIntLessThan10() {
-        Scalars.nonNegIntLessThan10
+    GraphQLScalarType posIntEqualsOrLessThan10() {
+        Scalars.posIntEqualsOrLessThan10
     }
 
 }
@@ -259,11 +259,11 @@ class Scalars {
                     )
                     .build()
 
-    public static final GraphQLScalarType nonNegIntLessThan10 =
+    public static final GraphQLScalarType posIntEqualsOrLessThan10 =
             GraphQLScalarType
                     .newScalar()
-                    .name("NonNegIntLessThan10")
-                    .description("Built-in non negative integer less than 10")
+                    .name("PosIntEqualsOrLessThan10")
+                    .description("Built-in positive integer less than 10")
                     .coercing(
                             new Coercing<Integer, Integer>() {
                                 @Override
@@ -272,7 +272,7 @@ class Scalars {
                                         return convert(input)
                                     }
                                     catch (IllegalArgumentException ignored) {
-                                        throw new CoercingSerializeException("Expected a NonNegIntLessThan10 but was '$input'.")
+                                        throw new CoercingSerializeException("Expected a PosIntEqualsOrLessThan10 but was '$input'.")
                                     }
                                 }
 
@@ -282,7 +282,7 @@ class Scalars {
                                         return convert(input)
                                     }
                                     catch (IllegalArgumentException ignored) {
-                                        throw new CoercingParseValueException("Expected a NonNegIntLessThan10 but was '$input'.")
+                                        throw new CoercingParseValueException("Expected a PosIntEqualsOrLessThan10 but was '$input'.")
                                     }
                                 }
 

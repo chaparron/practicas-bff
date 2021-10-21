@@ -210,7 +210,7 @@ type Mutation {
 
 scalar NonEmptyString
 scalar LanguageTag
-scalar NonNegIntLessThan10
+scalar PosIntEqualsOrLessThan10
 
 input CustomerRateSupplierInput {
   accessToken: String!
