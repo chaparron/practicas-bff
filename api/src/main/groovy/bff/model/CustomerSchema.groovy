@@ -101,7 +101,8 @@ enum PasswordlessSignUpFailedReason {
     INVALID_POSTAL_CODE,
     EMAIL_ALREADY_EXIST,
     INVALID_COUNTRY,
-    INVALID_CAPTCHA
+    INVALID_CAPTCHA,
+    INVALID_LEGAL_ID
 
     def build() {
         return new PasswordlessSignUpFailed(reason: this)

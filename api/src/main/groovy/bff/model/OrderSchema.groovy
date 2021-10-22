@@ -223,6 +223,7 @@ class Order {
 class SupplierOrder implements SupplierOrderResponse {
     String accessToken
     Long id
+    Order order
     SupplierOrderStatus status
     TimestampOutput created
     TimestampOutput updated

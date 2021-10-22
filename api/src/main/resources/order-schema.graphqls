@@ -170,6 +170,7 @@ type Rating {
 
 type SupplierOrder {
   id:Int!
+  order: Order
   supplier: Supplier!
   status: SupplierOrderStatus!
   created: TimestampOutput!

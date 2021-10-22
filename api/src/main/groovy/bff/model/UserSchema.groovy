@@ -135,7 +135,8 @@ enum SignedChallengeDemandFailureReason {
 
     PHONE_ALREADY_EXISTS,
     USER_ALREADY_USES_PASSWORDLESS,
-    UNAUTHORIZED
+    UNAUTHORIZED,
+    FORBIDDEN
 
     def doThrow() {
         throw new SignedChallengeDemandFailureException(signedChallengeDemandFailureReason: this)

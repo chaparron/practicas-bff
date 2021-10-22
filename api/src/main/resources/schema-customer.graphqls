@@ -52,6 +52,7 @@ enum PasswordlessSignUpFailedReason{
   INVALID_POSTAL_CODE
   INVALID_COUNTRY
   INVALID_CAPTCHA
+  INVALID_LEGAL_ID
 }
 
 enum DeliveryPreference {

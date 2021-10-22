@@ -24,6 +24,8 @@ enum SignedChallengeDemandFailureReason {
 
   # Token is not valid
   UNAUTHORIZED
+
+  FORBIDDEN
 }
 
 enum ChallengeDemandFailureReason {
