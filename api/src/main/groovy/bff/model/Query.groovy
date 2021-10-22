@@ -98,9 +98,11 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
-    ProductResult productDetail(ProductInput productInput) {
+    ProductResult productDetail(ProductInput productInput, DataFetchingEnvironment dfe) {
         try {
-            productBridge.getProductById(productInput.accessToken, productInput.productId)
+            (groceryListingEnabled || DataFetchingEnvironments.experimentalMode(dfe))
+                    ? groceryListing.getProductById(productInput.accessToken, productInput.productId)
+                    : productBridge.getProductById(productInput.accessToken, productInput.productId)
         }
         catch (BadRequestErrorException ex) {
             ProductErrorReason.valueOf((String) ex.innerResponse).build()

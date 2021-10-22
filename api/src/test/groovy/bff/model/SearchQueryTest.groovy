@@ -1,7 +1,6 @@
 package bff.model
 
 import bff.bridge.SearchBridge
-import bff.bridge.data.BrandBridgeImplTestData
 import bff.bridge.sdk.GroceryListing
 import graphql.execution.ExecutionContext
 import graphql.language.OperationDefinition
@@ -18,7 +17,7 @@ import static org.junit.Assert.assertEquals
 import static org.mockito.Mockito.*
 
 @RunWith(MockitoJUnitRunner.class)
-class SearchQueryTest extends BrandBridgeImplTestData {
+class SearchQueryTest {
 
     @Mock
     SearchBridge searchBridge

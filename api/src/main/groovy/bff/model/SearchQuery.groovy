@@ -26,15 +26,21 @@ class SearchQuery implements GraphQLQueryResolver {
     Boolean groceryListingEnabled
 
     SearchResult search(SearchInput searchInput, DataFetchingEnvironment dfe) {
-        return bridge(dfe).search(searchInput)
+        return (groceryListingEnabled || DataFetchingEnvironments.experimentalMode(dfe))
+                ? groceryListing.search(searchInput)
+                : searchBridge.search(searchInput)
     }
 
     SearchResponse searchV2(SearchInput searchInput, DataFetchingEnvironment dfe) {
-        return bridge(dfe).searchV2(searchInput)
+        return (groceryListingEnabled || DataFetchingEnvironments.experimentalMode(dfe))
+                ? groceryListing.searchV2(searchInput)
+                : searchBridge.searchV2(searchInput)
     }
 
     SearchResponse previewSearch(PreviewSearchInput searchInput, DataFetchingEnvironment dfe) {
-        return bridge(dfe).previewSearch(searchInput)
+        return (groceryListingEnabled || DataFetchingEnvironments.experimentalMode(dfe))
+                ? groceryListing.previewSearch(searchInput)
+                : searchBridge.previewSearch(searchInput)
     }
 
     Suggestions suggest(SuggestInput input, DataFetchingEnvironment dfe) {
@@ -59,12 +65,6 @@ class SearchQuery implements GraphQLQueryResolver {
                         }
                         .inject(input, { SuggestInput i, it -> it(i) })
         )
-    }
-
-    private SearchBridge bridge(DataFetchingEnvironment dfe) {
-        return (groceryListingEnabled || DataFetchingEnvironments.experimentalMode(dfe))
-                ? groceryListing
-                : searchBridge
     }
 
 }

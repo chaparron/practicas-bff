@@ -1,7 +1,9 @@
 package bff.bridge.sdk
 
 import bff.bridge.CustomerBridge
-import bff.bridge.SearchBridge
+import bff.bridge.sdk.PreviewSearchResultMapper
+import bff.bridge.sdk.SearchResultMapper
+import bff.configuration.EntityNotFoundException
 import bff.model.*
 import scala.Option
 import wabi2b.grocery.listing.sdk.*
@@ -10,34 +12,26 @@ import static bff.model.SortInput.DESC
 import static java.util.Optional.ofNullable
 import static scala.jdk.javaapi.CollectionConverters.asJava
 import static scala.jdk.javaapi.CollectionConverters.asScala
-import static scala.jdk.javaapi.OptionConverters.*
+import static scala.jdk.javaapi.OptionConverters.toJava
+import static scala.jdk.javaapi.OptionConverters.toScala
 import static wabi2b.grocery.listing.sdk.ProductQueryRequest.availableProductsIn
 import static wabi2b.grocery.listing.sdk.SuggestionQueryRequestBuilder.availableSuggestionsIn
 
-class GroceryListing implements SearchBridge {
+class GroceryListing {
 
     private Sdk sdk
     private CustomerBridge customerBridge
 
-    @Override
     SearchResult search(SearchInput input) {
         searchV2(input) as SearchResult
     }
 
-    @Override
     SearchResponse searchV2(SearchInput input) {
         def page = new Page(input)
-        def customer = customerBridge.myProfile(input.accessToken)
-        def deliveryAddress = customer.preferredDeliveryAddress()
-
         def request =
                 [new FilteringBuilder(input), new SortingBuilder(input)]
                         .inject(
-                                availableProductsIn(
-                                        new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
-                                        Option.apply(customer.country_id)
-                                )
-                                        .forCustomer(customer.id.toString(), customer.customerType.code)
+                                availableProductsForCustomer(input.accessToken)
                                         .sized(page.size)
                                         .aggregatedByBrands(10)
                                         .aggregatedByCategories(1, true)
@@ -50,7 +44,6 @@ class GroceryListing implements SearchBridge {
         return new SearchResultMapper(input, request).map(response)
     }
 
-    @Override
     SearchResponse previewSearch(PreviewSearchInput input) {
         def page = new Page(input)
         def request =
@@ -112,24 +105,42 @@ class GroceryListing implements SearchBridge {
     }
 
     Cart refreshCart(String accessToken, List<Integer> products) {
+        def request =
+                availableProductsForCustomer(accessToken)
+                        .sized(products.size())
+                        .filteredByProduct(
+                                products.head().toString(),
+                                asScala(products.tail().collect { it.toString() }).toSeq()
+                        )
+                        .fetchingOptions(50)
+                        .fetchingDeliveryZones(1)
+        def response = sdk.query(request)
+        return new CartMapper(accessToken, request).map(response)
+    }
+
+    Product getProductById(String accessToken, Integer product) {
+        def request =
+                availableProductsForCustomer(accessToken)
+                        .sized(1)
+                        .filteredByProduct(product.toString(), asScala([] as List<String>).toSeq())
+                        .fetchingOptions(50)
+                        .fetchingDeliveryZones(1)
+        def response = sdk.query(request)
+        return new ProductDetailMapper(accessToken, request)
+                .map(response)
+                .orElseThrow { new EntityNotFoundException() }
+    }
+
+    private def availableProductsForCustomer(String accessToken) {
         def customer = customerBridge.myProfile(accessToken)
         def deliveryAddress = customer.preferredDeliveryAddress()
 
-        def request = availableProductsIn(
+        return availableProductsIn(
                 new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
                 Option.apply(customer.country_id)
-        )
-                .forCustomer(customer.id.toString(), customer.customerType.code)
-                .sized(products.size())
-                .filteredByProduct(
-                        products.head().toString(),
-                        asScala(products.tail().collect { it.toString() }).toSeq()
-                )
-                .fetchingOptions(50)
-                .fetchingDeliveryZones(1)
-        def response = sdk.query(request)
-        return new CartMapper(request).map(response)
+        ).forCustomer(customer.id.toString(), customer.customerType.code)
     }
+
 }
 
 class Page {
@@ -383,7 +394,9 @@ abstract class ResponseMapper {
                     images: asJava(it.images()).collect { new Image(id: it) },
                     displays: displays,
                     prices: prices,
-                    minUnitsPrice: prices.min { it.minUnits },
+                    minUnitsPrice: prices.min { Price a, Price b ->
+                        (a.minUnits == b.minUnits) ? a.unitValue <=> b.unitValue : a.minUnits <=> b.minUnits
+                    },
                     highlightedPrice: prices.min { it.unitValue },
                     title: it.name().defaultEntry(),
                     country_id: it.manufacturer().country(),
@@ -823,11 +836,14 @@ class PreviewSearchResultMapper extends ResponseMapper {
 
 class CartMapper extends ResponseMapper {
 
-    CartMapper(ProductQueryRequest request) {
+    private String accessToken
+
+    CartMapper(String accessToken, ProductQueryRequest request) {
         super(request)
+        this.accessToken = accessToken
     }
 
-    static Cart map(ProductQueryResponse response) {
+    Cart map(ProductQueryResponse response) {
         def products = products(response)
         new Cart(
                 availableProducts: products.collect {
@@ -846,7 +862,8 @@ class CartMapper extends ResponseMapper {
                                     minUnitsPrice: it.minUnitsPrice,
                                     highlightedPrice: it.highlightedPrice,
                                     country_id: it.country_id,
-                                    favorite: it.favorite
+                                    favorite: it.favorite,
+                                    accessToken: accessToken
                             ),
                             supplierPrices: it.prices.collect {
                                 new SupplierPrice(
@@ -866,6 +883,40 @@ class CartMapper extends ResponseMapper {
                 suppliers: products.collect { it.prices.collect { it.supplier } }
                         .flatten().toSet().toList() as List<Supplier>
         )
+    }
+
+}
+
+class ProductDetailMapper extends ResponseMapper {
+
+    private String accessToken
+
+    ProductDetailMapper(String accessToken, ProductQueryRequest request) {
+        super(request)
+        this.accessToken = accessToken
+    }
+
+    Optional<Product> map(ProductQueryResponse response) {
+        def products = products(response)
+        products.isEmpty() ? Optional.empty() : Optional.of(products.head()).map {
+            new Product(
+                    accessToken: accessToken,
+                    id: it.id,
+                    name: it.name,
+                    enabled: it.enabled,
+                    ean: it.ean,
+                    description: it.description,
+                    title: it.title,
+                    prices: it.prices,
+                    displays: it.displays,
+                    priceFrom: it.priceFrom,
+                    minUnitsPrice: it.minUnitsPrice,
+                    highlightedPrice: it.highlightedPrice,
+                    brand: it.brand,
+                    country_id: it.country_id,
+                    favorite: it.favorite
+            )
+        }
     }
 
 }
