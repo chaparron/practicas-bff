@@ -1,8 +1,6 @@
 package bff.bridge.sdk
 
 import bff.bridge.CustomerBridge
-import bff.bridge.sdk.PreviewSearchResultMapper
-import bff.bridge.sdk.SearchResultMapper
 import bff.configuration.EntityNotFoundException
 import bff.model.*
 import scala.Option
@@ -14,6 +12,7 @@ import static scala.jdk.javaapi.CollectionConverters.asJava
 import static scala.jdk.javaapi.CollectionConverters.asScala
 import static scala.jdk.javaapi.OptionConverters.toJava
 import static scala.jdk.javaapi.OptionConverters.toScala
+import static wabi2b.grocery.listing.sdk.BrandQueryRequest.availableBrandsIn
 import static wabi2b.grocery.listing.sdk.ProductQueryRequest.availableProductsIn
 import static wabi2b.grocery.listing.sdk.SuggestionQueryRequestBuilder.availableSuggestionsIn
 
@@ -23,10 +22,6 @@ class GroceryListing {
     private CustomerBridge customerBridge
 
     SearchResult search(SearchInput input) {
-        searchV2(input) as SearchResult
-    }
-
-    SearchResponse searchV2(SearchInput input) {
         def page = new Page(input)
         def request =
                 [new FilteringBuilder(input), new SortingBuilder(input)]
@@ -44,7 +39,7 @@ class GroceryListing {
         return new SearchResultMapper(input, request).map(response)
     }
 
-    SearchResponse previewSearch(PreviewSearchInput input) {
+    PreviewSearchResult search(PreviewSearchInput input) {
         def page = new Page(input)
         def request =
                 [new FilteringBuilder(input), new SortingBuilder(input)]
@@ -126,9 +121,37 @@ class GroceryListing {
                         .fetchingOptions(50)
                         .fetchingDeliveryZones(1)
         def response = sdk.query(request)
-        return new ProductDetailMapper(accessToken, request)
+        return new ProductMapper(accessToken, request)
                 .map(response)
                 .orElseThrow { new EntityNotFoundException() }
+    }
+
+    GetHomeBrandsResult getHomeBrands(String accessToken, String country) {
+        def customer = customerBridge.myProfile(accessToken)
+        def deliveryAddress = customer.preferredDeliveryAddress()
+
+        def request =
+                ofNullable(accessToken)
+                        .map {
+                            availableBrandsIn(
+                                    new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
+                                    Option.apply(customer.country_id)
+                            ).forCustomer(customer.id.toString(), customer.customerType.code)
+                        }
+                        .orElse(availableBrandsIn(country))
+                        .sized(20)
+        def response = sdk.query(request)
+        return new HomeBrandsResultMapper().map(response)
+    }
+
+    GetHomeBrandsResult getHomeBrands(CoordinatesInput input) {
+        def request =
+                availableBrandsIn(
+                        new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
+                        Option.empty()
+                ).sized(20)
+        def response = sdk.query(request)
+        return new HomeBrandsResultMapper().map(response)
     }
 
     private def availableProductsForCustomer(String accessToken) {
@@ -362,11 +385,11 @@ class SortingBuilder implements RequestBuilder {
 
 }
 
-abstract class ResponseMapper {
+abstract class ProductResponseMapper {
 
     ProductQueryRequest request
 
-    ResponseMapper(ProductQueryRequest request) {
+    ProductResponseMapper(ProductQueryRequest request) {
         this.request = request
     }
 
@@ -756,7 +779,7 @@ abstract class ResponseMapper {
 
 }
 
-class SearchResultMapper extends ResponseMapper {
+class SearchResultMapper extends ProductResponseMapper {
 
     SearchInput input
 
@@ -782,7 +805,7 @@ class SearchResultMapper extends ResponseMapper {
 
 }
 
-class PreviewSearchResultMapper extends ResponseMapper {
+class PreviewSearchResultMapper extends ProductResponseMapper {
 
     PreviewSearchInput input
 
@@ -834,7 +857,7 @@ class PreviewSearchResultMapper extends ResponseMapper {
 
 }
 
-class CartMapper extends ResponseMapper {
+class CartMapper extends ProductResponseMapper {
 
     private String accessToken
 
@@ -887,11 +910,11 @@ class CartMapper extends ResponseMapper {
 
 }
 
-class ProductDetailMapper extends ResponseMapper {
+class ProductMapper extends ProductResponseMapper {
 
     private String accessToken
 
-    ProductDetailMapper(String accessToken, ProductQueryRequest request) {
+    ProductMapper(String accessToken, ProductQueryRequest request) {
         super(request)
         this.accessToken = accessToken
     }
@@ -917,6 +940,22 @@ class ProductDetailMapper extends ResponseMapper {
                     favorite: it.favorite
             )
         }
+    }
+
+}
+
+class HomeBrandsResultMapper {
+
+    static GetHomeBrandsResult map(BrandQueryResponse response) {
+        new GetHomeBrandsResult(
+                brands: asJava(response.hits()).collect {
+                    new Brand(
+                            id: it.id().toInteger(),
+                            name: it.name(),
+                            logo: toJava(it.logo()).orElse(null)
+                    )
+                }
+        )
     }
 
 }

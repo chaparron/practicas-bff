@@ -33,13 +33,13 @@ class SearchQuery implements GraphQLQueryResolver {
 
     SearchResponse searchV2(SearchInput searchInput, DataFetchingEnvironment dfe) {
         return (groceryListingEnabled || DataFetchingEnvironments.experimentalMode(dfe))
-                ? groceryListing.searchV2(searchInput)
+                ? groceryListing.search(searchInput)
                 : searchBridge.searchV2(searchInput)
     }
 
     SearchResponse previewSearch(PreviewSearchInput searchInput, DataFetchingEnvironment dfe) {
         return (groceryListingEnabled || DataFetchingEnvironments.experimentalMode(dfe))
-                ? groceryListing.previewSearch(searchInput)
+                ? groceryListing.search(searchInput)
                 : searchBridge.previewSearch(searchInput)
     }
 

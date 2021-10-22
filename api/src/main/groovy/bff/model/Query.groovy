@@ -240,9 +240,11 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
-    GetHomeBrandsResponse getHomeBrands(GetBrandsInput brandsInput) {
+    GetHomeBrandsResponse getHomeBrands(GetBrandsInput brandsInput, DataFetchingEnvironment dfe) {
         try {
-            brandBridge.getHome(brandsInput.accessToken, brandsInput.countryId)
+            (groceryListingEnabled || DataFetchingEnvironments.experimentalMode(dfe))
+                    ? groceryListing.getHomeBrands(brandsInput.accessToken, brandsInput.countryId)
+                    : brandBridge.getHome(brandsInput.accessToken, brandsInput.countryId)
         }
         catch (EntityNotFoundException ex) {
             GetBrandsFailedReason.NOT_FOUND.build()
@@ -252,9 +254,11 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
-    GetHomeBrandsResponse previewHomeBrands(CoordinatesInput coordinatesInput) {
+    GetHomeBrandsResponse previewHomeBrands(CoordinatesInput coordinatesInput, DataFetchingEnvironment dfe) {
         try {
-            brandBridge.previewHomeBrands(coordinatesInput)
+            (groceryListingEnabled || DataFetchingEnvironments.experimentalMode(dfe))
+                    ? groceryListing.getHomeBrands(coordinatesInput)
+                    : brandBridge.previewHomeBrands(coordinatesInput)
         }
         catch (EntityNotFoundException ex) {
             GetBrandsFailedReason.NOT_FOUND.build()

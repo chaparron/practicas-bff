@@ -68,7 +68,7 @@ class SearchQueryTest {
         when(searchBridge.searchV2(input)).thenReturn(result)
 
         assertEquals(result, query.searchV2(input, null))
-        verify(groceryListing, never()).searchV2(input)
+        verify(groceryListing, never()).search(input)
     }
 
     @Test
@@ -76,7 +76,7 @@ class SearchQueryTest {
         def input = new SearchInput()
         def result = new SearchResult()
 
-        when(groceryListing.searchV2(input)).thenReturn(result)
+        when(groceryListing.search(input)).thenReturn(result)
 
         assertEquals(result, query.searchV2(input, anyExperimentalDataFetchingEnvironment()))
         verify(searchBridge, never()).searchV2(input)
@@ -88,7 +88,7 @@ class SearchQueryTest {
         def result = new SearchResult()
         query.groceryListingEnabled = true
 
-        when(groceryListing.searchV2(input)).thenReturn(result)
+        when(groceryListing.search(input)).thenReturn(result)
 
         assertEquals(result, query.searchV2(input, null))
         verify(searchBridge, never()).searchV2(input)
@@ -102,15 +102,15 @@ class SearchQueryTest {
         when(searchBridge.previewSearch(input)).thenReturn(result)
 
         assertEquals(result, query.previewSearch(input, null))
-        verify(groceryListing, never()).previewSearch(input)
+        verify(groceryListing, never()).search(input)
     }
 
     @Test
     void 'search preview should be resolved by grocery listing when experimental mode is enabled'() {
         def input = new PreviewSearchInput()
-        def result = new SearchResult()
+        def result = new PreviewSearchResult()
 
-        when(groceryListing.previewSearch(input)).thenReturn(result)
+        when(groceryListing.search(input)).thenReturn(result)
 
         assertEquals(result, query.previewSearch(input, anyExperimentalDataFetchingEnvironment()))
         verify(searchBridge, never()).previewSearch(input)
@@ -119,10 +119,10 @@ class SearchQueryTest {
     @Test
     void 'search preview should be resolved by grocery listing when enabled by configuration'() {
         def input = new PreviewSearchInput()
-        def result = new SearchResult()
+        def result = new PreviewSearchResult()
         query.groceryListingEnabled = true
 
-        when(groceryListing.previewSearch(input)).thenReturn(result)
+        when(groceryListing.search(input)).thenReturn(result)
 
         assertEquals(result, query.previewSearch(input, null))
         verify(searchBridge, never()).previewSearch(input)

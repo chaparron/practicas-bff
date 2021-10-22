@@ -1,5 +1,6 @@
 package bff.model
 
+import bff.bridge.BrandBridge
 import bff.bridge.ProductBridge
 import bff.bridge.sdk.GroceryListing
 import graphql.execution.ExecutionContext
@@ -21,6 +22,8 @@ class QueryTest {
 
     @Mock
     ProductBridge productBridge
+    @Mock
+    BrandBridge brandBridge
     @Mock
     GroceryListing groceryListing
     @InjectMocks
@@ -92,6 +95,74 @@ class QueryTest {
 
         assertEquals(result, query.refreshCart(input, null))
         verify(productBridge, never()).refreshCart(input.accessToken, input.products)
+    }
+
+    @Test
+    void 'home brands should be resolved by product bridge by default'() {
+        def input = new GetBrandsInput(accessToken: "abcde", countryId: "ar")
+        def result = new GetHomeBrandsResult()
+
+        when(brandBridge.getHome(input.accessToken, input.countryId)).thenReturn(result)
+
+        assertEquals(result, query.getHomeBrands(input, null))
+        verify(groceryListing, never()).getHomeBrands(input.accessToken, input.countryId)
+    }
+
+    @Test
+    void 'home brands should be resolved by grocery listing when experimental mode is enabled'() {
+        def input = new GetBrandsInput(accessToken: "abcde", countryId: "ar")
+        def result = new GetHomeBrandsResult()
+
+        when(groceryListing.getHomeBrands(input.accessToken, input.countryId)).thenReturn(result)
+
+        assertEquals(result, query.getHomeBrands(input, anyExperimentalDataFetchingEnvironment()))
+        verify(brandBridge, never()).getHome(input.accessToken, input.countryId)
+    }
+
+    @Test
+    void 'home brands should be resolved by grocery listing when enabled by configuration'() {
+        def input = new GetBrandsInput(accessToken: "abcde", countryId: "ar")
+        def result = new GetHomeBrandsResult()
+        query.groceryListingEnabled = true
+
+        when(groceryListing.getHomeBrands(input.accessToken, input.countryId)).thenReturn(result)
+
+        assertEquals(result, query.getHomeBrands(input, null))
+        verify(brandBridge, never()).getHome(input.accessToken, input.countryId)
+    }
+
+    @Test
+    void 'preview home brands should be resolved by product bridge by default'() {
+        def input = new CoordinatesInput()
+        def result = new GetHomeBrandsResult()
+
+        when(brandBridge.previewHomeBrands(input)).thenReturn(result)
+
+        assertEquals(result, query.previewHomeBrands(input, null))
+        verify(groceryListing, never()).getHomeBrands(input)
+    }
+
+    @Test
+    void 'preview home brands should be resolved by grocery listing when experimental mode is enabled'() {
+        def input = new CoordinatesInput()
+        def result = new GetHomeBrandsResult()
+
+        when(groceryListing.getHomeBrands(input)).thenReturn(result)
+
+        assertEquals(result, query.previewHomeBrands(input, anyExperimentalDataFetchingEnvironment()))
+        verify(brandBridge, never()).previewHomeBrands(input)
+    }
+
+    @Test
+    void 'preview home brands should be resolved by grocery listing when enabled by configuration'() {
+        def input = new CoordinatesInput()
+        def result = new GetHomeBrandsResult()
+        query.groceryListingEnabled = true
+
+        when(groceryListing.getHomeBrands(input)).thenReturn(result)
+
+        assertEquals(result, query.previewHomeBrands(input, null))
+        verify(brandBridge, never()).previewHomeBrands(input)
     }
 
     private static DataFetchingEnvironment anyExperimentalDataFetchingEnvironment() {
