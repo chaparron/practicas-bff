@@ -1,11 +1,15 @@
 package bff.model
 
 import bff.bridge.*
+import bff.bridge.sdk.GroceryListing
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
+import bff.support.DataFetchingEnvironments
 import com.coxautodev.graphql.tools.GraphQLQueryResolver
+import graphql.schema.DataFetchingEnvironment
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 /**
@@ -57,6 +61,11 @@ class Query implements GraphQLQueryResolver {
     @Autowired
     PhoneNotifierBridge phoneNotifierBridge
 
+    @Autowired
+    GroceryListing groceryListing
+
+    @Value('${grocery.listing.enabled:false}')
+    Boolean groceryListingEnabled
 
     Customer myProfile(CustomerInput customerInput) {
         customerBridge.myProfile(customerInput.accessToken)
@@ -167,9 +176,11 @@ class Query implements GraphQLQueryResolver {
         customerBridge.getCancelOptions(accessTokenInput.accessToken)
     }
 
-    CartResult refreshCart(RefreshCartInput refreshCartInput) {
+    CartResult refreshCart(RefreshCartInput refreshCartInput, DataFetchingEnvironment dfe) {
         try {
-            productBridge.refreshCart(refreshCartInput.accessToken, refreshCartInput.products)
+            (groceryListingEnabled || DataFetchingEnvironments.experimentalMode(dfe))
+                    ? groceryListing.refreshCart(refreshCartInput.accessToken, refreshCartInput.products)
+                    : productBridge.refreshCart(refreshCartInput.accessToken, refreshCartInput.products)
         } catch (BadRequestErrorException ex) {
             log.debug("refresh cart error: {}", ex.innerResponse as String)
             CartFailedReason.valueOf((String) ex.innerResponse).build()

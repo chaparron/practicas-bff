@@ -111,6 +111,25 @@ class GroceryListing implements SearchBridge {
         )
     }
 
+    Cart refreshCart(String accessToken, List<Integer> products) {
+        def customer = customerBridge.myProfile(accessToken)
+        def deliveryAddress = customer.preferredDeliveryAddress()
+
+        def request = availableProductsIn(
+                new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
+                Option.apply(customer.country_id)
+        )
+                .forCustomer(customer.id.toString(), customer.customerType.code)
+                .sized(products.size())
+                .filteredByProduct(
+                        products.head().toString(),
+                        asScala(products.tail().collect { it.toString() }).toSeq()
+                )
+                .fetchingOptions(50)
+                .fetchingDeliveryZones(1)
+        def response = sdk.query(request)
+        return new CartMapper(request).map(response)
+    }
 }
 
 class Page {
@@ -665,8 +684,21 @@ abstract class ResponseMapper {
                 name: option.supplier().name(),
                 legalName: null,
                 avatar: toJava(option.supplier().avatar()).orElse(null),
-                // Using default value for old clients compatibility.
-                deliveryZones: [],
+                deliveryZones: toJava(option.deliveryZones())
+                        .map { asJava(it.toList()) }
+                        .orElse([])
+                        .collect {
+                            new DeliveryZone(
+                                    id: it.id().toInteger(),
+                                    minAmount: it.requiredPurchaseAmount()._1().toBigDecimal(),
+                                    maxAmount: toJava(it.requiredPurchaseAmount()._2()
+                                            .map { it.toBigDecimal() })
+                                            .orElse(null),
+                                    deliveryCost: toJava(it.cost()
+                                            .map { it.toBigDecimal() })
+                                            .orElse(null)
+                            )
+                        },
                 // Using default value for old clients compatibility.
                 averageDeliveryDay: null
         )
@@ -759,7 +791,8 @@ class PreviewSearchResultMapper extends ResponseMapper {
                 facets: facets(response),
                 products: products(response).collect {
                     def suppliers =
-                            it.prices.collect { new PreviewSupplier(id: it.supplier.id, name: "") }.toSet()
+                            it.prices.collect { new PreviewSupplier(id: it.supplier.id, name: "") }
+                                    .toSet().toList()
                     new PreviewProductSearch(
                             id: it.id,
                             name: it.name,
@@ -780,9 +813,58 @@ class PreviewSearchResultMapper extends ResponseMapper {
                             title: it.title,
                             country_id: it.country_id,
                             totalNumberOfSuppliers: suppliers.size(),
-                            suppliers: suppliers.toList()
+                            suppliers: suppliers
                     )
                 }
+        )
+    }
+
+}
+
+class CartMapper extends ResponseMapper {
+
+    CartMapper(ProductQueryRequest request) {
+        super(request)
+    }
+
+    static Cart map(ProductQueryResponse response) {
+        def products = products(response)
+        new Cart(
+                availableProducts: products.collect {
+                    new ProductCart(
+                            product: new Product(
+                                    id: it.id,
+                                    name: it.name,
+                                    brand: it.brand,
+                                    enabled: it.enabled,
+                                    ean: it.ean,
+                                    description: it.description,
+                                    title: it.title,
+                                    prices: it.prices,
+                                    displays: it.displays,
+                                    priceFrom: it.priceFrom,
+                                    minUnitsPrice: it.minUnitsPrice,
+                                    highlightedPrice: it.highlightedPrice,
+                                    country_id: it.country_id,
+                                    favorite: it.favorite
+                            ),
+                            supplierPrices: it.prices.collect {
+                                new SupplierPrice(
+                                        id: it.supplier.id,
+                                        name: it.supplier.name,
+                                        price: it.value,
+                                        display: it.display,
+                                        minUnits: it.minUnits,
+                                        maxUnits: it.maxUnits,
+                                        avatar: it.supplier.avatar,
+                                        deliveryZone: it.supplier.deliveryZones?.head(),
+                                        configuration: it.configuration
+                                )
+                            }.toSet().toList()
+                    )
+                },
+                suppliers: products.collect { it.prices.collect { it.supplier } }
+                        .flatten().toSet().toList() as List<Supplier>
         )
     }
 
