@@ -14,6 +14,7 @@ import static scala.jdk.javaapi.OptionConverters.toJava
 import static scala.jdk.javaapi.OptionConverters.toScala
 import static wabi2b.grocery.listing.sdk.BrandQueryRequest.availableBrandsIn
 import static wabi2b.grocery.listing.sdk.ProductQueryRequest.availableProductsIn
+import static wabi2b.grocery.listing.sdk.SupplierQueryRequest.availableSuppliersIn
 import static wabi2b.grocery.listing.sdk.SuggestionQueryRequestBuilder.availableSuggestionsIn
 
 class GroceryListing {
@@ -152,6 +153,16 @@ class GroceryListing {
                 ).sized(20)
         def response = sdk.query(request)
         return new HomeBrandsResultMapper().map(response)
+    }
+
+    PreviewHomeSupplierResponse previewHomeSuppliers(CoordinatesInput input) {
+        def request =
+                availableSuppliersIn(
+                        new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
+                        Option.empty()
+                ).sized(20)
+        def response = sdk.query(request)
+        return new PreviewHomeSupplierResponseMapper().map(response)
     }
 
     private def availableProductsForCustomer(String accessToken) {
@@ -953,6 +964,22 @@ class HomeBrandsResultMapper {
                             id: it.id().toInteger(),
                             name: it.name(),
                             logo: toJava(it.logo()).orElse(null)
+                    )
+                }
+        )
+    }
+
+}
+
+class PreviewHomeSupplierResponseMapper {
+
+    static PreviewHomeSupplierResponse map(SupplierQueryResponse response) {
+        new PreviewHomeSupplierResponse(
+                suppliers: asJava(response.hits()).collect {
+                    new PreviewSupplier(
+                            id: it.id().toInteger(),
+                            name: it.name(),
+                            avatar: toJava(it.avatar()).orElse(null)
                     )
                 }
         )

@@ -2,6 +2,7 @@ package bff.model
 
 import bff.bridge.BrandBridge
 import bff.bridge.ProductBridge
+import bff.bridge.SupplierHomeBridge
 import bff.bridge.sdk.GroceryListing
 import graphql.execution.ExecutionContext
 import graphql.language.OperationDefinition
@@ -24,6 +25,8 @@ class QueryTest {
     ProductBridge productBridge
     @Mock
     BrandBridge brandBridge
+    @Mock
+    SupplierHomeBridge supplierBridge
     @Mock
     GroceryListing groceryListing
     @InjectMocks
@@ -163,6 +166,40 @@ class QueryTest {
 
         assertEquals(result, query.previewHomeBrands(input, null))
         verify(brandBridge, never()).previewHomeBrands(input)
+    }
+
+    @Test
+    void 'preview home suppliers should be resolved by product bridge by default'() {
+        def input = new CoordinatesInput()
+        def response = new PreviewHomeSupplierResponse()
+
+        when(supplierBridge.previewHomeSuppliers(input)).thenReturn(response)
+
+        assertEquals(response, query.previewHomeSuppliers(input, null))
+        verify(groceryListing, never()).previewHomeSuppliers(input)
+    }
+
+    @Test
+    void 'preview home suppliers should be resolved by grocery listing when experimental mode is enabled'() {
+        def input = new CoordinatesInput()
+        def response = new PreviewHomeSupplierResponse()
+
+        when(groceryListing.previewHomeSuppliers(input)).thenReturn(response)
+
+        assertEquals(response, query.previewHomeSuppliers(input, anyExperimentalDataFetchingEnvironment()))
+        verify(supplierBridge, never()).previewHomeSuppliers(input)
+    }
+
+    @Test
+    void 'preview home suppliers should be resolved by grocery listing when enabled by configuration'() {
+        def input = new CoordinatesInput()
+        def response = new PreviewHomeSupplierResponse()
+        query.groceryListingEnabled = true
+
+        when(groceryListing.previewHomeSuppliers(input)).thenReturn(response)
+
+        assertEquals(response, query.previewHomeSuppliers(input, null))
+        verify(supplierBridge, never()).previewHomeSuppliers(input)
     }
 
     private static DataFetchingEnvironment anyExperimentalDataFetchingEnvironment() {

@@ -364,9 +364,11 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
-    HomeSupplierResult previewHomeSuppliers(CoordinatesInput coordinatesInput) {
+    HomeSupplierResult previewHomeSuppliers(CoordinatesInput coordinatesInput, DataFetchingEnvironment dfe) {
         try {
-            supplierBridge.previewHomeSuppliers(coordinatesInput)
+            (groceryListingEnabled || DataFetchingEnvironments.experimentalMode(dfe))
+                    ? groceryListing.previewHomeSuppliers(coordinatesInput)
+                    : supplierBridge.previewHomeSuppliers(coordinatesInput)
         }
         catch (BadRequestErrorException ex) {
             PreviewHomeSupplierFailedReason.valueOf((String) ex.innerResponse).build()
