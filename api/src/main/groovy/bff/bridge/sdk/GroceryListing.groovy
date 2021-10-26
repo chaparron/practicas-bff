@@ -1,6 +1,8 @@
 package bff.bridge.sdk
 
 import bff.bridge.CustomerBridge
+import bff.bridge.sdk.PreviewSearchResultMapper
+import bff.bridge.sdk.SearchResultMapper
 import bff.configuration.EntityNotFoundException
 import bff.model.*
 import scala.Option
@@ -14,8 +16,8 @@ import static scala.jdk.javaapi.OptionConverters.toJava
 import static scala.jdk.javaapi.OptionConverters.toScala
 import static wabi2b.grocery.listing.sdk.BrandQueryRequest.availableBrandsIn
 import static wabi2b.grocery.listing.sdk.ProductQueryRequest.availableProductsIn
-import static wabi2b.grocery.listing.sdk.SupplierQueryRequest.availableSuppliersIn
 import static wabi2b.grocery.listing.sdk.SuggestionQueryRequestBuilder.availableSuggestionsIn
+import static wabi2b.grocery.listing.sdk.SupplierQueryRequest.availableSuppliersIn
 
 class GroceryListing {
 
@@ -928,8 +930,13 @@ class CartMapper extends ProductResponseMapper {
                             }.toSet().toList()
                     )
                 },
-                suppliers: products.collect { it.prices.collect { it.supplier } }
-                        .flatten().toSet().toList() as List<Supplier>
+                suppliers: products.collect {
+                    it.prices.collect {
+                        it.supplier.accessToken = accessToken
+                        it.supplier
+                    }
+                }
+                .flatten().toSet().toList() as List<Supplier>
         )
     }
 

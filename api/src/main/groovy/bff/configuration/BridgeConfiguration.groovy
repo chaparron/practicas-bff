@@ -149,4 +149,11 @@ class BridgeConfiguration {
                 root: phone_notifier_url
         )
     }
+
+    @Bean
+    SupplierBridge suppliersBridge() {
+        new SupplierBridgeImpl(
+                root: root
+        )
+    }
 }
