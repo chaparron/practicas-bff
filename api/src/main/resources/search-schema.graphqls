@@ -93,6 +93,7 @@ type SuggestedProduct {
 type SuggestedBrand {
   id: Int!
   name: NonEmptyString!
+  logo: NonEmptyString
 }
 
 type SuggestedCategory {
@@ -103,6 +104,7 @@ type SuggestedCategory {
 type SuggestedSupplier {
   id: Int!
   name: NonEmptyString!
+  avatar: NonEmptyString
 }
 
 type Filter{

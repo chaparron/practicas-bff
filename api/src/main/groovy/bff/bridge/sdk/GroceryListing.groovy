@@ -86,16 +86,30 @@ class GroceryListing {
         def response = sdk.query(request)
         new Suggestions(
                 products: asJava(response.products()).collect {
-                    new SuggestedProduct(id: it.id().toInteger(), name: it.name().defaultEntry())
+                    new SuggestedProduct(
+                            id: it.id().toInteger(),
+                            name: it.name().defaultEntry()
+                    )
                 },
                 brands: asJava(response.brands()).collect {
-                    new SuggestedBrand(id: it.id().toInteger(), name: it.name().defaultEntry())
+                    new SuggestedBrand(
+                            id: it.id().toInteger(),
+                            name: it.name().defaultEntry(),
+                            logo: toJava(it.logo()).orElse(null)
+                    )
                 },
                 categories: asJava(response.categories()).collect {
-                    new SuggestedCategory(id: it.id().toInteger(), name: it.name().defaultEntry())
+                    new SuggestedCategory(
+                            id: it.id().toInteger(),
+                            name: it.name().defaultEntry()
+                    )
                 },
                 suppliers: asJava(response.suppliers()).collect {
-                    new SuggestedSupplier(id: it.id().toInteger(), name: it.name())
+                    new SuggestedSupplier(
+                            id: it.id().toInteger(),
+                            name: it.name(),
+                            avatar: toJava(it.avatar()).orElse(null)
+                    )
                 }
         )
     }

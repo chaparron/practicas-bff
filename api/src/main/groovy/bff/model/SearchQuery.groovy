@@ -2,7 +2,6 @@ package bff.model
 
 import bff.bridge.SearchBridge
 import bff.bridge.sdk.GroceryListing
-import bff.support.DataFetchingEnvironments
 import com.coxautodev.graphql.tools.GraphQLQueryResolver
 import graphql.language.Field
 import graphql.language.IntValue
@@ -12,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
+import static bff.JwtToken.countryFromString
+import static bff.support.DataFetchingEnvironments.experimentalMode
 import static java.util.Optional.ofNullable
 
 @Component
@@ -22,25 +23,25 @@ class SearchQuery implements GraphQLQueryResolver {
     SearchBridge searchBridge
     @Autowired
     GroceryListing groceryListing
-    @Value('${grocery.listing.enabled:false}')
-    Boolean groceryListingEnabled
+    @Value('${grocery.listing.countries:}')
+    List<String> groceryListingEnabledCountries
 
-    SearchResult search(SearchInput searchInput, DataFetchingEnvironment dfe) {
-        return (groceryListingEnabled || DataFetchingEnvironments.experimentalMode(dfe))
-                ? groceryListing.search(searchInput)
-                : searchBridge.search(searchInput)
+    SearchResult search(SearchInput input, DataFetchingEnvironment dfe) {
+        return isGroceryListingEnabled(dfe, { countryFromString(input.accessToken) })
+                ? groceryListing.search(input)
+                : searchBridge.search(input)
     }
 
-    SearchResponse searchV2(SearchInput searchInput, DataFetchingEnvironment dfe) {
-        return (groceryListingEnabled || DataFetchingEnvironments.experimentalMode(dfe))
-                ? groceryListing.search(searchInput)
-                : searchBridge.searchV2(searchInput)
+    SearchResponse searchV2(SearchInput input, DataFetchingEnvironment dfe) {
+        return isGroceryListingEnabled(dfe, { countryFromString(input.accessToken) })
+                ? groceryListing.search(input)
+                : searchBridge.searchV2(input)
     }
 
-    SearchResponse previewSearch(PreviewSearchInput searchInput, DataFetchingEnvironment dfe) {
-        return (groceryListingEnabled || DataFetchingEnvironments.experimentalMode(dfe))
-                ? groceryListing.search(searchInput)
-                : searchBridge.previewSearch(searchInput)
+    SearchResponse previewSearch(PreviewSearchInput input, DataFetchingEnvironment dfe) {
+        return isGroceryListingEnabled(dfe, { input.countryId })
+                ? groceryListing.search(input)
+                : searchBridge.previewSearch(input)
     }
 
     Suggestions suggest(SuggestInput input, DataFetchingEnvironment dfe) {
@@ -65,6 +66,10 @@ class SearchQuery implements GraphQLQueryResolver {
                         }
                         .inject(input, { SuggestInput i, it -> it(i) })
         )
+    }
+
+    private def isGroceryListingEnabled(DataFetchingEnvironment dfe, Closure<String> country) {
+        (experimentalMode(dfe) || ofNullable(groceryListingEnabledCountries).orElse([]).contains(country()))
     }
 
 }

@@ -80,6 +80,7 @@ class SuggestedProduct {
 class SuggestedBrand {
     Integer id
     String name
+    String logo
 }
 
 class SuggestedCategory {
@@ -90,6 +91,7 @@ class SuggestedCategory {
 class SuggestedSupplier {
     Integer id
     String name
+    String avatar
 }
 
 class PreviewSearchResultMapper {

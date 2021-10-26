@@ -28,7 +28,9 @@ class SearchQueryTest {
 
     @Test
     void 'search should be resolved by search bridge by default'() {
-        def input = new SearchInput()
+        def input = new SearchInput(
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48"
+        )
         def result = new SearchResult()
 
         when(searchBridge.search(input)).thenReturn(result)
@@ -39,7 +41,9 @@ class SearchQueryTest {
 
     @Test
     void 'search should be resolved by grocery listing when experimental mode is enabled'() {
-        def input = new SearchInput()
+        def input = new SearchInput(
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48"
+        )
         def result = new SearchResult()
 
         when(groceryListing.search(input)).thenReturn(result)
@@ -49,10 +53,12 @@ class SearchQueryTest {
     }
 
     @Test
-    void 'search should be resolved by grocery listing when enabled by configuration'() {
-        def input = new SearchInput()
+    void 'search should be resolved by grocery listing when customer country enabled by configuration'() {
+        def input = new SearchInput(
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48"
+        )
         def result = new SearchResult()
-        query.groceryListingEnabled = true
+        query.groceryListingEnabledCountries = ["ar"]
 
         when(groceryListing.search(input)).thenReturn(result)
 
@@ -62,7 +68,9 @@ class SearchQueryTest {
 
     @Test
     void 'search v2 should be resolved by search bridge by default'() {
-        def input = new SearchInput()
+        def input = new SearchInput(
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48"
+        )
         def result = new SearchResult()
 
         when(searchBridge.searchV2(input)).thenReturn(result)
@@ -73,7 +81,9 @@ class SearchQueryTest {
 
     @Test
     void 'search v2 should be resolved by grocery listing when experimental mode is enabled'() {
-        def input = new SearchInput()
+        def input = new SearchInput(
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48",
+        )
         def result = new SearchResult()
 
         when(groceryListing.search(input)).thenReturn(result)
@@ -83,10 +93,12 @@ class SearchQueryTest {
     }
 
     @Test
-    void 'search v2 should be resolved by grocery listing when enabled by configuration'() {
-        def input = new SearchInput()
+    void 'search v2 should be resolved by grocery listing when customer country enabled by configuration'() {
+        def input = new SearchInput(
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48"
+        )
         def result = new SearchResult()
-        query.groceryListingEnabled = true
+        query.groceryListingEnabledCountries = ["ar"]
 
         when(groceryListing.search(input)).thenReturn(result)
 
@@ -117,10 +129,10 @@ class SearchQueryTest {
     }
 
     @Test
-    void 'search preview should be resolved by grocery listing when enabled by configuration'() {
-        def input = new PreviewSearchInput()
+    void 'search preview should be resolved by grocery listing when country enabled by configuration'() {
+        def input = new PreviewSearchInput(countryId: "ar")
         def result = new PreviewSearchResult()
-        query.groceryListingEnabled = true
+        query.groceryListingEnabledCountries = ["ar"]
 
         when(groceryListing.search(input)).thenReturn(result)
 
