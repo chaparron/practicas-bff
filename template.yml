@@ -319,8 +319,8 @@ Resources:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-wabi2b-grocery-listing-ApiGatewayEndpoint"
 
         - Namespace: aws:elasticbeanstalk:application:environment
-          OptionName: GROCERY_LISTING_ENABLED
-          Value: !FindInMap [ Config, !Ref EnvironmentStackName, GroceryListingEnabled ]
+          OptionName: GROCERY_LISTING_COUNTRIES
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, GroceryListingCountries ]
 
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
