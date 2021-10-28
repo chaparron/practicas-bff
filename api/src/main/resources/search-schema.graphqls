@@ -33,6 +33,7 @@ input SuggestInput {
   accessToken: NonEmptyString!,
   keyword: NonEmptyString!,
   languageTag: LanguageTag
+  favourites: Boolean
 }
 
 input FeatureInput {

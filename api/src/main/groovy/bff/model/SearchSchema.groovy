@@ -170,6 +170,7 @@ class SuggestInput {
     String accessToken
     String keyword
     LanguageTag languageTag
+    Boolean favourites
     Optional<Integer> maybeProducts = empty()
     Optional<Integer> maybeBrands = empty()
     Optional<Integer> maybeCategories = empty()

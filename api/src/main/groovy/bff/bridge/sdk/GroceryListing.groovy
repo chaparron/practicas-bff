@@ -70,7 +70,8 @@ class GroceryListing {
                         input.maybeProducts.map { { b -> b.fetchingProducts(it, ByRelevance$.MODULE$) } },
                         input.maybeCategories.map { { b -> b.fetchingCategories(it, ByRelevance$.MODULE$) } },
                         input.maybeBrands.map { { b -> b.fetchingBrands(it, ByRelevance$.MODULE$) } },
-                        input.maybeSuppliers.map { { b -> b.fetchingSuppliers(it, ByRelevance$.MODULE$) } }
+                        input.maybeSuppliers.map { { b -> b.fetchingSuppliers(it, ByRelevance$.MODULE$) } },
+                        ofNullable(input.favourites).filter { it }.map { { b -> b.favourites() } }
                 ]
                         .collect { it.orElse({ r -> r }) }
                         .inject(
