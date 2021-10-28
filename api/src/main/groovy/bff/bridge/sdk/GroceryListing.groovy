@@ -229,13 +229,14 @@ class FilteringBuilder implements RequestBuilder {
     Optional<Integer> maybeSupplier
     Optional<String> maybePromotion
     List<FeatureInput> features
+    Optional<Boolean> maybeFavourites
 
     FilteringBuilder(SearchInput input) {
-        this(input.keyword, input.category, input.brand, input.supplier, input.tag, input.features)
+        this(input.keyword, input.category, input.brand, input.supplier, input.tag, input.features, input.favourites)
     }
 
     FilteringBuilder(PreviewSearchInput input) {
-        this(input.keyword, input.category, input.brand, null, input.tag, input.features)
+        this(input.keyword, input.category, input.brand, null, input.tag, input.features, null)
     }
 
     private FilteringBuilder(String keyword,
@@ -243,13 +244,15 @@ class FilteringBuilder implements RequestBuilder {
                              Integer brand,
                              Integer supplier,
                              String promotion,
-                             List<FeatureInput> features) {
+                             List<FeatureInput> features,
+                             Boolean favourites) {
         this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }
         this.maybeCategory = ofNullable(category)
         this.maybeBrand = ofNullable(brand)
         this.maybeSupplier = ofNullable(supplier)
         this.maybePromotion = ofNullable(promotion).filter { !it.isEmpty() }
         this.features = features
+        this.maybeFavourites = ofNullable(favourites)
     }
 
     ProductQueryRequest apply(ProductQueryRequest request) {
@@ -259,7 +262,8 @@ class FilteringBuilder implements RequestBuilder {
                         brandFiltering(),
                         categoryFiltering(),
                         supplierFiltering(),
-                        promotionFiltering()
+                        promotionFiltering(),
+                        favouritesFiltering()
                 ] + featuresFiltering()
         )
                 .inject(request, { acc, filter -> filter(acc) })
@@ -308,6 +312,13 @@ class FilteringBuilder implements RequestBuilder {
     private Closure<ProductQueryRequest> promotionFiltering() {
         maybePromotion
                 .map { promotion -> { ProductQueryRequest r -> r.filteredByPromotion(promotion) } }
+                .orElse(identity)
+    }
+
+    private Closure<ProductQueryRequest> favouritesFiltering() {
+        maybeFavourites
+                .filter { it }
+                .map { { ProductQueryRequest r -> r.favourites() } }
                 .orElse(identity)
     }
 
@@ -450,8 +461,7 @@ abstract class ProductResponseMapper {
                     highlightedPrice: prices.min { it.unitValue },
                     title: it.name().defaultEntry(),
                     country_id: it.manufacturer().country(),
-                    // TODO add mapping
-                    favorite: false
+                    favorite: toJava(it.favourite()).orElse(null)
             )
         }
     }
@@ -936,7 +946,7 @@ class CartMapper extends ProductResponseMapper {
                         it.supplier
                     }
                 }
-                .flatten().toSet().toList() as List<Supplier>
+                        .flatten().toSet().toList() as List<Supplier>
         )
     }
 

@@ -162,6 +162,7 @@ class SearchInput {
     Integer supplier
     String tag
     List<FeatureInput> features
+    Boolean favourites
 }
 
 class SuggestInput {

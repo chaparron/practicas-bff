@@ -11,6 +11,7 @@ input SearchInput {
     tag: String,
     features: [FeatureInput]
     supplier: Int,
+    favourites: Boolean
 }
 
 input PreviewSearchInput {
