@@ -11,6 +11,7 @@ import wabi2b.grocery.listing.sdk.*
 import static bff.model.SortInput.DESC
 import static java.util.Optional.ofNullable
 import static scala.jdk.javaapi.CollectionConverters.asJava
+import static scala.jdk.javaapi.CollectionConverters.asJavaCollection
 import static scala.jdk.javaapi.CollectionConverters.asScala
 import static scala.jdk.javaapi.OptionConverters.toJava
 import static scala.jdk.javaapi.OptionConverters.toScala
@@ -816,7 +817,7 @@ class SearchResultMapper extends ProductResponseMapper {
     }
 
     SearchResult map(ProductQueryResponse response) {
-        new SearchResult(
+        SearchResult searchResult = new SearchResult(
                 header: new Header(
                         total: response.total().toInteger(),
                         pageSize: request.size(),
@@ -828,7 +829,15 @@ class SearchResultMapper extends ProductResponseMapper {
                 facets: facets(response),
                 products: products(response)
         )
+        searchResult.products.each {
+            it.prices.each {
+                it.supplier?.accessToken = input.accessToken
+            }
+            it.highlightedPrice.supplier.accessToken = input.accessToken
+        }
+        searchResult
     }
+
 
 }
 
