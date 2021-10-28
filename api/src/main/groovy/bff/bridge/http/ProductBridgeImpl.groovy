@@ -1,6 +1,7 @@
 package bff.bridge.http
 
 import bff.bridge.ProductBridge
+import bff.bridge.sdk.ProductMapper
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
 import bff.model.*
@@ -13,6 +14,8 @@ import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
+
+import static bff.bridge.sdk.ProductMapper.addAccessToken
 
 
 @Slf4j
@@ -47,22 +50,24 @@ class ProductBridgeImpl implements ProductBridge {
                 , Product).body
 
         r.accessToken = accessToken
+        addAccessToken(r, accessToken)
         r
     }
+
+
 
     @Override
     Product getProductByEan(String accessToken, String ean) throws BadRequestErrorException, EntityNotFoundException {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/product/ean/${ean}"))
                 .toUriString().toURI()
-        def r = http.exchange(
+        def product = http.exchange(
                 RequestEntity.method(HttpMethod.GET, uri)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                         .contentType(MediaType.APPLICATION_JSON)
                         .build()
                 , Product).body
 
-        r.accessToken = accessToken
-        r
+        return addAccessToken(product, accessToken)
     }
 
     @Override
@@ -190,5 +195,6 @@ class ProductBridgeImpl implements ProductBridge {
                         .build()
                 , Brand).body
     }
+
 
 }

@@ -261,6 +261,7 @@ class OrderBridgeImpl implements OrderBridge {
                 , OrderSummaryResponse).body
 
         response.orderSummary.forEach {
+            it.supplier.accessToken = accessToken
             it.summary.forEach { sm ->
                 sm.metadata = sm?.meta?.keySet()?.collect { key ->
                     new MetaEntry(
@@ -272,6 +273,7 @@ class OrderBridgeImpl implements OrderBridge {
         }
 
         response.orderedOrderSummary = response.orderSummary.collect {
+            it.supplier.accessToken = accessToken
             return new OrderSummary(
                     supplier: it.supplier,
                     summary: it.summary.findAll{it.type.visibleToSummary}.sort{it.type.position}

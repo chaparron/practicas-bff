@@ -11,7 +11,6 @@ import wabi2b.grocery.listing.sdk.*
 import static bff.model.SortInput.DESC
 import static java.util.Optional.ofNullable
 import static scala.jdk.javaapi.CollectionConverters.asJava
-import static scala.jdk.javaapi.CollectionConverters.asJavaCollection
 import static scala.jdk.javaapi.CollectionConverters.asScala
 import static scala.jdk.javaapi.OptionConverters.toJava
 import static scala.jdk.javaapi.OptionConverters.toScala
@@ -945,7 +944,7 @@ class CartMapper extends ProductResponseMapper {
                         it.supplier
                     }
                 }
-                .flatten().toSet().toList() as List<Supplier>
+                        .flatten().toSet().toList() as List<Supplier>
         )
     }
 
@@ -963,7 +962,7 @@ class ProductMapper extends ProductResponseMapper {
     Optional<Product> map(ProductQueryResponse response) {
         def products = products(response)
         products.isEmpty() ? Optional.empty() : Optional.of(products.head()).map {
-            new Product(
+            addAccessToken(new Product(
                     accessToken: accessToken,
                     id: it.id,
                     name: it.name,
@@ -979,8 +978,21 @@ class ProductMapper extends ProductResponseMapper {
                     brand: it.brand,
                     country_id: it.country_id,
                     favorite: it.favorite
-            )
+            ), accessToken)
         }
+    }
+
+    static Product addAccessToken(Product product, String accessToken) {
+        product.accessToken = accessToken
+        product.prices.each {
+            it.accessToken = accessToken
+            it.supplier?.accessToken = accessToken
+        }
+        product.priceFrom?.accessToken = accessToken
+        product.minUnitsPrice?.accessToken = accessToken
+        product.highlightedPrice?.accessToken = accessToken
+
+        return product
     }
 
 }

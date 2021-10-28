@@ -93,6 +93,7 @@ class Query implements GraphQLQueryResolver {
             isGroceryListingEnabled(dfe, { countryFromString(accessToken) })
                     ? groceryListing.getProductById(accessToken, productInput.productId)
                     : productBridge.getProductById(accessToken, productInput.productId)
+
         }
         catch (BadRequestErrorException ex) {
             ProductErrorReason.valueOf((String) ex.innerResponse).build()
