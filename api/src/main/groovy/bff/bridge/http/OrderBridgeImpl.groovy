@@ -74,6 +74,12 @@ class OrderBridgeImpl implements OrderBridge {
 
         r.content.each {
             it.accessToken = findOrdersInput.accessToken
+
+
+            it.supplierOrders.each {
+                it.accessToken = findOrdersInput.accessToken
+
+            }
         }
         r
 

@@ -58,6 +58,7 @@ class SearchBridgeImpl implements SearchBridge {
 
             it.prices?.forEach { pr ->
                 pr.accessToken = input.accessToken
+                pr.supplier?.accessToken = input.accessToken
             }
         }
         result

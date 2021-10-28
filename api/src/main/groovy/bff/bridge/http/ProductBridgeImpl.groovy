@@ -105,6 +105,7 @@ class ProductBridgeImpl implements ProductBridge {
 
         prices.collect {
             it.accessToken = accessToken
+            it.supplier?.accessToken = accessToken
             it
         }
     }
@@ -128,12 +129,15 @@ class ProductBridgeImpl implements ProductBridge {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/supplier/${supplierId}"))
                 .toUriString().toURI()
 
-        http.exchange(
+        def supplier = http.exchange(
                 RequestEntity.method(HttpMethod.GET, uri)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                         .contentType(MediaType.APPLICATION_JSON)
                         .build()
                 , Supplier).body
+
+        supplier.accessToken = accessToken
+        supplier
     }
 
     @Override
