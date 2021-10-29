@@ -140,6 +140,16 @@ class SearchQueryTest {
         verify(searchBridge, never()).previewSearch(input)
     }
 
+    @Test
+    void 'scroll search should be resolved by grocery listing'() {
+        def scroll = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        def result = new ScrollableSearchResult()
+
+        when(groceryListing.scroll(new SearchScrollInput(scroll: scroll))).thenReturn(result)
+
+        assertEquals(result, query.scrollSearch(scroll))
+    }
+
     private static DataFetchingEnvironment anyExperimentalDataFetchingEnvironment() {
         new DataFetchingEnvironmentImpl(
                 null,

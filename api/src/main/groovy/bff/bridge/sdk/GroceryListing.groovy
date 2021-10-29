@@ -1,8 +1,6 @@
 package bff.bridge.sdk
 
 import bff.bridge.CustomerBridge
-import bff.bridge.sdk.PreviewSearchResultMapper
-import bff.bridge.sdk.SearchResultMapper
 import bff.configuration.EntityNotFoundException
 import bff.model.*
 import scala.Option
@@ -42,6 +40,11 @@ class GroceryListing {
         return new SearchResultMapper(input, request).map(response)
     }
 
+    ScrollableSearchResult scroll(SearchScrollInput input) {
+        def response = sdk.query(new ProductScrollRequest(input.scroll))
+        return new ScrollableSearchResultMapper().map(response)
+    }
+
     PreviewSearchResult search(PreviewSearchInput input) {
         def page = new Page(input)
         def request =
@@ -70,7 +73,8 @@ class GroceryListing {
                         input.maybeProducts.map { { b -> b.fetchingProducts(it, ByRelevance$.MODULE$) } },
                         input.maybeCategories.map { { b -> b.fetchingCategories(it, ByRelevance$.MODULE$) } },
                         input.maybeBrands.map { { b -> b.fetchingBrands(it, ByRelevance$.MODULE$) } },
-                        input.maybeSuppliers.map { { b -> b.fetchingSuppliers(it, ByRelevance$.MODULE$) } }
+                        input.maybeSuppliers.map { { b -> b.fetchingSuppliers(it, ByRelevance$.MODULE$) } },
+                        ofNullable(input.favourites).filter { it }.map { { b -> b.favourites() } }
                 ]
                         .collect { it.orElse({ r -> r }) }
                         .inject(
@@ -229,13 +233,14 @@ class FilteringBuilder implements RequestBuilder {
     Optional<Integer> maybeSupplier
     Optional<String> maybePromotion
     List<FeatureInput> features
+    Optional<Boolean> maybeFavourites
 
     FilteringBuilder(SearchInput input) {
-        this(input.keyword, input.category, input.brand, input.supplier, input.tag, input.features)
+        this(input.keyword, input.category, input.brand, input.supplier, input.tag, input.features, input.favourites)
     }
 
     FilteringBuilder(PreviewSearchInput input) {
-        this(input.keyword, input.category, input.brand, null, input.tag, input.features)
+        this(input.keyword, input.category, input.brand, null, input.tag, input.features, null)
     }
 
     private FilteringBuilder(String keyword,
@@ -243,13 +248,15 @@ class FilteringBuilder implements RequestBuilder {
                              Integer brand,
                              Integer supplier,
                              String promotion,
-                             List<FeatureInput> features) {
+                             List<FeatureInput> features,
+                             Boolean favourites) {
         this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }
         this.maybeCategory = ofNullable(category)
         this.maybeBrand = ofNullable(brand)
         this.maybeSupplier = ofNullable(supplier)
         this.maybePromotion = ofNullable(promotion).filter { !it.isEmpty() }
         this.features = features
+        this.maybeFavourites = ofNullable(favourites)
     }
 
     ProductQueryRequest apply(ProductQueryRequest request) {
@@ -259,7 +266,8 @@ class FilteringBuilder implements RequestBuilder {
                         brandFiltering(),
                         categoryFiltering(),
                         supplierFiltering(),
-                        promotionFiltering()
+                        promotionFiltering(),
+                        favouritesFiltering()
                 ] + featuresFiltering()
         )
                 .inject(request, { acc, filter -> filter(acc) })
@@ -308,6 +316,13 @@ class FilteringBuilder implements RequestBuilder {
     private Closure<ProductQueryRequest> promotionFiltering() {
         maybePromotion
                 .map { promotion -> { ProductQueryRequest r -> r.filteredByPromotion(promotion) } }
+                .orElse(identity)
+    }
+
+    private Closure<ProductQueryRequest> favouritesFiltering() {
+        maybeFavourites
+                .filter { it }
+                .map { { ProductQueryRequest r -> r.favourites() } }
                 .orElse(identity)
     }
 
@@ -450,8 +465,7 @@ abstract class ProductResponseMapper {
                     highlightedPrice: prices.min { it.unitValue },
                     title: it.name().defaultEntry(),
                     country_id: it.manufacturer().country(),
-                    // TODO add mapping
-                    favorite: false
+                    favorite: toJava(it.favourite()).orElse(null)
             )
         }
     }
@@ -820,7 +834,8 @@ class SearchResultMapper extends ProductResponseMapper {
                 header: new Header(
                         total: response.total().toInteger(),
                         pageSize: request.size(),
-                        currentPage: new Page(input).number
+                        currentPage: new Page(input).number,
+                        scroll: toJava(response.scroll()).orElse(null)
                 ),
                 sort: sort(),
                 breadcrumb: breadCrumb(response),
@@ -1027,4 +1042,18 @@ class PreviewHomeSupplierResponseMapper {
         )
     }
 
+}
+
+class ScrollableSearchResultMapper extends ProductResponseMapper {
+
+    ScrollableSearchResultMapper() {
+        super(null)
+    }
+
+    static ScrollableSearchResult map(ProductQueryResponse response) {
+        new ScrollableSearchResult(
+                scroll: toJava(response.scroll()).orElse(null),
+                products: products(response)
+        )
+    }
 }
