@@ -1019,7 +1019,7 @@ class HomeBrandsResultMapper {
                 brands: asJava(response.hits()).collect {
                     new Brand(
                             id: it.id().toInteger(),
-                            name: it.name(),
+                            name: it.name().defaultEntry(),
                             logo: toJava(it.logo()).orElse(null)
                     )
                 }
