@@ -38,6 +38,10 @@ class SearchQuery implements GraphQLQueryResolver {
                 : searchBridge.searchV2(input)
     }
 
+    ScrollableSearchResult scrollSearch(String scroll) {
+        return groceryListing.scroll(new SearchScrollInput(scroll: scroll))
+    }
+
     SearchResponse previewSearch(PreviewSearchInput input, DataFetchingEnvironment dfe) {
         return isGroceryListingEnabled(dfe, { input.countryId })
                 ? groceryListing.search(input)

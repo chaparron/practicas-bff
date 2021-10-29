@@ -47,6 +47,11 @@ class PreviewSearchResult implements SearchResponse {
     List<Facet> facets
 }
 
+class ScrollableSearchResult {
+    String scroll
+    List<ProductSearch> products
+}
+
 class Suggestions {
 
     private List<SuggestedProduct> products
@@ -122,6 +127,7 @@ class Header {
     Integer total
     Integer pageSize
     Integer currentPage
+    String scroll
 
     @JsonProperty("page_size")
     void setPageSize(Integer pageSize) {
@@ -163,6 +169,11 @@ class SearchInput {
     String tag
     List<FeatureInput> features
     Boolean favourites
+}
+
+@EqualsAndHashCode
+class SearchScrollInput {
+    String scroll
 }
 
 class SuggestInput {

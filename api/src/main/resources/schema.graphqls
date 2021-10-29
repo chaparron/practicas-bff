@@ -7,7 +7,9 @@ type Query {
 
   searchV2 (input: SearchInput!): SearchResponse
 
-  previewSearch (input: PreviewSearchInput!): PreviewSearchResponse
+  scrollSearch(scroll: String!): ScrollableSearchResult
+
+  previewSearch(input: PreviewSearchInput!): PreviewSearchResponse
 
   suggest(input: SuggestInput!): Suggestions!
 

@@ -1,8 +1,6 @@
 package bff.bridge.sdk
 
 import bff.bridge.CustomerBridge
-import bff.bridge.sdk.PreviewSearchResultMapper
-import bff.bridge.sdk.SearchResultMapper
 import bff.configuration.EntityNotFoundException
 import bff.model.*
 import scala.Option
@@ -40,6 +38,11 @@ class GroceryListing {
                         )
         def response = sdk.query(request.offset(page.offset))
         return new SearchResultMapper(input, request).map(response)
+    }
+
+    ScrollableSearchResult scroll(SearchScrollInput input) {
+        def response = sdk.query(new ProductScrollRequest(input.scroll))
+        return new ScrollableSearchResultMapper().map(response)
     }
 
     PreviewSearchResult search(PreviewSearchInput input) {
@@ -831,7 +834,8 @@ class SearchResultMapper extends ProductResponseMapper {
                 header: new Header(
                         total: response.total().toInteger(),
                         pageSize: request.size(),
-                        currentPage: new Page(input).number
+                        currentPage: new Page(input).number,
+                        scroll: toJava(response.scroll()).orElse(null)
                 ),
                 sort: sort(),
                 breadcrumb: breadCrumb(response),
@@ -1017,4 +1021,18 @@ class PreviewHomeSupplierResponseMapper {
         )
     }
 
+}
+
+class ScrollableSearchResultMapper extends ProductResponseMapper {
+
+    ScrollableSearchResultMapper() {
+        super(null)
+    }
+
+    static ScrollableSearchResult map(ProductQueryResponse response) {
+        new ScrollableSearchResult(
+                scroll: toJava(response.scroll()).orElse(null),
+                products: products(response)
+        )
+    }
 }

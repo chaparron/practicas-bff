@@ -11,6 +11,8 @@ import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
 
+import static java.util.Optional.ofNullable
+
 class SearchBridgeImpl implements SearchBridge {
 
     URI root
@@ -59,6 +61,7 @@ class SearchBridgeImpl implements SearchBridge {
             it.prices?.forEach { pr ->
                 pr.accessToken = input.accessToken
             }
+            it.favorite = ofNullable(it.favorite).orElse(false)
         }
         result
 
