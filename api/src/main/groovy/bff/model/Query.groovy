@@ -56,9 +56,6 @@ class Query implements GraphQLQueryResolver {
     CategoryBridge categoryBridge
 
     @Autowired
-    RecommendedOrderBridge recommendOrderBridge
-
-    @Autowired
     PhoneNotifierBridge phoneNotifierBridge
 
     @Autowired
@@ -385,14 +382,6 @@ class Query implements GraphQLQueryResolver {
 
     List<SupplierOrder> findPendingRateSinceLastLogin(AccessTokenInput input) {
         customerBridge.findPendingRateSinceLastLogin(input.accessToken)
-    }
-
-    List<FrequentProductResult> getFrequentProducts(GetFrequentProductsInput getFrequentProductsInput) {
-        recommendOrderBridge.getFrequentProducts(getFrequentProductsInput)
-    }
-
-    List<FavoriteProductResult> getFavoriteProducts(GetFavoriteProductsInput getFavoriteProductsInput) {
-        recommendOrderBridge.getFavoriteProductsUpdatedByApi(getFavoriteProductsInput)
     }
 
     Boolean isValidPhone(IsValidPhoneInput input) {

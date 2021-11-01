@@ -436,66 +436,14 @@ class AcceptTcInput{
     String accessToken
 }
 
-class GetFrequentProductsInput {
-    String accessToken
-}
-
-class FrequentProductResult {
-    Long productId
-    Long nOrders
-    String productEan
-    String productImageId
-    String productTitle
-    String categoryTitle
-}
 
 class GetFavoriteProductsInput {
     String accessToken
 }
 
-class FavoriteProductResult {
-    Long productId
-    String productEan
-    String productImageId
-    String productTitle
-    String categoryTitle
-}
-
 class FavoriteProductInput {
     Long productId
     String accessToken
-}
-
-class ProductToMarkAsFavoriteInput {
-    String accessToken
-    Long productId
-    String productEan
-    String productImageId
-    String productTitle
-    String categoryTitle
-
-    ProductToMarkAsFavorite getProduct(){
-        new ProductToMarkAsFavorite(
-                productId: productId,
-                productEan: productEan,
-                productImageId: productImageId,
-                productTitle: productTitle,
-                categoryTitle: categoryTitle
-        )
-    }
-}
-
-class ProductToMarkAsFavorite {
-    Long productId
-    String productEan
-    String productImageId
-    String productTitle
-    String categoryTitle
-}
-
-class ProductToUnmarkAsFavoriteInput{
-    String accessToken
-    Long productId
 }
 
 class IsValidPhoneInput {

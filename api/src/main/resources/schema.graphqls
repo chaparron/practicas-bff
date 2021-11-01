@@ -114,10 +114,6 @@ type Query {
 
   findPendingRateSinceLastLogin(input: AccessTokenInput!): [SupplierOrder]
 
-  getFrequentProducts(input: GetFrequentProductsInput!): [FrequentProductResult]
-
-  getFavoriteProducts(input: GetFavoriteProductsInput!): [FavoriteProductResult]
-
   isValidPhone(input: IsValidPhoneInput!): Boolean
 
 }
