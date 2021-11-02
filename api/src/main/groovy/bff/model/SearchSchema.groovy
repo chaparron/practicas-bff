@@ -400,6 +400,7 @@ class Supplier implements SupplierResponse {
     WabipayConfiguration wabipayConfiguration
 }
 
+@EqualsAndHashCode
 class DeliveryZone {
     Long id
     BigDecimal minAmount

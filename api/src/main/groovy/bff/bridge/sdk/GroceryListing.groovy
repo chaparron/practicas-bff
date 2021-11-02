@@ -383,7 +383,7 @@ class SortingBuilder implements RequestBuilder {
                 }
                 .map { Optional.of(it) }
                 .orElseGet { maybeKeyword.map { sortedByRelevance(request) } }
-                .orElse(request)
+                .orElse(sortedAlphabetically(request))
     }
 
     private static ProductQueryRequest sortedByRelevance(ProductQueryRequest request) {
