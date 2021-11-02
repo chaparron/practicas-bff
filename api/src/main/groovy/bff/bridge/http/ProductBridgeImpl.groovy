@@ -50,8 +50,7 @@ class ProductBridgeImpl implements ProductBridge {
                 , Product).body
 
         r.accessToken = accessToken
-        addAccessToken(r, accessToken)
-        r
+        return addAccessToken(r, accessToken)
     }
 
 
