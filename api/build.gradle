@@ -16,7 +16,7 @@ dependencies {
     implementation(platform("org.springframework.cloud:spring-cloud-sleuth:2.0.4.RELEASE"))
 
     implementation "com.github.ben-manes.caffeine:caffeine:2.9.2"
-    implementation "wabi2b.sdk:grocery-listing:1174-4b430ee698e1d832429c0081484d2efefd39470e"
+    implementation "wabi2b.sdk:grocery-listing:1176-2b3907646ad1f24f724b471b9664dd615bd5d1d0"
 
     def graphQL = '5.0.2'
 

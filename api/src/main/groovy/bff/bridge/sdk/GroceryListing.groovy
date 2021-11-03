@@ -776,8 +776,13 @@ abstract class ProductResponseMapper {
                                             .orElse(null)
                             )
                         },
-                // Using default value for old clients compatibility.
-                averageDeliveryDay: null
+                rating: toJava(option.supplier().rating()).map {
+                    new RatingScore(
+                            count: it.count().toInteger(),
+                            average: it.average().toDouble(),
+                            percentage: it.percentage().toDouble()
+                    )
+                }.orElse(null)
         )
     }
 
