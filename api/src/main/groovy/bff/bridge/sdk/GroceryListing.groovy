@@ -969,7 +969,7 @@ class CartMapper extends ProductResponseMapper {
                 }
                         .flatten().toSet().toList() as List<Supplier>
         )
-        cart.products.each {
+        cart.availableProducts.each {
             addAccessToken(it.product, accessToken)
         }
         cart
