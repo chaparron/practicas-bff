@@ -6,6 +6,7 @@ import bff.model.*
 import scala.Option
 import wabi2b.grocery.listing.sdk.*
 
+import static bff.bridge.sdk.ProductMapper.addAccessToken
 import static bff.model.SortInput.DESC
 import static java.util.Optional.ofNullable
 import static scala.jdk.javaapi.CollectionConverters.asJava
@@ -131,7 +132,9 @@ class GroceryListing {
                         .fetchingOptions(50)
                         .fetchingDeliveryZones(1)
         def response = sdk.query(request)
-        return new CartMapper(accessToken, request).map(response)
+        Cart cart =  new CartMapper(accessToken, request).map(response)
+        cart
+
     }
 
     Product getProductById(String accessToken, Integer product) {
@@ -923,7 +926,7 @@ class CartMapper extends ProductResponseMapper {
 
     Cart map(ProductQueryResponse response) {
         def products = products(response)
-        new Cart(
+        def cart = new Cart(
                 availableProducts: products.collect {
                     new ProductCart(
                             product: new Product(
@@ -966,6 +969,10 @@ class CartMapper extends ProductResponseMapper {
                 }
                         .flatten().toSet().toList() as List<Supplier>
         )
+        cart.products.each {
+            addAccessToken(it.product, accessToken)
+        }
+        cart
     }
 
 }

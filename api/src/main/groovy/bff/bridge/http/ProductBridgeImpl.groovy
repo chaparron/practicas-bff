@@ -159,12 +159,12 @@ class ProductBridgeImpl implements ProductBridge {
                 , Cart).body
 
         cart.availableProducts = cart.products
-        cart.availableProducts.each {
-            it.product.accessToken = accessToken
-            it.supplierPrices = it.suppliers
-        }
         cart.suppliers.each {
             it.accessToken = accessToken
+        }
+        cart.availableProducts.each {
+            addAccessToken(it.product, accessToken)
+            it.supplierPrices = it.suppliers
         }
         cart
     }
