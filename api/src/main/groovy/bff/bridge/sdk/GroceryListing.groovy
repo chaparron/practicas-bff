@@ -1012,14 +1012,19 @@ class ProductMapper extends ProductResponseMapper {
     static Product addAccessToken(Product product, String accessToken) {
         product.accessToken = accessToken
         product.prices.each {
-            it.accessToken = accessToken
-            it.supplier?.accessToken = accessToken
+            addPriceAccessToken(it, accessToken)
         }
-        product.priceFrom?.accessToken = accessToken
-        product.minUnitsPrice?.accessToken = accessToken
-        product.highlightedPrice?.accessToken = accessToken
+        addPriceAccessToken(product.priceFrom, accessToken)
+        addPriceAccessToken(product.minUnitsPrice, accessToken)
+        addPriceAccessToken(product.highlightedPrice, accessToken)
 
         return product
+    }
+
+    static Price addPriceAccessToken(Price price, String accessToken) {
+        price?.accessToken = accessToken
+        price?.supplier?.accessToken = accessToken
+        price
     }
 
 }
