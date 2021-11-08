@@ -428,6 +428,7 @@ class ProductCart {
 }
 
 class SupplierPrice {
+    String accessToken
     Integer id
     String name
     BigDecimal price

@@ -1,6 +1,7 @@
 package bff.bridge.http
 
 import bff.bridge.ProductBridge
+import bff.bridge.sdk.ProductMapper
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
 import bff.model.*
@@ -13,6 +14,8 @@ import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
+
+import static bff.bridge.sdk.ProductMapper.addAccessToken
 
 
 @Slf4j
@@ -47,22 +50,23 @@ class ProductBridgeImpl implements ProductBridge {
                 , Product).body
 
         r.accessToken = accessToken
-        r
+        return addAccessToken(r, accessToken)
     }
+
+
 
     @Override
     Product getProductByEan(String accessToken, String ean) throws BadRequestErrorException, EntityNotFoundException {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/product/ean/${ean}"))
                 .toUriString().toURI()
-        def r = http.exchange(
+        def product = http.exchange(
                 RequestEntity.method(HttpMethod.GET, uri)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                         .contentType(MediaType.APPLICATION_JSON)
                         .build()
                 , Product).body
 
-        r.accessToken = accessToken
-        r
+        return addAccessToken(product, accessToken)
     }
 
     @Override
@@ -105,6 +109,7 @@ class ProductBridgeImpl implements ProductBridge {
 
         prices.collect {
             it.accessToken = accessToken
+            it.supplier?.accessToken = accessToken
             it
         }
     }
@@ -128,12 +133,15 @@ class ProductBridgeImpl implements ProductBridge {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/supplier/${supplierId}"))
                 .toUriString().toURI()
 
-        http.exchange(
+        def supplier = http.exchange(
                 RequestEntity.method(HttpMethod.GET, uri)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                         .contentType(MediaType.APPLICATION_JSON)
                         .build()
                 , Supplier).body
+
+        supplier.accessToken = accessToken
+        supplier
     }
 
     @Override
@@ -151,8 +159,11 @@ class ProductBridgeImpl implements ProductBridge {
                 , Cart).body
 
         cart.availableProducts = cart.products
+        cart.suppliers.each {
+            it.accessToken = accessToken
+        }
         cart.availableProducts.each {
-            it.product.accessToken = accessToken
+            addAccessToken(it.product, accessToken)
             it.supplierPrices = it.suppliers
         }
         cart
@@ -183,5 +194,6 @@ class ProductBridgeImpl implements ProductBridge {
                         .build()
                 , Brand).body
     }
+
 
 }

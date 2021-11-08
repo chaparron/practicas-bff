@@ -42,7 +42,12 @@ class SupplierOrderBridgeImpl implements SupplierOrderBridge {
                 .build()
             , new ParameterizedTypeReference<List<OrderItem>>() {}).body
 
-        r.each { it.accessToken = accessToken }
+        r.each {
+            it.accessToken = accessToken
+            it.product?.prices?.each {
+                it.accessToken = accessToken
+            }
+        }
         r
     }
 
@@ -101,6 +106,9 @@ class SupplierOrderBridgeImpl implements SupplierOrderBridge {
             , Product).body
 
         r.accessToken = accessToken
+        r.prices?.each {
+            it?.supplier?.accessToken = accessToken
+        }
         //r.category = r.category.id
         r
     }

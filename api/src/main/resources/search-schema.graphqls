@@ -1,59 +1,70 @@
 input SearchInput {
-    accessToken: String!,
-    addressId: Int,
-    keyword: String,
-    sort: String,
-    sortDirection: SortInput,
-    category: Int,
-    page: Int,
-    size: Int,
-    brand: Int,
-    tag: String,
-    features: [FeatureInput]
-    supplier: Int,
+  accessToken: String!,
+  addressId: Int,
+  keyword: String,
+  sort: String,
+  sortDirection: SortInput,
+  category: Int,
+  page: Int,
+  size: Int,
+  brand: Int,
+  tag: String,
+  features: [FeatureInput]
+  supplier: Int,
+  favourites: Boolean
 }
 
 input PreviewSearchInput {
-    keyword: String,
-    sort: String,
-    sortDirection: SortInput,
-    category: Int,
-    page: Int,
-    size: Int,
-    brand: Int,
-    tag: String,
-    features: [FeatureInput]
-    lat: Float!,
-    lng: Float!
-    countryId: String
+  keyword: String,
+  sort: String,
+  sortDirection: SortInput,
+  category: Int,
+  page: Int,
+  size: Int,
+  brand: Int,
+  tag: String,
+  features: [FeatureInput]
+  lat: Float!,
+  lng: Float!
+  countryId: String
 }
 
 input SuggestInput {
   accessToken: NonEmptyString!,
   keyword: NonEmptyString!,
   languageTag: LanguageTag
+  favourites: Boolean
+}
+
+input PreviewSuggestInput {
+  lat: Float!,
+  lng: Float!
+  country: String!
+  keyword: NonEmptyString!,
+  languageTag: LanguageTag
+  favourites: Boolean
 }
 
 input FeatureInput {
-    id: String,
-    value: String
+  id: String,
+  value: String
 }
 
 enum SortInput {
-    DESC,
-    ASC,
-    DEFAULT
+  DESC,
+  ASC,
+  DEFAULT
 }
 
 enum SearchFailedReason {
-    INVALID_ADDRESS,
-    INVALID_LOCATION,
-    FORBIDDEN,
-    NO_SUPPLIERS_FOUND
+  INVALID_ADDRESS,
+  INVALID_LOCATION,
+  FORBIDDEN,
+  NO_SUPPLIERS_FOUND
 }
 
 type SearchFailed {
-    reason: SearchFailedReason!
+  reason: SearchFailedReason!
 }
 
 union SearchResponse = SearchResult | SearchFailed
@@ -61,21 +72,26 @@ union SearchResponse = SearchResult | SearchFailed
 union PreviewSearchResponse = PreviewSearchResult | SearchFailed
 
 type SearchResult {
-    header: Header!
-    sort: Sort!
-    breadcrumb: [BreadCrumb]!
-    filters: [Filter]
-    products: [ProductSearch]
-    facets: [Facet]
+  header: Header!
+  sort: Sort!
+  breadcrumb: [BreadCrumb]!
+  filters: [Filter]
+  products: [ProductSearch]
+  facets: [Facet]
+}
+
+type ScrollableSearchResult {
+  scroll: String,
+  products: [ProductSearch]
 }
 
 type PreviewSearchResult {
-    header: Header!
-    sort: Sort!
-    breadcrumb: [BreadCrumb]!
-    filters: [Filter]
-    products: [PreviewProductSearch]
-    facets: [Facet]
+  header: Header!
+  sort: Sort!
+  breadcrumb: [BreadCrumb]!
+  filters: [Filter]
+  products: [PreviewProductSearch]
+  facets: [Facet]
 }
 
 type Suggestions {
@@ -93,6 +109,7 @@ type SuggestedProduct {
 type SuggestedBrand {
   id: Int!
   name: NonEmptyString!
+  logo: NonEmptyString
 }
 
 type SuggestedCategory {
@@ -103,259 +120,261 @@ type SuggestedCategory {
 type SuggestedSupplier {
   id: Int!
   name: NonEmptyString!
+  avatar: NonEmptyString
 }
 
 type Filter{
-    key: String!
-    values: [FilterItem]
-    value: String
+  key: String!
+  values: [FilterItem]
+  value: String
 }
 
 type FilterItem {
-    id: Int!
-    name: String!
+  id: Int!
+  name: String!
 }
 
 type Header {
-    total: Int!
-    pageSize: Int!
-    currentPage: Int!
+  total: Int!
+  pageSize: Int!
+  currentPage: Int!
+  scroll: String
 }
 
 type BreadCrumb {
-    id: Int!
-    name: String!
+  id: Int!
+  name: String!
 }
 
 type PreviewProductSearch {
-    id: ID!
-    name: String!
-    enabled: Boolean!
-    category: Category
-    brand: Brand!
-    ean: String
-    description: String
-    images: [Image]!
-    created: TimestampOutput!
-    manufacturer: Manufacturer
-    prices: [PreviewPrice]
-    title: String
-    suppliers: [PreviewSupplier]
-    totalNumberOfSuppliers: Int!
-    country_id: String!
+  id: ID!
+  name: String!
+  enabled: Boolean!
+  category: Category
+  brand: Brand!
+  ean: String
+  description: String
+  images: [Image]!
+  created: TimestampOutput!
+  manufacturer: Manufacturer
+  prices: [PreviewPrice]
+  title: String
+  suppliers: [PreviewSupplier]
+  totalNumberOfSuppliers: Int!
+  country_id: String!
 }
 
 type PreviewPrice {
-    id: Int!
-    value: Float
-    unitValue: Float
-    display: Display
-    minUnits: Int
+  id: Int!
+  value: Float
+  unitValue: Float
+  display: Display
+  minUnits: Int
 }
 
 type PreviewSupplier {
-    id: Int!
-    name: String!
-    legalName: String
-    avatar: String
+  id: Int!
+  name: String!
+  legalName: String
+  avatar: String
 }
 
 type ProductSearch {
-    id: Int!
-    name: String!
-    enabled: Boolean!
-    category: Category
-    brand: Brand!
-    ean: String
-    description: String
-    images: [Image]!
-    displays: [Display]
-    manufacturer: Manufacturer
-    prices: [Price]
-    title: String
-    priceFrom: Price
-    minUnitsPrice: Price
-    highlightedPrice: Price
-    favorite: Boolean!
-    country_id: String!
+  id: Int!
+  name: String!
+  enabled: Boolean!
+  category: Category
+  brand: Brand!
+  ean: String
+  description: String
+  images: [Image]!
+  displays: [Display]
+  manufacturer: Manufacturer
+  prices: [Price]
+  title: String
+  priceFrom: Price
+  minUnitsPrice: Price
+  highlightedPrice: Price
+  favorite: Boolean!
+  country_id: String!
 }
 
 type Display {
-    id: Int!
-    ean: String!
-    units: Int!
+  id: Int!
+  ean: String!
+  units: Int!
 }
 
 type Feature {
-    id: Int!
-    name: String!
-    required: Boolean!
-    hasUnit: Boolean!
-    featureType: FeatureType
-    value: FeatureValue
+  id: Int!
+  name: String!
+  required: Boolean!
+  hasUnit: Boolean!
+  featureType: FeatureType
+  value: FeatureValue
 }
 
 type FeatureValue {
-    id: Int!
-    name: String
-    unit: MeasurementUnit
-    enabled: Boolean
+  id: Int!
+  name: String
+  unit: MeasurementUnit
+  enabled: Boolean
 }
 
 type MeasurementUnit {
-    id: Int!
-    name: String!
-    enabled: Boolean
+  id: Int!
+  name: String!
+  enabled: Boolean
 }
 
 enum FeatureType {
-    SINGLE,
-    MULTIPLE,
-    BINARY,
-    RANGE
+  SINGLE,
+  MULTIPLE,
+  BINARY,
+  RANGE
 }
 
 type Image {
-    id: String!
-    originalName: String
-    imageOrder: Int
-    added: TimestampOutput
+  id: String!
+  originalName: String
+  imageOrder: Int
+  added: TimestampOutput
 }
 
 type WabipayConfiguration {
-    order_percentage_cap: Int!
-    use_wabipay_cap: Boolean!
+  order_percentage_cap: Int!
+  use_wabipay_cap: Boolean!
 }
 
 type Supplier {
-    id: Int!
-    name: String!
-    legalName: String
-    avatar: String
-    enabled: Boolean
-    phone: String
-    legalId: String
-    address: String
-    postalCode: String
-    rating: RatingScore
-    country_id: String
-    deliveryZones: [DeliveryZone]
-    averageDeliveryDay : String
-    wabipayConfiguration: WabipayConfiguration
+  id: Int!
+  name: String!
+  legalName: String
+  avatar: String
+  enabled: Boolean
+  phone: String
+  legalId: String
+  address: String
+  postalCode: String
+  rating: RatingScore
+  country_id: String
+  deliveryZones: [DeliveryZone]
+  averageDeliveryDay : String
+  wabipayConfiguration: WabipayConfiguration
 }
 
 type DeliveryZone {
-    id: Int!
-    minAmount: Float!
-    maxAmount: Float!
-    deliveryCost: Float!
+  id: Int!
+  minAmount: Float!
+  maxAmount: Float!
+  deliveryCost: Float!
 }
 
 type Coordinate {
-    lat: Float!
-    lng: Float!
+  lat: Float!
+  lng: Float!
 }
 
 type Manufacturer {
-    id: Int!
-    name: String!
-    enabled: Boolean!
-    phone: String
-    avatar: String
-    country_id: String!
+  id: Int!
+  name: String!
+  enabled: Boolean!
+  phone: String
+  avatar: String
+  country_id: String!
 }
 
 type Price {
-    id: Int!
-    supplier: Supplier
-    value: Float
-    unitValue: Float
-    updated: TimestampOutput
-    enabled: Boolean
-    maxUnits: Int
-    minUnits: Int
-    display: Display
-    promotions: [Promotion]
-    configuration: SupplierProductConfiguration
+  id: Int!
+  supplier: Supplier
+  value: Float
+  unitValue: Float
+  updated: TimestampOutput
+  enabled: Boolean
+  maxUnits: Int
+  minUnits: Int
+  display: Display
+  promotions: [Promotion]
+  configuration: SupplierProductConfiguration
 }
 
 type SupplierProductConfiguration {
-    disableMinAmountCount: Boolean!
+  disableMinAmountCount: Boolean!
 }
 
 input ProductInput {
-    productId : Int!
-    accessToken: String!
+  productId : Int!
+  accessToken: String!
 }
 
 
 input ProductEanInput {
-    ean: String!
-    accessToken: String!
+  ean: String!
+  accessToken: String!
 }
 
 
 enum ProductErrorReason {
-    PRODUCT_NOT_FOUND,
-    BAD_REQUEST
+  PRODUCT_NOT_FOUND,
+  BAD_REQUEST
 }
 
 type ProductFailed {
-    reason: ProductErrorReason!
+  reason: ProductErrorReason!
 }
 
 enum PriceErrorReason {
-    PRICE_NOT_FOUND,
-    NO_SUPPLIER_FOUND
+  PRICE_NOT_FOUND,
+  NO_SUPPLIER_FOUND
 }
 
 type PriceFailed {
-    reason: PriceErrorReason!
+  reason: PriceErrorReason!
 }
 
 type Product {
-    id: Int!
-    name: String!
-    enabled: Boolean!
-    category: Category!
-    brand: Brand!
-    ean: String
-    description: String
-    features: [Feature]
-    images: [Image]!
-    created: TimestampOutput!
-    manufacturer: Manufacturer
-    prices: [Price]
-    displays: [Display]
-    title: String
-    priceFrom: Price
-    highlightedPrice: Price
-    minUnitsPrice: Price
-    country_id: String!
-    favorite: Boolean!
+  id: Int!
+  name: String!
+  enabled: Boolean!
+  category: Category!
+  brand: Brand!
+  ean: String
+  description: String
+  features: [Feature]
+  images: [Image]!
+  created: TimestampOutput!
+  manufacturer: Manufacturer
+  prices: [Price]
+  displays: [Display]
+  title: String
+  priceFrom: Price
+  highlightedPrice: Price
+  minUnitsPrice: Price
+  country_id: String!
+  favorite: Boolean!
 }
 
 type Prices {
-    prices: [Price]!
+  prices: [Price]!
 }
 
 union ProductResult = Product | ProductFailed
 
 enum PreviewSupplierFailedReason {
-    INVALID_LOCATION
-    NOT_FOUND
-    BAD_REQUEST
-    INVALID_COUNTRY_ID
-    NO_SUPPLIERS_FOUND
+  INVALID_LOCATION
+  NOT_FOUND
+  BAD_REQUEST
+  INVALID_COUNTRY_ID
+  NO_SUPPLIERS_FOUND
 }
 
 type PreviewHomeSupplierFailed {
-    reason: PreviewSupplierFailedReason!
+  reason: PreviewSupplierFailedReason!
 }
 
 
 type PreviewHomeSupplierResponse {
-    suppliers: [PreviewSupplier]!
+  suppliers: [PreviewSupplier]!
 }
 
 union HomeSupplierResult = PreviewHomeSupplierResponse | PreviewHomeSupplierFailed

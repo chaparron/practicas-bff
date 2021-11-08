@@ -74,6 +74,12 @@ class OrderBridgeImpl implements OrderBridge {
 
         r.content.each {
             it.accessToken = findOrdersInput.accessToken
+
+
+            it.supplierOrders.each {
+                it.accessToken = findOrdersInput.accessToken
+
+            }
         }
         r
 
@@ -94,6 +100,7 @@ class OrderBridgeImpl implements OrderBridge {
                 , CustomerOrderResponse).body
 
         customerOrderResponse.accessToken = findSupplierOrderInput.accessToken
+        customerOrderResponse.supplierOrder?.supplier?.accessToken = findSupplierOrderInput.accessToken
         customerOrderResponse.supplierOrder.accessToken = findSupplierOrderInput.accessToken
         customerOrderResponse.supplierOrder.order.accessToken = findSupplierOrderInput.accessToken
         customerOrderResponse.customer.accessToken = findSupplierOrderInput.accessToken
@@ -254,6 +261,7 @@ class OrderBridgeImpl implements OrderBridge {
                 , OrderSummaryResponse).body
 
         response.orderSummary.forEach {
+            it.supplier.accessToken = accessToken
             it.summary.forEach { sm ->
                 sm.metadata = sm?.meta?.keySet()?.collect { key ->
                     new MetaEntry(
@@ -265,6 +273,7 @@ class OrderBridgeImpl implements OrderBridge {
         }
 
         response.orderedOrderSummary = response.orderSummary.collect {
+            it.supplier.accessToken = accessToken
             return new OrderSummary(
                     supplier: it.supplier,
                     summary: it.summary.findAll{it.type.visibleToSummary}.sort{it.type.position}

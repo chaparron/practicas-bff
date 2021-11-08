@@ -47,6 +47,11 @@ class PreviewSearchResult implements SearchResponse {
     List<Facet> facets
 }
 
+class ScrollableSearchResult {
+    String scroll
+    List<ProductSearch> products
+}
+
 class Suggestions {
 
     private List<SuggestedProduct> products
@@ -80,6 +85,7 @@ class SuggestedProduct {
 class SuggestedBrand {
     Integer id
     String name
+    String logo
 }
 
 class SuggestedCategory {
@@ -90,6 +96,7 @@ class SuggestedCategory {
 class SuggestedSupplier {
     Integer id
     String name
+    String avatar
 }
 
 class PreviewSearchResultMapper {
@@ -120,6 +127,7 @@ class Header {
     Integer total
     Integer pageSize
     Integer currentPage
+    String scroll
 
     @JsonProperty("page_size")
     void setPageSize(Integer pageSize) {
@@ -160,6 +168,12 @@ class SearchInput {
     Integer supplier
     String tag
     List<FeatureInput> features
+    Boolean favourites
+}
+
+@EqualsAndHashCode
+class SearchScrollInput {
+    String scroll
 }
 
 class SuggestInput {
@@ -167,6 +181,7 @@ class SuggestInput {
     String accessToken
     String keyword
     LanguageTag languageTag
+    Boolean favourites
     Optional<Integer> maybeProducts = empty()
     Optional<Integer> maybeBrands = empty()
     Optional<Integer> maybeCategories = empty()
@@ -189,6 +204,34 @@ class SuggestInput {
 
     def forSuppliers(Integer size) {
         this.maybeSuppliers = of(size)
+        return this
+    }
+
+}
+
+class PreviewSuggestInput {
+
+    String country
+    BigDecimal lat
+    BigDecimal lng
+    String keyword
+    LanguageTag languageTag
+    Optional<Integer> maybeProducts = empty()
+    Optional<Integer> maybeBrands = empty()
+    Optional<Integer> maybeCategories = empty()
+
+    def forProducts(Integer size) {
+        this.maybeProducts = of(size)
+        return this
+    }
+
+    def forBrands(Integer size) {
+        this.maybeBrands = of(size)
+        return this
+    }
+
+    def forCategories(Integer size) {
+        this.maybeCategories = of(size)
         return this
     }
 
@@ -385,6 +428,7 @@ class Supplier implements SupplierResponse {
     WabipayConfiguration wabipayConfiguration
 }
 
+@EqualsAndHashCode
 class DeliveryZone {
     Long id
     BigDecimal minAmount

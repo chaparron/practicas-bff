@@ -34,7 +34,10 @@ class QueryTest {
 
     @Test
     void 'product detail should be resolved by product bridge by default'() {
-        def input = new ProductInput(accessToken: "abcde", productId: 1234)
+        def input = new ProductInput(
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48",
+                productId: 1234
+        )
         def result = new Product()
 
         when(productBridge.getProductById(input.accessToken, input.productId)).thenReturn(result)
@@ -45,7 +48,10 @@ class QueryTest {
 
     @Test
     void 'product detail should be resolved by grocery listing when experimental mode is enabled'() {
-        def input = new ProductInput()
+        def input = new ProductInput(
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48",
+                productId: 1234
+        )
         def result = new Product()
 
         when(groceryListing.getProductById(input.accessToken, input.productId)).thenReturn(result)
@@ -55,10 +61,13 @@ class QueryTest {
     }
 
     @Test
-    void 'product detail should be resolved by grocery listing when enabled by configuration'() {
-        def input = new ProductInput()
+    void 'product detail should be resolved by grocery listing when customer country enabled by configuration' () {
+        def input = new ProductInput(
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48",
+                productId: 1234
+        )
         def result = new Product()
-        query.groceryListingEnabled = true
+        query.groceryListingEnabledCountries = ["ar"]
 
         when(groceryListing.getProductById(input.accessToken, input.productId)).thenReturn(result)
 
@@ -68,7 +77,10 @@ class QueryTest {
 
     @Test
     void 'refresh cart should be resolved by product bridge by default'() {
-        def input = new RefreshCartInput(accessToken: "abcde", products: [1234, 5678])
+        def input = new RefreshCartInput(
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48",
+                products: [1234, 5678]
+        )
         def result = new Cart()
 
         when(productBridge.refreshCart(input.accessToken, input.products)).thenReturn(result)
@@ -79,7 +91,10 @@ class QueryTest {
 
     @Test
     void 'refresh cart should be resolved by grocery listing when experimental mode is enabled'() {
-        def input = new RefreshCartInput(accessToken: "abcde", products: [1234, 5678])
+        def input = new RefreshCartInput(
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48",
+                products: [1234, 5678]
+        )
         def result = new Cart()
 
         when(groceryListing.refreshCart(input.accessToken, input.products)).thenReturn(result)
@@ -89,10 +104,13 @@ class QueryTest {
     }
 
     @Test
-    void 'refresh cart should be resolved by grocery listing when enabled by configuration'() {
-        def input = new RefreshCartInput(accessToken: "abcde", products: [1234, 5678])
+    void 'refresh cart should be resolved by grocery listing when customer country enabled by configuration' () {
+        def input = new RefreshCartInput(
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48",
+                products: [1234, 5678]
+        )
         def result = new Cart()
-        query.groceryListingEnabled = true
+        query.groceryListingEnabledCountries = ["ar"]
 
         when(groceryListing.refreshCart(input.accessToken, input.products)).thenReturn(result)
 
@@ -102,7 +120,10 @@ class QueryTest {
 
     @Test
     void 'home brands should be resolved by product bridge by default'() {
-        def input = new GetBrandsInput(accessToken: "abcde", countryId: "ar")
+        def input = new GetBrandsInput(
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48",
+                countryId: "ar"
+        )
         def result = new GetHomeBrandsResult()
 
         when(brandBridge.getHome(input.accessToken, input.countryId)).thenReturn(result)
@@ -113,7 +134,10 @@ class QueryTest {
 
     @Test
     void 'home brands should be resolved by grocery listing when experimental mode is enabled'() {
-        def input = new GetBrandsInput(accessToken: "abcde", countryId: "ar")
+        def input = new GetBrandsInput(
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48",
+                countryId: "ar"
+        )
         def result = new GetHomeBrandsResult()
 
         when(groceryListing.getHomeBrands(input.accessToken, input.countryId)).thenReturn(result)
@@ -123,10 +147,13 @@ class QueryTest {
     }
 
     @Test
-    void 'home brands should be resolved by grocery listing when enabled by configuration'() {
-        def input = new GetBrandsInput(accessToken: "abcde", countryId: "ar")
+    void 'home brands should be resolved by grocery listing when country enabled by configuration' () {
+        def input = new GetBrandsInput(
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48",
+                countryId: "ar"
+        )
         def result = new GetHomeBrandsResult()
-        query.groceryListingEnabled = true
+        query.groceryListingEnabledCountries = ["ar"]
 
         when(groceryListing.getHomeBrands(input.accessToken, input.countryId)).thenReturn(result)
 
@@ -136,7 +163,7 @@ class QueryTest {
 
     @Test
     void 'preview home brands should be resolved by product bridge by default'() {
-        def input = new CoordinatesInput()
+        def input = new CoordinatesInput(countryId: "ar")
         def result = new GetHomeBrandsResult()
 
         when(brandBridge.previewHomeBrands(input)).thenReturn(result)
@@ -147,7 +174,7 @@ class QueryTest {
 
     @Test
     void 'preview home brands should be resolved by grocery listing when experimental mode is enabled'() {
-        def input = new CoordinatesInput()
+        def input = new CoordinatesInput(countryId: "ar")
         def result = new GetHomeBrandsResult()
 
         when(groceryListing.getHomeBrands(input)).thenReturn(result)
@@ -157,10 +184,10 @@ class QueryTest {
     }
 
     @Test
-    void 'preview home brands should be resolved by grocery listing when enabled by configuration'() {
-        def input = new CoordinatesInput()
+    void 'preview home brands should be resolved by grocery listing when country enabled by configuration' () {
+        def input = new CoordinatesInput(countryId: "ar")
         def result = new GetHomeBrandsResult()
-        query.groceryListingEnabled = true
+        query.groceryListingEnabledCountries = ["ar"]
 
         when(groceryListing.getHomeBrands(input)).thenReturn(result)
 
@@ -170,7 +197,7 @@ class QueryTest {
 
     @Test
     void 'preview home suppliers should be resolved by product bridge by default'() {
-        def input = new CoordinatesInput()
+        def input = new CoordinatesInput(countryId: "ar")
         def response = new PreviewHomeSupplierResponse()
 
         when(supplierBridge.previewHomeSuppliers(input)).thenReturn(response)
@@ -181,7 +208,7 @@ class QueryTest {
 
     @Test
     void 'preview home suppliers should be resolved by grocery listing when experimental mode is enabled'() {
-        def input = new CoordinatesInput()
+        def input = new CoordinatesInput(countryId: "ar")
         def response = new PreviewHomeSupplierResponse()
 
         when(groceryListing.previewHomeSuppliers(input)).thenReturn(response)
@@ -191,10 +218,10 @@ class QueryTest {
     }
 
     @Test
-    void 'preview home suppliers should be resolved by grocery listing when enabled by configuration'() {
-        def input = new CoordinatesInput()
+    void 'preview home suppliers should be resolved by grocery listing when country enabled by configuration' () {
+        def input = new CoordinatesInput(countryId: "ar")
         def response = new PreviewHomeSupplierResponse()
-        query.groceryListingEnabled = true
+        query.groceryListingEnabledCountries = ["ar"]
 
         when(groceryListing.previewHomeSuppliers(input)).thenReturn(response)
 
