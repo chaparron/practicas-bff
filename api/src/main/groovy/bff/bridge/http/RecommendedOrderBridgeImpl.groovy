@@ -24,8 +24,6 @@ class RecommendedOrderBridgeImpl implements RecommendedOrderBridge{
 
     @Override
     Boolean markProductAsFavorite(FavoriteProductInput favoriteProductInput) {
-        // favoriteProductMock(favoriteProductInput)
-
         URI uri = UriComponentsBuilder.fromUri(apiGatewayUrl.resolve("favoriteproducts/${favoriteProductInput.productId}")).toUriString().toURI()
 
         try{
@@ -43,7 +41,6 @@ class RecommendedOrderBridgeImpl implements RecommendedOrderBridge{
 
     @Override
     Boolean unmarkFavoriteProduct(FavoriteProductInput favoriteProductInput) {
-        // favoriteProductMock(favoriteProductInput)
         URI uri = UriComponentsBuilder.fromUri(apiGatewayUrl.resolve("favoriteproducts/${favoriteProductInput.productId}")).toUriString().toURI()
 
         try{
