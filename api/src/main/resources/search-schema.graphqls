@@ -36,6 +36,15 @@ input SuggestInput {
   favourites: Boolean
 }
 
+input PreviewSuggestInput {
+  lat: Float!,
+  lng: Float!
+  country: String!
+  keyword: NonEmptyString!,
+  languageTag: LanguageTag
+  favourites: Boolean
+}
+
 input FeatureInput {
   id: String,
   value: String

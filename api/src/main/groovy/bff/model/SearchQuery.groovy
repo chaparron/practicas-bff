@@ -49,13 +49,6 @@ class SearchQuery implements GraphQLQueryResolver {
     }
 
     Suggestions suggest(SuggestInput input, DataFetchingEnvironment dfe) {
-        def numberOfSuggestionsFor = { String field ->
-            ofNullable(
-                    dfe.field.getSelectionSet().getSelections()
-                            .collect { it as Field }
-                            .find { it.name == field }
-            ).map { (it.arguments.first().value as IntValue).value.toInteger() }
-        }
         return groceryListing.suggest(
                 [
                         "products"  : { Integer size -> { SuggestInput i -> i.forProducts(size) } },
@@ -64,12 +57,36 @@ class SearchQuery implements GraphQLQueryResolver {
                         "suppliers" : { Integer size -> { SuggestInput i -> i.forSuppliers(size) } }
                 ]
                         .collect {
-                            numberOfSuggestionsFor(it.key)
+                            numberOfSuggestionsFor(it.key, dfe)
                                     .map { size -> it.value(size) }
                                     .orElse({ i -> i })
                         }
                         .inject(input, { SuggestInput i, it -> it(i) })
         )
+    }
+
+    Suggestions previewSuggest(PreviewSuggestInput input, DataFetchingEnvironment dfe) {
+        return groceryListing.suggest(
+                [
+                        "products"  : { Integer size -> { PreviewSuggestInput i -> i.forProducts(size) } },
+                        "brands"    : { Integer size -> { PreviewSuggestInput i -> i.forBrands(size) } },
+                        "categories": { Integer size -> { PreviewSuggestInput i -> i.forCategories(size) } }
+                ]
+                        .collect {
+                            numberOfSuggestionsFor(it.key, dfe)
+                                    .map { size -> it.value(size) }
+                                    .orElse({ i -> i })
+                        }
+                        .inject(input, { PreviewSuggestInput i, it -> it(i) })
+        )
+    }
+
+    static def numberOfSuggestionsFor(String field, DataFetchingEnvironment dfe) {
+        ofNullable(
+                dfe.field.getSelectionSet().getSelections()
+                        .collect { it as Field }
+                        .find { it.name == field }
+        ).map { (it.arguments.first().value as IntValue).value.toInteger() }
     }
 
     private def isGroceryListingEnabled(DataFetchingEnvironment dfe, Closure<String> country) {

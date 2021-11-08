@@ -209,6 +209,34 @@ class SuggestInput {
 
 }
 
+class PreviewSuggestInput {
+
+    String country
+    BigDecimal lat
+    BigDecimal lng
+    String keyword
+    LanguageTag languageTag
+    Optional<Integer> maybeProducts = empty()
+    Optional<Integer> maybeBrands = empty()
+    Optional<Integer> maybeCategories = empty()
+
+    def forProducts(Integer size) {
+        this.maybeProducts = of(size)
+        return this
+    }
+
+    def forBrands(Integer size) {
+        this.maybeBrands = of(size)
+        return this
+    }
+
+    def forCategories(Integer size) {
+        this.maybeCategories = of(size)
+        return this
+    }
+
+}
+
 class FeatureInput {
     String id
     String value

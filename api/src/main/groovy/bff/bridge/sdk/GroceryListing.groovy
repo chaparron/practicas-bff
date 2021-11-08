@@ -8,6 +8,7 @@ import wabi2b.grocery.listing.sdk.*
 
 import static bff.bridge.sdk.ProductMapper.addAccessToken
 import static bff.model.SortInput.DESC
+import static java.util.Optional.empty
 import static java.util.Optional.ofNullable
 import static scala.jdk.javaapi.CollectionConverters.asJava
 import static scala.jdk.javaapi.CollectionConverters.asScala
@@ -26,7 +27,7 @@ class GroceryListing {
     SearchResult search(SearchInput input) {
         def page = new Page(input)
         def request =
-                [new FilteringBuilder(input), new SortingBuilder(input)]
+                [new ProductQueryRequestFilteringBuilder(input), new ProductQueryRequestSortingBuilder(input)]
                         .inject(
                                 availableProductsForCustomer(input.accessToken)
                                         .sized(page.size)
@@ -49,7 +50,7 @@ class GroceryListing {
     PreviewSearchResult search(PreviewSearchInput input) {
         def page = new Page(input)
         def request =
-                [new FilteringBuilder(input), new SortingBuilder(input)]
+                [new ProductQueryRequestFilteringBuilder(input), new ProductQueryRequestSortingBuilder(input)]
                         .inject(
                                 availableProductsIn(
                                         new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
@@ -70,55 +71,32 @@ class GroceryListing {
         def customer = customerBridge.myProfile(input.accessToken)
         def deliveryAddress = customer.preferredDeliveryAddress()
         def request =
-                ([
-                        input.maybeProducts.map { { b -> b.fetchingProducts(it, ByRelevance$.MODULE$) } },
-                        input.maybeCategories.map { { b -> b.fetchingCategories(it, ByRelevance$.MODULE$) } },
-                        input.maybeBrands.map { { b -> b.fetchingBrands(it, ByRelevance$.MODULE$) } },
-                        input.maybeSuppliers.map { { b -> b.fetchingSuppliers(it, ByRelevance$.MODULE$) } },
-                        ofNullable(input.favourites).filter { it }.map { { b -> b.favourites() } }
-                ]
-                        .collect { it.orElse({ r -> r }) }
-                        .inject(
-                                availableSuggestionsIn(
-                                        new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
-                                        Option.apply(customer.country_id)
-                                ).forTerm(
-                                        input.keyword,
-                                        toScala(ofNullable(input.languageTag).map { it.language })
-                                ),
-                                { request, builder -> builder(request) }
-                        ) as SuggestionQueryRequest
-                )
-                        .forCustomer(customer.id.toString(), customer.customerType.code)
+                new SuggestionQueryRequestBuilder(input).apply(
+                        availableSuggestionsIn(
+                                new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
+                                Option.apply(customer.country_id)
+                        ).forTerm(
+                                input.keyword,
+                                toScala(ofNullable(input.languageTag).map { it.language })
+                        )
+                ).forCustomer(customer.id.toString(), customer.customerType.code)
         def response = sdk.query(request)
-        new Suggestions(
-                products: asJava(response.products()).collect {
-                    new SuggestedProduct(
-                            id: it.id().toInteger(),
-                            name: it.name().defaultEntry()
-                    )
-                },
-                brands: asJava(response.brands()).collect {
-                    new SuggestedBrand(
-                            id: it.id().toInteger(),
-                            name: it.name().defaultEntry(),
-                            logo: toJava(it.logo()).orElse(null)
-                    )
-                },
-                categories: asJava(response.categories()).collect {
-                    new SuggestedCategory(
-                            id: it.id().toInteger(),
-                            name: it.name().defaultEntry()
-                    )
-                },
-                suppliers: asJava(response.suppliers()).collect {
-                    new SuggestedSupplier(
-                            id: it.id().toInteger(),
-                            name: it.name(),
-                            avatar: toJava(it.avatar()).orElse(null)
-                    )
-                }
-        )
+        return new SuggestionsMapper().map(response)
+    }
+
+    Suggestions suggest(PreviewSuggestInput input) {
+        def request =
+                new SuggestionQueryRequestBuilder(input).apply(
+                        availableSuggestionsIn(
+                                new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
+                                toScala(ofNullable(input.country))
+                        ).forTerm(
+                                input.keyword,
+                                toScala(ofNullable(input.languageTag).map { it.language })
+                        )
+                )
+        def response = sdk.query(request)
+        return new SuggestionsMapper().map(response)
     }
 
     Cart refreshCart(String accessToken, List<Integer> products) {
@@ -132,7 +110,7 @@ class GroceryListing {
                         .fetchingOptions(50)
                         .fetchingDeliveryZones(1)
         def response = sdk.query(request)
-        Cart cart =  new CartMapper(accessToken, request).map(response)
+        Cart cart = new CartMapper(accessToken, request).map(response)
         cart
 
     }
@@ -222,13 +200,13 @@ class Page {
 
 }
 
-interface RequestBuilder {
+interface ProductQueryRequestBuilder {
 
     ProductQueryRequest apply(ProductQueryRequest request)
 
 }
 
-class FilteringBuilder implements RequestBuilder {
+class ProductQueryRequestFilteringBuilder implements ProductQueryRequestBuilder {
 
     Optional<String> maybeKeyword
     Optional<Integer> maybeCategory
@@ -238,21 +216,21 @@ class FilteringBuilder implements RequestBuilder {
     List<FeatureInput> features
     Optional<Boolean> maybeFavourites
 
-    FilteringBuilder(SearchInput input) {
+    ProductQueryRequestFilteringBuilder(SearchInput input) {
         this(input.keyword, input.category, input.brand, input.supplier, input.tag, input.features, input.favourites)
     }
 
-    FilteringBuilder(PreviewSearchInput input) {
+    ProductQueryRequestFilteringBuilder(PreviewSearchInput input) {
         this(input.keyword, input.category, input.brand, null, input.tag, input.features, null)
     }
 
-    private FilteringBuilder(String keyword,
-                             Integer category,
-                             Integer brand,
-                             Integer supplier,
-                             String promotion,
-                             List<FeatureInput> features,
-                             Boolean favourites) {
+    private ProductQueryRequestFilteringBuilder(String keyword,
+                                                Integer category,
+                                                Integer brand,
+                                                Integer supplier,
+                                                String promotion,
+                                                List<FeatureInput> features,
+                                                Boolean favourites) {
         this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }
         this.maybeCategory = ofNullable(category)
         this.maybeBrand = ofNullable(brand)
@@ -339,23 +317,23 @@ class FilteringBuilder implements RequestBuilder {
 
 }
 
-class SortingBuilder implements RequestBuilder {
+class ProductQueryRequestSortingBuilder implements ProductQueryRequestBuilder {
 
     Optional<String> maybeSort
     Optional<SortInput> maybeDirection
     Optional<String> maybeKeyword
 
-    SortingBuilder(SearchInput input) {
+    ProductQueryRequestSortingBuilder(SearchInput input) {
         this(input.sort, input.sortDirection, input.keyword)
     }
 
-    SortingBuilder(PreviewSearchInput input) {
+    ProductQueryRequestSortingBuilder(PreviewSearchInput input) {
         this(input.sort, input.sortDirection, input.keyword)
     }
 
-    private SortingBuilder(String sort,
-                           SortInput direction,
-                           String keyword) {
+    private ProductQueryRequestSortingBuilder(String sort,
+                                              SortInput direction,
+                                              String keyword) {
         this.maybeSort = ofNullable(sort).filter { !it.isEmpty() }
         this.maybeDirection = ofNullable(direction)
         this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }
@@ -430,11 +408,74 @@ class SortingBuilder implements RequestBuilder {
 
 }
 
-abstract class ProductResponseMapper {
+class SuggestionQueryRequestBuilder {
+
+    Optional<Integer> maybeProducts
+    Optional<Integer> maybeBrands
+    Optional<Integer> maybeCategories
+    Optional<Integer> maybeSuppliers
+    Optional<Boolean> maybeFavourites
+
+    SuggestionQueryRequestBuilder(SuggestInput input) {
+        this(
+                input.maybeProducts,
+                input.maybeBrands,
+                input.maybeCategories,
+                input.maybeSuppliers,
+                ofNullable(input.favourites)
+        )
+    }
+
+    SuggestionQueryRequestBuilder(PreviewSuggestInput input) {
+        this(
+                input.maybeProducts,
+                input.maybeBrands,
+                input.maybeCategories
+        )
+    }
+
+    private SuggestionQueryRequestBuilder(Optional<Integer> maybeProducts,
+                                          Optional<Integer> maybeBrands,
+                                          Optional<Integer> maybeCategories,
+                                          Optional<Integer> maybeSuppliers = empty(),
+                                          Optional<Boolean> maybeFavourites = empty()) {
+        this.maybeProducts = maybeProducts
+        this.maybeBrands = maybeBrands
+        this.maybeCategories = maybeCategories
+        this.maybeSuppliers = maybeSuppliers
+        this.maybeFavourites = maybeFavourites
+    }
+
+    SuggestionQueryRequest apply(wabi2b.grocery.listing.sdk.SuggestionQueryRequestBuilder request) {
+        [
+                maybeProducts
+                        .map { { b -> b.fetchingProducts(it, ByRelevance$.MODULE$) } }
+                        .orElse(identity),
+                maybeCategories
+                        .map { { b -> b.fetchingCategories(it, ByRelevance$.MODULE$) } }
+                        .orElse(identity),
+                maybeBrands
+                        .map { { b -> b.fetchingBrands(it, ByRelevance$.MODULE$) } }
+                        .orElse(identity),
+                maybeSuppliers
+                        .map { { b -> b.fetchingSuppliers(it, ByRelevance$.MODULE$) } }
+                        .orElse(identity),
+                maybeFavourites
+                        .filter { it }
+                        .map { { b -> b.favourites() } }
+                        .orElse(identity)
+        ].inject(request, { acc, filter -> filter(acc) }) as SuggestionQueryRequest
+    }
+
+    private def identity = { SuggestionQueryRequest r -> r }
+
+}
+
+abstract class ProductQueryResponseMapper {
 
     ProductQueryRequest request
 
-    ProductResponseMapper(ProductQueryRequest request) {
+    ProductQueryResponseMapper(ProductQueryRequest request) {
         this.request = request
     }
 
@@ -828,7 +869,7 @@ abstract class ProductResponseMapper {
 
 }
 
-class SearchResultMapper extends ProductResponseMapper {
+class SearchResultMapper extends ProductQueryResponseMapper {
 
     SearchInput input
 
@@ -863,7 +904,7 @@ class SearchResultMapper extends ProductResponseMapper {
 
 }
 
-class PreviewSearchResultMapper extends ProductResponseMapper {
+class PreviewSearchResultMapper extends ProductQueryResponseMapper {
 
     PreviewSearchInput input
 
@@ -915,7 +956,55 @@ class PreviewSearchResultMapper extends ProductResponseMapper {
 
 }
 
-class CartMapper extends ProductResponseMapper {
+class ScrollableSearchResultMapper extends ProductQueryResponseMapper {
+
+    ScrollableSearchResultMapper() {
+        super(null)
+    }
+
+    static ScrollableSearchResult map(ProductQueryResponse response) {
+        new ScrollableSearchResult(
+                scroll: toJava(response.scroll()).orElse(null),
+                products: products(response)
+        )
+    }
+}
+
+class SuggestionsMapper {
+
+    static Suggestions map(SuggestionQueryResponse response) {
+        new Suggestions(
+                products: asJava(response.products()).collect {
+                    new SuggestedProduct(
+                            id: it.id().toInteger(),
+                            name: it.name().defaultEntry()
+                    )
+                },
+                brands: asJava(response.brands()).collect {
+                    new SuggestedBrand(
+                            id: it.id().toInteger(),
+                            name: it.name().defaultEntry(),
+                            logo: toJava(it.logo()).orElse(null)
+                    )
+                },
+                categories: asJava(response.categories()).collect {
+                    new SuggestedCategory(
+                            id: it.id().toInteger(),
+                            name: it.name().defaultEntry()
+                    )
+                },
+                suppliers: asJava(response.suppliers()).collect {
+                    new SuggestedSupplier(
+                            id: it.id().toInteger(),
+                            name: it.name(),
+                            avatar: toJava(it.avatar()).orElse(null)
+                    )
+                }
+        )
+    }
+}
+
+class CartMapper extends ProductQueryResponseMapper {
 
     private String accessToken
 
@@ -977,7 +1066,7 @@ class CartMapper extends ProductResponseMapper {
 
 }
 
-class ProductMapper extends ProductResponseMapper {
+class ProductMapper extends ProductQueryResponseMapper {
 
     private String accessToken
 
@@ -988,7 +1077,7 @@ class ProductMapper extends ProductResponseMapper {
 
     Optional<Product> map(ProductQueryResponse response) {
         def products = products(response)
-        products.isEmpty() ? Optional.empty() : Optional.of(products.head()).map {
+        products.isEmpty() ? empty() : Optional.of(products.head()).map {
             addAccessToken(new Product(
                     accessToken: accessToken,
                     id: it.id,
@@ -1059,18 +1148,4 @@ class PreviewHomeSupplierResponseMapper {
         )
     }
 
-}
-
-class ScrollableSearchResultMapper extends ProductResponseMapper {
-
-    ScrollableSearchResultMapper() {
-        super(null)
-    }
-
-    static ScrollableSearchResult map(ProductQueryResponse response) {
-        new ScrollableSearchResult(
-                scroll: toJava(response.scroll()).orElse(null),
-                products: products(response)
-        )
-    }
 }

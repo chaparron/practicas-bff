@@ -13,6 +13,8 @@ type Query {
 
   suggest(input: SuggestInput!): Suggestions!
 
+  previewSuggest(input: PreviewSuggestInput!): Suggestions!
+
   productDetail(input: ProductInput!): ProductResult
 
   productDetailByEan(input: ProductEanInput!): ProductResult
