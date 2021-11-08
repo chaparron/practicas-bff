@@ -14,6 +14,11 @@ input SearchInput {
   favourites: Boolean
 }
 
+input SearchScrollInput {
+  accessToken: String!,
+  scroll: String!
+}
+
 input PreviewSearchInput {
   keyword: String,
   sort: String,
@@ -27,6 +32,10 @@ input PreviewSearchInput {
   lat: Float!,
   lng: Float!
   countryId: String
+}
+
+input PreviewSearchScrollInput {
+  scroll: String!
 }
 
 input SuggestInput {

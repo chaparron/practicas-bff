@@ -1,11 +1,9 @@
 package bff.bridge.http
 
 import bff.bridge.ProductBridge
-import bff.bridge.sdk.ProductMapper
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
 import bff.model.*
-import groovy.util.logging.Log4j
 import groovy.util.logging.Slf4j
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders
@@ -14,9 +12,6 @@ import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
-
-import static bff.bridge.sdk.ProductMapper.addAccessToken
-
 
 @Slf4j
 class ProductBridgeImpl implements ProductBridge {
@@ -49,10 +44,8 @@ class ProductBridgeImpl implements ProductBridge {
                         .build()
                 , Product).body
 
-        r.accessToken = accessToken
         return addAccessToken(r, accessToken)
     }
-
 
 
     @Override
@@ -195,5 +188,22 @@ class ProductBridgeImpl implements ProductBridge {
                 , Brand).body
     }
 
+    private static Product addAccessToken(Product product, String accessToken) {
+        product.accessToken = accessToken
+        product.prices.each {
+            addPriceAccessToken(it, accessToken)
+        }
+        addPriceAccessToken(product.priceFrom, accessToken)
+        addPriceAccessToken(product.minUnitsPrice, accessToken)
+        addPriceAccessToken(product.highlightedPrice, accessToken)
+
+        return product
+    }
+
+    private static Price addPriceAccessToken(Price price, String accessToken) {
+        price?.accessToken = accessToken
+        price?.supplier?.accessToken = accessToken
+        price
+    }
 
 }

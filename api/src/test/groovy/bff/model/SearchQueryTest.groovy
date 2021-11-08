@@ -142,12 +142,25 @@ class SearchQueryTest {
 
     @Test
     void 'scroll search should be resolved by grocery listing'() {
-        def scroll = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        def input = new SearchScrollInput(
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48",
+                scroll: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        )
         def result = new ScrollableSearchResult()
 
-        when(groceryListing.scroll(new SearchScrollInput(scroll: scroll))).thenReturn(result)
+        when(groceryListing.scroll(input)).thenReturn(result)
 
-        assertEquals(result, query.scrollSearch(scroll))
+        assertEquals(result, query.scrollSearch(input))
+    }
+
+    @Test
+    void 'scroll preview search should be resolved by grocery listing'() {
+        def input = new PreviewSearchScrollInput(scroll: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9")
+        def result = new ScrollableSearchResult()
+
+        when(groceryListing.scroll(input)).thenReturn(result)
+
+        assertEquals(result, query.scrollPreviewSearch(input))
     }
 
     private static DataFetchingEnvironment anyExperimentalDataFetchingEnvironment() {

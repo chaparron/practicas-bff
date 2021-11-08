@@ -3,13 +3,15 @@ type Query {
   # Find Customer by Id
   myProfile(input: CustomerInput!): Customer!
 
-  search (input: SearchInput!): SearchResult
+  search(input: SearchInput!): SearchResult
 
-  searchV2 (input: SearchInput!): SearchResponse
+  searchV2(input: SearchInput!): SearchResponse
 
   scrollSearch(scroll: String!): ScrollableSearchResult
 
   previewSearch(input: PreviewSearchInput!): PreviewSearchResponse
+
+  scrollPreviewSearch(scroll: String!): ScrollableSearchResult
 
   suggest(input: SuggestInput!): Suggestions!
 

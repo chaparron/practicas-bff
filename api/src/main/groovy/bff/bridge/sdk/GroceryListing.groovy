@@ -6,7 +6,6 @@ import bff.model.*
 import scala.Option
 import wabi2b.grocery.listing.sdk.*
 
-import static bff.bridge.sdk.ProductMapper.addAccessToken
 import static bff.model.SortInput.DESC
 import static java.util.Optional.empty
 import static java.util.Optional.ofNullable
@@ -42,11 +41,6 @@ class GroceryListing {
         return new SearchResultMapper(input, request).map(response)
     }
 
-    ScrollableSearchResult scroll(SearchScrollInput input) {
-        def response = sdk.query(new ProductScrollRequest(input.scroll))
-        return new ScrollableSearchResultMapper().map(response)
-    }
-
     PreviewSearchResult search(PreviewSearchInput input) {
         def page = new Page(input)
         def request =
@@ -65,6 +59,16 @@ class GroceryListing {
                         )
         def response = sdk.query(request.offset(page.offset))
         return new PreviewSearchResultMapper(input, request).map(response)
+    }
+
+    ScrollableSearchResult scroll(SearchScrollInput input) {
+        def response = sdk.query(new ProductScrollRequest(input.scroll))
+        return new ScrollableSearchResultMapper(input).map(response)
+    }
+
+    ScrollableSearchResult scroll(PreviewSearchScrollInput input) {
+        def response = sdk.query(new ProductScrollRequest(input.scroll))
+        return new ScrollableSearchResultMapper(input).map(response)
     }
 
     Suggestions suggest(SuggestInput input) {
@@ -110,7 +114,7 @@ class GroceryListing {
                         .fetchingOptions(50)
                         .fetchingDeliveryZones(1)
         def response = sdk.query(request)
-        Cart cart = new CartMapper(accessToken, request).map(response)
+        Cart cart = new CartMapper(request, accessToken).map(response)
         cart
 
     }
@@ -123,7 +127,7 @@ class GroceryListing {
                         .fetchingOptions(50)
                         .fetchingDeliveryZones(1)
         def response = sdk.query(request)
-        return new ProductMapper(accessToken, request)
+        return new ProductMapper(request, accessToken)
                 .map(response)
                 .orElseThrow { new EntityNotFoundException() }
     }
@@ -474,12 +478,14 @@ class SuggestionQueryRequestBuilder {
 abstract class ProductQueryResponseMapper {
 
     ProductQueryRequest request
+    Optional<String> accessToken
 
-    ProductQueryResponseMapper(ProductQueryRequest request) {
+    ProductQueryResponseMapper(ProductQueryRequest request, String accessToken = null) {
         this.request = request
+        this.accessToken = ofNullable(accessToken)
     }
 
-    protected static List<ProductSearch> products(ProductQueryResponse response) {
+    protected List<ProductSearch> products(ProductQueryResponse response) {
         asJava(response.hits()).collect {
             def prices = asJava(it.options()).collect { price(it) }
             def displays = asJava(it.options()).collect { display(it) }.toSet().toList()
@@ -509,20 +515,66 @@ abstract class ProductQueryResponseMapper {
                     highlightedPrice: prices.min { it.unitValue },
                     title: it.name().defaultEntry(),
                     country_id: it.manufacturer().country(),
-                    favorite: toJava(it.favourite()).orElse(null)
+                    favorite: toJava(it.favourite()).orElse(null),
+                    accessToken: this.accessToken.orElse(null)
             )
         }
     }
 
-    protected List<Facet> facets(ProductQueryResponse response) {
-        [
-                categoriesFacet(response),
-                brandsFacet(response),
-                suppliersFacet(response)
-        ]
-                .findAll { it.isPresent() }
-                .collect { it.get() } +
-                featuresFacet(response)
+    protected Price price(AvailableOption option) {
+        new Price(
+                id: option.id() as Integer,
+                supplier: supplier(option),
+                value: option.price().toBigDecimal(),
+                unitValue: option.price() / option.display().units(),
+                minUnits: option.requiredPurchaseUnits()._1() as Integer,
+                maxUnits: toJava(option.requiredPurchaseUnits()._2()).map { it as Integer }.orElse(0),
+                display: display(option),
+                configuration: new SupplierProductConfiguration(
+                        disableMinAmountCount: option.minPurchaseAmountCountDisabled()
+                ),
+                accessToken: this.accessToken.orElse(null)
+        )
+    }
+
+    protected Supplier supplier(AvailableOption option) {
+        new Supplier(
+                id: option.supplier().id().toInteger(),
+                name: option.supplier().name(),
+                legalName: null,
+                avatar: toJava(option.supplier().avatar()).orElse(null),
+                deliveryZones: toJava(option.deliveryZones())
+                        .map { asJava(it.toList()) }
+                        .orElse([])
+                        .collect {
+                            new DeliveryZone(
+                                    id: it.id().toInteger(),
+                                    minAmount: it.requiredPurchaseAmount()._1().toBigDecimal(),
+                                    maxAmount: toJava(it.requiredPurchaseAmount()._2()
+                                            .map { it.toBigDecimal() })
+                                            .orElse(null),
+                                    deliveryCost: toJava(it.cost()
+                                            .map { it.toBigDecimal() })
+                                            .orElse(null)
+                            )
+                        },
+                rating: toJava(option.supplier().rating()).map {
+                    new RatingScore(
+                            count: it.count().toInteger(),
+                            average: it.average().toDouble(),
+                            percentage: it.percentage().toDouble()
+                    )
+                }.orElse(null),
+                accessToken: this.accessToken.orElse(null)
+        )
+    }
+
+    protected static Display display(AvailableOption option) {
+        new Display(
+                id: option.display().id().toInteger(),
+                ean: option.display().ean(),
+                units: option.display().units()
+        )
     }
 
     protected List<Filter> filters(ProductQueryResponse response) {
@@ -531,137 +583,6 @@ abstract class ProductQueryResponseMapper {
                 brandFilter(response) +
                 supplierFilter(response) +
                 featuresFilter(response)
-    }
-
-    protected Sort sort() {
-        def defaultAsc = new Tuple("DEFAULT", "ASC")
-        def maybeSorting = toJava(request.sorting())
-        def maybeByRelevance = maybeSorting
-                .filter { it instanceof ByRelevance$ }
-                .map { Optional.of(defaultAsc) }
-        def maybeByLasAvailabilityUpdate = maybeSorting
-                .filter { it instanceof ByLastAvailabilityUpdate$ }
-                .map { Optional.of(new Tuple("RECENT", "ASC")) }
-        def maybeByUnitPrice = maybeSorting
-                .filter { it instanceof ByUnitPrice }
-                .map { it as ByUnitPrice }
-                .map { Optional.of(new Tuple("PRICE", it.asc() ? "ASC" : "DESC")) }
-        def maybeAlphabetically = maybeSorting
-                .filter { it instanceof Alphabetically }
-                .map { it as Alphabetically }
-                .map { new Tuple("TITLE", it.asc() ? "ASC" : "DESC") }
-        def sort =
-                maybeByRelevance.orElseGet {
-                    maybeByLasAvailabilityUpdate.orElseGet {
-                        maybeByUnitPrice.orElseGet {
-                            maybeAlphabetically
-                        }
-                    }
-                }.orElse(defaultAsc)
-        new Sort(field: sort.first(), direction: sort.last())
-    }
-
-    protected List<BreadCrumb> breadCrumb(ProductQueryResponse response) {
-        toJava(response.hits().headOption())
-                .map {
-                    def categorization = asJava(it.categorization())
-                    def index = categorization.findLastIndexOf { category ->
-                        toJava(request.filtering().byCategory())
-                                .map { asJava(it.values()).first() }
-                                .map { it == category.id() }
-                                .orElse(false)
-                    }
-                    categorization
-                            .take(index + 1)
-                            .collect {
-                                new BreadCrumb(
-                                        id: it.id() as Integer,
-                                        name: it.name().defaultEntry()
-                                )
-                            }
-                            .reverse()
-                }
-                .orElse([])
-    }
-
-    protected Optional<Facet> suppliersFacet(ProductQueryResponse response) {
-        toJava(response.aggregations().suppliers())
-                .filter { request.filtering().bySupplier().isEmpty() }
-                .map {
-                    new Facet(
-                            id: "supplier",
-                            name: "supplier",
-                            slices: asJava(it.hits()).collect {
-                                new Slices(
-                                        size: it._2() as Long,
-                                        obj: new Slice(
-                                                id: it._1().id(),
-                                                name: it._1().name(),
-                                                key: it._1().id()
-                                        )
-                                )
-                            }
-                    )
-                }
-    }
-
-    protected List<Facet> featuresFacet(ProductQueryResponse response) {
-        toJava(response.aggregations().features().map { asJava(it.features().toList()) })
-                .orElse([])
-                .findAll { t -> !request.filtering().byFeatures().exists { it.contains(t._1()) } }
-                .collect {
-                    new Facet(
-                            id: "feature_" + it._1(),
-                            name: it._2().name().defaultEntry(),
-                            slices:
-                                    asJava(it._2().hits())
-                                            .collect { slice(it) }
-                                            .findAll { it.isPresent() }
-                                            .collect { it.get() }
-                    )
-                }
-                .sort { it.name }
-    }
-
-    protected Optional<Facet> brandsFacet(ProductQueryResponse response) {
-        toJava(response.aggregations().brands())
-                .filter { request.filtering().byBrand().isEmpty() }
-                .map {
-                    new Facet(
-                            id: "brand",
-                            name: "brand",
-                            slices: asJava(it.hits()).collect {
-                                new Slices(
-                                        size: it._2() as Long,
-                                        obj: new Slice(
-                                                id: it._1().id(),
-                                                name: it._1().name().defaultEntry(),
-                                                key: it._1().id()
-                                        )
-                                )
-                            }
-                    )
-                }
-    }
-
-    protected static Optional<Facet> categoriesFacet(ProductQueryResponse response) {
-        toJava(response.aggregations().categories())
-                .map {
-                    new Facet(
-                            id: "category",
-                            name: "category",
-                            slices: asJava(it.hits()).collect {
-                                new Slices(
-                                        size: it._2() as Long,
-                                        obj: new Slice(
-                                                id: it._1().id(),
-                                                name: it._1().name().defaultEntry(),
-                                                key: it._1().id()
-                                        )
-                                )
-                            }
-                    )
-                }
     }
 
     protected List<Filter> termFilter() {
@@ -784,58 +705,146 @@ abstract class ProductQueryResponseMapper {
                 .orElse([])
     }
 
-    protected static Price price(AvailableOption option) {
-        new Price(
-                id: option.id() as Integer,
-                supplier: supplier(option),
-                value: option.price().toBigDecimal(),
-                unitValue: option.price() / option.display().units(),
-                minUnits: option.requiredPurchaseUnits()._1() as Integer,
-                maxUnits: toJava(option.requiredPurchaseUnits()._2()).map { it as Integer }.orElse(0),
-                display: display(option),
-                configuration: new SupplierProductConfiguration(
-                        disableMinAmountCount: option.minPurchaseAmountCountDisabled()
-                )
-        )
+    protected Sort sort() {
+        def defaultAsc = new Tuple("DEFAULT", "ASC")
+        def maybeSorting = toJava(request.sorting())
+        def maybeByRelevance = maybeSorting
+                .filter { it instanceof ByRelevance$ }
+                .map { Optional.of(defaultAsc) }
+        def maybeByLasAvailabilityUpdate = maybeSorting
+                .filter { it instanceof ByLastAvailabilityUpdate$ }
+                .map { Optional.of(new Tuple("RECENT", "ASC")) }
+        def maybeByUnitPrice = maybeSorting
+                .filter { it instanceof ByUnitPrice }
+                .map { it as ByUnitPrice }
+                .map { Optional.of(new Tuple("PRICE", it.asc() ? "ASC" : "DESC")) }
+        def maybeAlphabetically = maybeSorting
+                .filter { it instanceof Alphabetically }
+                .map { it as Alphabetically }
+                .map { new Tuple("TITLE", it.asc() ? "ASC" : "DESC") }
+        def sort =
+                maybeByRelevance.orElseGet {
+                    maybeByLasAvailabilityUpdate.orElseGet {
+                        maybeByUnitPrice.orElseGet {
+                            maybeAlphabetically
+                        }
+                    }
+                }.orElse(defaultAsc)
+        new Sort(field: sort.first(), direction: sort.last())
     }
 
-    protected static Supplier supplier(AvailableOption option) {
-        new Supplier(
-                id: option.supplier().id().toInteger(),
-                name: option.supplier().name(),
-                legalName: null,
-                avatar: toJava(option.supplier().avatar()).orElse(null),
-                deliveryZones: toJava(option.deliveryZones())
-                        .map { asJava(it.toList()) }
-                        .orElse([])
-                        .collect {
-                            new DeliveryZone(
-                                    id: it.id().toInteger(),
-                                    minAmount: it.requiredPurchaseAmount()._1().toBigDecimal(),
-                                    maxAmount: toJava(it.requiredPurchaseAmount()._2()
-                                            .map { it.toBigDecimal() })
-                                            .orElse(null),
-                                    deliveryCost: toJava(it.cost()
-                                            .map { it.toBigDecimal() })
-                                            .orElse(null)
-                            )
-                        },
-                rating: toJava(option.supplier().rating()).map {
-                    new RatingScore(
-                            count: it.count().toInteger(),
-                            average: it.average().toDouble(),
-                            percentage: it.percentage().toDouble()
+    protected List<BreadCrumb> breadCrumb(ProductQueryResponse response) {
+        toJava(response.hits().headOption())
+                .map {
+                    def categorization = asJava(it.categorization())
+                    def index = categorization.findLastIndexOf { category ->
+                        toJava(request.filtering().byCategory())
+                                .map { asJava(it.values()).first() }
+                                .map { it == category.id() }
+                                .orElse(false)
+                    }
+                    categorization
+                            .take(index + 1)
+                            .collect {
+                                new BreadCrumb(
+                                        id: it.id() as Integer,
+                                        name: it.name().defaultEntry()
+                                )
+                            }
+                            .reverse()
+                }
+                .orElse([])
+    }
+
+    protected List<Facet> facets(ProductQueryResponse response) {
+        [
+                categoriesFacet(response),
+                brandsFacet(response),
+                suppliersFacet(response)
+        ]
+                .findAll { it.isPresent() }
+                .collect { it.get() } +
+                featuresFacet(response)
+    }
+
+    protected Optional<Facet> suppliersFacet(ProductQueryResponse response) {
+        toJava(response.aggregations().suppliers())
+                .filter { request.filtering().bySupplier().isEmpty() }
+                .map {
+                    new Facet(
+                            id: "supplier",
+                            name: "supplier",
+                            slices: asJava(it.hits()).collect {
+                                new Slices(
+                                        size: it._2() as Long,
+                                        obj: new Slice(
+                                                id: it._1().id(),
+                                                name: it._1().name(),
+                                                key: it._1().id()
+                                        )
+                                )
+                            }
                     )
-                }.orElse(null)
-        )
+                }
     }
 
-    protected static Display display(AvailableOption option) {
-        new Display(
-                id: option.display().id().toInteger(),
-                ean: option.display().ean(),
-                units: option.display().units()
-        )
+    protected List<Facet> featuresFacet(ProductQueryResponse response) {
+        toJava(response.aggregations().features().map { asJava(it.features().toList()) })
+                .orElse([])
+                .findAll { t -> !request.filtering().byFeatures().exists { it.contains(t._1()) } }
+                .collect {
+                    new Facet(
+                            id: "feature_" + it._1(),
+                            name: it._2().name().defaultEntry(),
+                            slices:
+                                    asJava(it._2().hits())
+                                            .collect { slice(it) }
+                                            .findAll { it.isPresent() }
+                                            .collect { it.get() }
+                    )
+                }
+                .sort { it.name }
+    }
+
+    protected Optional<Facet> brandsFacet(ProductQueryResponse response) {
+        toJava(response.aggregations().brands())
+                .filter { request.filtering().byBrand().isEmpty() }
+                .map {
+                    new Facet(
+                            id: "brand",
+                            name: "brand",
+                            slices: asJava(it.hits()).collect {
+                                new Slices(
+                                        size: it._2() as Long,
+                                        obj: new Slice(
+                                                id: it._1().id(),
+                                                name: it._1().name().defaultEntry(),
+                                                key: it._1().id()
+                                        )
+                                )
+                            }
+                    )
+                }
+    }
+
+    protected static Optional<Facet> categoriesFacet(ProductQueryResponse response) {
+        toJava(response.aggregations().categories())
+                .map {
+                    new Facet(
+                            id: "category",
+                            name: "category",
+                            slices: asJava(it.hits()).collect {
+                                new Slices(
+                                        size: it._2() as Long,
+                                        obj: new Slice(
+                                                id: it._1().id(),
+                                                name: it._1().name().defaultEntry(),
+                                                key: it._1().id()
+                                        )
+                                )
+                            }
+                    )
+                }
     }
 
     protected static slice(scala.Tuple2<SingleValue, Object> value) {
@@ -874,7 +883,7 @@ class SearchResultMapper extends ProductQueryResponseMapper {
     SearchInput input
 
     SearchResultMapper(SearchInput input, ProductQueryRequest request) {
-        super(request)
+        super(request, input.accessToken)
         this.input = input
     }
 
@@ -958,8 +967,16 @@ class PreviewSearchResultMapper extends ProductQueryResponseMapper {
 
 class ScrollableSearchResultMapper extends ProductQueryResponseMapper {
 
-    ScrollableSearchResultMapper() {
-        super(null)
+    ScrollableSearchResultMapper(SearchScrollInput input) {
+        this(input.accessToken)
+    }
+
+    ScrollableSearchResultMapper(PreviewSearchScrollInput input) {
+        this()
+    }
+
+    private ScrollableSearchResultMapper(String accessToken = null) {
+        super(null, accessToken)
     }
 
     static ScrollableSearchResult map(ProductQueryResponse response) {
@@ -1006,16 +1023,13 @@ class SuggestionsMapper {
 
 class CartMapper extends ProductQueryResponseMapper {
 
-    private String accessToken
-
-    CartMapper(String accessToken, ProductQueryRequest request) {
-        super(request)
-        this.accessToken = accessToken
+    CartMapper(ProductQueryRequest request, String accessToken) {
+        super(request, accessToken)
     }
 
     Cart map(ProductQueryResponse response) {
         def products = products(response)
-        def cart = new Cart(
+        new Cart(
                 availableProducts: products.collect {
                     new ProductCart(
                             product: new Product(
@@ -1033,7 +1047,7 @@ class CartMapper extends ProductQueryResponseMapper {
                                     highlightedPrice: it.highlightedPrice,
                                     country_id: it.country_id,
                                     favorite: it.favorite,
-                                    accessToken: accessToken
+                                    accessToken: it.accessToken
                             ),
                             supplierPrices: it.prices.collect {
                                 new SupplierPrice(
@@ -1045,41 +1059,29 @@ class CartMapper extends ProductQueryResponseMapper {
                                         maxUnits: it.maxUnits,
                                         avatar: it.supplier.avatar,
                                         deliveryZone: it.supplier.deliveryZones?.head(),
-                                        configuration: it.configuration
+                                        configuration: it.configuration,
+                                        accessToken: it.supplier.accessToken
                                 )
                             }.toSet().toList()
                     )
                 },
-                suppliers: products.collect {
-                    it.prices.collect {
-                        it.supplier.accessToken = accessToken
-                        it.supplier
-                    }
-                }
+                suppliers: products.collect { it.prices.collect { it.supplier } }
                         .flatten().toSet().toList() as List<Supplier>
         )
-        cart.availableProducts.each {
-            addAccessToken(it.product, accessToken)
-        }
-        cart
     }
 
 }
 
 class ProductMapper extends ProductQueryResponseMapper {
 
-    private String accessToken
-
-    ProductMapper(String accessToken, ProductQueryRequest request) {
-        super(request)
-        this.accessToken = accessToken
+    ProductMapper(ProductQueryRequest request, String accessToken) {
+        super(request, accessToken)
     }
 
     Optional<Product> map(ProductQueryResponse response) {
         def products = products(response)
         products.isEmpty() ? empty() : Optional.of(products.head()).map {
-            addAccessToken(new Product(
-                    accessToken: accessToken,
+            new Product(
                     id: it.id,
                     name: it.name,
                     enabled: it.enabled,
@@ -1093,27 +1095,10 @@ class ProductMapper extends ProductQueryResponseMapper {
                     highlightedPrice: it.highlightedPrice,
                     brand: it.brand,
                     country_id: it.country_id,
-                    favorite: it.favorite
-            ), accessToken)
+                    favorite: it.favorite,
+                    accessToken: it.accessToken
+            )
         }
-    }
-
-    static Product addAccessToken(Product product, String accessToken) {
-        product.accessToken = accessToken
-        product.prices.each {
-            addPriceAccessToken(it, accessToken)
-        }
-        addPriceAccessToken(product.priceFrom, accessToken)
-        addPriceAccessToken(product.minUnitsPrice, accessToken)
-        addPriceAccessToken(product.highlightedPrice, accessToken)
-
-        return product
-    }
-
-    static Price addPriceAccessToken(Price price, String accessToken) {
-        price?.accessToken = accessToken
-        price?.supplier?.accessToken = accessToken
-        price
     }
 
 }

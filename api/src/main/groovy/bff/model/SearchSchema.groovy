@@ -173,6 +173,12 @@ class SearchInput {
 
 @EqualsAndHashCode
 class SearchScrollInput {
+    String accessToken
+    String scroll
+}
+
+@EqualsAndHashCode
+class PreviewSearchScrollInput {
     String scroll
 }
 
