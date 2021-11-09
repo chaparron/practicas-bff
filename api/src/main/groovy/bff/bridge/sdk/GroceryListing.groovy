@@ -927,7 +927,8 @@ class PreviewSearchResultMapper extends ProductQueryResponseMapper {
                 header: new Header(
                         total: response.total().toInteger(),
                         pageSize: request.size(),
-                        currentPage: new Page(input).number
+                        currentPage: new Page(input).number,
+                        scroll: toJava(response.scroll()).orElse(null)
                 ),
                 sort: sort(),
                 breadcrumb: breadCrumb(response),
@@ -979,7 +980,7 @@ class ScrollableSearchResultMapper extends ProductQueryResponseMapper {
         super(null, accessToken)
     }
 
-    static ScrollableSearchResult map(ProductQueryResponse response) {
+    ScrollableSearchResult map(ProductQueryResponse response) {
         new ScrollableSearchResult(
                 scroll: toJava(response.scroll()).orElse(null),
                 products: products(response)
