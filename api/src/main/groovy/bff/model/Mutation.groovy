@@ -69,7 +69,8 @@ class Mutation implements GraphQLMutationResolver {
             def credentials = authServerBridge.challengeAnswerForChangeToPasswordlessAuthentication(input.challengeId, input.challengeAnswer, input.accessToken)
             new GenericCredentials(
                     username: JwtToken.fromString(credentials.accessToken, DecoderName.USERNAME).name,
-                    credentials: credentials
+                    credentials: credentials,
+                    customer: customerBridge.myProfile(credentials.accessToken)
             )
         } catch (ChallengeAnswerFailureException challengeAnswerFailureException) {
             challengeAnswerFailureException.build()
@@ -92,7 +93,8 @@ class Mutation implements GraphQLMutationResolver {
             def credentials = authServerBridge.challengeAnswerForPasswordlessLogin(input.challengeId, input.challengeAnswer)
             new GenericCredentials(
                     username: JwtToken.fromString(credentials.accessToken, DecoderName.USERNAME).name,
-                    credentials: credentials
+                    credentials: credentials,
+                    customer: customerBridge.myProfile(credentials.accessToken)
             )
         } catch (ChallengeAnswerFailureException challengeAnswerFailureException) {
             challengeAnswerFailureException.build()
@@ -354,7 +356,8 @@ class Mutation implements GraphQLMutationResolver {
         }
         return new GenericCredentials(
                 username: decodedUsername.name,
-                credentials: credentials
+                credentials: credentials,
+                customer: customerBridge.myProfile(credentials.accessToken)
         )
     }
 
