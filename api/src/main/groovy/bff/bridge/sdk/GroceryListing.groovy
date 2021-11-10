@@ -133,12 +133,11 @@ class GroceryListing {
     }
 
     GetHomeBrandsResult getHomeBrands(String accessToken, String country) {
-        def customer = customerBridge.myProfile(accessToken)
-        def deliveryAddress = customer.preferredDeliveryAddress()
-
         def request =
                 ofNullable(accessToken)
                         .map {
+                            def customer = customerBridge.myProfile(accessToken)
+                            def deliveryAddress = customer.preferredDeliveryAddress()
                             availableBrandsIn(
                                     new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
                                     Option.apply(customer.country_id)
