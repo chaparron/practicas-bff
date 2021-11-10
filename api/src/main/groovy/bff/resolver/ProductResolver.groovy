@@ -97,9 +97,4 @@ class ProductResolver implements GraphQLResolver<Product> {
 
     }
 
-    Boolean favorite(Product product){
-        def favorites = recommendedOrderBridge.getFavoriteProducts(new GetFavoriteProductsInput(accessToken: product.accessToken))
-        favorites.any{it.productId.longValue() == product.id.longValue()}
-    }
-
 }

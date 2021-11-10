@@ -384,14 +384,6 @@ class Query implements GraphQLQueryResolver {
         customerBridge.findPendingRateSinceLastLogin(input.accessToken)
     }
 
-    List<FrequentProductResult> getFrequentProducts(GetFrequentProductsInput getFrequentProductsInput) {
-        recommendOrderBridge.getFrequentProducts(getFrequentProductsInput)
-    }
-
-    List<FavoriteProductResult> getFavoriteProducts(GetFavoriteProductsInput getFavoriteProductsInput) {
-        recommendOrderBridge.getFavoriteProductsUpdatedByApi(getFavoriteProductsInput)
-    }
-
     Boolean isValidPhone(IsValidPhoneInput input) {
         phoneNotifierBridge.isValidPhone(input.countryCode, input.phone)
     }
