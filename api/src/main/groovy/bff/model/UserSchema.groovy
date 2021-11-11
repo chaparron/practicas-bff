@@ -33,6 +33,7 @@ class User {
     UserCredentials credentials
     Boolean usesPasswordless
     TimestampOutput created
+    Boolean isTOSAccepted
 }
 
 class UserCredentials {
