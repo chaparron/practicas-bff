@@ -5,6 +5,7 @@ import bff.model.FavoriteProductInput
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
@@ -27,13 +28,13 @@ class RecommendedOrderBridgeImpl implements RecommendedOrderBridge{
         URI uri = UriComponentsBuilder.fromUri(apiGatewayUrl.resolve("favoriteproducts/${favoriteProductInput.productId}")).toUriString().toURI()
 
         try{
-            http.exchange(
+            def response = http.exchange(
                 RequestEntity.method(HttpMethod.PUT, uri)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(AUTHORIZATION, "Bearer ${favoriteProductInput.accessToken}")
                         .build()
-                , Boolean).body
-
+                , Boolean)
+            response.statusCode == HttpStatus.OK
         }catch(Exception e) {
             Boolean.FALSE
         }
@@ -44,13 +45,13 @@ class RecommendedOrderBridgeImpl implements RecommendedOrderBridge{
         URI uri = UriComponentsBuilder.fromUri(apiGatewayUrl.resolve("favoriteproducts/${favoriteProductInput.productId}")).toUriString().toURI()
 
         try{
-            http.exchange(
+            def response = http.exchange(
                     RequestEntity.method(HttpMethod.DELETE, uri)
                             .contentType(MediaType.APPLICATION_JSON)
                             .header(AUTHORIZATION, "Bearer ${favoriteProductInput.accessToken}")
                             .build()
-                    , Boolean).body
-
+                    , Boolean)
+            response.statusCode == HttpStatus.OK
         }catch(Exception e) {
             Boolean.FALSE
         }
