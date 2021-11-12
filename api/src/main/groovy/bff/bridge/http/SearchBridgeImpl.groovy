@@ -52,7 +52,7 @@ class SearchBridgeImpl implements SearchBridge {
                 filters: transformFilters(search.filters)
         )
 
-        result.products.forEach {
+        result.products?.forEach {
             it.accessToken = input.accessToken
             it.priceFrom?.accessToken = input.accessToken
             it.priceFrom?.supplier?.accessToken = input.accessToken

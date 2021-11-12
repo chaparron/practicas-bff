@@ -229,7 +229,7 @@ type User {
   credentials: UserCredentials
   usesPasswordless: Boolean
   created: TimestampOutput
-  isTOSAccepted: Boolean
+  isTOSAccepted: Boolean!
 }
 
 
