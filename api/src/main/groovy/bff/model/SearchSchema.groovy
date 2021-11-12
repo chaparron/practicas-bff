@@ -316,7 +316,7 @@ class ProductSearch implements ProductResult {
     Price minUnitsPrice
     Price highlightedPrice
     String title
-    Boolean favorite
+    boolean favorite
     String country_id
 }
 
@@ -337,7 +337,7 @@ class Product implements ProductResult {
     Price highlightedPrice
     Brand brand
     String country_id
-    Boolean favorite
+    boolean favorite
 }
 
 @ToString

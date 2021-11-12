@@ -57,8 +57,4 @@ class RecommendedOrderBridgeImpl implements RecommendedOrderBridge{
         }
     }
 
-    private static Boolean favoriteProductMock(FavoriteProductInput favoriteProductInput) {
-        favoriteProductInput.productId
-    }
-
 }
