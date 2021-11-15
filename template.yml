@@ -302,7 +302,8 @@ Resources:
 
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: recommended_order_url
-          Value: 'https://ppnuhcwcd2.execute-api.eu-central-1.amazonaws.com/qa/'
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-recommendedOrder-ApiRootURL"
 
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: phone_notifier_url
