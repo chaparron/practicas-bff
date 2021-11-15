@@ -48,7 +48,7 @@ input SuggestInput {
 input PreviewSuggestInput {
   lat: Float!,
   lng: Float!
-  country: String!
+  country: String
   keyword: NonEmptyString!,
   languageTag: LanguageTag
   favourites: Boolean
