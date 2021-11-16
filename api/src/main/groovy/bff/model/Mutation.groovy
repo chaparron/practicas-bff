@@ -345,6 +345,14 @@ class Mutation implements GraphQLMutationResolver {
     }
 
     private LoginResult resolveCredentialsResponse(Credentials credentials, Boolean deviceSupportLegacy) {
+
+        List<String> authorities = JwtToken.authorities(credentials.accessToken)
+        if (authorities.contains("FE_MIGRATE_TO_PASSWORDLESS")){
+            return new UpgradeRequired(
+                    credentials: credentials
+            )
+        }
+
         def decodedUsername = JwtToken.fromString(credentials.accessToken, DecoderName.USERNAME)
         String country = JwtToken.countryFromString(credentials.accessToken)
 

@@ -10,13 +10,8 @@ class JwtToken {
     String name
 
     static JwtToken fromString(String token, DecoderName decoderName) {
-        def fields = token.split('\\.')
-        if (fields.length != 3) throw new InvalidToken()
-
         try {
-            def decode = new JsonSlurper().parse(
-                    getUrlDecoder().decode(fields[1])
-            )[decoderName.getDecoderName()].toString()
+            def decode = getTokenMapFromRawToken(token)[decoderName.getDecoderName()].toString()
             new JwtToken(name: decode)
         } catch (IllegalArgumentException | JsonException e) {
             throw new InvalidToken('Invalid token', e)
@@ -24,16 +19,26 @@ class JwtToken {
     }
 
     static String countryFromString(String token) {
-        def fields = token.split('\\.')
-        if (fields.length != 3) throw new InvalidToken()
-
         try {
-            return new JsonSlurper().parse(
-                    getUrlDecoder().decode(fields[1])
-            )["user"]["countries"].first()["id"].toString()
+            getTokenMapFromRawToken(token)["user"]["countries"].first()["id"].toString()
         } catch (IllegalArgumentException | JsonException e) {
             throw new InvalidToken('Invalid token', e)
         }
+    }
+
+    static List<String> authorities(String token) {
+        try {
+            getTokenMapFromRawToken(token)["authorities"] as List<String>
+        } catch (IllegalArgumentException | JsonException e) {
+            throw new InvalidToken('Invalid token', e)
+        }
+    }
+
+    private static def getTokenMapFromRawToken(String token){
+        def fields = token.split('\\.')
+        if (fields.length != 3) throw new InvalidToken()
+        return new JsonSlurper().parse(
+                getUrlDecoder().decode(fields[1]))
     }
 }
 
