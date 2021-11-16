@@ -512,7 +512,7 @@ abstract class ProductQueryResponseMapper {
                     highlightedPrice: prices.min { it.unitValue },
                     title: it.name().defaultEntry(),
                     country_id: it.manufacturer().country(),
-                    favorite: toJava(it.favourite()).orElse(null),
+                    favorite: toJava(it.favourite()).orElse(false),
                     accessToken: this.accessToken.orElse(null)
             )
         }
