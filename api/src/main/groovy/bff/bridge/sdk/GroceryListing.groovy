@@ -114,9 +114,7 @@ class GroceryListing {
                         .fetchingOptions(50)
                         .fetchingDeliveryZones(1)
         def response = sdk.query(request)
-        Cart cart = new CartMapper(request, accessToken).map(response)
-        cart
-
+        return new CartMapper(request, accessToken).map(response)
     }
 
     Product getProductById(String accessToken, Integer product) {
