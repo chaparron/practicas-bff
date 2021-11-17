@@ -34,7 +34,7 @@ class GroceryListing {
                                         .aggregatedByCategories(1, true)
                                         .aggregatedBySuppliers(10)
                                         .aggregatedByFeatures()
-                                        .fetchingOptions(50),
+                                        .fetchingOptions(50, Option.empty()),
                                 { request, builder -> builder.apply(request) }
                         )
         def response = sdk.query(request.offset(page.offset))
@@ -54,7 +54,7 @@ class GroceryListing {
                                         .aggregatedByBrands(10)
                                         .aggregatedByCategories(1, true)
                                         .aggregatedByFeatures()
-                                        .fetchingOptions(50),
+                                        .fetchingOptions(50, Option.empty()),
                                 { request, builder -> builder.apply(request) }
                         )
         def response = sdk.query(request.offset(page.offset))
@@ -111,8 +111,7 @@ class GroceryListing {
                                 products.head().toString(),
                                 asScala(products.tail().collect { it.toString() }).toSeq()
                         )
-                        .fetchingOptions(50)
-                        .fetchingDeliveryZones(1)
+                        .fetchingOptions(50, Option.apply(new FetchDeliveryZones(1)))
         def response = sdk.query(request)
         return new CartMapper(request, accessToken).map(response)
     }
@@ -122,8 +121,7 @@ class GroceryListing {
                 availableProductsForCustomer(accessToken)
                         .sized(1)
                         .filteredByProduct(product.toString(), asScala([] as List<String>).toSeq())
-                        .fetchingOptions(50)
-                        .fetchingDeliveryZones(1)
+                        .fetchingOptions(50, Option.apply(new FetchDeliveryZones(1)))
         def response = sdk.query(request)
         return new ProductMapper(request, accessToken)
                 .map(response)
@@ -501,7 +499,7 @@ abstract class ProductQueryResponseMapper {
                             id: it.brand().id().toLong(),
                             name: it.brand().name().defaultEntry()
                     ),
-                    ean: displays.sort { it.units }.first().ean,
+                    ean: displays.sort { it.units }?.getAt(0)?.ean,
                     description: toJava(it.description()).map { it.defaultEntry() }.orElse(null),
                     images: asJava(it.images()).collect { new Image(id: it) },
                     displays: displays,
@@ -540,7 +538,7 @@ abstract class ProductQueryResponseMapper {
                 name: option.supplier().name(),
                 legalName: null,
                 avatar: toJava(option.supplier().avatar()).orElse(null),
-                deliveryZones: toJava(option.deliveryZones())
+                deliveryZones: toJava(option.supplier().deliveryZones())
                         .map { asJava(it.toList()) }
                         .orElse([])
                         .collect {
@@ -885,7 +883,7 @@ class SearchResultMapper extends ProductQueryResponseMapper {
     }
 
     SearchResult map(ProductQueryResponse response) {
-        SearchResult searchResult = new SearchResult(
+        new SearchResult(
                 header: new Header(
                         total: response.total().toInteger(),
                         pageSize: request.size(),
@@ -898,15 +896,7 @@ class SearchResultMapper extends ProductQueryResponseMapper {
                 facets: facets(response),
                 products: products(response)
         )
-        searchResult.products.each {
-            it.prices.each {
-                it.supplier?.accessToken = input.accessToken
-            }
-            it.highlightedPrice.supplier.accessToken = input.accessToken
-        }
-        searchResult
     }
-
 
 }
 
