@@ -206,6 +206,8 @@ type Mutation {
   markProductAsFavorite(input: FavoriteProductInput): Boolean!
 
   unmarkFavoriteProduct(input: FavoriteProductInput): Boolean!
+
+  supplierLead(input: SupplierLeadInput): Boolean!
 }
 
 scalar NonEmptyString

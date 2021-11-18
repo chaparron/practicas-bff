@@ -2,6 +2,7 @@ package bff.configuration
 
 import bff.bridge.*
 import bff.bridge.http.*
+import bff.bridge.sqs.DataRegisterBridgeImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -155,5 +156,10 @@ class BridgeConfiguration {
         new SupplierBridgeImpl(
                 root: root
         )
+    }
+
+    @Bean
+    static DataRegisterBridge dataRegisterBridge() {
+        new DataRegisterBridgeImpl()
     }
 }

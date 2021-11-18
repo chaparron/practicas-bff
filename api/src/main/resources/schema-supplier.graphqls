@@ -1,0 +1,20 @@
+input SupplierLeadInput {
+  countryId: String!
+  businessName: String!
+  haveDistribution: Boolean
+  city: String!
+  contactName: String!
+  contactPhoneNumber: String!
+  contactEmail: String
+  howHearAboutUs: HowHearAboutUs
+  howHearAboutUsDetail: String
+}
+
+enum HowHearAboutUs{
+  ADVERTISING,
+  INTERNET,
+  SOCIAL_MEDIA,
+  RECOMMENDED,
+  SALES_REPRESENTATIVE,
+  OTHER
+}

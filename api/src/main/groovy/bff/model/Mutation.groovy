@@ -35,6 +35,9 @@ class Mutation implements GraphQLMutationResolver {
     @Autowired
     RecommendedOrderBridge recommendedOrderBridge
 
+    @Autowired
+    DataRegisterBridge dataRegisterBridge
+
     @Value('${environment:}')
     String environment
 
@@ -344,10 +347,18 @@ class Mutation implements GraphQLMutationResolver {
         recommendedOrderBridge.unmarkFavoriteProduct(favoriteProductInput)
     }
 
+    Boolean supplierLead(SupplierLeadInput input) {
+        dataRegisterBridge.sendMessage(
+                dataRegisterBridge.getSpreadsheetIdSupplierLead(),
+                [input.countryId, input.businessName, input.haveDistribution?.toString(), input.city, input.contactName,
+                 input.contactPhoneNumber, input.contactEmail, input.howHearAboutUs?.name(), input.howHearAboutUsDetail]
+        )
+    }
+
     private LoginResult resolveCredentialsResponse(Credentials credentials, Boolean deviceSupportLegacy) {
 
         List<String> authorities = JwtToken.authorities(credentials.accessToken)
-        if (authorities.contains("FE_MIGRATE_TO_PASSWORDLESS")){
+        if (authorities.contains("FE_MIGRATE_TO_PASSWORDLESS")) {
             return new UpgradeRequired(
                     credentials: credentials
             )
