@@ -6,11 +6,15 @@ input SupplierLeadInput {
   contactName: String!
   contactPhoneNumber: String!
   contactEmail: String
-  howHearAboutUs: HowHearAboutUs
-  howHearAboutUsDetail: String
+  howMeetUs: HowMeetUs
 }
 
-enum HowHearAboutUs{
+input HowMeetUs {
+  type: HowMeetUsType!
+  detail: String
+}
+
+enum HowMeetUsType{
   ADVERTISING,
   INTERNET,
   SOCIAL_MEDIA,

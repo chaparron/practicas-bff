@@ -351,7 +351,7 @@ class Mutation implements GraphQLMutationResolver {
         dataRegisterBridge.sendMessage(
                 dataRegisterBridge.getSpreadsheetIdSupplierLead(),
                 [input.countryId, input.businessName, input.haveDistribution?.toString(), input.city, input.contactName,
-                 input.contactPhoneNumber, input.contactEmail, input.howHearAboutUs?.name(), input.howHearAboutUsDetail]
+                 input.contactPhoneNumber, input.contactEmail, input.howMeetUs?.type?.name(), input.howMeetUs?.detail]
         )
     }
 

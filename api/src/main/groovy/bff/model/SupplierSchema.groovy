@@ -8,11 +8,15 @@ class SupplierLeadInput {
     String contactName
     String contactPhoneNumber
     String contactEmail
-    HowHearAboutUs howHearAboutUs
-    String howHearAboutUsDetail
+    HowMeetUs howMeetUs
 }
 
-enum HowHearAboutUs{
+class HowMeetUs {
+    HowMeetUsType type
+    String detail
+}
+
+enum HowMeetUsType{
     ADVERTISING,
     INTERNET,
     SOCIAL_MEDIA,
