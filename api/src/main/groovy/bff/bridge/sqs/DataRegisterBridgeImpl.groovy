@@ -15,7 +15,7 @@ class DataRegisterBridgeImpl implements DataRegisterBridge {
     @Autowired
     AmazonSQS amazonSQS
 
-    @Value("data.register.queue.url:")
+    @Value('${data.register.queue.url:}')
     String queueUrl
 
     @Override
