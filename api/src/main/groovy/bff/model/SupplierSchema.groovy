@@ -12,15 +12,6 @@ class SupplierLeadInput {
 }
 
 class HowMeetUs {
-    HowMeetUsType type
+    String type
     String detail
-}
-
-enum HowMeetUsType{
-    ADVERTISING,
-    INTERNET,
-    SOCIAL_MEDIA,
-    RECOMMENDED,
-    SALES_REPRESENTATIVE,
-    OTHER
 }

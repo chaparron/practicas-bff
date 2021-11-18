@@ -10,15 +10,6 @@ input SupplierLeadInput {
 }
 
 input HowMeetUs {
-  type: HowMeetUsType!
+  type: String!
   detail: String
-}
-
-enum HowMeetUsType{
-  ADVERTISING,
-  INTERNET,
-  SOCIAL_MEDIA,
-  RECOMMENDED,
-  SALES_REPRESENTATIVE,
-  OTHER
 }

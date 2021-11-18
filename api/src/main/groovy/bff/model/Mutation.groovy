@@ -35,9 +35,6 @@ class Mutation implements GraphQLMutationResolver {
     @Autowired
     RecommendedOrderBridge recommendedOrderBridge
 
-    @Autowired
-    DataRegisterBridge dataRegisterBridge
-
     @Value('${environment:}')
     String environment
 
@@ -345,14 +342,6 @@ class Mutation implements GraphQLMutationResolver {
 
     Boolean unmarkFavoriteProduct(FavoriteProductInput favoriteProductInput) {
         recommendedOrderBridge.unmarkFavoriteProduct(favoriteProductInput)
-    }
-
-    Boolean supplierLead(SupplierLeadInput input) {
-        dataRegisterBridge.sendMessage(
-                dataRegisterBridge.getSpreadsheetIdSupplierLead(),
-                [input.countryId, input.businessName, input.haveDistribution?.toString(), input.city, input.contactName,
-                 input.contactPhoneNumber, input.contactEmail, input.howMeetUs?.type?.name(), input.howMeetUs?.detail]
-        )
     }
 
     private LoginResult resolveCredentialsResponse(Credentials credentials, Boolean deviceSupportLegacy) {

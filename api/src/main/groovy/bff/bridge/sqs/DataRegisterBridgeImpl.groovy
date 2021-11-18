@@ -18,9 +18,6 @@ class DataRegisterBridgeImpl implements DataRegisterBridge {
     @Value("data.register.queue.url:")
     String queueUrl
 
-    @Value('${google.spreadsheet.id.supplier.lead:}')
-    String googleSpreadsheetIdSupplierLead
-
     @Override
     Boolean sendMessage(String googleSpreadsheetId, List<String> values) {
         try {
@@ -40,10 +37,5 @@ class DataRegisterBridgeImpl implements DataRegisterBridge {
         }
 
         return true
-    }
-
-    @Override
-    String getSpreadsheetIdSupplierLead() {
-        return googleSpreadsheetIdSupplierLead
     }
 }
