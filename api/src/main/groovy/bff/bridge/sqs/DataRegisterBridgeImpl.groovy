@@ -25,6 +25,9 @@ class DataRegisterBridgeImpl implements DataRegisterBridge {
             messageAttributes.put("spreadsheet_id", new MessageAttributeValue()
                     .withDataType("String")
                     .withStringValue(googleSpreadsheetId))
+            messageAttributes.put("spreadsheet_range", new MessageAttributeValue()
+                    .withDataType("String")
+                    .withStringValue("A1"))
 
             final SendMessageRequest sendMessageRequest = new SendMessageRequest()
             sendMessageRequest.withMessageBody(JsonOutput.toJson(values))

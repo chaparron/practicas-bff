@@ -19,7 +19,7 @@ class SupplierLead implements GraphQLMutationResolver {
         dataRegisterBridge.sendMessage(
                 googleSpreadsheetIdSupplierLead,
                 [input.countryId, input.businessName, input.haveDistribution?.toString() ?: "", input.city, input.contactName,
-                 input.contactPhoneNumber, input.contactEmail, input.howMeetUs?.type ?: "", input.howMeetUs?.detail ?: ""]
+                 input.contactPhoneNumber, input.contactEmail ?: "", input.howMeetUs?.type ?: "", input.howMeetUs?.detail ?: ""]
         )
     }
 }
