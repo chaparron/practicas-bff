@@ -337,8 +337,8 @@ Resources:
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, GoogleSpreadsheetIdSupplierLead ]
 
         - Namespace: aws:elasticbeanstalk:application:environment
-            OptionName: google_spreadsheet_id_presignup
-            Value: !FindInMap [ Config, !Ref EnvironmentStackName, GoogleSpreadsheetIdPreSignUp ]
+          OptionName: google_spreadsheet_id_presignup
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, GoogleSpreadsheetIdPreSignUp ]
 
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
