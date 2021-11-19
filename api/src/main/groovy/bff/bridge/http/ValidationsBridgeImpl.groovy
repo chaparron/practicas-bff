@@ -54,7 +54,7 @@ class ValidationsBridgeImpl implements ValidationsBridge {
         http.exchange(
                 RequestEntity.method(HttpMethod.GET, uri)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(input)
+                        .build()
                 , Boolean).body
     }
 }
