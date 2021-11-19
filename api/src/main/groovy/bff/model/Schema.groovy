@@ -1,5 +1,7 @@
 package bff.model
 
+interface PreSignUpResult {}
+
 interface UsernameRegistrationResult {}
 
 interface ProfileCredentialsResult {}
@@ -29,6 +31,16 @@ enum RegisterFailureReason {
 
     def doThrow() {
         throw new WebRegisterException(registerReason: this)
+    }
+}
+
+enum PreSignUpFailedReason {
+    INVALID_RECAPTCHA,
+    PHONE_ALREADY_EXIST
+
+    def doThrow() {
+
+        throw new PreSignUpException(reason: this)
     }
 }
 
@@ -64,6 +76,10 @@ class RegisterFailed {
     RegisterFailureReason registerReason
 }
 
+class PreSignUpFailed implements PreSignUpResult {
+    PreSignUpFailedReason reason
+}
+
 class UsernameRegistrationFailed implements UsernameRegistrationResult {
     UsernameRegistrationReason reason
 }
@@ -83,7 +99,8 @@ class Void implements ChangePasswordResult,
         PlaceOrderResult,
         AddAddressResult,
         CustomerRateSupplierResult,
-        CustomerReportRateResult {
+        CustomerReportRateResult,
+        PreSignUpResult {
     static final SUCCESS = new Void(voidReason: VoidReason.SUCCESS)
     VoidReason voidReason
     Integer id

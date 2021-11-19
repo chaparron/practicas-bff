@@ -35,11 +35,30 @@ class Mutation implements GraphQLMutationResolver {
     @Autowired
     RecommendedOrderBridge recommendedOrderBridge
 
+    @Autowired
+    ValidationsBridge validationsBridge
+
+    @Autowired
+    PreSignUpRegister preSignUpRegistry
+
     @Value('${environment:}')
     String environment
 
     // TODO: remove
     private final List<String> legacyCountries = []
+
+    PreSignUpResult preSignUp(PreSignUpInput input) {
+        try {
+            if(validationsBridge.isExistPhone(input.countryCode, input.phone, input.recaptchaResponse)) {
+                return new PreSignUpFailed(reason: PreSignUpFailedReason.PHONE_ALREADY_EXIST)
+            }
+        }catch(Exception ex) {
+            log.error("preSignUp error:", ex)
+            return new PreSignUpFailed(reason: PreSignUpFailedReason.INVALID_RECAPTCHA)
+        }
+        preSignUpRegistry.register(input)
+        Void.SUCCESS
+    }
 
     LoginResult login(LoginInput input) {
         try {

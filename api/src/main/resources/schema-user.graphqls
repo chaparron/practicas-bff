@@ -103,6 +103,17 @@ input RefreshCredentialsInput {
   refreshToken: String!
 }
 
+input PreSignUpInput {
+  name: String!
+  lastName: String!
+  countryCode: String!
+  phone: String!
+  recaptchaResponse: String!
+  alternativePhone: String
+  email: String
+  country: String
+}
+
 input LoginInput {
   username: String!
   password: String!

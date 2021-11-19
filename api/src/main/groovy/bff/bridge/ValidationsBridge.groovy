@@ -8,4 +8,6 @@ interface ValidationsBridge {
     boolean validateUsername(ValidateUsernameInput input)
 
     boolean validate(ValidateInput input)
+
+    boolean isExistPhone(String countryCode, String phone, String recaptchaResponse)
 }

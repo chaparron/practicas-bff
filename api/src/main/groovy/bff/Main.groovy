@@ -24,6 +24,7 @@ class Main {
                 .add(UpgradeRequired.class)
                 .add(ProfileCredentials.class)
                 .add(RefreshCredentials.class)
+                .add(PreSignUpFailed.class)
                 .add(UsernameRegistrationFailed.class)
                 .add(ResetPasswordDemandFailed.class)
                 .add(ConfirmPasswordFailed.class)

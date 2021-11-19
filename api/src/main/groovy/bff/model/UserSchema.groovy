@@ -40,6 +40,17 @@ class UserCredentials {
     Boolean enabled
 }
 
+class PreSignUpInput {
+    String name
+    String lastName
+    String countryCode
+    String phone
+    String recaptchaResponse
+    String alternativePhone
+    String email
+    String country
+}
+
 class LoginInput {
     String username
     String password

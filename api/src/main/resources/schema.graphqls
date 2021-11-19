@@ -125,6 +125,8 @@ type Query {
 }
 
 type Mutation {
+  preSignUp(input: PreSignUpInput!) : PreSignUpResult!
+
   # User login
   login(input: LoginInput!): LoginResult!
 
@@ -267,6 +269,11 @@ enum PageSize {
   ONE_HUNDRED
 }
 
+enum PreSignUpFailedReason {
+  INVALID_RECAPTCHA,
+  PHONE_ALREADY_EXIST
+}
+
 enum UsernameRegistrationReason {
   INVALID_FIRST_NAME,
   INVALID_LAST_NAME,
@@ -343,6 +350,10 @@ input UploadImageInput {
 
 input AccessTokenInput {
   accessToken: String!
+}
+
+type PreSignUpFailed {
+  reason: PreSignUpFailedReason!
 }
 
 type UsernameRegistrationFailed {
@@ -488,6 +499,7 @@ type DialogContent {
   lang: String!
 }
 
+union PreSignUpResult = PreSignUpFailed | Void
 
 union UsernameRegistrationResult = UsernameRegistrationFailed | Void
 

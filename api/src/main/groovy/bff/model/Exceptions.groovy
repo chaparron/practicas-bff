@@ -21,6 +21,15 @@ class SilentException extends  RuntimeException {
 }
 
 @InheritConstructors
+class PreSignUpException extends RuntimeException {
+    PreSignUpFailedReason reason
+
+    def build() {
+        new PreSignUpFailed(reason: this.reason)
+    }
+}
+
+@InheritConstructors
 class UsernameRegistrationException extends RuntimeException {
     UsernameRegistrationReason reason
 
