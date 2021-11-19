@@ -54,7 +54,7 @@ class Mutation implements GraphQLMutationResolver {
             }
         }catch(Exception ex) {
             log.error("preSignUp error:", ex)
-            return new PreSignUpFailed(reason: PreSignUpFailedReason.INVALID_RECAPTCHA)
+            return new PreSignUpFailed(reason: PreSignUpFailedReason.INVALID_CAPTCHA)
         }
         preSignUpRegistry.register(input)
         Void.SUCCESS
