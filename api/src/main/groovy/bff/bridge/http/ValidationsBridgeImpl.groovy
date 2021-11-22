@@ -9,6 +9,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
+import java.nio.charset.StandardCharsets
 
 @Slf4j
 class ValidationsBridgeImpl implements ValidationsBridge {
@@ -47,9 +48,9 @@ class ValidationsBridgeImpl implements ValidationsBridge {
     @Override
     boolean isExistPhone(String countryCode, String phone, String recaptchaResponse) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/validate/userPhone/exist"))
-                .queryParam("country_code", countryCode)
-                .queryParam("phone", phone)
-                .queryParam("captcha_response", recaptchaResponse)
+                .queryParam("country_code", URLEncoder.encode(countryCode, StandardCharsets.UTF_8))
+                .queryParam("phone", URLEncoder.encode(phone, StandardCharsets.UTF_8))
+                .queryParam("captcha_response", URLEncoder.encode(recaptchaResponse, StandardCharsets.UTF_8))
                 .toUriString().toURI()
         http.exchange(
                 RequestEntity.method(HttpMethod.GET, uri)
