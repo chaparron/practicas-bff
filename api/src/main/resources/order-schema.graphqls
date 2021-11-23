@@ -338,14 +338,23 @@ type Order {
   supplierOrders: [SupplierOrder!]!
   ordersCancellations: [OrderCancellation]
   total_credits: Float
+  totalCreditsMoney: Money
   total_money: Float
+  totalMoneyMoney: Money
   total_service_fee: Float
+  totalServiceFeeMoney: Money
   total_pending: Float
+  totalPendingMoney: Money
   total_discounts_used: Float
+  totalDiscountsUsedMoney: Money
   total_wabipay: Float
+  totalWabipayMoney: Money
   subTotal: Float
+  subTotalMoney: Money
   discounts: Float
+  discountsMoney: Money
   total: Float
+  totalMoney: Money
 }
 
 enum CustomerOrderFindFailedReason {
@@ -407,6 +416,7 @@ type SupplierPrice {
   id: Int!
   name: String
   price: Float
+  priceMoney: Money
   minUnits: Int
   maxUnits: Int
   display: Display
@@ -484,7 +494,9 @@ type OrderError {
   productId: Int!
   units: Int
   prevValue: Float
+  prevValueMoney: Money
   actualValue: Float
+  actualValueMoney: Money
 }
 
 enum OrderErrorType {
@@ -606,6 +618,7 @@ enum CartSummaryItemType {
 type Summary {
   type: CartSummaryItemType!
   value: Float!
+  valueMoney: Money!
   metadata: [MetaEntry]
 }
 
