@@ -48,9 +48,9 @@ class ValidationsBridgeImpl implements ValidationsBridge {
     @Override
     boolean isExistPhone(String countryCode, String phone, String recaptchaResponse) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/validate/userPhone/exist"))
-                .queryParam("country_code", URLEncoder.encode(countryCode, StandardCharsets.UTF_8))
-                .queryParam("phone", URLEncoder.encode(phone, StandardCharsets.UTF_8))
-                .queryParam("captcha_response", URLEncoder.encode(recaptchaResponse, StandardCharsets.UTF_8))
+                .queryParam("country_code", URLEncoder.encode(countryCode, "UTF-8"))
+                .queryParam("phone", URLEncoder.encode(phone, "UTF-8"))
+                .queryParam("captcha_response", URLEncoder.encode(recaptchaResponse, "UTF-8"))
                 .toUriString().toURI()
         http.exchange(
                 RequestEntity.method(HttpMethod.GET, uri)
