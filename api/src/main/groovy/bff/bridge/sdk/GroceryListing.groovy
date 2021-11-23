@@ -543,6 +543,7 @@ abstract class ProductQueryResponseMapper {
                         .orElse([])
                         .collect {
                             new DeliveryZone(
+                                    accessToken: this.accessToken.orElse(null),
                                     id: it.id().toInteger(),
                                     minAmount: it.requiredPurchaseAmount()._1().toBigDecimal(),
                                     maxAmount: toJava(it.requiredPurchaseAmount()._2()
@@ -933,13 +934,14 @@ class PreviewSearchResultMapper extends ProductQueryResponseMapper {
                             ean: it.ean,
                             description: it.description,
                             images: it.images,
-                            prices: it.prices.collect {
+                            prices: it.prices.collect { price ->
                                 new PreviewPrice(
-                                        id: it.id,
-                                        value: it.value,
-                                        unitValue: it.unitValue,
-                                        display: it.display,
-                                        minUnits: it.minUnits
+                                        countryId: it.country_id,
+                                        id: price.id,
+                                        value: price.value,
+                                        unitValue: price.unitValue,
+                                        display: price.display,
+                                        minUnits: price.minUnits
                                 )
                             },
                             title: it.title,
