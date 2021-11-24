@@ -1,8 +1,8 @@
 package bff.resolver
 
-import bff.bridge.CountryBridge
 import bff.model.Money
 import bff.model.PreviewPrice
+import bff.service.MoneyService
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -11,13 +11,13 @@ import org.springframework.stereotype.Component
 class PreviewPriceResolver implements GraphQLResolver<PreviewPrice> {
 
     @Autowired
-    CountryBridge countryBridge
+    MoneyService moneyService
 
     Money valueMoney(PreviewPrice previewPrice) {
-        new Money(countryBridge.getCountry(previewPrice.countryId).currency.code, previewPrice.value)
+        moneyService.getMoneyByCountry(previewPrice.countryId, previewPrice.value)
     }
 
     Money unitValueMoney(PreviewPrice previewPrice) {
-        new Money(countryBridge.getCountry(previewPrice.countryId).currency.code, previewPrice.unitValue)
+        moneyService.getMoneyByCountry(previewPrice.countryId, previewPrice.unitValue)
     }
 }

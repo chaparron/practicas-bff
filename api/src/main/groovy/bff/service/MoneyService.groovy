@@ -15,4 +15,8 @@ class MoneyService {
     Money getMoney(String accessToken, BigDecimal amount) {
         new Money(countryBridge.getCountry(JwtToken.countryFromString(accessToken)).currency.code, amount)
     }
+
+    Money getMoneyByCountry(String countryId, BigDecimal amount) {
+        new Money(countryBridge.getCountry(countryId).currency.code, amount)
+    }
 }
