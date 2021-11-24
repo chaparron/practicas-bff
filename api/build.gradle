@@ -18,7 +18,7 @@ dependencies {
     implementation "com.github.ben-manes.caffeine:caffeine:2.9.2"
     implementation "wabi2b.sdk:grocery-listing:1189-7b4c58a0a3dd1672f44bb12902c95335adeec212"
 
-    def graphQL = '5.0.2'
+    def graphQL = '5.7.0'
 
     compile 'com.graphql-java:graphql-java-tools:5.1.0'
     compile 'com.sendgrid:sendgrid-java:4.2.1'
