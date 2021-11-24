@@ -1,7 +1,7 @@
 package bff.bridge.http
 
 import bff.bridge.RecommendedOrderBridge
-import bff.model.FavoriteProductInput
+import bff.model.FavouriteProductInput
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpMethod
@@ -24,7 +24,7 @@ class RecommendedOrderBridgeImpl implements RecommendedOrderBridge{
 
 
     @Override
-    Boolean markProductAsFavorite(FavoriteProductInput favoriteProductInput) {
+    Boolean setFavouriteProduct(FavouriteProductInput favoriteProductInput) {
         URI uri = UriComponentsBuilder.fromUri(apiGatewayUrl.resolve("favoriteproducts/${favoriteProductInput.productId}")).toUriString().toURI()
 
         try{
@@ -41,7 +41,7 @@ class RecommendedOrderBridgeImpl implements RecommendedOrderBridge{
     }
 
     @Override
-    Boolean unmarkFavoriteProduct(FavoriteProductInput favoriteProductInput) {
+    Boolean unsetFavouriteProduct(FavouriteProductInput favoriteProductInput) {
         URI uri = UriComponentsBuilder.fromUri(apiGatewayUrl.resolve("favoriteproducts/${favoriteProductInput.productId}")).toUriString().toURI()
 
         try{

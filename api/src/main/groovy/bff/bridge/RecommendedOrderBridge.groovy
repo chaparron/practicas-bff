@@ -1,10 +1,10 @@
 package bff.bridge
 
-import bff.model.FavoriteProductInput
+import bff.model.FavouriteProductInput
 
 interface RecommendedOrderBridge {
 
-    Boolean markProductAsFavorite(FavoriteProductInput favoriteProductInput)
+    Boolean setFavouriteProduct(FavouriteProductInput favoriteProductInput)
 
-    Boolean unmarkFavoriteProduct(FavoriteProductInput favoriteProductInput)
+    Boolean unsetFavouriteProduct(FavouriteProductInput favoriteProductInput)
 }
