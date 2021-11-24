@@ -1,5 +1,6 @@
 package bff.bridge
 
+import bff.model.PreSignUpInput
 import bff.model.ValidateInput
 import bff.model.ValidateUsernameInput
 
@@ -9,5 +10,5 @@ interface ValidationsBridge {
 
     boolean validate(ValidateInput input)
 
-    boolean isExistPhone(String countryCode, String phone, String recaptchaResponse)
+    boolean validatePreSignUp(PreSignUpInput input)
 }

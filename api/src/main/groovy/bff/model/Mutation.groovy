@@ -49,7 +49,7 @@ class Mutation implements GraphQLMutationResolver {
 
     PreSignUpResult preSignUp(PreSignUpInput input) {
         try {
-            if(validationsBridge.isExistPhone(input.countryCode, input.phone, input.recaptchaResponse)) {
+            if(validationsBridge.validatePreSignUp(input.countryCode, input.phone, input.email, input.recaptchaResponse)) {
                 return new PreSignUpFailed(reason: PreSignUpFailedReason.PHONE_ALREADY_EXIST)
             }
         }catch(Exception ex) {
