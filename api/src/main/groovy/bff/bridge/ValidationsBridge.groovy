@@ -1,6 +1,7 @@
 package bff.bridge
 
 import bff.model.PreSignUpInput
+import bff.model.PreSignUpResponse
 import bff.model.ValidateInput
 import bff.model.ValidateUsernameInput
 
@@ -12,8 +13,5 @@ interface ValidationsBridge {
 
     PreSignUpResponse validatePreSignUp(PreSignUpInput input)
 
-    static class PreSignUpResponse {
-        boolean userPhoneExist
-        boolean emailExist
-    }
+
 }

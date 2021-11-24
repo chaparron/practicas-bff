@@ -2,6 +2,7 @@ package bff.bridge.http
 
 import bff.bridge.ValidationsBridge
 import bff.model.PreSignUpInput
+import bff.model.PreSignUpResponse
 import bff.model.ValidateInput
 import bff.model.ValidateUsernameInput
 import groovy.util.logging.Slf4j
@@ -49,7 +50,7 @@ class ValidationsBridgeImpl implements ValidationsBridge {
     PreSignUpResponse validatePreSignUp(PreSignUpInput input) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/validate/preSignUp")).toUriString().toURI()
         http.exchange(
-                RequestEntity.method(HttpMethod.GET, uri)
+                RequestEntity.method(HttpMethod.POST, uri)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body([
                                 countryCode    : input.countryCode,
