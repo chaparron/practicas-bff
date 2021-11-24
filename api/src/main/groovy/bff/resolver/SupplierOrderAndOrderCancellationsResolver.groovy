@@ -1,9 +1,8 @@
 package bff.resolver
 
-import bff.JwtToken
-import bff.bridge.CountryBridge
 import bff.model.Money
 import bff.model.SupplierOrderAndOrderCancellations
+import bff.service.MoneyService
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -12,53 +11,53 @@ import org.springframework.stereotype.Component
 class SupplierOrderAndOrderCancellationsResolver implements GraphQLResolver<SupplierOrderAndOrderCancellations> {
 
     @Autowired
-    CountryBridge countryBridge
+    MoneyService moneyService
 
     Money deliveryCostMoney(SupplierOrderAndOrderCancellations supplierOrderAndOrderCancellations) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrderAndOrderCancellations.accessToken)).currency.code, supplierOrderAndOrderCancellations.deliveryCost)
+        moneyService.getMoney(supplierOrderAndOrderCancellations.accessToken, supplierOrderAndOrderCancellations.deliveryCost)
     }
 
     Money totalMoney(SupplierOrderAndOrderCancellations supplierOrderAndOrderCancellations) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrderAndOrderCancellations.accessToken)).currency.code, supplierOrderAndOrderCancellations.total)
+        moneyService.getMoney(supplierOrderAndOrderCancellations.accessToken, supplierOrderAndOrderCancellations.total)
     }
 
     Money subTotalMoney(SupplierOrderAndOrderCancellations supplierOrderAndOrderCancellations) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrderAndOrderCancellations.accessToken)).currency.code, supplierOrderAndOrderCancellations.subTotal)
+        moneyService.getMoney(supplierOrderAndOrderCancellations.accessToken, supplierOrderAndOrderCancellations.subTotal)
     }
 
     Money creditsPaidMoney(SupplierOrderAndOrderCancellations supplierOrderAndOrderCancellations) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrderAndOrderCancellations.accessToken)).currency.code, supplierOrderAndOrderCancellations.credits_paid)
+        moneyService.getMoney(supplierOrderAndOrderCancellations.accessToken, supplierOrderAndOrderCancellations.credits_paid)
     }
 
     Money moneyPaidMoney(SupplierOrderAndOrderCancellations supplierOrderAndOrderCancellations) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrderAndOrderCancellations.accessToken)).currency.code, supplierOrderAndOrderCancellations.money_paid)
+        moneyService.getMoney(supplierOrderAndOrderCancellations.accessToken, supplierOrderAndOrderCancellations.money_paid)
     }
 
     Money paymentPendingMoney(SupplierOrderAndOrderCancellations supplierOrderAndOrderCancellations) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrderAndOrderCancellations.accessToken)).currency.code, supplierOrderAndOrderCancellations.payment_pending)
+        moneyService.getMoney(supplierOrderAndOrderCancellations.accessToken, supplierOrderAndOrderCancellations.payment_pending)
     }
 
     Money totalWabipayMoney(SupplierOrderAndOrderCancellations supplierOrderAndOrderCancellations) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrderAndOrderCancellations.accessToken)).currency.code, supplierOrderAndOrderCancellations.total_wabipay)
+        moneyService.getMoney(supplierOrderAndOrderCancellations.accessToken, supplierOrderAndOrderCancellations.total_wabipay)
     }
 
     Money serviceFeeMoney(SupplierOrderAndOrderCancellations supplierOrderAndOrderCancellations) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrderAndOrderCancellations.accessToken)).currency.code, supplierOrderAndOrderCancellations.service_fee)
+        moneyService.getMoney(supplierOrderAndOrderCancellations.accessToken, supplierOrderAndOrderCancellations.service_fee)
     }
 
     Money discountsMoney(SupplierOrderAndOrderCancellations supplierOrderAndOrderCancellations) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrderAndOrderCancellations.accessToken)).currency.code, supplierOrderAndOrderCancellations.discounts)
+        moneyService.getMoney(supplierOrderAndOrderCancellations.accessToken, supplierOrderAndOrderCancellations.discounts)
     }
 
     Money localTaxesMoney(SupplierOrderAndOrderCancellations supplierOrderAndOrderCancellations) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrderAndOrderCancellations.accessToken)).currency.code, supplierOrderAndOrderCancellations.localTaxes)
+        moneyService.getMoney(supplierOrderAndOrderCancellations.accessToken, supplierOrderAndOrderCancellations.localTaxes)
     }
 
     Money discountUsedMoney(SupplierOrderAndOrderCancellations supplierOrderAndOrderCancellations) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrderAndOrderCancellations.accessToken)).currency.code, supplierOrderAndOrderCancellations.discount_used)
+        moneyService.getMoney(supplierOrderAndOrderCancellations.accessToken, supplierOrderAndOrderCancellations.discount_used)
     }
 
     Money amountMoney(SupplierOrderAndOrderCancellations supplierOrderAndOrderCancellations) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrderAndOrderCancellations.accessToken)).currency.code, supplierOrderAndOrderCancellations.amount)
+        moneyService.getMoney(supplierOrderAndOrderCancellations.accessToken, supplierOrderAndOrderCancellations.amount)
     }
 }
