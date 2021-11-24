@@ -1,6 +1,6 @@
 package bff.model
 
-
+import groovy.transform.ToString
 import org.apache.commons.lang3.StringUtils
 
 interface CustomerUpdateResult {}
@@ -378,6 +378,7 @@ class AccessTokenInput {
     String accessToken
 }
 
+@ToString
 class CoordinatesInput {
     BigDecimal lat
     BigDecimal lng

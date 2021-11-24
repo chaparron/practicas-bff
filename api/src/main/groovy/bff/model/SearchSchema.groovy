@@ -140,6 +140,7 @@ class Header {
     }
 }
 
+@ToString
 class PreviewSearchInput {
     String keyword
     String countryId
@@ -155,6 +156,7 @@ class PreviewSearchInput {
     BigDecimal lng
 }
 
+@ToString
 class SearchInput {
     String accessToken
     Integer addressId
@@ -171,17 +173,20 @@ class SearchInput {
     Boolean favourites
 }
 
+@ToString
 @EqualsAndHashCode
 class SearchScrollInput {
     String accessToken
     String scroll
 }
 
+@ToString
 @EqualsAndHashCode
 class PreviewSearchScrollInput {
     String scroll
 }
 
+@ToString
 class SuggestInput {
 
     String accessToken
@@ -215,6 +220,7 @@ class SuggestInput {
 
 }
 
+@ToString
 class PreviewSuggestInput {
 
     String country
