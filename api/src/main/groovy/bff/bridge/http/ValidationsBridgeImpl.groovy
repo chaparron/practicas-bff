@@ -46,17 +46,17 @@ class ValidationsBridgeImpl implements ValidationsBridge {
     }
 
     @Override
-    boolean validatePreSignUp(PreSignUpInput input) {
+    PreSignUpResponse validatePreSignUp(PreSignUpInput input) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/validate/preSignUp")).toUriString().toURI()
         http.exchange(
                 RequestEntity.method(HttpMethod.GET, uri)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body([
-                                countryCode: input.countryCode,
-                                phone: input.phone,
+                                countryCode    : input.countryCode,
+                                phone          : input.phone,
                                 captchaResponse: input.recaptchaResponse,
-                                email: input.email
+                                email          : input.email
                         ])
-                , Boolean).body
+                , PreSignUpResponse).body
     }
 }

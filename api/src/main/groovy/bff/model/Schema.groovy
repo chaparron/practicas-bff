@@ -36,7 +36,8 @@ enum RegisterFailureReason {
 
 enum PreSignUpFailedReason {
     INVALID_CAPTCHA,
-    PHONE_ALREADY_EXIST
+    PHONE_ALREADY_EXIST,
+    EMAIL_ALREADY_EXIST
 
     def doThrow() {
 

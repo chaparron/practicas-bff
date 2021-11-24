@@ -10,5 +10,10 @@ interface ValidationsBridge {
 
     boolean validate(ValidateInput input)
 
-    boolean validatePreSignUp(PreSignUpInput input)
+    PreSignUpResponse validatePreSignUp(PreSignUpInput input)
+
+    static class PreSignUpResponse {
+        boolean userPhoneExist
+        boolean emailExist
+    }
 }
