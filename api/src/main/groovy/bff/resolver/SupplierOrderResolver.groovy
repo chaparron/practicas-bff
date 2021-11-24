@@ -1,9 +1,8 @@
 package bff.resolver
 
-import bff.JwtToken
-import bff.bridge.CountryBridge
 import bff.bridge.SupplierOrderBridge
 import bff.model.*
+import bff.service.MoneyService
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -15,7 +14,7 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
     SupplierOrderBridge supplierOrderBridge
 
     @Autowired
-    CountryBridge countryBridge
+    MoneyService moneyService
 
     Supplier supplier(SupplierOrder supplierOrder) {
         supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
@@ -46,39 +45,39 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
     }
 
     Money deliveryCostMoney(SupplierOrder supplierOrder) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrder.accessToken)).currency.code, supplierOrder.deliveryCost)
+        moneyService.getMoney(supplierOrder.accessToken, supplierOrder.deliveryCost)
     }
 
     Money totalMoney(SupplierOrder supplierOrder) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrder.accessToken)).currency.code, supplierOrder.total)
+        moneyService.getMoney(supplierOrder.accessToken, supplierOrder.total)
     }
 
     Money subTotalMoney(SupplierOrder supplierOrder) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrder.accessToken)).currency.code, supplierOrder.subTotal)
+        moneyService.getMoney(supplierOrder.accessToken, supplierOrder.subTotal)
     }
 
     Money creditsPaidMoney(SupplierOrder supplierOrder) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrder.accessToken)).currency.code, supplierOrder.credits_paid)
+        moneyService.getMoney(supplierOrder.accessToken, supplierOrder.credits_paid)
     }
 
     Money moneyPaidMoney(SupplierOrder supplierOrder) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrder.accessToken)).currency.code, supplierOrder.money_paid)
+        moneyService.getMoney(supplierOrder.accessToken, supplierOrder.money_paid)
     }
 
     Money paymentPendingMoney(SupplierOrder supplierOrder) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrder.accessToken)).currency.code, supplierOrder.payment_pending)
+        moneyService.getMoney(supplierOrder.accessToken, supplierOrder.payment_pending)
     }
 
     Money totalWabipayMoney(SupplierOrder supplierOrder) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrder.accessToken)).currency.code, supplierOrder.total_wabipay)
+        moneyService.getMoney(supplierOrder.accessToken, supplierOrder.total_wabipay)
     }
 
     Money serviceFeeMoney(SupplierOrder supplierOrder) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrder.accessToken)).currency.code, supplierOrder.service_fee)
+        moneyService.getMoney(supplierOrder.accessToken, supplierOrder.service_fee)
     }
 
     Money discountsMoney(SupplierOrder supplierOrder) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierOrder.accessToken)).currency.code, supplierOrder.discounts)
+        moneyService.getMoney(supplierOrder.accessToken, supplierOrder.discounts)
     }
 
 }

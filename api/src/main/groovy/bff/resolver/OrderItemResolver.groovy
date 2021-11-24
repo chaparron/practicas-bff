@@ -1,12 +1,11 @@
 package bff.resolver
 
-import bff.JwtToken
-import bff.bridge.CountryBridge
 import bff.bridge.SupplierOrderBridge
 import bff.model.Money
 import bff.model.OrderItem
 import bff.model.PartialSummary
 import bff.model.Product
+import bff.service.MoneyService
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -18,7 +17,7 @@ class OrderItemResolver implements GraphQLResolver<OrderItem> {
     SupplierOrderBridge supplierOrderBridge
 
     @Autowired
-    CountryBridge countryBridge
+    MoneyService moneyService
 
     Product product(OrderItem orderItem) {
         supplierOrderBridge.getProductByOrderItem(orderItem.accessToken, orderItem.id)
@@ -29,11 +28,11 @@ class OrderItemResolver implements GraphQLResolver<OrderItem> {
     }
 
     Money priceMoney(OrderItem orderItem) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(orderItem.accessToken)).currency.code, orderItem.price)
+        moneyService.getMoney(orderItem.accessToken, orderItem.price)
     }
 
     Money subtotalMoney(OrderItem orderItem) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(orderItem.accessToken)).currency.code, orderItem.subtotal)
+        moneyService.getMoney(orderItem.accessToken, orderItem.subtotal)
     }
 
 }
