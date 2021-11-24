@@ -129,7 +129,7 @@ class CustomerType {
 
 class Customer implements CustomerUpdateResult, PasswordlessSignUpResult {
     String accessToken
-    Long id
+    String id
     String name
     Boolean enabled
     String legalId

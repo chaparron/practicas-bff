@@ -267,7 +267,8 @@ type RatingScore {
 
 type CustomerType {
     id: String!
-    code: String
+    @deprecated(reason: "Use code instead")
+    code: String!
     name: String!
 }
 

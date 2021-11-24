@@ -35,8 +35,8 @@ class CustomerBridgeImpl implements CustomerBridge {
                         .build()
                 , Customer).body
 
-        body.accessToken = accessToken
-        return body
+
+        return mapCustomer(body, accessToken)
     }
 
     @Override
@@ -58,9 +58,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                                             marketingEnabled     : customerUpdateInput.marketingEnabled
                                     ]
                             ), Customer).body
-            body.accessToken = customerUpdateInput.accessToken
-            return body
-
+            return mapCustomer(body, customerUpdateInput.accessToken)
         } catch (ConflictErrorException conflictErrorException) {
             mapCustomerError(conflictErrorException, "Update Customer Profile Error")
         }
@@ -84,8 +82,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                                             marketingEnabled     : customerUpdateInput.marketingEnabled
                                     ]
                             ), Customer).body
-            body.accessToken = customerUpdateInput.accessToken
-            return body
+            return mapCustomer(body, customerUpdateInput.accessToken)
 
         } catch (ConflictErrorException conflictErrorException) {
             mapCustomerError(conflictErrorException, "Update Customer Profile Error")
@@ -111,7 +108,10 @@ class CustomerBridgeImpl implements CustomerBridge {
                         .header("Recaptcha-Token",  passwordlessSignUpInput.captchaToken)
                         .body(passwordlessSignUpInput)
                 , Customer).body
-        return body
+
+
+        return mapCustomer(body, null)
+
     }
 
     @Override
@@ -627,6 +627,12 @@ class CustomerBridgeImpl implements CustomerBridge {
             it.accessToken = accessToken
             it
         }
+    }
+
+    private Customer mapCustomer(Customer customer, String accessToken) {
+        customer.customerType.id = customer.customerType.code
+        customer.accessToken = accessToken
+        customer
     }
 
 }
