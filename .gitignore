@@ -7,3 +7,7 @@ build
 api/out
 
 devops/.terraform
+bin
+.project
+.settings/
+.classpath
