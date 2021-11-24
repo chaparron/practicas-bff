@@ -1,9 +1,8 @@
 package bff.resolver
 
-import bff.JwtToken
-import bff.bridge.CountryBridge
 import bff.model.Money
 import bff.model.SupplierPrice
+import bff.service.MoneyService
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -12,9 +11,9 @@ import org.springframework.stereotype.Component
 class SupplierPriceResolver implements GraphQLResolver<SupplierPrice> {
 
     @Autowired
-    CountryBridge countryBridge
+    MoneyService moneyService
 
     Money priceMoney(SupplierPrice supplierPrice) {
-        new Money(countryBridge.getCountry(JwtToken.countryFromString(supplierPrice.accessToken)).currency.code, supplierPrice.price)
+        moneyService.getMoney(supplierPrice.accessToken, supplierPrice.price)
     }
 }
