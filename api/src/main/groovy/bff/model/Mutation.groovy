@@ -382,7 +382,8 @@ class Mutation implements GraphQLMutationResolver {
         if (countrySupportLegacy(country) && deviceSupportLegacy) {
             return new LegacyCredentials(
                     username: decodedUsername.name,
-                    credentials: credentials
+                    credentials: credentials,
+                    customer: customerBridge.myProfile(credentials.accessToken)
             )
         }
         return new GenericCredentials(
