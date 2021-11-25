@@ -167,7 +167,7 @@ input PasswordlessSignUpInput {
   verificationDocuments: [VerificationDocumentInput]!
   workingDays: WorkingDaysInput
   deliveryComment: String
-  country_id: String
+  country_id: String!
   marketingEnabled: Boolean
   captchaToken: String!
 }
