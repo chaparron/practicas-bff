@@ -205,9 +205,9 @@ type Mutation {
 
   acceptTc(input: AcceptTcInput!): Void!
 
-  markProductAsFavorite(input: FavoriteProductInput): Boolean!
+  setFavouriteProduct(input: FavouriteProductInput): Boolean!
 
-  unmarkFavoriteProduct(input: FavoriteProductInput): Boolean!
+  unsetFavouriteProduct(input: FavouriteProductInput): Boolean!
 
   supplierLead(input: SupplierLeadInput): Boolean!
 }

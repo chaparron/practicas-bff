@@ -358,7 +358,7 @@ type SuggestedOrderItem {
     categoryTitle: String!
 }
 
-input FavoriteProductInput {
+input FavouriteProductInput {
     accessToken: String!
     productId: ID!,
 }

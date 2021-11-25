@@ -442,7 +442,7 @@ class GetFavoriteProductsInput {
     String accessToken
 }
 
-class FavoriteProductInput {
+class FavouriteProductInput {
     Long productId
     String accessToken
 }
