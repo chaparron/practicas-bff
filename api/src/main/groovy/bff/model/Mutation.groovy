@@ -27,6 +27,9 @@ class Mutation implements GraphQLMutationResolver {
     CustomerBridge customerBridge
 
     @Autowired
+    PhoneNotifierBridge phoneNotifierBridge
+
+    @Autowired
     OrderBridge orderBridge
 
     @Autowired
@@ -289,6 +292,7 @@ class Mutation implements GraphQLMutationResolver {
     }
 
     Void userDevice(UserDeviceInput input) {
+        phoneNotifierBridge.addUserDevice(input)
         customerBridge.userDevice(input)
     }
 
