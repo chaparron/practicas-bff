@@ -230,15 +230,25 @@ class SupplierOrder implements SupplierOrderResponse {
     TimestampOutput shippedAt
     TimestampOutput shipAt
     BigDecimal deliveryCost
+    Money deliveryCostMoney
     BigDecimal total
+    Money totalMoney
     BigDecimal subTotal
+    Money subTotalMoney
     BigDecimal credits_paid
+    Money creditsPaidMoney
     BigDecimal money_paid
+    Money moneyPaidMoney
     BigDecimal service_fee
+    Money serviceFeeMoney
     BigDecimal total_wabipay
+    Money totalWabipayMoney
     BigDecimal payment_pending
+    Money paymentPendingMoney
     BigDecimal discounts
+    Money discountsMoney
     BigDecimal discount_used
+    Money discountUsedMoney
     Integer units
     Boolean canCustomerRate
     Boolean canSupplierRate
@@ -261,17 +271,29 @@ class SupplierOrderResult {
     TimestampOutput shippedAt
     TimestampOutput shipAt
     BigDecimal deliveryCost
+    Money deliveryCostMoney
     BigDecimal total
+    Money totalMoney
     BigDecimal subTotal
+    Money subTotalMoney
     BigDecimal credits_paid
+    Money creditsPaidMoney
     BigDecimal money_paid
+    Money moneyPaidMoney
     BigDecimal service_fee
+    Money serviceFeeMoney
     BigDecimal payment_pending
+    Money paymentPendingMoney
     BigDecimal localTaxes
+    Money localTaxesMoney
     BigDecimal amount
+    Money amountMoney
     BigDecimal discounts
+    Money discountsMoney
     BigDecimal discount_used
+    Money discountUsedMoney
     BigDecimal total_wabipay
+    Money totalWabipayMoney
     Integer units
     Boolean canCustomerRate
     Boolean canSupplierRate
@@ -301,17 +323,29 @@ class SupplierOrderAndOrderCancellations {
     TimestampOutput shippedAt
     TimestampOutput shipAt
     BigDecimal deliveryCost
+    Money deliveryCostMoney
     BigDecimal total
+    Money totalMoney
     BigDecimal subTotal
+    Money subTotalMoney
     BigDecimal credits_paid
+    Money creditsPaidMoney
     BigDecimal money_paid
+    Money moneyPaidMoney
     BigDecimal service_fee
+    Money serviceFeeMoney
     BigDecimal payment_pending
+    Money paymentPendingMoney
     BigDecimal localTaxes
+    Money localTaxesMoney
     BigDecimal amount
+    Money amountMoney
     BigDecimal discounts
+    Money discountsMoney
     BigDecimal discount_used
+    Money discountUsedMoney
     BigDecimal total_wabipay
+    Money totalWabipayMoney
     Integer units
     Boolean canCustomerRate
     Boolean canSupplierRate
@@ -356,8 +390,10 @@ class OrderItem {
     String productTitle
     String productEan
     BigDecimal price
+    Money priceMoney
     Integer quantity
     BigDecimal subtotal
+    Money subtotalMoney
     Display display
     Product product
     PartialSummary partialSummary

@@ -124,10 +124,19 @@ type OrderItems {
   productTitle: String!
   productEan: String!
   price: Float!
+  priceMoney: Money!
   quantity: Int!
   subtotal: Float!
+  subtotalMoney: Money!
   display: Display!
   partialSummary: PartialSummary
+}
+
+type Money {
+  currency: String!
+  amount: Float!
+  symbol(languageTag: String!): String!
+  text(languageTag: String!): String!
 }
 
 type PartialSummary {
@@ -178,14 +187,23 @@ type SupplierOrder {
   shippedAt: TimestampOutput
   shipAt: TimestampOutput
   deliveryCost: Float!
+  deliveryCostMoney: Money!
   total: Float!
+  totalMoney: Money!
   subTotal: Float
+  subTotalMoney: Money
   credits_paid: Float
+  creditsPaidMoney: Money
   money_paid: Float
+  moneyPaidMoney: Money
   payment_pending: Float
+  paymentPendingMoney: Money
   total_wabipay: Float
+  totalWabipayMoney: Money
   service_fee: Float
+  serviceFeeMoney: Money
   discounts: Float
+  discountsMoney: Money
   units: Int
   products: [OrderItems!]!
   rating: RatingEntry
@@ -208,17 +226,29 @@ type SupplierOrderResult {
   shippedAt: TimestampOutput
   shipAt: TimestampOutput
   deliveryCost: Float!
+  deliveryCostMoney: Money!
   total: Float!
+  totalMoney: Money!
   subTotal: Float
+  subTotalMoney: Money
   credits_paid: Float
+  creditsPaidMoney: Money
   money_paid: Float
+  moneyPaidMoney: Money
   service_fee: Float
+  serviceFeeMoney: Money
   payment_pending: Float
+  paymentPendingMoney: Money
   localTaxes: Float
+  localTaxesMoney: Money
   discounts: Float
+  discountsMoney: Money
   discount_used: Float
+  discountUsedMoney: Money
   total_wabipay: Float
+  totalWabipayMoney: Money
   amount: Float
+  amountMoney: Money
   units: Int
   products: [OrderItems!]!
   rating: RatingEntry
@@ -242,17 +272,29 @@ type SupplierOrderAndOrderCancellations {
   shippedAt: TimestampOutput
   shipAt: TimestampOutput
   deliveryCost: Float
+  deliveryCostMoney: Money
   total: Float
+  totalMoney: Money
   subTotal: Float
+  subTotalMoney: Money
   credits_paid: Float
+  creditsPaidMoney: Money
   money_paid: Float
+  moneyPaidMoney: Money
   service_fee: Float
+  serviceFeeMoney: Money
   payment_pending: Float
+  paymentPendingMoney: Money
   localTaxes: Float
+  localTaxesMoney: Money
   discounts: Float
+  discountsMoney: Money
   discount_used: Float
+  discountUsedMoney: Money
   total_wabipay: Float
+  totalWabipayMoney: Money
   amount: Float
+  amountMoney: Money
   units: Int
   products: [OrderItems]
   rating: RatingEntry

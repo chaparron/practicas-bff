@@ -2,6 +2,7 @@ package bff.resolver
 
 import bff.bridge.SupplierOrderBridge
 import bff.model.*
+import bff.service.MoneyService
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -12,6 +13,8 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
     @Autowired
     SupplierOrderBridge supplierOrderBridge
 
+    @Autowired
+    MoneyService moneyService
 
     Supplier supplier(SupplierOrder supplierOrder) {
         supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
@@ -39,6 +42,42 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
 
     Order order(SupplierOrder supplierOrder) {
         supplierOrderBridge.getOrderBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
+    }
+
+    Money deliveryCostMoney(SupplierOrder supplierOrder) {
+        moneyService.getMoney(supplierOrder.accessToken, supplierOrder.deliveryCost)
+    }
+
+    Money totalMoney(SupplierOrder supplierOrder) {
+        moneyService.getMoney(supplierOrder.accessToken, supplierOrder.total)
+    }
+
+    Money subTotalMoney(SupplierOrder supplierOrder) {
+        moneyService.getMoney(supplierOrder.accessToken, supplierOrder.subTotal)
+    }
+
+    Money creditsPaidMoney(SupplierOrder supplierOrder) {
+        moneyService.getMoney(supplierOrder.accessToken, supplierOrder.credits_paid)
+    }
+
+    Money moneyPaidMoney(SupplierOrder supplierOrder) {
+        moneyService.getMoney(supplierOrder.accessToken, supplierOrder.money_paid)
+    }
+
+    Money paymentPendingMoney(SupplierOrder supplierOrder) {
+        moneyService.getMoney(supplierOrder.accessToken, supplierOrder.payment_pending)
+    }
+
+    Money totalWabipayMoney(SupplierOrder supplierOrder) {
+        moneyService.getMoney(supplierOrder.accessToken, supplierOrder.total_wabipay)
+    }
+
+    Money serviceFeeMoney(SupplierOrder supplierOrder) {
+        moneyService.getMoney(supplierOrder.accessToken, supplierOrder.service_fee)
+    }
+
+    Money discountsMoney(SupplierOrder supplierOrder) {
+        moneyService.getMoney(supplierOrder.accessToken, supplierOrder.discounts)
     }
 
 }
