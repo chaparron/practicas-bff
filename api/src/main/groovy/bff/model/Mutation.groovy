@@ -196,15 +196,6 @@ class Mutation implements GraphQLMutationResolver {
         }
     }
 
-    VerifyPhoneResult verifyPhone(VerifyPhoneInput verifyPhoneInput) {
-        try {
-            customerBridge.verifyPhone(verifyPhoneInput)
-            Void.SUCCESS
-        } catch (CustomerException customerException) {
-            customerException.build()
-        }
-    }
-
     PreferredAddressResult setPreferredAddress(PreferredAddressInput preferredAddressInput) {
         try {
             customerBridge.setPreferredAddress(preferredAddressInput)

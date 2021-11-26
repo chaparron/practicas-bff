@@ -11,8 +11,6 @@ interface VerifyPhoneResult {}
 
 interface ResendVerifyEmailResult {}
 
-interface ResendVerifySMSResult {}
-
 interface PreferredAddressResult {}
 
 interface UpdateAddressResult {}
@@ -111,7 +109,7 @@ enum PasswordlessSignUpFailedReason {
 
 //TODO: refactor errores según web_store: Separarlos en enums correspondientes.
 class CustomerErrorFailed implements PreferredAddressResult, VerifyEmailResult, VerifyPhoneResult,
-        ResendVerifyEmailResult, CustomerUpdateResult, ResendVerifySMSResult, UpdateAddressResult,
+        ResendVerifyEmailResult, CustomerUpdateResult, UpdateAddressResult,
         DeleteAddressResult {
     CustomerErrorReason customerErrorReason
 }

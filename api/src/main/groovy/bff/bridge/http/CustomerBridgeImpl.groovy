@@ -151,41 +151,6 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    Void verifyPhone(VerifyPhoneInput verifyPhoneInput) {
-        try {
-            http.exchange(
-                    RequestEntity.method(HttpMethod.POST, root.resolve("/customer/me/verify/phone"))
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .header(HttpHeaders.AUTHORIZATION, "Bearer $verifyPhoneInput.accessToken")
-                            .body([
-                                    token: verifyPhoneInput.token
-                            ])
-                    , Map).body
-            return Void.SUCCESS
-        } catch (BadRequestErrorException badRequestException) {
-            mapCustomerError(badRequestException, "Verify Customer Phone Error")
-        }
-    }
-
-    @Override
-    Void resendVerifySMS(AccessTokenInput accessTokenInput) {
-        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/resend/verification/sms")).toUriString()
-        def uri = url.toURI()
-
-        try {
-            http.exchange(
-                    RequestEntity.method(HttpMethod.GET, uri)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .header(AUTHORIZATION, "Bearer ${accessTokenInput.accessToken}")
-                            .build()
-                    , Map).body
-            return Void.SUCCESS
-        } catch (BadRequestErrorException badRequestException) {
-            mapCustomerError(badRequestException, "Resend Verify Customer SMS")
-        }
-    }
-
-    @Override
     List<Address> findAddresses(AccessTokenInput accessTokenInput) {
         def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/address")).toUriString()
         def uri = url.toURI()

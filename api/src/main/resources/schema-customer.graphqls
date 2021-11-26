@@ -213,12 +213,6 @@ input VerifyEmailInput {
     token: String!
 }
 
-input VerifyPhoneInput {
-    token: String!
-    accessToken: String!
-
-}
-
 input IsValidPhoneInput {
   phone: String!
   countryCode: String!
