@@ -4,7 +4,8 @@ import bff.bridge.BrandBridge
 import bff.bridge.ProductBridge
 import bff.bridge.SupplierHomeBridge
 import bff.bridge.sdk.GroceryListing
-import graphql.execution.ExecutionContext
+import graphql.execution.ExecutionContextBuilder
+import graphql.execution.ExecutionId
 import graphql.language.OperationDefinition
 import graphql.schema.DataFetchingEnvironment
 import graphql.schema.DataFetchingEnvironmentImpl
@@ -61,7 +62,7 @@ class QueryTest {
     }
 
     @Test
-    void 'product detail should be resolved by grocery listing when customer country enabled by configuration' () {
+    void 'product detail should be resolved by grocery listing when customer country enabled by configuration'() {
         def input = new ProductInput(
                 accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48",
                 productId: 1234
@@ -104,7 +105,7 @@ class QueryTest {
     }
 
     @Test
-    void 'refresh cart should be resolved by grocery listing when customer country enabled by configuration' () {
+    void 'refresh cart should be resolved by grocery listing when customer country enabled by configuration'() {
         def input = new RefreshCartInput(
                 accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48",
                 products: [1234, 5678]
@@ -147,7 +148,7 @@ class QueryTest {
     }
 
     @Test
-    void 'home brands should be resolved by grocery listing when country enabled by configuration' () {
+    void 'home brands should be resolved by grocery listing when country enabled by configuration'() {
         def input = new GetBrandsInput(
                 accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48",
                 countryId: "ar"
@@ -184,7 +185,7 @@ class QueryTest {
     }
 
     @Test
-    void 'preview home brands should be resolved by grocery listing when country enabled by configuration' () {
+    void 'preview home brands should be resolved by grocery listing when country enabled by configuration'() {
         def input = new CoordinatesInput(countryId: "ar")
         def result = new GetHomeBrandsResult()
         query.groceryListingEnabledCountries = ["ar"]
@@ -218,7 +219,7 @@ class QueryTest {
     }
 
     @Test
-    void 'preview home suppliers should be resolved by grocery listing when country enabled by configuration' () {
+    void 'preview home suppliers should be resolved by grocery listing when country enabled by configuration'() {
         def input = new CoordinatesInput(countryId: "ar")
         def response = new PreviewHomeSupplierResponse()
         query.groceryListingEnabledCountries = ["ar"]
@@ -230,36 +231,12 @@ class QueryTest {
     }
 
     private static DataFetchingEnvironment anyExperimentalDataFetchingEnvironment() {
-        new DataFetchingEnvironmentImpl(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                new ExecutionContext(
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        new OperationDefinition(EXPERIMENTAL, null, null),
-                        null,
-                        null,
-                        null
-                )
-        )
+        DataFetchingEnvironmentImpl.newDataFetchingEnvironment(
+                ExecutionContextBuilder.newExecutionContextBuilder()
+                        .executionId(ExecutionId.from(UUID.randomUUID().toString()))
+                        .operationDefinition(new OperationDefinition(EXPERIMENTAL))
+                        .build()
+        ).build()
     }
 
 }

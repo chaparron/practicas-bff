@@ -18,13 +18,13 @@ dependencies {
     implementation "com.github.ben-manes.caffeine:caffeine:2.9.2"
     implementation "wabi2b.sdk:grocery-listing:1189-7b4c58a0a3dd1672f44bb12902c95335adeec212"
 
-    def graphQL = '5.0.2'
+    def graphQL = '5.9.0'
 
-    compile 'com.graphql-java:graphql-java-tools:5.2.4'
     compile 'com.sendgrid:sendgrid-java:4.2.1'
-    compile "com.graphql-java:graphql-spring-boot-starter:$graphQL"
-    compile "com.graphql-java:graphiql-spring-boot-starter:$graphQL"
 
+
+    compile "com.graphql-java-kickstart:graphql-spring-boot-starter:$graphQL"
+    compile "com.graphql-java-kickstart:graphiql-spring-boot-starter:$graphQL"
 
     compile 'com.newrelic.agent.java:newrelic-api:5.14.0'
     compile 'com.pubnub:pubnub-gson:4.18.0'
