@@ -137,7 +137,8 @@ class GraphqlConfiguration {
                     Map<Object, Object> tracingMap = new LinkedHashMap<>()
                     tracingMap.putAll(currentExt == null ? Collections.emptyMap() : currentExt)
                     tracingMap.put("duration", tracingSupport.snapshotTracingData().get("duration"))
-                    if (!errors.isEmpty())
+                    // error logging disabled until we find a way to filtering sensitive input variables
+                    if (!errors.isEmpty() && false)
                         log.error(
                                 "Error executing graphQl request for query {} and variables {}: [{}]",
                                 parameters.query,
