@@ -13,14 +13,14 @@ class MoneyService {
     CountryBridge countryBridge
 
     Money getMoney(String accessToken, BigDecimal amount) {
-        if(amount) {
+        if (amount) {
             return new Money(countryBridge.getCountry(JwtToken.countryFromString(accessToken)).currency.code, amount)
         }
         return null
     }
 
     Money getMoneyByCountry(String countryId, BigDecimal amount) {
-        if(amount) {
+        if (amount) {
             return new Money(countryBridge.getCountry(countryId).currency.code, amount)
         }
         return null
