@@ -304,7 +304,7 @@ type Price {
   value: Float
   valueMoney: Money
   unitValue: Float
-  unitValue: Money
+  unitValueMoney: Money
   updated: TimestampOutput
   enabled: Boolean
   maxUnits: Int
