@@ -1,6 +1,8 @@
 package bff.bridge.http
 
 import bff.bridge.ValidationsBridge
+import bff.model.PreSignUpInput
+import bff.model.PreSignUpResponse
 import bff.model.ValidateInput
 import bff.model.ValidateUsernameInput
 import groovy.util.logging.Slf4j
@@ -9,7 +11,6 @@ import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
-import java.nio.charset.StandardCharsets
 
 @Slf4j
 class ValidationsBridgeImpl implements ValidationsBridge {
@@ -46,16 +47,17 @@ class ValidationsBridgeImpl implements ValidationsBridge {
     }
 
     @Override
-    boolean isExistPhone(String countryCode, String phone, String recaptchaResponse) {
-        def uri = UriComponentsBuilder.fromUri(root.resolve("/validate/userPhone/exist"))
-                .queryParam("country_code", URLEncoder.encode(countryCode, StandardCharsets.UTF_8))
-                .queryParam("phone", URLEncoder.encode(phone, StandardCharsets.UTF_8))
-                .queryParam("captcha_response", URLEncoder.encode(recaptchaResponse, StandardCharsets.UTF_8))
-                .toUriString().toURI()
+    PreSignUpResponse validatePreSignUp(PreSignUpInput input) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/validate/preSignUp")).toUriString().toURI()
         http.exchange(
-                RequestEntity.method(HttpMethod.GET, uri)
+                RequestEntity.method(HttpMethod.POST, uri)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .build()
-                , Boolean).body
+                        .body([
+                                countryCode    : input.countryCode,
+                                phone          : input.phone,
+                                captchaResponse: input.recaptchaResponse,
+                                email          : input.email
+                        ])
+                , PreSignUpResponse).body
     }
 }

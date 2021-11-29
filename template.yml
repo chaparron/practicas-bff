@@ -36,7 +36,7 @@ Mappings:
       ApiRoot: 'https://api.wabi2b.com/'
       SecurityGroups: '{{resolve:ssm:/foundation/prod/beanstalk/security_groups:1}}'
       ResizerUrl: 'https://resizer.wabi2b.com/'
-      GroceryListingCountries: "ar,cl,co,us,eg,es,pe,ph,uy"
+      GroceryListingCountries: "ar,bd,be,br,cl,co,cz,de,do,dz,eg,es,fr,gb,gr,in,it,ke,ma,mx,my,ng,nl,pe,ph,pt,ro,rs,ru,sg,tr,us,uy,vn,za"
       GoogleSpreadsheetIdSupplierLead: "1WgFgR9BB15dcwlWY0EkINDVxSbe85l30hMSOp6WylMI"
       GoogleSpreadsheetIdPreSignUp: "1s9HK51X1WiRnJCy6-DjvWtJQQHt0r--zc77Z2S6istQ"
 Resources:
@@ -60,6 +60,293 @@ Resources:
       ApplicationName: !Ref BeanstalkApplication
       EnvironmentName: !Sub '${EnvironmentStackName}-wabi2b-bff-env'
       SolutionStackName: 64bit Amazon Linux 2018.03 v2.11.7 running Java 8
+      OptionSettings:
+
+        - Namespace: aws:autoscaling:asg
+          OptionName: Availability Zones
+          Value: Any
+
+        - Namespace: aws:autoscaling:asg
+          OptionName: Cooldown
+          Value: 360
+
+        - Namespace: aws:autoscaling:asg
+          OptionName: MinSize
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, MinPoolSize ]
+
+        - Namespace: aws:autoscaling:asg
+          OptionName: MaxSize
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, MaxPoolSize ]
+
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: EC2KeyName
+          Value: !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/beanstalk/ec2_key_name:1}}'
+
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: IamInstanceProfile
+          Value: !Ref ElasticBeanstalkInstanceProfile
+
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: InstanceType
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, InstanceType ]
+
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: SSHSourceRestriction
+          Value: !Join
+            - ''
+            - - 'tcp,22,22,'
+              - !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/bastion_security_group:1}}'
+
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: SecurityGroups
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, SecurityGroups ]
+
+        - Namespace: aws:autoscaling:trigger
+          OptionName: MeasureName
+          Value: CPUUtilization
+
+        - Namespace: aws:autoscaling:trigger
+          OptionName: Statistic
+          Value: Average
+
+        - Namespace: aws:autoscaling:trigger
+          OptionName: Unit
+          Value: Percent
+
+        - Namespace: aws:autoscaling:trigger
+          OptionName: LowerThreshold
+          Value: 25
+
+        - Namespace: aws:autoscaling:trigger
+          OptionName: UpperThreshold
+          Value: 70
+
+        - Namespace: aws:autoscaling:updatepolicy:rollingupdate
+          OptionName: RollingUpdateEnabled
+          Value: true
+
+        - Namespace: aws:autoscaling:updatepolicy:rollingupdate
+          OptionName: RollingUpdateType
+          Value: Health
+
+        - Namespace: aws:ec2:vpc
+          OptionName: ELBSubnets
+          Value: !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/public_subnets:1}}'
+
+        - Namespace: aws:ec2:vpc
+          OptionName: Subnets
+          Value: !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/public_subnets:1}}'
+
+        - Namespace: aws:ec2:vpc
+          OptionName: VPCId
+          Value: !Sub '{{resolve:ssm:/foundation/${EnvironmentStackName}/vpc_id:1}}'
+
+        - Namespace: aws:elasticbeanstalk:application
+          OptionName: 'Application Healthcheck URL'
+          Value: '/actuator/health'
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: SERVER_PORT
+          Value: 5000
+
+        - Namespace: aws:elasticbeanstalk:command
+          OptionName: DeploymentPolicy
+          Value: RollingWithAdditionalBatch
+
+        - Namespace: aws:elasticbeanstalk:command
+          OptionName: BatchSize
+          Value: 50
+
+        - Namespace: aws:elasticbeanstalk:cloudwatch:logs
+          OptionName: RetentionInDays
+          Value: 30
+
+        - Namespace: aws:elasticbeanstalk:cloudwatch:logs
+          OptionName: StreamLogs
+          Value: true
+
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: EnvironmentType
+          Value: LoadBalanced
+
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: LoadBalancerType
+          Value: application
+
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: LoadBalancerIsShared
+          Value: false
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: HTTP_MAXCONNECTIONS
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, HttpMaxConnections ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: LOGGING_LEVEL_BFF
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, LoggingLevel ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: MAX_HEAP_SIZE
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, MaxHeapSize ]
+
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: NEW_RELIC_APP_NAME
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, NewRelicAppName ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: NEW_RELIC_LICENSE_KEY
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, NewRelicLicenseKey ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: API_ROOT
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, ApiRoot ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: SERVICE_DISCOVERY_NAMESPACE
+          Value: !Ref EnvironmentStackName
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: SPRING_TASK_EXECUTION_POOL_CORESIZE
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, TasksPoolCoreSize ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: ERRORS_EXPOSE
+          Value: true
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: environment
+          Value: !Ref EnvironmentStackName
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: DeregistrationDelay
+          Value: 20
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: HealthCheckInterval
+          Value: 15
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: HealthCheckPath
+          Value: '/actuator/health'
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: HealthCheckTimeout
+          Value: 5
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: HealthyThresholdCount
+          Value: 3
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: MatcherHTTPCode
+          Value: 200
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: Port
+          Value: 80
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: Protocol
+          Value: HTTP
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: StickinessEnabled
+          Value: 'false'
+
+        - Namespace: aws:elasticbeanstalk:environment:process:default
+          OptionName: UnhealthyThresholdCount
+          Value: 5
+
+        - Namespace: aws:elasticbeanstalk:healthreporting:system
+          OptionName: HealthCheckSuccessThreshold
+          Value: Degraded
+
+        - Namespace: aws:elasticbeanstalk:healthreporting:system
+          OptionName: SystemType
+          Value: enhanced
+
+
+        - Namespace: aws:elbv2:listener:default
+          OptionName: DefaultProcess
+          Value: default
+
+        - Namespace: aws:elbv2:listener:default
+          OptionName: ListenerEnabled
+          Value: false
+
+        - Namespace: aws:elbv2:listener:default
+          OptionName: Protocol
+          Value: HTTP
+
+        - Namespace: aws:elbv2:listener:443
+          OptionName: DefaultProcess
+          Value: default
+
+        - Namespace: aws:elbv2:listener:443
+          OptionName: ListenerEnabled
+          Value: true
+
+        - Namespace: aws:elbv2:listener:443
+          OptionName: Protocol
+          Value: HTTPS
+
+        - Namespace: aws:elbv2:listener:443
+          OptionName: SSLCertificateArns
+          Value: !Ref Wabi2bCertificate
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: aws_cloudmap_namespace
+          Value: !Sub "${EnvironmentStackName}.local"
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: regional_config_url
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-regionalConfig-ApiRootURL"
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: recommended_order_url
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-recommendedOrder-ApiRootURL"
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: phone_notifier_url
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-phoneNotifier-ApiRootURL"
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: resizer_url
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, ResizerUrl ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: GROCERY_LISTING_ENDPOINT
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-wabi2b-grocery-listing-ApiGatewayEndpoint"
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: GROCERY_LISTING_COUNTRIES
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, GroceryListingCountries ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: data_register_queue_url
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-DataRegisterQueue"
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: google_spreadsheet_id_supplier_lead
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, GoogleSpreadsheetIdSupplierLead ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: google_spreadsheet_id_presignup
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, GoogleSpreadsheetIdPreSignUp ]
+
+
+  BackendForFrontendCorretto11:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      ApplicationName: !Ref BeanstalkApplication
+      EnvironmentName: !Sub '${EnvironmentStackName}-wabi2b-bff-corretto11-env'
+      SolutionStackName: 64bit Amazon Linux 2 v3.2.8 running Corretto 11
       OptionSettings:
 
         - Namespace: aws:autoscaling:asg

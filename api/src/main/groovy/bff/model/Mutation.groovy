@@ -27,6 +27,9 @@ class Mutation implements GraphQLMutationResolver {
     CustomerBridge customerBridge
 
     @Autowired
+    PhoneNotifierBridge phoneNotifierBridge
+
+    @Autowired
     OrderBridge orderBridge
 
     @Autowired
@@ -49,8 +52,12 @@ class Mutation implements GraphQLMutationResolver {
 
     PreSignUpResult preSignUp(PreSignUpInput input) {
         try {
-            if(validationsBridge.isExistPhone(input.countryCode, input.phone, input.recaptchaResponse)) {
+            def response = validationsBridge.validatePreSignUp(input)
+            if(response.userPhoneExist) {
                 return new PreSignUpFailed(reason: PreSignUpFailedReason.PHONE_ALREADY_EXIST)
+            }
+            if(response.emailExist) {
+                return new PreSignUpFailed(reason: PreSignUpFailedReason.EMAIL_ALREADY_EXIST)
             }
         }catch(Exception ex) {
             log.error("preSignUp error:", ex)
@@ -189,15 +196,6 @@ class Mutation implements GraphQLMutationResolver {
         }
     }
 
-    VerifyPhoneResult verifyPhone(VerifyPhoneInput verifyPhoneInput) {
-        try {
-            customerBridge.verifyPhone(verifyPhoneInput)
-            Void.SUCCESS
-        } catch (CustomerException customerException) {
-            customerException.build()
-        }
-    }
-
     PreferredAddressResult setPreferredAddress(PreferredAddressInput preferredAddressInput) {
         try {
             customerBridge.setPreferredAddress(preferredAddressInput)
@@ -285,6 +283,7 @@ class Mutation implements GraphQLMutationResolver {
     }
 
     Void userDevice(UserDeviceInput input) {
+        phoneNotifierBridge.addUserDevice(input)
         customerBridge.userDevice(input)
     }
 
@@ -355,12 +354,12 @@ class Mutation implements GraphQLMutationResolver {
         customerBridge.acceptTc(input)
     }
 
-    Boolean markProductAsFavorite(FavoriteProductInput favoriteProductInput) {
-        recommendedOrderBridge.markProductAsFavorite(favoriteProductInput)
+    Boolean setFavouriteProduct(FavouriteProductInput favouriteProductInput) {
+        recommendedOrderBridge.setFavouriteProduct(favouriteProductInput)
     }
 
-    Boolean unmarkFavoriteProduct(FavoriteProductInput favoriteProductInput) {
-        recommendedOrderBridge.unmarkFavoriteProduct(favoriteProductInput)
+    Boolean unsetFavouriteProduct(FavouriteProductInput favouriteProductInput) {
+        recommendedOrderBridge.unsetFavouriteProduct(favouriteProductInput)
     }
 
     private LoginResult resolveCredentialsResponse(Credentials credentials, Boolean deviceSupportLegacy) {
@@ -378,7 +377,8 @@ class Mutation implements GraphQLMutationResolver {
         if (countrySupportLegacy(country) && deviceSupportLegacy) {
             return new LegacyCredentials(
                     username: decodedUsername.name,
-                    credentials: credentials
+                    credentials: credentials,
+                    customer: customerBridge.myProfile(credentials.accessToken)
             )
         }
         return new GenericCredentials(

@@ -29,9 +29,6 @@ type Query {
   # Resend email for verification.
   resendVerifyEmail(input : AccessTokenInput!): ResendVerifyEmailResult!
 
-  # Resend sms for Verification
-  resendVerifySMS(input: AccessTokenInput!) : ResendVerifySMSResult!
-
   # Get all the Customer's addersses, according accessToken
   findAddresses(input: AccessTokenInput) : [AddressType]
 
@@ -155,9 +152,6 @@ type Mutation {
   updateProfile(input: CustomerUpdateInput!): CustomerUpdateResult!
   updateProfileV2(input: CustomerUpdateInputV2!): CustomerUpdateResult!
 
-  # Verify Customer phone
-  verifyPhone(input: VerifyPhoneInput!): VerifyPhoneResult!
-
   # Set Preferred Customer address
   setPreferredAddress(input: PreferredAddressInput!): PreferredAddressResult!
 
@@ -205,9 +199,9 @@ type Mutation {
 
   acceptTc(input: AcceptTcInput!): Void!
 
-  markProductAsFavorite(input: FavoriteProductInput): Boolean!
+  setFavouriteProduct(input: FavouriteProductInput): Boolean!
 
-  unmarkFavoriteProduct(input: FavoriteProductInput): Boolean!
+  unsetFavouriteProduct(input: FavouriteProductInput): Boolean!
 
   supplierLead(input: SupplierLeadInput): Boolean!
 }
@@ -271,7 +265,8 @@ enum PageSize {
 
 enum PreSignUpFailedReason {
   INVALID_CAPTCHA,
-  PHONE_ALREADY_EXIST
+  PHONE_ALREADY_EXIST,
+  EMAIL_ALREADY_EXIST
 }
 
 enum UsernameRegistrationReason {
@@ -507,11 +502,7 @@ union CustomerUpdateResult = CustomerErrorFailed  | Customer
 
 union VerifyEmailResult = CustomerErrorFailed | Void
 
-union VerifyPhoneResult = CustomerErrorFailed | Void
-
 union ResendVerifyEmailResult = CustomerErrorFailed | Void
-
-union ResendVerifySMSResult = CustomerErrorFailed | Void
 
 union PreferredAddressResult = CustomerErrorFailed | Void
 

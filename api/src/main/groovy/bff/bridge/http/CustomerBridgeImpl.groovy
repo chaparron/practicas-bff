@@ -35,8 +35,8 @@ class CustomerBridgeImpl implements CustomerBridge {
                         .build()
                 , Customer).body
 
-        body.accessToken = accessToken
-        return body
+
+        return mapCustomer(body, accessToken)
     }
 
     @Override
@@ -58,9 +58,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                                             marketingEnabled     : customerUpdateInput.marketingEnabled
                                     ]
                             ), Customer).body
-            body.accessToken = customerUpdateInput.accessToken
-            return body
-
+            return mapCustomer(body, customerUpdateInput.accessToken)
         } catch (ConflictErrorException conflictErrorException) {
             mapCustomerError(conflictErrorException, "Update Customer Profile Error")
         }
@@ -84,8 +82,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                                             marketingEnabled     : customerUpdateInput.marketingEnabled
                                     ]
                             ), Customer).body
-            body.accessToken = customerUpdateInput.accessToken
-            return body
+            return mapCustomer(body, customerUpdateInput.accessToken)
 
         } catch (ConflictErrorException conflictErrorException) {
             mapCustomerError(conflictErrorException, "Update Customer Profile Error")
@@ -111,7 +108,10 @@ class CustomerBridgeImpl implements CustomerBridge {
                         .header("Recaptcha-Token",  passwordlessSignUpInput.captchaToken)
                         .body(passwordlessSignUpInput)
                 , Customer).body
-        return body
+
+
+        return mapCustomer(body, null)
+
     }
 
     @Override
@@ -147,41 +147,6 @@ class CustomerBridgeImpl implements CustomerBridge {
             return Void.SUCCESS
         } catch (BadRequestErrorException badRequestExcpetion) {
             mapCustomerError(badRequestExcpetion, "Resend Verify Customer Email Error")
-        }
-    }
-
-    @Override
-    Void verifyPhone(VerifyPhoneInput verifyPhoneInput) {
-        try {
-            http.exchange(
-                    RequestEntity.method(HttpMethod.POST, root.resolve("/customer/me/verify/phone"))
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .header(HttpHeaders.AUTHORIZATION, "Bearer $verifyPhoneInput.accessToken")
-                            .body([
-                                    token: verifyPhoneInput.token
-                            ])
-                    , Map).body
-            return Void.SUCCESS
-        } catch (BadRequestErrorException badRequestException) {
-            mapCustomerError(badRequestException, "Verify Customer Phone Error")
-        }
-    }
-
-    @Override
-    Void resendVerifySMS(AccessTokenInput accessTokenInput) {
-        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/resend/verification/sms")).toUriString()
-        def uri = url.toURI()
-
-        try {
-            http.exchange(
-                    RequestEntity.method(HttpMethod.GET, uri)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .header(AUTHORIZATION, "Bearer ${accessTokenInput.accessToken}")
-                            .build()
-                    , Map).body
-            return Void.SUCCESS
-        } catch (BadRequestErrorException badRequestException) {
-            mapCustomerError(badRequestException, "Resend Verify Customer SMS")
         }
     }
 
@@ -627,6 +592,12 @@ class CustomerBridgeImpl implements CustomerBridge {
             it.accessToken = accessToken
             it
         }
+    }
+
+    private Customer mapCustomer(Customer customer, String accessToken) {
+        customer.customerType.id = customer.customerType.code
+        customer.accessToken = accessToken
+        customer
     }
 
 }

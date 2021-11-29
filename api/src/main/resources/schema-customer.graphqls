@@ -167,7 +167,7 @@ input PasswordlessSignUpInput {
   verificationDocuments: [VerificationDocumentInput]!
   workingDays: WorkingDaysInput
   deliveryComment: String
-  country_id: String
+  country_id: String!
   marketingEnabled: Boolean
   captchaToken: String!
 }
@@ -211,12 +211,6 @@ input CustomerUpdateInputV2 {
 input VerifyEmailInput {
     id: ID!
     token: String!
-}
-
-input VerifyPhoneInput {
-    token: String!
-    accessToken: String!
-
 }
 
 input IsValidPhoneInput {
@@ -267,7 +261,8 @@ type RatingScore {
 
 type CustomerType {
     id: String!
-    code: String
+    @deprecated(reason: "Use code instead")
+    code: String!
     name: String!
 }
 
@@ -357,7 +352,7 @@ type SuggestedOrderItem {
     categoryTitle: String!
 }
 
-input FavoriteProductInput {
+input FavouriteProductInput {
     accessToken: String!
     productId: ID!,
 }

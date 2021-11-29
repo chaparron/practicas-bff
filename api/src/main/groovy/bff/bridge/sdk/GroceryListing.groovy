@@ -3,6 +3,7 @@ package bff.bridge.sdk
 import bff.bridge.CustomerBridge
 import bff.configuration.EntityNotFoundException
 import bff.model.*
+import groovy.util.logging.Slf4j
 import scala.Option
 import wabi2b.grocery.listing.sdk.*
 
@@ -18,144 +19,196 @@ import static wabi2b.grocery.listing.sdk.ProductQueryRequest.availableProductsIn
 import static wabi2b.grocery.listing.sdk.SuggestionQueryRequestBuilder.availableSuggestionsIn
 import static wabi2b.grocery.listing.sdk.SupplierQueryRequest.availableSuppliersIn
 
+@Slf4j
 class GroceryListing {
 
     private Sdk sdk
     private CustomerBridge customerBridge
 
     SearchResult search(SearchInput input) {
-        def page = new Page(input)
-        def request =
-                [new ProductQueryRequestFilteringBuilder(input), new ProductQueryRequestSortingBuilder(input)]
-                        .inject(
-                                availableProductsForCustomer(input.accessToken)
-                                        .sized(page.size)
-                                        .aggregatedByBrands(10)
-                                        .aggregatedByCategories(1, true)
-                                        .aggregatedBySuppliers(10)
-                                        .aggregatedByFeatures()
-                                        .fetchingOptions(50, Option.empty()),
-                                { request, builder -> builder.apply(request) }
-                        )
-        def response = sdk.query(request.offset(page.offset))
-        return new SearchResultMapper(input, request).map(response)
+        try {
+            def page = new Page(input)
+            def request =
+                    [new ProductQueryRequestFilteringBuilder(input), new ProductQueryRequestSortingBuilder(input)]
+                            .inject(
+                                    availableProductsForCustomer(input.accessToken)
+                                            .sized(page.size)
+                                            .aggregatedByBrands(10)
+                                            .aggregatedByCategories(1, true)
+                                            .aggregatedBySuppliers(10)
+                                            .aggregatedByFeatures()
+                                            .fetchingOptions(50, Option.empty()),
+                                    { request, builder -> builder.apply(request) }
+                            )
+            def response = sdk.query(request.offset(page.offset))
+            return new SearchResultMapper(input, request).map(response)
+        } catch (Exception ex) {
+            log.error("Error searching products for input {}", input, ex)
+            throw ex
+        }
     }
 
     PreviewSearchResult search(PreviewSearchInput input) {
-        def page = new Page(input)
-        def request =
-                [new ProductQueryRequestFilteringBuilder(input), new ProductQueryRequestSortingBuilder(input)]
-                        .inject(
-                                availableProductsIn(
-                                        new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
-                                        Option.apply(input.countryId)
-                                )
-                                        .sized(page.size)
-                                        .aggregatedByBrands(10)
-                                        .aggregatedByCategories(1, true)
-                                        .aggregatedByFeatures()
-                                        .fetchingOptions(50, Option.empty()),
-                                { request, builder -> builder.apply(request) }
-                        )
-        def response = sdk.query(request.offset(page.offset))
-        return new PreviewSearchResultMapper(input, request).map(response)
+        try {
+            def page = new Page(input)
+            def request =
+                    [new ProductQueryRequestFilteringBuilder(input), new ProductQueryRequestSortingBuilder(input)]
+                            .inject(
+                                    availableProductsIn(
+                                            new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
+                                            Option.apply(input.countryId)
+                                    )
+                                            .sized(page.size)
+                                            .aggregatedByBrands(10)
+                                            .aggregatedByCategories(1, true)
+                                            .aggregatedByFeatures()
+                                            .fetchingOptions(50, Option.empty()),
+                                    { request, builder -> builder.apply(request) }
+                            )
+            def response = sdk.query(request.offset(page.offset))
+            return new PreviewSearchResultMapper(input, request).map(response)
+        } catch (Exception ex) {
+            log.error("Error searching products for input {}", input, ex)
+            throw ex
+        }
     }
 
     ScrollableSearchResult scroll(SearchScrollInput input) {
-        def response = sdk.query(new ProductScrollRequest(input.scroll))
-        return new ScrollableSearchResultMapper(input).map(response)
+        try {
+            def response = sdk.query(new ProductScrollRequest(input.scroll))
+            return new ScrollableSearchResultMapper(input).map(response)
+        } catch (Exception ex) {
+            log.error("Error scrolling products for input {}", input, ex)
+            throw ex
+        }
     }
 
     ScrollableSearchResult scroll(PreviewSearchScrollInput input) {
-        def response = sdk.query(new ProductScrollRequest(input.scroll))
-        return new ScrollableSearchResultMapper(input).map(response)
+        try {
+            def response = sdk.query(new ProductScrollRequest(input.scroll))
+            return new ScrollableSearchResultMapper(input).map(response)
+        } catch (Exception ex) {
+            log.error("Error scrolling products for input {}", input, ex)
+            throw ex
+        }
     }
 
     Suggestions suggest(SuggestInput input) {
-        def customer = customerBridge.myProfile(input.accessToken)
-        def deliveryAddress = customer.preferredDeliveryAddress()
-        def request =
-                new SuggestionQueryRequestBuilder(input).apply(
-                        availableSuggestionsIn(
-                                new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
-                                Option.apply(customer.country_id)
-                        ).forTerm(
-                                input.keyword,
-                                toScala(ofNullable(input.languageTag).map { it.language })
-                        )
-                ).forCustomer(customer.id.toString(), customer.customerType.code)
-        def response = sdk.query(request)
-        return new SuggestionsMapper().map(response)
+        try {
+            def customer = customerBridge.myProfile(input.accessToken)
+            def deliveryAddress = customer.preferredDeliveryAddress()
+            def request =
+                    new SuggestionQueryRequestBuilder(input).apply(
+                            availableSuggestionsIn(
+                                    new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
+                                    Option.apply(customer.country_id)
+                            ).forTerm(
+                                    input.keyword,
+                                    toScala(ofNullable(input.languageTag).map { it.language })
+                            )
+                    ).forCustomer(customer.id.toString(), customer.customerType.code)
+            def response = sdk.query(request)
+            return new SuggestionsMapper().map(response)
+        } catch (Exception ex) {
+            log.error("Error fetching suggestions for input {}", input, ex)
+            throw ex
+        }
     }
 
     Suggestions suggest(PreviewSuggestInput input) {
-        def request =
-                new SuggestionQueryRequestBuilder(input).apply(
-                        availableSuggestionsIn(
-                                new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
-                                toScala(ofNullable(input.country))
-                        ).forTerm(
-                                input.keyword,
-                                toScala(ofNullable(input.languageTag).map { it.language })
-                        )
-                )
-        def response = sdk.query(request)
-        return new SuggestionsMapper().map(response)
+        try {
+            def request =
+                    new SuggestionQueryRequestBuilder(input).apply(
+                            availableSuggestionsIn(
+                                    new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
+                                    toScala(ofNullable(input.country))
+                            ).forTerm(
+                                    input.keyword,
+                                    toScala(ofNullable(input.languageTag).map { it.language })
+                            )
+                    )
+            def response = sdk.query(request)
+            return new SuggestionsMapper().map(response)
+        } catch (Exception ex) {
+            log.error("Error fetching suggestions for input {}", input, ex)
+            throw ex
+        }
     }
 
     Cart refreshCart(String accessToken, List<Integer> products) {
-        def request =
-                availableProductsForCustomer(accessToken)
-                        .sized(products.size())
-                        .filteredByProduct(
-                                products.head().toString(),
-                                asScala(products.tail().collect { it.toString() }).toSeq()
-                        )
-                        .fetchingOptions(50, Option.apply(new FetchDeliveryZones(1)))
-        def response = sdk.query(request)
-        return new CartMapper(request, accessToken).map(response)
+        try {
+            def request =
+                    availableProductsForCustomer(accessToken)
+                            .sized(products.size())
+                            .filteredByProduct(
+                                    products.head().toString(),
+                                    asScala(products.tail().collect { it.toString() }).toSeq()
+                            )
+                            .fetchingOptions(50, Option.apply(new FetchDeliveryZones(1)))
+            def response = sdk.query(request)
+            return new CartMapper(request, accessToken).map(response)
+        } catch (Exception ex) {
+            log.error("Error refreshing cart for token {} and products {}", accessToken, products, ex)
+            throw ex
+        }
     }
 
     Product getProductById(String accessToken, Integer product) {
-        def request =
-                availableProductsForCustomer(accessToken)
-                        .sized(1)
-                        .filteredByProduct(product.toString(), asScala([] as List<String>).toSeq())
-                        .fetchingOptions(50, Option.apply(new FetchDeliveryZones(1)))
-        def response = sdk.query(request)
-        return new ProductMapper(request, accessToken)
-                .map(response)
-                .orElseThrow { new EntityNotFoundException() }
+        try {
+            def request =
+                    availableProductsForCustomer(accessToken)
+                            .sized(1)
+                            .filteredByProduct(product.toString(), asScala([] as List<String>).toSeq())
+                            .fetchingOptions(50, Option.apply(new FetchDeliveryZones(1)))
+            def response = sdk.query(request)
+            return new ProductMapper(request, accessToken)
+                    .map(response)
+                    .orElseThrow { new EntityNotFoundException() }
+        } catch (Exception ex) {
+            log.error("Error fetching product for token {} and id {}", accessToken, product, ex)
+            throw ex
+        }
     }
 
     GetHomeBrandsResult getHomeBrands(String accessToken, String country) {
-        def request =
-                ofNullable(accessToken)
-                        .map {
-                            def customer = customerBridge.myProfile(accessToken)
-                            def deliveryAddress = customer.preferredDeliveryAddress()
-                            availableBrandsIn(
-                                    new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
-                                    Option.apply(customer.country_id)
-                            ).forCustomer(customer.id.toString(), customer.customerType.code)
-                        }
-                        .orElse(availableBrandsIn(country))
-                        .sized(20)
-        def response = sdk.query(request)
-        return new HomeBrandsResultMapper().map(response)
+        try {
+            def request =
+                    ofNullable(accessToken)
+                            .map {
+                                def customer = customerBridge.myProfile(accessToken)
+                                def deliveryAddress = customer.preferredDeliveryAddress()
+                                availableBrandsIn(
+                                        new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
+                                        Option.apply(customer.country_id)
+                                ).forCustomer(customer.id.toString(), customer.customerType.code)
+                            }
+                            .orElse(availableBrandsIn(country))
+                            .sized(20)
+            def response = sdk.query(request)
+            return new HomeBrandsResultMapper().map(response)
+        } catch (Exception ex) {
+            log.error("Error fetching home brands for token {} and country {}", accessToken, country, ex)
+            throw ex
+        }
     }
 
     GetHomeBrandsResult getHomeBrands(CoordinatesInput input) {
-        def request =
-                availableBrandsIn(
-                        new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
-                        Option.empty()
-                ).sized(20)
-        def response = sdk.query(request)
-        return new HomeBrandsResultMapper().map(response)
+        try {
+            def request =
+                    availableBrandsIn(
+                            new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
+                            Option.empty()
+                    ).sized(20)
+            def response = sdk.query(request)
+            return new HomeBrandsResultMapper().map(response)
+        } catch (Exception ex) {
+            log.error("Error fetching home brands for input {}", input, ex)
+            throw ex
+        }
     }
 
     PreviewHomeSupplierResponse previewHomeSuppliers(CoordinatesInput input) {
+        try {
         def request =
                 availableSuppliersIn(
                         new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
@@ -163,6 +216,10 @@ class GroceryListing {
                 ).sized(20)
         def response = sdk.query(request)
         return new PreviewHomeSupplierResponseMapper().map(response)
+        } catch (Exception ex) {
+            log.error("Error fetching home suppliers for input {}", input, ex)
+            throw ex
+        }
     }
 
     private def availableProductsForCustomer(String accessToken) {

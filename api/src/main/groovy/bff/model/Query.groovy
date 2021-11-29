@@ -78,15 +78,6 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
-    ResendVerifySMSResult resendVerifySMS(AccessTokenInput accessTokenInput) {
-        try {
-            customerBridge.resendVerifySMS(accessTokenInput)
-            Void.SUCCESS
-        } catch (CustomerException customerException) {
-            customerException.build()
-        }
-    }
-
     ProductResult productDetail(ProductInput productInput, DataFetchingEnvironment dfe) {
         try {
             def accessToken = productInput.accessToken

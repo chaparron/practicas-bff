@@ -17,10 +17,6 @@ interface CustomerBridge {
 
     Void resendVerifyEmail(AccessTokenInput accessTokenInput)
 
-    Void verifyPhone(VerifyPhoneInput verifyPhoneInput)
-
-    Void resendVerifySMS(AccessTokenInput accessTokenInput)
-
     List<Address> findAddresses(AccessTokenInput accessTokenInput)
 
     List<Address> findAddressesByCustomerAccessToken(String accessToken)

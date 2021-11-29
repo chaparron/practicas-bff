@@ -1,6 +1,6 @@
 package bff.model
 
-
+import groovy.transform.ToString
 import org.apache.commons.lang3.StringUtils
 
 interface CustomerUpdateResult {}
@@ -10,8 +10,6 @@ interface VerifyEmailResult {}
 interface VerifyPhoneResult {}
 
 interface ResendVerifyEmailResult {}
-
-interface ResendVerifySMSResult {}
 
 interface PreferredAddressResult {}
 
@@ -111,7 +109,7 @@ enum PasswordlessSignUpFailedReason {
 
 //TODO: refactor errores según web_store: Separarlos en enums correspondientes.
 class CustomerErrorFailed implements PreferredAddressResult, VerifyEmailResult, VerifyPhoneResult,
-        ResendVerifyEmailResult, CustomerUpdateResult, ResendVerifySMSResult, UpdateAddressResult,
+        ResendVerifyEmailResult, CustomerUpdateResult, UpdateAddressResult,
         DeleteAddressResult {
     CustomerErrorReason customerErrorReason
 }
@@ -129,7 +127,7 @@ class CustomerType {
 
 class Customer implements CustomerUpdateResult, PasswordlessSignUpResult {
     String accessToken
-    Long id
+    String id
     String name
     Boolean enabled
     String legalId
@@ -378,6 +376,7 @@ class AccessTokenInput {
     String accessToken
 }
 
+@ToString
 class CoordinatesInput {
     BigDecimal lat
     BigDecimal lng
@@ -441,7 +440,7 @@ class GetFavoriteProductsInput {
     String accessToken
 }
 
-class FavoriteProductInput {
+class FavouriteProductInput {
     Long productId
     String accessToken
 }

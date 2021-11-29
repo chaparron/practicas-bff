@@ -130,13 +130,22 @@ class GraphqlConfiguration {
                 if (parameters.operation == '__trace')
                     return super.instrumentExecutionResult(executionResult, parameters)
                 else {
+                    def errors = executionResult.getErrors()
                     sentParameterToNewRelic(STEP_PARAM_NR, "instrumentExecutionResult")
                     Map<Object, Object> currentExt = executionResult.getExtensions()
                     TracingSupport tracingSupport = parameters.getInstrumentationState()
                     Map<Object, Object> tracingMap = new LinkedHashMap<>()
                     tracingMap.putAll(currentExt == null ? Collections.emptyMap() : currentExt)
                     tracingMap.put("duration", tracingSupport.snapshotTracingData().get("duration"))
-                    return CompletableFuture.completedFuture(new ExecutionResultImpl(executionResult.getData(), executionResult.getErrors(), tracingMap))
+                    // error logging disabled until we find a way to filtering sensitive input variables
+                    if (!errors.isEmpty() && false)
+                        log.error(
+                                "Error executing graphQl request for query {} and variables {}: [{}]",
+                                parameters.query,
+                                parameters.variables,
+                                errors.collect { it.message }.join(",")
+                        )
+                    return CompletableFuture.completedFuture(new ExecutionResultImpl(executionResult.getData(), errors, tracingMap))
                 }
             }
         }

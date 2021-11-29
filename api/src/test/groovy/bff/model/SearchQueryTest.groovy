@@ -2,6 +2,10 @@ package bff.model
 
 import bff.bridge.SearchBridge
 import bff.bridge.sdk.GroceryListing
+import graphql.execution.ExecutionContextBuilder
+import graphql.execution.ExecutionId
+
+import static bff.support.DataFetchingEnvironments.EXPERIMENTAL
 import graphql.execution.ExecutionContext
 import graphql.language.OperationDefinition
 import graphql.schema.DataFetchingEnvironment
@@ -12,7 +16,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 
-import static bff.support.DataFetchingEnvironments.EXPERIMENTAL
 import static org.junit.Assert.assertEquals
 import static org.mockito.Mockito.*
 
@@ -164,36 +167,12 @@ class SearchQueryTest {
     }
 
     private static DataFetchingEnvironment anyExperimentalDataFetchingEnvironment() {
-        new DataFetchingEnvironmentImpl(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                new ExecutionContext(
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        new OperationDefinition(EXPERIMENTAL, null, null),
-                        null,
-                        null,
-                        null
-                )
-        )
+        DataFetchingEnvironmentImpl.newDataFetchingEnvironment(
+                ExecutionContextBuilder.newExecutionContextBuilder()
+                        .executionId(ExecutionId.from(UUID.randomUUID().toString()))
+                        .operationDefinition(new OperationDefinition(EXPERIMENTAL))
+                        .build()
+        ).build()
     }
 
 }

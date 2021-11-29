@@ -315,7 +315,7 @@ class OrderBridgeImpl implements OrderBridge {
                         .body([orders: validateOrderInput.orders])
                 , ValidateOrderResponse).body
 
-        validateOrderResponse.errors = validateOrderResponse.errors.collect {error ->
+        validateOrderResponse.errors = validateOrderResponse.errors?.collect {error ->
             new OrderError(
                     accessToken: validateOrderInput.accessToken,
                     error: error.error,
