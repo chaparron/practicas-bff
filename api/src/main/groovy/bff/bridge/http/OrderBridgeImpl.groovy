@@ -108,6 +108,7 @@ class OrderBridgeImpl implements OrderBridge {
 
         customerOrderResponse.supplierOrder.summary = customerOrderResponse.supplierOrder.metadata.summary.collect { sm ->
             new Summary(
+                    accessToken: findSupplierOrderInput.accessToken,
                     type: CartSummaryItemType.valueOf(sm.type),
                     value: sm.value,
                     metadata: sm?.meta?.keySet()?.collect { key ->
@@ -146,6 +147,7 @@ class OrderBridgeImpl implements OrderBridge {
 
             it.summary = it.metadata.summary.collect { sm ->
                 new Summary(
+                        accessToken: it.accessToken,
                         type: CartSummaryItemType.valueOf(sm.type),
                         value: sm.value,
                         metadata: sm?.meta?.keySet()?.collect { key ->
@@ -306,12 +308,27 @@ class OrderBridgeImpl implements OrderBridge {
                 .toUriString().toURI()
 
 
-        http.exchange(
+        def validateOrderResponse = http.exchange(
                 RequestEntity.method(HttpMethod.POST, uri)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer $validateOrderInput.accessToken")
                         .contentType(MediaType.APPLICATION_JSON)
                         .body([orders: validateOrderInput.orders])
                 , ValidateOrderResponse).body
+
+        validateOrderResponse.errors = validateOrderResponse.errors?.collect {error ->
+            new OrderError(
+                    accessToken: validateOrderInput.accessToken,
+                    error: error.error,
+                    supplierId: error.supplierId,
+                    productId: error.productId,
+                    units: error.units,
+                    prevValue: error.prevValue,
+                    actualValue: error.actualValue
+            )
+
+        }
+
+        validateOrderResponse
 
     }
 }

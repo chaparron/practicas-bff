@@ -208,14 +208,23 @@ class Order {
     TimestampOutput updated
     WorkingDays workingDays
     BigDecimal total_credits
+    Money totalCreditsMoney
     BigDecimal total_money
+    Money totalMoneyMoney
     BigDecimal total_wabipay
+    Money totalWabipayMoney
     BigDecimal discounts
+    Money discountsMoney
     BigDecimal total_service_fee
+    Money totalServiceFeeMoney
     BigDecimal total_pending
+    Money totalPendingMoney
     BigDecimal total_discounts_used
+    Money totalDiscountsUsedMoney
     BigDecimal total
+    Money totalMoney
     BigDecimal subTotal
+    Money subTotalMoney
     Customer customer
     List<SupplierOrder> supplierOrders
 }
@@ -468,6 +477,7 @@ class SupplierPrice {
     Integer id
     String name
     BigDecimal price
+    Money priceMoney
     Display display
     Integer minUnits
     Integer maxUnits
@@ -568,8 +578,10 @@ class OrderSummary {
 }
 
 class Summary {
+    String accessToken
     CartSummaryItemType type
     BigDecimal value
+    Money valueMoney
     Map meta
     List<MetaEntry> metadata
 }
@@ -663,14 +675,15 @@ class GetSupplierOrderInput {
 }
 
 class OrderError {
-
+    String accessToken
     OrderErrorType error
     Long supplierId
     Long productId
     Integer units
     BigDecimal prevValue
+    Money prevValueMoney
     BigDecimal actualValue
-
+    Money actualValueMoney
 }
 
 
