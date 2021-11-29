@@ -1,6 +1,7 @@
 package bff.bridge.http
 
 import bff.bridge.RecommendedOrderBridge
+import bff.configuration.AccessToBackendDeniedException
 import bff.model.FavouriteProductInput
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Value
@@ -35,6 +36,8 @@ class RecommendedOrderBridgeImpl implements RecommendedOrderBridge{
                         .build()
                 , Boolean)
             response.statusCode == HttpStatus.OK
+        }catch (AccessToBackendDeniedException accessToBackendDeniedException) {
+            throw accessToBackendDeniedException
         }catch(Exception e) {
             Boolean.FALSE
         }
@@ -52,6 +55,8 @@ class RecommendedOrderBridgeImpl implements RecommendedOrderBridge{
                             .build()
                     , Boolean)
             response.statusCode == HttpStatus.OK
+        }catch (AccessToBackendDeniedException accessToBackendDeniedException) {
+            throw accessToBackendDeniedException
         }catch(Exception e) {
             Boolean.FALSE
         }
