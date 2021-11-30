@@ -43,7 +43,9 @@ class SearchQuery implements GraphQLQueryResolver {
     }
 
     SearchResponse previewSearch(PreviewSearchInput input, DataFetchingEnvironment dfe) {
-        return isGroceryListingEnabled(dfe, { input.countryId })
+        return ofNullable(input.countryId)
+                .map { country -> isGroceryListingEnabled(dfe, { country }) }
+                .orElse(true)
                 ? groceryListing.search(input)
                 : searchBridge.previewSearch(input)
     }
