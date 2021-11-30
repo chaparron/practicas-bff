@@ -288,9 +288,12 @@ class PreviewProductSearch implements ProductResult {
 }
 
 class PreviewPrice {
+    String countryId
     Long id
     BigDecimal value
+    Money valueMoney
     BigDecimal unitValue
+    Money unitValueMoney
     Display display
     Integer minUnits
 }
@@ -384,7 +387,9 @@ class Price {
     String accessToken
     Supplier supplier
     BigDecimal value
+    Money valueMoney
     BigDecimal unitValue
+    Money unitValueMoney
     Boolean enabled
     Integer minUnits
     Integer maxUnits
@@ -443,10 +448,14 @@ class Supplier implements SupplierResponse {
 
 @EqualsAndHashCode
 class DeliveryZone {
+    String accessToken
     Long id
     BigDecimal minAmount
+    Money minAmountMoney
     BigDecimal maxAmount
+    Money maxAmountMoney
     BigDecimal deliveryCost
+    Money deliveryCostMoney
 }
 
 @EqualsAndHashCode
