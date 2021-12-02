@@ -163,14 +163,14 @@ class QueryTest {
     }
 
     @Test
-    void 'preview home brands should be resolved by product bridge by default'() {
-        def input = new CoordinatesInput(countryId: "ar")
+    void 'preview home brands should be resolved by grocery listing when no country supplied'() {
+        def input = new CoordinatesInput()
         def result = new GetHomeBrandsResult()
 
-        when(brandBridge.previewHomeBrands(input)).thenReturn(result)
+        when(groceryListing.getHomeBrands(input)).thenReturn(result)
 
         assertEquals(result, query.previewHomeBrands(input, null))
-        verify(groceryListing, never()).getHomeBrands(input)
+        verify(brandBridge, never()).previewHomeBrands(input)
     }
 
     @Test
@@ -194,6 +194,18 @@ class QueryTest {
 
         assertEquals(result, query.previewHomeBrands(input, null))
         verify(brandBridge, never()).previewHomeBrands(input)
+    }
+
+    @Test
+    void 'preview home brands should be resolved by brand bridge when country not enabled by configuration'() {
+        def input = new CoordinatesInput(countryId: "br")
+        def result = new GetHomeBrandsResult()
+        query.groceryListingEnabledCountries = ["ar"]
+
+        when(brandBridge.previewHomeBrands(input)).thenReturn(result)
+
+        assertEquals(result, query.previewHomeBrands(input, null))
+        verify(groceryListing, never()).getHomeBrands(input)
     }
 
     @Test
