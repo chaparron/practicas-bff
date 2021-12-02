@@ -4,9 +4,6 @@ import bff.bridge.SearchBridge
 import bff.bridge.sdk.GroceryListing
 import graphql.execution.ExecutionContextBuilder
 import graphql.execution.ExecutionId
-
-import static bff.support.DataFetchingEnvironments.EXPERIMENTAL
-import graphql.execution.ExecutionContext
 import graphql.language.OperationDefinition
 import graphql.schema.DataFetchingEnvironment
 import graphql.schema.DataFetchingEnvironmentImpl
@@ -16,6 +13,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 
+import static bff.support.DataFetchingEnvironments.EXPERIMENTAL
 import static org.junit.Assert.assertEquals
 import static org.mockito.Mockito.*
 
@@ -110,14 +108,14 @@ class SearchQueryTest {
     }
 
     @Test
-    void 'search preview should be resolved by search bridge by default'() {
+    void 'search preview should be resolved by grocery listing when no country supplied'() {
         def input = new PreviewSearchInput()
-        def result = new SearchResult()
+        def result = new PreviewSearchResult()
 
-        when(searchBridge.previewSearch(input)).thenReturn(result)
+        when(groceryListing.search(input)).thenReturn(result)
 
         assertEquals(result, query.previewSearch(input, null))
-        verify(groceryListing, never()).search(input)
+        verify(searchBridge, never()).previewSearch(input)
     }
 
     @Test
@@ -141,6 +139,18 @@ class SearchQueryTest {
 
         assertEquals(result, query.previewSearch(input, null))
         verify(searchBridge, never()).previewSearch(input)
+    }
+
+    @Test
+    void 'search preview should be resolved by search bridge when country not enabled by configuration'() {
+        def input = new PreviewSearchInput(countryId: "br")
+        def result = new PreviewSearchResult()
+        query.groceryListingEnabledCountries = ["ar"]
+
+        when(searchBridge.previewSearch(input)).thenReturn(result)
+
+        assertEquals(result, query.previewSearch(input, null))
+        verify(groceryListing, never()).search(input)
     }
 
     @Test

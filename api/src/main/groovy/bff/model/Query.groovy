@@ -163,6 +163,11 @@ class Query implements GraphQLQueryResolver {
     CartResult refreshCart(RefreshCartInput refreshCartInput, DataFetchingEnvironment dfe) {
         try {
             def accessToken = refreshCartInput.accessToken
+
+            if (refreshCartInput.products.size() == 0) {
+                throw new BadRequestErrorException(innerResponse: CartFailedReason.EMPTY_PRODUCTS.name())
+            }
+
             isGroceryListingEnabled(dfe, { countryFromString(accessToken) })
                     ? groceryListing.refreshCart(accessToken, refreshCartInput.products)
                     : productBridge.refreshCart(accessToken, refreshCartInput.products)
@@ -244,7 +249,9 @@ class Query implements GraphQLQueryResolver {
 
     GetHomeBrandsResponse previewHomeBrands(CoordinatesInput input, DataFetchingEnvironment dfe) {
         try {
-            isGroceryListingEnabled(dfe, { input.countryId })
+            ofNullable(input.countryId)
+                    .map { country -> isGroceryListingEnabled(dfe, { country }) }
+                    .orElse(true)
                     ? groceryListing.getHomeBrands(input)
                     : brandBridge.previewHomeBrands(input)
         }
@@ -354,7 +361,9 @@ class Query implements GraphQLQueryResolver {
 
     HomeSupplierResult previewHomeSuppliers(CoordinatesInput input, DataFetchingEnvironment dfe) {
         try {
-            isGroceryListingEnabled(dfe, { input.countryId })
+            ofNullable(input.countryId)
+                    .map { country -> isGroceryListingEnabled(dfe, { country }) }
+                    .orElse(true)
                     ? groceryListing.previewHomeSuppliers(input)
                     : supplierBridge.previewHomeSuppliers(input)
         }

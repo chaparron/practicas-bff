@@ -565,6 +565,7 @@ abstract class ProductQueryResponseMapper {
                         (a.minUnits == b.minUnits) ? a.unitValue <=> b.unitValue : a.minUnits <=> b.minUnits
                     },
                     highlightedPrice: prices.min { it.unitValue },
+                    priceFrom: prices.min { it.value },
                     title: it.name().defaultEntry(),
                     country_id: it.manufacturer().country(),
                     favorite: toJava(it.favourite()).orElse(false),
