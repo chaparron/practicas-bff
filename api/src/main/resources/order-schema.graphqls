@@ -213,6 +213,7 @@ type SupplierOrder {
   supplierRated: Boolean
   availabilityDifference: Boolean!
   cancelRequested: Boolean
+  summary: [Summary]
 }
 
 

@@ -267,6 +267,8 @@ class SupplierOrder implements SupplierOrderResponse {
     Boolean availabilityDifference
     RatingEntry rating
     HashMap<RatingOwner, Rating> ratings
+    Map metadata
+    List<Summary> summary
 }
 
 class SupplierOrderResult {
