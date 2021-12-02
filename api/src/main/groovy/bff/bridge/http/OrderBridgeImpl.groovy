@@ -191,7 +191,22 @@ class OrderBridgeImpl implements OrderBridge {
                         .build()
                 , param).body
 
-        r.each { it.accessToken = accessToken }
+        r.each {
+            it.accessToken = accessToken
+            it.summary = it.metadata.summary.collect { sm ->
+                new Summary(
+                        accessToken: it.accessToken,
+                        type: CartSummaryItemType.valueOf(sm.type),
+                        value: sm.value,
+                        metadata: sm?.meta?.keySet()?.collect { key ->
+                            new MetaEntry(
+                                    key: key,
+                                    value: sm.meta.get(key)
+                            )
+                        }
+                )
+            }
+        }
         r
     }
 
