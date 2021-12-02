@@ -359,7 +359,9 @@ class Query implements GraphQLQueryResolver {
 
     HomeSupplierResult previewHomeSuppliers(CoordinatesInput input, DataFetchingEnvironment dfe) {
         try {
-            isGroceryListingEnabled(dfe, { input.countryId })
+            ofNullable(input.countryId)
+                    .map { country -> isGroceryListingEnabled(dfe, { country }) }
+                    .orElse(true)
                     ? groceryListing.previewHomeSuppliers(input)
                     : supplierBridge.previewHomeSuppliers(input)
         }

@@ -108,7 +108,7 @@ class SearchQueryTest {
     }
 
     @Test
-    void 'search preview should be resolved by search bridge by default'() {
+    void 'search preview should be resolved by grocery listing when no country supplied'() {
         def input = new PreviewSearchInput()
         def result = new PreviewSearchResult()
 
@@ -142,7 +142,7 @@ class SearchQueryTest {
     }
 
     @Test
-    void 'search preview should be resolved by search bridge when country is not enabled by configuration'() {
+    void 'search preview should be resolved by search bridge when country not enabled by configuration'() {
         def input = new PreviewSearchInput(countryId: "br")
         def result = new PreviewSearchResult()
         query.groceryListingEnabledCountries = ["ar"]
