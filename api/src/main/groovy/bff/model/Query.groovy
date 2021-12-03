@@ -133,12 +133,8 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
-    CustomerLegalDocumentResult findCustomerLegalDocument(FindCustomerLegalDocumentInput findCustomerLegalDocumentInput) {
-        try {
-            customerBridge.findCustomerLegalDocument(findCustomerLegalDocumentInput)
-        } catch (BadRequestErrorException ex) {
-            CustomerLegalDocumentFailedReason.LEGAL_DOCUMENT_NOT_FOUND.build()
-        }
+     PreSignedObject findCustomerLegalDocument(FindCustomerLegalDocumentInput findCustomerLegalDocumentInput) {
+        customerBridge.findCustomerLegalDocument(findCustomerLegalDocumentInput)
     }
 
 

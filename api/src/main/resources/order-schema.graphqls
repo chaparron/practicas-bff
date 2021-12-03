@@ -372,21 +372,11 @@ type CustomerOrderFindFailed {
   reason: CustomerOrderFindFailedReason
 }
 
-enum CustomerLegalDocumentFailedReason {
-  LEGAL_DOCUMENT_NOT_FOUND
-}
-
-type CustomerLegalDocumentFailed {
-  reason: CustomerLegalDocumentFailedReason
-}
-
 union CustomerOrdersResult = CustomerOrdersResponse | CustomerOrderFindFailed
 
 union CustomerOrderResult = CustomerOrderResponse | CustomerOrderFindFailed
 
 union CustomerSupplierOrderResult = CustomerSupplierOrdersResponse | CustomerOrderFindFailed
-
-union CustomerLegalDocumentResult = CustomerLegalDocumentResponse | CustomerLegalDocumentFailed
 
 type CustomerOrdersResponse {
   headers: Headers!
@@ -402,10 +392,6 @@ type CustomerOrderResponse {
 type CustomerSupplierOrdersResponse {
   supplierOrderAndOrderCancellations: [SupplierOrderAndOrderCancellations]
   customer: Customer!
-}
-
-type CustomerLegalDocumentResponse {
-  preSignedObject: PresignedObject!
 }
 
 type PresignedObject {

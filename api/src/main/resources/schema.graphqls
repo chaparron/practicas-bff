@@ -48,7 +48,7 @@ type Query {
   findCustomerAndSupplierOrders(input : FindCustomerAndSupplierOrdersInput) : CustomerSupplierOrderResult!
 
   # find preSigned url to get the customer legal document
-  findCustomerLegalDocument(input : FindCustomerLegalDocumentInput) : CustomerLegalDocumentResult!
+  findCustomerLegalDocument(input : FindCustomerLegalDocumentInput!) : PresignedObject!
 
   # Get new prices and supplier availabities
   refreshCart(input: RefreshCartInput!): CartResult!

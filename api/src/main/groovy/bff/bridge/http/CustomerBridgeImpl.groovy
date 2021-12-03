@@ -445,18 +445,16 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    CustomerLegalDocumentResponse findCustomerLegalDocument(FindCustomerLegalDocumentInput findCustomerLegalDocumentInput) {
+    PreSignedObject findCustomerLegalDocument(FindCustomerLegalDocumentInput findCustomerLegalDocumentInput) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/legal/document/${findCustomerLegalDocumentInput.documentId}"))
                 .toUriString().toURI()
 
-        def preSignedObject = http.exchange(
+        http.exchange(
                 RequestEntity.method(HttpMethod.GET, uri)
                         .header(AUTHORIZATION, "Bearer $findCustomerLegalDocumentInput.accessToken")
                         .contentType(MediaType.APPLICATION_JSON)
                         .build()
                 , PreSignedObject).body
-
-        new CustomerLegalDocumentResponse( preSignedObject: preSignedObject)
 
     }
 

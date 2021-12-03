@@ -45,7 +45,7 @@ interface CustomerBridge {
 
     CustomerReportRateResult customerReportRate(String accessToken, Integer rateId)
 
-    CustomerLegalDocumentResponse findCustomerLegalDocument(FindCustomerLegalDocumentInput findCustomerLegalDocumentInput)
+    PreSignedObject findCustomerLegalDocument(FindCustomerLegalDocumentInput findCustomerLegalDocumentInput)
 
     AddressResult getPreferredAddress(String accessToken)
 

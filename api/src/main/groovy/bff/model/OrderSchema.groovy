@@ -190,9 +190,6 @@ class CustomerSupplierOrdersResponse implements CustomerSupplierOrderResult {
     Customer customer
 }
 
-class CustomerLegalDocumentResponse implements CustomerLegalDocumentResult {
-    PreSignedObject preSignedObject
-}
 
 class PreSignedObject {
     String url
@@ -462,18 +459,6 @@ enum CustomerOrderFindFailedReason {
 
     def build() {
         new CustomerOrderFindFailed(reason: this)
-    }
-}
-
-class CustomerLegalDocumentFailed implements CustomerLegalDocumentResult {
-    CustomerLegalDocumentFailedReason reason
-}
-
-enum CustomerLegalDocumentFailedReason {
-    LEGAL_DOCUMENT_NOT_FOUND
-
-    def build() {
-        new CustomerLegalDocumentFailed(reason: this)
     }
 }
 
