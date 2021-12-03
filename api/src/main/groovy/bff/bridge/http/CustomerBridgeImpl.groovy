@@ -449,12 +449,15 @@ class CustomerBridgeImpl implements CustomerBridge {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/legal/document/${findCustomerLegalDocumentInput.documentId}"))
                 .toUriString().toURI()
 
-        http.exchange(
+        def preSignedObject = http.exchange(
                 RequestEntity.method(HttpMethod.GET, uri)
                         .header(AUTHORIZATION, "Bearer $findCustomerLegalDocumentInput.accessToken")
                         .contentType(MediaType.APPLICATION_JSON)
                         .build()
-                , CustomerLegalDocumentResponse).body
+                , PreSignedObject).body
+
+        new CustomerLegalDocumentResponse( preSignedObject: preSignedObject)
+
     }
 
     static def mapCustomerError(RuntimeException exception, String error) {
