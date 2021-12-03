@@ -95,6 +95,11 @@ input FindCustomerAndSupplierOrdersInput {
   orderId: Int!
 }
 
+input FindCustomerLegalDocumentInput {
+  accessToken: String!
+  documentId: String!
+}
+
 enum Direction {
   ASC,
   DESC
@@ -367,11 +372,21 @@ type CustomerOrderFindFailed {
   reason: CustomerOrderFindFailedReason
 }
 
+enum CustomerLegalDocumentFailedReason {
+  LEGAL_DOCUMENT_NOT_FOUND
+}
+
+type CustomerLegalDocumentFailed {
+  reason: CustomerLegalDocumentFailedReason
+}
+
 union CustomerOrdersResult = CustomerOrdersResponse | CustomerOrderFindFailed
 
 union CustomerOrderResult = CustomerOrderResponse | CustomerOrderFindFailed
 
 union CustomerSupplierOrderResult = CustomerSupplierOrdersResponse | CustomerOrderFindFailed
+
+union CustomerLegalDocumentResult = CustomerLegalDocumentResponse | CustomerLegalDocumentFailed
 
 type CustomerOrdersResponse {
   headers: Headers!
@@ -387,6 +402,16 @@ type CustomerOrderResponse {
 type CustomerSupplierOrdersResponse {
   supplierOrderAndOrderCancellations: [SupplierOrderAndOrderCancellations]
   customer: Customer!
+}
+
+type CustomerLegalDocumentResponse {
+  preSignedObject: PresignedObject!
+}
+
+type PresignedObject {
+  url: String!
+  expiresAt: Int!
+  id: ID!
 }
 
 enum CartFailedReason {

@@ -133,6 +133,14 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
+    CustomerLegalDocumentResult findCustomerLegalDocument(FindCustomerLegalDocumentInput findCustomerLegalDocumentInput) {
+        try {
+            customerBridge.findCustomerLegalDocument(findCustomerLegalDocumentInput)
+        } catch (EntityNotFoundException ex) {
+            CustomerLegalDocumentFailedReason.LEGAL_DOCUMENT_NOT_FOUND.build()
+        }
+    }
+
 
     List<Address> findAddresses(AccessTokenInput accessTokenInput) {
         customerBridge.findAddresses(accessTokenInput)

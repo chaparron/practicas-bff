@@ -80,6 +80,8 @@ class Main {
                 .add(PreviewHomeSupplierResponse.class)
                 .add(PreviewHomeSupplierFailed.class)
                 .add(LegacyCredentials.class)
+                .add(CustomerLegalDocumentResponse.class)
+                .add(CustomerLegalDocumentFailed.class)
     }
 
     /**

@@ -444,6 +444,19 @@ class CustomerBridgeImpl implements CustomerBridge {
         Void.SUCCESS
     }
 
+    @Override
+    CustomerLegalDocumentResponse findCustomerLegalDocument(FindCustomerLegalDocumentInput findCustomerLegalDocumentInput) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/legal/document/${findCustomerLegalDocumentInput.documentId}"))
+                .toUriString().toURI()
+
+        http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(AUTHORIZATION, "Bearer $findCustomerLegalDocumentInput.accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , CustomerLegalDocumentResponse).body
+    }
+
     static def mapCustomerError(RuntimeException exception, String error) {
         if (exception.innerResponse) {
             CustomerErrorReason.valueOf((String) exception.innerResponse).doThrow()
