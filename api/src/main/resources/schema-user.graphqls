@@ -134,10 +134,15 @@ input SignedChallengeAnswer {
   accessToken: String!
 }
 
+enum MoblieChannel{
+  SMS, WHAT
+}
+
 input ChallengeDemandInput {
   # International telephone prefix for 'phone'
   countryCode: String!
   phone: String!
+  channel: MoblieChannel
 }
 
 input ChallengeAnswer{
@@ -241,6 +246,7 @@ type User {
   usesPasswordless: Boolean
   created: TimestampOutput
   isTOSAccepted: Boolean!
+  trackingId: String
 }
 
 

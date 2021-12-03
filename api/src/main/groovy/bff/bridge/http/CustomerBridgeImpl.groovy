@@ -597,6 +597,7 @@ class CustomerBridgeImpl implements CustomerBridge {
     private Customer mapCustomer(Customer customer, String accessToken) {
         customer.customerType.id = customer.customerType.code
         customer.accessToken = accessToken
+        customer.user?.accessToken = accessToken
         customer
     }
 

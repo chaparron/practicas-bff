@@ -21,6 +21,9 @@ class BridgeConfiguration {
     @Value('${phone.notifier.url}')
     URI phone_notifier_url
 
+    @Value('${marketing.bridge.url}')
+    URI marketing_bridge_url
+
     @Bean
     AuthServerBridge authServerBridge() {
         new AuthServerBridgeImpl(
@@ -155,6 +158,14 @@ class BridgeConfiguration {
     SupplierBridge suppliersBridge() {
         new SupplierBridgeImpl(
                 root: root
+        )
+    }
+
+    @Bean
+    MarketingBridge marketingBridge() {
+        new MarketingBridgeImpl(
+                http: http,
+                root: marketing_bridge_url
         )
     }
 

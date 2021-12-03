@@ -22,6 +22,7 @@ interface ChangePasswordResult {}
 interface ConfirmPasswordResult {}
 
 class User {
+    String accessToken
     Long id
     String username
     String firstName
@@ -34,6 +35,7 @@ class User {
     Boolean usesPasswordless
     TimestampOutput created
     Boolean isTOSAccepted
+    String trackingId
 }
 
 class UserCredentials {
