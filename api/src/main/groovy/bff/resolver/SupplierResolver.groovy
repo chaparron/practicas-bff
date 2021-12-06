@@ -19,7 +19,7 @@ class SupplierResolver implements GraphQLResolver<Supplier> {
 
 
     String averageDeliveryDay(Supplier supplier, DataFetchingEnvironment dfe) {
-        String accessToken = DfeUtils.getAccessToken(dfe)
+        String accessToken = supplier.accessToken
         return supplier.averageDeliveryDay || !DfeUtils.isOperation(dfe, REFRESH_CART_QRY ) ?
                 supplier.averageDeliveryDay
                 : supplierBridge.getAverageDeliveryDays(accessToken, supplier.id)

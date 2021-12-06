@@ -6,7 +6,10 @@ import graphql.schema.DataFetchingEnvironment
 class DfeUtils {
 
     static String getAccessToken(DataFetchingEnvironment dfe, String inputName = "accessToken") {
-        return dfe.variables["input"][inputName]
+        if (dfe.variables["input"]) {
+            dfe.variables["input"][inputName]
+        }
+        return null
     }
 
     static Boolean isOperation(DataFetchingEnvironment dfe, String operationName) {
