@@ -198,7 +198,7 @@ class GroceryListing {
                     availableBrandsIn(
                             new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
                             Option.empty()
-                    ).sized(20)
+                    ).sized(40)
             def response = sdk.query(request)
             return new HomeBrandsResultMapper().map(response)
         } catch (Exception ex) {
@@ -209,13 +209,13 @@ class GroceryListing {
 
     PreviewHomeSupplierResponse previewHomeSuppliers(CoordinatesInput input) {
         try {
-        def request =
-                availableSuppliersIn(
-                        new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
-                        Option.empty()
-                ).sized(20)
-        def response = sdk.query(request)
-        return new PreviewHomeSupplierResponseMapper().map(response)
+            def request =
+                    availableSuppliersIn(
+                            new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
+                            Option.empty()
+                    ).sized(20)
+            def response = sdk.query(request)
+            return new PreviewHomeSupplierResponseMapper().map(response)
         } catch (Exception ex) {
             log.error("Error fetching home suppliers for input {}", input, ex)
             throw ex
@@ -1155,13 +1155,15 @@ class HomeBrandsResultMapper {
 
     static GetHomeBrandsResult map(BrandQueryResponse response) {
         new GetHomeBrandsResult(
-                brands: asJava(response.hits()).collect {
-                    new Brand(
-                            id: it.id().toInteger(),
-                            name: it.name().defaultEntry(),
-                            logo: toJava(it.logo()).orElse(null)
-                    )
-                }
+                brands: asJava(response.hits())
+                        .findAll { it.logo().isDefined() }
+                        .collect {
+                            new Brand(
+                                    id: it.id().toInteger(),
+                                    name: it.name().defaultEntry(),
+                                    logo: toJava(it.logo()).orElse(null)
+                            )
+                        }
         )
     }
 
