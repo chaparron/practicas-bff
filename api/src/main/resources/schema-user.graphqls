@@ -134,15 +134,10 @@ input SignedChallengeAnswer {
   accessToken: String!
 }
 
-enum MoblieChannel{
-  SMS, WHAT
-}
-
 input ChallengeDemandInput {
   # International telephone prefix for 'phone'
   countryCode: String!
   phone: String!
-  channel: MoblieChannel
 }
 
 input ChallengeAnswer{
