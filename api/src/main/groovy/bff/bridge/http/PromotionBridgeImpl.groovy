@@ -18,6 +18,8 @@ import org.springframework.web.util.UriComponentsBuilder
 import javax.annotation.PostConstruct
 import java.util.concurrent.TimeUnit
 
+import static bff.JwtToken.countryFromString
+
 class PromotionBridgeImpl implements PromotionBridge {
 
     private static final String PROMOTION_ENDPOINT = "/promotion/"
@@ -106,6 +108,10 @@ class PromotionBridgeImpl implements PromotionBridge {
     }
 
     private def getUncachedPromotions(PromotionInput promotionInput) {
+        if(!promotionInput.country_id && promotionInput.accessToken){
+            promotionInput.country_id = countryFromString(promotionInput.accessToken)
+        }
+
         def uri = UriComponentsBuilder.fromUri(root.resolve(PROMOTION_ENDPOINT))
                 .queryParam("country_id", promotionInput.country_id)
                 .queryParam("enable", true)

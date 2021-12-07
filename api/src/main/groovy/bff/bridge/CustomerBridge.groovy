@@ -45,6 +45,8 @@ interface CustomerBridge {
 
     CustomerReportRateResult customerReportRate(String accessToken, Integer rateId)
 
+    PreSignedObject findCustomerLegalDocument(FindCustomerLegalDocumentInput findCustomerLegalDocumentInput)
+
     AddressResult getPreferredAddress(String accessToken)
 
     List<CustomerCancelOptionReason> getCancelOptions(String accessToken)

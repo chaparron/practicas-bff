@@ -95,6 +95,11 @@ input FindCustomerAndSupplierOrdersInput {
   orderId: Int!
 }
 
+input FindCustomerLegalDocumentInput {
+  accessToken: String!
+  documentId: String!
+}
+
 enum Direction {
   ASC,
   DESC
@@ -387,6 +392,12 @@ type CustomerOrderResponse {
 type CustomerSupplierOrdersResponse {
   supplierOrderAndOrderCancellations: [SupplierOrderAndOrderCancellations]
   customer: Customer!
+}
+
+type PresignedObject {
+  url: String!
+  expiresAt: Int!
+  id: ID!
 }
 
 enum CartFailedReason {

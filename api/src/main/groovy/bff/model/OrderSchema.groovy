@@ -93,6 +93,7 @@ interface OrderUpdateResult {}
 interface CustomerOrdersResult {}
 interface CustomerOrderResult {}
 interface CustomerSupplierOrderResult{}
+interface CustomerLegalDocumentResult{}
 
 class CancelOrderInput {
     String accessToken
@@ -151,6 +152,11 @@ class FindCustomerAndSupplierOrdersInput {
     Integer orderId
 }
 
+class FindCustomerLegalDocumentInput {
+    String accessToken
+    String documentId
+}
+
 class FindSupplierOrderInput {
     String accessToken
     String countryId
@@ -182,6 +188,13 @@ class CustomerSupplierOrdersResponse implements CustomerSupplierOrderResult {
     String accessToken
     List<SupplierOrderAndOrderCancellations> supplierOrderAndOrderCancellations
     Customer customer
+}
+
+
+class PreSignedObject {
+    String url
+    Long expiresAt
+    String id
 }
 
 class SupplierRatingsResponse extends PaginatedResponse<Rating> {

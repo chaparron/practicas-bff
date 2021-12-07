@@ -133,6 +133,10 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
+     PreSignedObject findCustomerLegalDocument(FindCustomerLegalDocumentInput findCustomerLegalDocumentInput) {
+        customerBridge.findCustomerLegalDocument(findCustomerLegalDocumentInput)
+    }
+
 
     List<Address> findAddresses(AccessTokenInput accessTokenInput) {
         customerBridge.findAddresses(accessTokenInput)
