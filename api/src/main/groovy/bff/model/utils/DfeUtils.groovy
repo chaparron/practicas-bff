@@ -13,7 +13,7 @@ class DfeUtils {
     }
 
     static Boolean isOperation(DataFetchingEnvironment dfe, String operationName) {
-        return dfe.getOperationDefinition().selectionSet.selections.contains {
+        return dfe.getOperationDefinition().selectionSet.selections.any {
             return it instanceof Field && it.name == operationName
         }
     }
