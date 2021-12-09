@@ -122,6 +122,7 @@ type Query {
 
   isValidPhone(input: IsValidPhoneInput!): Boolean
 
+  findSupplierCreditBalances(input: FindSupplierCreditBalancesInput): PageResponse
 }
 
 type Mutation {

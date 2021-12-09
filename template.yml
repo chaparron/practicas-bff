@@ -324,6 +324,11 @@ Resources:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-wabi2b-grocery-listing-ApiGatewayEndpoint"
 
         - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: SUPPLIER_CREDITS_ENDPOINT
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-supplier-credits-ApiRootURL"
+
+        - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: GROCERY_LISTING_COUNTRIES
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, GroceryListingCountries ]
 
