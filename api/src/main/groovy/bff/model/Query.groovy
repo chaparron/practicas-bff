@@ -1,6 +1,5 @@
 package bff.model
 
-
 import bff.bridge.*
 import bff.bridge.sdk.GroceryListing
 import bff.configuration.BadRequestErrorException
@@ -9,12 +8,7 @@ import com.coxautodev.graphql.tools.GraphQLQueryResolver
 import graphql.schema.DataFetchingEnvironment
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-
-import static bff.JwtToken.countryFromString
-import static bff.support.DataFetchingEnvironments.experimentalMode
-import static java.util.Optional.ofNullable
 
 /**
  * TODO: Representa todas las queries a graphql, tener en cuenta de dividirlo en mas de un resolver
@@ -53,8 +47,6 @@ class Query implements GraphQLQueryResolver {
     PhoneNotifierBridge phoneNotifierBridge
     @Autowired
     GroceryListing groceryListing
-    @Value('${grocery.listing.countries:}')
-    List<String> groceryListingEnabledCountries
 
     Customer myProfile(CustomerInput customerInput) {
         customerBridge.myProfile(customerInput.accessToken)
@@ -78,16 +70,9 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
-    ProductResult productDetail(ProductInput productInput, DataFetchingEnvironment dfe) {
+    ProductResult productDetail(ProductInput productInput) {
         try {
-            def accessToken = productInput.accessToken
-            isGroceryListingEnabled(dfe, { countryFromString(accessToken) })
-                    ? groceryListing.getProductById(accessToken, productInput.productId)
-                    : productBridge.getProductById(accessToken, productInput.productId)
-
-        }
-        catch (BadRequestErrorException ex) {
-            ProductErrorReason.valueOf((String) ex.innerResponse).build()
+            groceryListing.getProductById(productInput.accessToken, productInput.productId)
         }
         catch (EntityNotFoundException ex) {
             ProductErrorReason.PRODUCT_NOT_FOUND.build()
@@ -133,7 +118,7 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
-     PreSignedObject findCustomerLegalDocument(FindCustomerLegalDocumentInput findCustomerLegalDocumentInput) {
+    PreSignedObject findCustomerLegalDocument(FindCustomerLegalDocumentInput findCustomerLegalDocumentInput) {
         customerBridge.findCustomerLegalDocument(findCustomerLegalDocumentInput)
     }
 
@@ -164,22 +149,11 @@ class Query implements GraphQLQueryResolver {
         customerBridge.getCancelOptions(accessTokenInput.accessToken)
     }
 
-    CartResult refreshCart(RefreshCartInput refreshCartInput, DataFetchingEnvironment dfe) {
-        try {
-            def accessToken = refreshCartInput.accessToken
-
-            if (refreshCartInput.products.size() == 0) {
-                throw new BadRequestErrorException(innerResponse: CartFailedReason.EMPTY_PRODUCTS.name())
-            }
-
-            isGroceryListingEnabled(dfe, { countryFromString(accessToken) })
-                    ? groceryListing.refreshCart(accessToken, refreshCartInput.products)
-                    : productBridge.refreshCart(accessToken, refreshCartInput.products)
-        } catch (BadRequestErrorException ex) {
-            log.debug("refresh cart error: {}", ex.innerResponse as String)
-            CartFailedReason.valueOf((String) ex.innerResponse).build()
-        }
-
+    CartResult refreshCart(RefreshCartInput refreshCartInput) {
+        if (refreshCartInput.products.size() == 0) {
+            log.debug("refresh cart error: EMPTY_PRODUCTS")
+            CartFailedReason.valueOf(CartFailedReason.EMPTY_PRODUCTS.name()).build()
+        } else groceryListing.refreshCart(refreshCartInput.accessToken, refreshCartInput.products)
     }
 
     boolean validateUsername(ValidateUsernameInput input) {
@@ -232,39 +206,12 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
-    GetHomeBrandsResponse getHomeBrands(GetBrandsInput brandsInput, DataFetchingEnvironment dfe) {
-        try {
-            def accessToken = brandsInput.accessToken
-            def country = brandsInput.countryId
-            isGroceryListingEnabled(
-                    dfe,
-                    { ofNullable(accessToken).map { countryFromString(it) }.orElse(country) }
-            )
-                    ? groceryListing.getHomeBrands(accessToken, country)
-                    : brandBridge.getHome(accessToken, country)
-        }
-        catch (EntityNotFoundException ex) {
-            GetBrandsFailedReason.NOT_FOUND.build()
-        }
-        catch (BadRequestErrorException ex) {
-            GetBrandsFailedReason.valueOf((String) ex.innerResponse).build()
-        }
+    GetHomeBrandsResponse getHomeBrands(GetBrandsInput brandsInput) {
+        groceryListing.getHomeBrands(brandsInput.accessToken, brandsInput.countryId)
     }
 
-    GetHomeBrandsResponse previewHomeBrands(CoordinatesInput input, DataFetchingEnvironment dfe) {
-        try {
-            ofNullable(input.countryId)
-                    .map { country -> isGroceryListingEnabled(dfe, { country }) }
-                    .orElse(true)
-                    ? groceryListing.getHomeBrands(input)
-                    : brandBridge.previewHomeBrands(input)
-        }
-        catch (EntityNotFoundException ex) {
-            GetBrandsFailedReason.NOT_FOUND.build()
-        }
-        catch (BadRequestErrorException ex) {
-            GetBrandsFailedReason.valueOf((String) ex.innerResponse).build()
-        }
+    GetHomeBrandsResponse previewHomeBrands(CoordinatesInput input) {
+        groceryListing.getHomeBrands(input)
     }
 
     List<CountryConfigurationEntry> getCountryConfiguration(String countryId) {
@@ -363,17 +310,8 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
-    HomeSupplierResult previewHomeSuppliers(CoordinatesInput input, DataFetchingEnvironment dfe) {
-        try {
-            ofNullable(input.countryId)
-                    .map { country -> isGroceryListingEnabled(dfe, { country }) }
-                    .orElse(true)
-                    ? groceryListing.previewHomeSuppliers(input)
-                    : supplierBridge.previewHomeSuppliers(input)
-        }
-        catch (BadRequestErrorException ex) {
-            PreviewHomeSupplierFailedReason.valueOf((String) ex.innerResponse).build()
-        }
+    HomeSupplierResult previewHomeSuppliers(CoordinatesInput input) {
+        groceryListing.previewHomeSuppliers(input)
     }
 
     List<SuppliersNameResult> getSuppliersThatHasSuggestedOrders(AccessTokenInput accessTokenInput) {
@@ -390,10 +328,6 @@ class Query implements GraphQLQueryResolver {
 
     Boolean isValidPhone(IsValidPhoneInput input) {
         phoneNotifierBridge.isValidPhone(input.countryCode, input.phone)
-    }
-
-    private def isGroceryListingEnabled(DataFetchingEnvironment dfe, Closure<String> country) {
-        (experimentalMode(dfe) || ofNullable(groceryListingEnabledCountries).orElse([]).contains(country()))
     }
 
 }
