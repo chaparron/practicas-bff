@@ -16,6 +16,7 @@ import static scala.jdk.javaapi.OptionConverters.toJava
 import static scala.jdk.javaapi.OptionConverters.toScala
 import static wabi2b.grocery.listing.sdk.BrandQueryRequest.availableBrandsIn
 import static wabi2b.grocery.listing.sdk.ProductQueryRequest.availableProductsIn
+import static wabi2b.grocery.listing.sdk.ProductQueryRequest.similarProductsTo
 import static wabi2b.grocery.listing.sdk.SuggestionQueryRequestBuilder.availableSuggestionsIn
 import static wabi2b.grocery.listing.sdk.SupplierQueryRequest.availableSuppliersIn
 
@@ -31,13 +32,21 @@ class GroceryListing {
             def request =
                     [new ProductQueryRequestFilteringBuilder(input), new ProductQueryRequestSortingBuilder(input)]
                             .inject(
-                                    availableProductsForCustomer(input.accessToken)
-                                            .sized(page.size)
-                                            .aggregatedByBrands(10)
-                                            .aggregatedByCategories(1, true)
-                                            .aggregatedBySuppliers(10)
-                                            .aggregatedByFeatures()
-                                            .fetchingOptions(50, Option.empty()),
+                                    ofNullable(input.similarTo)
+                                            .map {
+                                                similarProductsForCustomer(it, input.accessToken)
+                                                        .sized(page.size)
+                                                        .fetchingOptions(50, Option.empty()) as ProductQueryRequest
+                                            }
+                                            .orElse(
+                                                    availableProductsForCustomer(input.accessToken)
+                                                            .sized(page.size)
+                                                            .aggregatedByBrands(10)
+                                                            .aggregatedByCategories(1, true)
+                                                            .aggregatedBySuppliers(10)
+                                                            .aggregatedByFeatures()
+                                                            .fetchingOptions(50, Option.empty())
+                                            ),
                                     { request, builder -> builder.apply(request) }
                             )
             def response = sdk.query(request.offset(page.offset))
@@ -54,15 +63,27 @@ class GroceryListing {
             def request =
                     [new ProductQueryRequestFilteringBuilder(input), new ProductQueryRequestSortingBuilder(input)]
                             .inject(
-                                    availableProductsIn(
-                                            new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
-                                            Option.apply(input.countryId)
-                                    )
-                                            .sized(page.size)
-                                            .aggregatedByBrands(10)
-                                            .aggregatedByCategories(1, true)
-                                            .aggregatedByFeatures()
-                                            .fetchingOptions(50, Option.empty()),
+                                    ofNullable(input.similarTo)
+                                            .map {
+                                                similarProductsTo(it.toString())
+                                                        .availableIn(
+                                                                new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
+                                                                Option.apply(input.countryId)
+                                                        )
+                                                        .sized(page.size)
+                                                        .fetchingOptions(50, Option.empty()) as ProductQueryRequest
+                                            }
+                                            .orElse(
+                                                    availableProductsIn(
+                                                            new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
+                                                            Option.apply(input.countryId)
+                                                    )
+                                                            .sized(page.size)
+                                                            .aggregatedByBrands(10)
+                                                            .aggregatedByCategories(1, true)
+                                                            .aggregatedByFeatures()
+                                                            .fetchingOptions(50, Option.empty())
+                                            ),
                                     { request, builder -> builder.apply(request) }
                             )
             def response = sdk.query(request.offset(page.offset))
@@ -232,6 +253,19 @@ class GroceryListing {
         ).forCustomer(customer.id.toString(), customer.customerType.code)
     }
 
+    private def similarProductsForCustomer(Integer product, String accessToken) {
+        def customer = customerBridge.myProfile(accessToken)
+        def deliveryAddress = customer.preferredDeliveryAddress()
+
+        return similarProductsTo(product.toString())
+                .availableIn(
+                        new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
+                        Option.apply(customer.country_id)
+                )
+                .forCustomer(customer.id.toString(), customer.customerType.code)
+    }
+
+
 }
 
 class Page {
@@ -315,7 +349,9 @@ class ProductQueryRequestFilteringBuilder implements ProductQueryRequestBuilder 
     private Closure<ProductQueryRequest> termFiltering() {
         maybeKeyword
                 .map { term ->
-                    { ProductQueryRequest r -> r.filteredByTerm(term, Option.empty(), FullText$.MODULE$) }
+                    { ProductQueryRequest r ->
+                        r.filteredByTerm(term, Option.empty(), FullText$.MODULE$) as ProductQueryRequest
+                    }
                 }
                 .orElse(identity)
     }
@@ -324,7 +360,10 @@ class ProductQueryRequestFilteringBuilder implements ProductQueryRequestBuilder 
         maybeCategory
                 .map { category ->
                     { ProductQueryRequest r ->
-                        r.filteredByCategory(category.toString(), asScala([] as List<String>).toSeq())
+                        r.filteredByCategory(
+                                category.toString(),
+                                asScala([] as List<String>).toSeq()
+                        ) as ProductQueryRequest
                     }
                 }
                 .orElse(identity)
@@ -334,7 +373,10 @@ class ProductQueryRequestFilteringBuilder implements ProductQueryRequestBuilder 
         maybeBrand
                 .map { brand ->
                     { ProductQueryRequest r ->
-                        r.filteredByBrand(brand.toString(), asScala([] as List<String>).toSeq())
+                        r.filteredByBrand(
+                                brand.toString(),
+                                asScala([] as List<String>).toSeq()
+                        ) as ProductQueryRequest
                     }
                 }
                 .orElse(identity)
@@ -344,7 +386,10 @@ class ProductQueryRequestFilteringBuilder implements ProductQueryRequestBuilder 
         maybeSupplier
                 .map { supplier ->
                     { ProductQueryRequest r ->
-                        r.filteredBySupplier(supplier.toString(), asScala([] as List<String>).toSeq())
+                        r.filteredBySupplier(
+                                supplier.toString(),
+                                asScala([] as List<String>).toSeq()
+                        ) as ProductQueryRequest
                     }
                 }
                 .orElse(identity)
@@ -352,21 +397,32 @@ class ProductQueryRequestFilteringBuilder implements ProductQueryRequestBuilder 
 
     private Closure<ProductQueryRequest> promotionFiltering() {
         maybePromotion
-                .map { promotion -> { ProductQueryRequest r -> r.filteredByPromotion(promotion) } }
+                .map { promotion ->
+                    { ProductQueryRequest r ->
+                        r.filteredByPromotion(promotion) as ProductQueryRequest
+                    }
+                }
                 .orElse(identity)
     }
 
     private Closure<ProductQueryRequest> favouritesFiltering() {
         maybeFavourites
                 .filter { it }
-                .map { { ProductQueryRequest r -> r.favourites() } }
+                .map {
+                    { ProductQueryRequest r ->
+                        r.favourites() as ProductQueryRequest
+                    }
+                }
                 .orElse(identity)
     }
 
     private List<Closure<ProductQueryRequest>> featuresFiltering() {
         features.collect { feature ->
             { ProductQueryRequest r ->
-                r.filteredByFeature(feature.id, feature.value, asScala([] as List<String>).toSeq())
+                r.filteredByFeature(
+                        feature.id,
+                        feature.value, asScala([] as List<String>).toSeq()
+                ) as ProductQueryRequest
             }
         }
     }
