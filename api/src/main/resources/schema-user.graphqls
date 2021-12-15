@@ -241,7 +241,7 @@ type User {
   usesPasswordless: Boolean
   created: TimestampOutput
   isTOSAccepted: Boolean!
-  trackingId: String
+  trackingId: String!
 }
 
 
