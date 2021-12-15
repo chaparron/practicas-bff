@@ -196,19 +196,22 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
         Assert.assertEquals("eg", countriesHome.find {it.id == "eg"}?.id)
         Assert.assertEquals("Africa/Cairo", countriesHome.find {it.id == "eg"}?.detail?.timezone)
         Assert.assertEquals("TIN", countriesHome.find {it.id == "eg"}?.legalDocumentInformation?.id)
-        Assert.assertEquals("000-000-000", countriesHome.find {it.id == "eg"}?.legalDocumentInformation?.mask)
+        Assert.assertEquals("D*", countriesHome.find {it.id == "eg"}?.legalDocumentInformation?.mask)
+        Assert.assertEquals("^[a-zA-Z0-9]*\$", countriesHome.find {it.id == "eg"}?.legalDocumentInformation?.maskRegex)
 
         Assert.assertEquals("المغرب", countriesHome.find {it.id == "ma"}?.name)
         Assert.assertEquals("ma", countriesHome.find {it.id == "ma"}?.id)
         Assert.assertEquals("Africa/Casablanca", countriesHome.find {it.id == "ma"}?.detail?.timezone)
         Assert.assertEquals("ICE", countriesHome.find {it.id == "ma"}?.legalDocumentInformation?.id)
         Assert.assertEquals("000000000000000", countriesHome.find {it.id == "ma"}?.legalDocumentInformation?.mask)
+        Assert.assertEquals("^\\d{15}\$", countriesHome.find {it.id == "ma"}?.legalDocumentInformation?.maskRegex)
 
         Assert.assertEquals("فيلبيني", countriesHome.find {it.id == "ph"}?.name)
         Assert.assertEquals("ph", countriesHome.find {it.id == "ph"}?.id)
         Assert.assertEquals("Asia/Manila", countriesHome.find {it.id == "ph"}?.detail?.timezone)
         Assert.assertEquals("TIN", countriesHome.find {it.id == "ph"}?.legalDocumentInformation?.id)
-        Assert.assertEquals("000000000000", countriesHome.find {it.id == "ph"}?.legalDocumentInformation?.mask)
+        Assert.assertEquals("000000009999", countriesHome.find {it.id == "ph"}?.legalDocumentInformation?.mask)
+        Assert.assertEquals("^\\d{8,12}\$", countriesHome.find {it.id == "ph"}?.legalDocumentInformation?.maskRegex)
 
         Mockito.verify(httpBridge, Mockito.times(3))
                 .get(
