@@ -433,50 +433,47 @@ class ProductQueryRequestSortingBuilder implements ProductQueryRequestBuilder {
 
     Optional<String> maybeSort
     Optional<SortInput> maybeDirection
-    Optional<String> maybeKeyword
+    Boolean maybeKeyword
+    Boolean maybeSimilarTo
 
     ProductQueryRequestSortingBuilder(SearchInput input) {
-        this(input.sort, input.sortDirection, input.keyword)
+        this(input.sort, input.sortDirection, input.keyword, input.similarTo)
     }
 
     ProductQueryRequestSortingBuilder(PreviewSearchInput input) {
-        this(input.sort, input.sortDirection, input.keyword)
+        this(input.sort, input.sortDirection, input.keyword, input.similarTo)
     }
 
     private ProductQueryRequestSortingBuilder(String sort,
                                               SortInput direction,
-                                              String keyword) {
+                                              String keyword,
+                                              Integer similarTo) {
         this.maybeSort = ofNullable(sort).filter { !it.isEmpty() }
         this.maybeDirection = ofNullable(direction)
-        this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }
+        this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }.present
+        this.maybeSimilarTo = ofNullable(similarTo).present
     }
 
     ProductQueryRequest apply(ProductQueryRequest request) {
-        maybeSort
-                .map { sort ->
-                    switch (sort) {
-                        case "DEFAULT":
-                            maybeKeyword
-                                    .map { sortedByRelevance(request) }
-                                    .orElse(sortedAlphabetically(request))
-                            break
-                        case "TITLE":
-                            sortedAlphabetically(request)
-                            break
-                        case "RECENT":
-                            sortedByLastAvailabilityUpdate(request)
-                            break
-                        case "PRICE":
-                            sortedByUnitPrice(request)
-                            break
-                        default:
-                            request
-                            break
-                    }
-                }
-                .map { Optional.of(it) }
-                .orElseGet { maybeKeyword.map { sortedByRelevance(request) } }
-                .orElse(sortedAlphabetically(request))
+        switch (maybeSort.orElse("DEFAULT")) {
+            case "DEFAULT":
+                (maybeKeyword || maybeSimilarTo) ?
+                        sortedByRelevance(request) :
+                        sortedAlphabetically(request)
+                break
+            case "TITLE":
+                sortedAlphabetically(request)
+                break
+            case "RECENT":
+                sortedByLastAvailabilityUpdate(request)
+                break
+            case "PRICE":
+                sortedByUnitPrice(request)
+                break
+            default:
+                request
+                break
+        }
     }
 
     private static ProductQueryRequest sortedByRelevance(ProductQueryRequest request) {
