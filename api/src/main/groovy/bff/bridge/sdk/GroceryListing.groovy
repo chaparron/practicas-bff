@@ -465,31 +465,34 @@ class ProductQueryRequestSortingBuilder implements ProductQueryRequestBuilder {
     Optional<SortInput> maybeDirection
     Boolean maybeKeyword
     Boolean maybeSimilarTo
+    Boolean maybePromoted
 
     ProductQueryRequestSortingBuilder(SearchInput input) {
-        this(input.sort, input.sortDirection, input.keyword, input.similarTo)
+        this(input.sort, input.sortDirection, input.keyword, input.similarTo, input.promoted)
     }
 
     ProductQueryRequestSortingBuilder(PreviewSearchInput input) {
-        this(input.sort, input.sortDirection, input.keyword, input.similarTo)
+        this(input.sort, input.sortDirection, input.keyword, input.similarTo, input.promoted)
     }
 
     private ProductQueryRequestSortingBuilder(String sort,
                                               SortInput direction,
                                               String keyword,
-                                              Integer similarTo) {
+                                              Integer similarTo,
+                                              Boolean promoted) {
         this.maybeSort = ofNullable(sort).filter { !it.isEmpty() }
         this.maybeDirection = ofNullable(direction)
         this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }.present
         this.maybeSimilarTo = ofNullable(similarTo).present
+        this.maybePromoted = ofNullable(promoted).filter { it }.present
     }
 
     ProductQueryRequest apply(ProductQueryRequest request) {
         switch (maybeSort.orElse("DEFAULT")) {
             case "DEFAULT":
-                (maybeKeyword || maybeSimilarTo) ?
-                        sortedByRelevance(request) :
-                        sortedAlphabetically(request)
+                if (maybeKeyword || maybeSimilarTo) sortedByRelevance(request)
+                else if (maybePromoted) sortedByLastAvailabilityUpdate(request)
+                else sortedAlphabetically(request)
                 break
             case "TITLE":
                 sortedAlphabetically(request)
