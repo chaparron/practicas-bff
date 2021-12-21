@@ -305,13 +305,32 @@ class ProductQueryRequestFilteringBuilder implements ProductQueryRequestBuilder 
     Optional<String> maybePromotion
     List<FeatureInput> features
     Optional<Boolean> maybeFavourites
+    Optional<Boolean> maybePromoted
 
     ProductQueryRequestFilteringBuilder(SearchInput input) {
-        this(input.keyword, input.category, input.brand, input.supplier, input.tag, input.features, input.favourites)
+        this(
+                input.keyword,
+                input.category,
+                input.brand,
+                input.supplier,
+                input.tag,
+                input.features,
+                input.favourites,
+                input.promoted
+        )
     }
 
     ProductQueryRequestFilteringBuilder(PreviewSearchInput input) {
-        this(input.keyword, input.category, input.brand, null, input.tag, input.features, null)
+        this(
+                input.keyword,
+                input.category,
+                input.brand,
+                null,
+                input.tag,
+                input.features,
+                null,
+                input.promoted
+        )
     }
 
     private ProductQueryRequestFilteringBuilder(String keyword,
@@ -320,7 +339,8 @@ class ProductQueryRequestFilteringBuilder implements ProductQueryRequestBuilder 
                                                 Integer supplier,
                                                 String promotion,
                                                 List<FeatureInput> features,
-                                                Boolean favourites) {
+                                                Boolean favourites,
+                                                Boolean promoted) {
         this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }
         this.maybeCategory = ofNullable(category)
         this.maybeBrand = ofNullable(brand)
@@ -328,6 +348,7 @@ class ProductQueryRequestFilteringBuilder implements ProductQueryRequestBuilder 
         this.maybePromotion = ofNullable(promotion).filter { !it.isEmpty() }
         this.features = features
         this.maybeFavourites = ofNullable(favourites)
+        this.maybePromoted = ofNullable(promoted)
     }
 
     ProductQueryRequest apply(ProductQueryRequest request) {
@@ -402,7 +423,16 @@ class ProductQueryRequestFilteringBuilder implements ProductQueryRequestBuilder 
                         r.filteredByPromotion(promotion) as ProductQueryRequest
                     }
                 }
-                .orElse(identity)
+                .orElseGet {
+                    maybePromoted
+                            .filter { it }
+                            .map {
+                                { ProductQueryRequest r ->
+                                    r.filteredByAnyPromotion() as ProductQueryRequest
+                                }
+                            }
+                            .orElse(identity)
+                }
     }
 
     private Closure<ProductQueryRequest> favouritesFiltering() {

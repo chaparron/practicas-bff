@@ -13,6 +13,7 @@ input SearchInput {
   supplier: Int,
   favourites: Boolean
   similarTo: Int
+  promoted: Boolean
 }
 
 input SearchScrollInput {
@@ -34,6 +35,7 @@ input PreviewSearchInput {
   lng: Float!
   countryId: String
   similarTo: Int
+  promoted: Boolean
 }
 
 input PreviewSearchScrollInput {
