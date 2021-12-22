@@ -146,7 +146,7 @@ class PromotionBridgeImplTest extends PromotionBridgeImplTestData {
                         (ParameterizedTypeReference) Mockito.any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<PaginatedResponse<Promotion>>(new JsonSlurper().parseText(promotionJsonResponse) as PaginatedResponse<Promotion>, HttpStatus.OK))
 
-        def promotions = promotionBridge.getAll(new PromotionInput(country_id: TARGET_COUNTRY_ID))
+        def promotions = promotionBridge.getAll(new PromotionInput(country_id: TARGET_COUNTRY_ID, accessToken: JWT_AR))
         Assert.assertNotNull(promotions)
         Assert.assertFalse(promotions.content.empty)
         Assert.assertTrue(promotions.content.size() == 2)
@@ -156,7 +156,7 @@ class PromotionBridgeImplTest extends PromotionBridgeImplTestData {
         Assert.assertFalse(promotions.content.empty)
         Assert.assertTrue(promotions.content.size() == 2)
 
-        promotions = promotionBridge.getAll(new PromotionInput(country_id: TARGET_COUNTRY_ID))
+        promotions = promotionBridge.getAll(new PromotionInput(country_id: TARGET_COUNTRY_ID, accessToken: JWT_AR))
         Assert.assertNotNull(promotions)
         Assert.assertFalse(promotions.content.empty)
         Assert.assertTrue(promotions.content.size() == 2)
@@ -188,7 +188,7 @@ class PromotionBridgeImplTest extends PromotionBridgeImplTestData {
         Assert.assertFalse(promotions.content.empty)
         Assert.assertTrue(promotions.content.size() == 2)
 
-        promotions = promotionBridge.getAll(new PromotionInput(country_id: TARGET_COUNTRY_ID))
+        promotions = promotionBridge.getAll(new PromotionInput(country_id: TARGET_COUNTRY_ID, accessToken: JWT_AR))
         Assert.assertNotNull(promotions)
         Assert.assertFalse(promotions.content.empty)
         Assert.assertTrue(promotions.content.size() == 2)
