@@ -108,7 +108,7 @@ class PromotionBridgeImpl implements PromotionBridge {
     }
 
     private def getUncachedPromotions(PromotionInput promotionInput) {
-        if(!promotionInput.country_id && promotionInput.accessToken){
+        if(promotionInput.accessToken){
             promotionInput.country_id = countryFromString(promotionInput.accessToken)
         }
 
