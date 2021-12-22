@@ -198,7 +198,7 @@ class PromotionBridgeImplTest extends PromotionBridgeImplTestData {
         Assert.assertFalse(promotions.content.empty)
         Assert.assertTrue(promotions.content.size() == 2)
 
-        promotions = promotionBridge.getAll(new PromotionInput(country_id: TARGET_COUNTRY_ID))
+        promotions = promotionBridge.getAll(new PromotionInput(country_id: TARGET_COUNTRY_ID, accessToken: JWT_AR))
         Assert.assertNotNull(promotions)
         Assert.assertFalse(promotions.content.empty)
         Assert.assertTrue(promotions.content.size() == 2)
