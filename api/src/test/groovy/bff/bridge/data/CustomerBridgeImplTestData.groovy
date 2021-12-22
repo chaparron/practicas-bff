@@ -47,7 +47,7 @@ abstract class CustomerBridgeImplTestData {
                     currency: new Currency(symbol: "symbol", code: "code"),
                     fee: new Fee(serviceFeeType: "serviceFeeType", serviceFee: BigDecimal.ZERO, displayFeeOnSupplierAdm: false),
                     wabiPay: new WabiPay(enabled: false, creditEnabled: false, moneyEnabled: false, wcToMoneyWhenReleasingEnabled: false),
-                    legalDocumentInformation: new LegalDocumentInformation(id: "legalDocId", mask: "mask")
+                    legalDocumentInformation: new LegalDocumentInformation(id: "legalDocId", mask: "mask", maskRegex: "maskRegex")
             ),
             customerType: new CustomerType(id: "customerTypeId", code: "customerTypeCode"),
             marketingEnabled: false

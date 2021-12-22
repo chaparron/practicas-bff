@@ -70,6 +70,7 @@ type LegalUrl{
 type LegalDocumentInformation{
   id:String!
   mask:String!
+  maskRegex:String!
 }
 
 enum LegalUrlType {

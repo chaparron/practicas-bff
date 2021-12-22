@@ -59,6 +59,7 @@ class Fee{
 class LegalDocumentInformation{
     String id
     String mask
+    String maskRegex
 }
 
 class LegalUrl{

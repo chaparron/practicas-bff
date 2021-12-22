@@ -52,6 +52,7 @@ class CountryMapper {
     public static final String PARAM_COUNTRY_CODE = "country_code"
     public static final String PARAM_LEGAL_ID = "legalId"
     public static final String PARAM_LEGAL_MASK = "legalMask"
+    public static final String PARAM_LEGAL_MASK_REGEX = "legalMaskRegex"
     public static final String PARAM_TIMEZONE = "timezone"
 
     @Autowired
@@ -107,7 +108,7 @@ class CountryMapper {
         )
     }
 
-    private WabiPay buildWabiPay(Object params) {
+    private static WabiPay buildWabiPay(Object params) {
         return new WabiPay(
                 enabled: params.find({ it[PARAM_KEY] == PARAM_WABIPAY_ENABLED })?.value,
                 creditEnabled: params.find({ it[PARAM_KEY] == PARAM_WABIPAY_WABICREDITS_ENABLED })?.value,
@@ -116,7 +117,7 @@ class CountryMapper {
         )
     }
 
-    private Fee buildFee(Object params) {
+    private static Fee buildFee(Object params) {
         return new Fee(
                 displayFeeOnSupplierAdm: params.find({ it[PARAM_KEY] == PARAM_DISPLAY_FEE_ON_SUPPLIER_ADM })?.value,
                 serviceFeeType: params.find({ it[PARAM_KEY] == PARAM_SERVICE_FEE_TYPE })?.value,
@@ -124,21 +125,21 @@ class CountryMapper {
         )
     }
 
-    private Currency buildCurrency(Object params) {
+    private static Currency buildCurrency(Object params) {
         return new Currency(
                 code: params.find({ it[PARAM_KEY] == PARAM_CURRENCY_CODE })?.value,
                 symbol: params.find({ it[PARAM_KEY] == PARAM_CURRENCY })?.value
         )
     }
 
-    private ContactInfo buildContactInfo(Object params) {
+    private static ContactInfo buildContactInfo(Object params) {
         return new ContactInfo(
                 whatsappNumber: params.find({ it[PARAM_KEY] == PARAM_WHATSAPP_NUMBER })?.value,
                 phoneNumber: params.find({ it[PARAM_KEY] == PARAM_PHONE_NUMBER })?.value,
         )
     }
 
-    private Language buildLanguage(Object params) {
+    private static Language buildLanguage(Object params) {
         def translations = []
         params.each({
             if (it[PARAM_KEY].matches(TRANSLATION_LOCALE_REGEXP))
@@ -155,17 +156,18 @@ class CountryMapper {
         )
     }
 
-    private Detail buildDetail(Object params) {
+    private static Detail buildDetail(Object params) {
         return new Detail(
                 countryCode: params.find({ it[PARAM_KEY] == PARAM_COUNTRY_CODE })?.value,
                 timezone: params.find({ it[PARAM_KEY] == PARAM_TIMEZONE })?.value
         )
     }
 
-    private LegalDocumentInformation buildLegalDocumentInformation(Object params) {
+    private static LegalDocumentInformation buildLegalDocumentInformation(Object params) {
         return new LegalDocumentInformation(
                 id: params.find({ it[PARAM_KEY] == PARAM_LEGAL_ID })?.value ?: "",
                 mask: params.find({ it[PARAM_KEY] == PARAM_LEGAL_MASK })?.value ?: "",
+                maskRegex: params.find({ it[PARAM_KEY] == PARAM_LEGAL_MASK_REGEX })?.value ?: "",
         )
     }
 

@@ -67,7 +67,12 @@ abstract class CountryGatewayBridgeImplTestData {
             "    },\n" +
             "    {\n" +
             "      \"key\": \"legalMask\",\n" +
-            "      \"value\": \"000-000-000\",\n" +
+            "      \"value\": \"D*\",\n" +
+            "      \"private\": false\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"key\": \"legalMaskRegex\",\n" +
+            "      \"value\": \"^[a-zA-Z0-9]*\$\",\n" +
             "      \"private\": false\n" +
             "    },\n" +
             "      {\n" +
@@ -153,7 +158,12 @@ abstract class CountryGatewayBridgeImplTestData {
             "    },\n" +
             "    {\n" +
             "      \"key\": \"legalMask\",\n" +
-            "      \"value\": \"000000000000\",\n" +
+            "      \"value\": \"000000009999\",\n" +
+            "      \"private\": false\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"key\": \"legalMaskRegex\",\n" +
+            "      \"value\": \"^\\\\d{8,12}\$\",\n" +
             "      \"private\": false\n" +
             "    },\n" +
             "      {\n" +
@@ -222,6 +232,11 @@ abstract class CountryGatewayBridgeImplTestData {
             "      \"value\": \"000000000000000\",\n" +
             "      \"private\": false\n" +
             "    },\n" +
+            "    {\n" +
+            "      \"key\": \"legalMaskRegex\",\n" +
+            "      \"value\": \"^\\\\d{15}\$\",\n" +
+            "      \"private\": false\n" +
+            "    },\n" +
             "      {\n" +
             "        \"key\": \"locale\",\n" +
             "        \"value\": \"ar-MA\",\n" +
@@ -272,6 +287,11 @@ abstract class CountryGatewayBridgeImplTestData {
             "    {\n" +
             "      \"key\": \"legalMask\",\n" +
             "      \"value\": \"000000000099999\",\n" +
+            "      \"private\": false\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"key\": \"legalMaskRegex\",\n" +
+            "      \"value\": \"^\\\\d{10,15}\$\",\n" +
             "      \"private\": false\n" +
             "    },\n" +
             "    {\n" +

@@ -16,7 +16,7 @@ dependencies {
     implementation(platform("org.springframework.cloud:spring-cloud-sleuth:2.0.4.RELEASE"))
 
     implementation "com.github.ben-manes.caffeine:caffeine:2.9.2"
-    implementation "wabi2b.sdk:grocery-listing:1209-6107561f2ecaafee9334ae2e6027b459ab1a92f3"
+    implementation "wabi2b.sdk:grocery-listing:1212-d27cd6873f5deec929fa43a3b64ea8d447844da6"
     implementation "wabi2b.sdk:supplier-credits:10013-5b3ebcb2efd390ddb0fffcc003762f30b7f16055"
 
     def graphQL = '5.9.0'
@@ -40,6 +40,23 @@ dependencies {
     implementation("com.amazonaws:aws-java-sdk-sqs:1.12.112")
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.apache.logging.log4j" && requested.version <= "2.17.0") {
+            useVersion("2.17.0")
+            because("To avoid RCE vulnerability.")
+        }
+        if (requested.group == "ch.qos.logback" && requested.name == "logback-classic" && requested.version <= "1.2.8") {
+            useVersion("1.2.8")
+            because("To avoid RCE vulnerability.")
+        }
+        if (requested.group == "ch.qos.logback" && requested.name == "logback-core" && requested.version <= "1.2.8") {
+            useVersion("1.2.8")
+            because("To avoid RCE vulnerability.")
+        }
+    }
 }
 
 clean {
