@@ -6,6 +6,7 @@ import bff.model.*
 import com.github.benmanes.caffeine.cache.CacheLoader
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
+import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit
 
 import static bff.JwtToken.countryFromString
 
+@Slf4j
 class PromotionBridgeImpl implements PromotionBridge {
 
     private static final String PROMOTION_ENDPOINT = "/promotion/"
@@ -64,7 +66,7 @@ class PromotionBridgeImpl implements PromotionBridge {
 
     @Override
     PromotionResponse getAll(PromotionInput promotionInput) {
-        def promotions = promotionCache.get(promotionInput.country_id)
+        def promotions = promotionCache.get(countryFromString(promotionInput.accessToken))
         return new PromotionResponse(content: promotions)
     }
 
@@ -108,10 +110,6 @@ class PromotionBridgeImpl implements PromotionBridge {
     }
 
     private def getUncachedPromotions(PromotionInput promotionInput) {
-        if(promotionInput.accessToken){
-            promotionInput.country_id = countryFromString(promotionInput.accessToken)
-        }
-
         def uri = UriComponentsBuilder.fromUri(root.resolve(PROMOTION_ENDPOINT))
                 .queryParam("country_id", promotionInput.country_id)
                 .queryParam("enable", true)
@@ -120,9 +118,6 @@ class PromotionBridgeImpl implements PromotionBridge {
                 HttpMethod.GET,
                 uri.toUriString().toURI())
                 .contentType(MediaType.APPLICATION_JSON)
-
-        if (promotionInput.accessToken)
-            request.header(HttpHeaders.AUTHORIZATION, "Bearer $promotionInput.accessToken")
 
         return http.<PaginatedResponse<Promotion>> exchange(
                 request.build(),
