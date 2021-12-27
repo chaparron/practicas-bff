@@ -126,6 +126,7 @@ input SignedChallengeDemandInput {
   countryCode: String!
   phone: String!
   accessToken: String!
+  channel: ChannelType
 }
 
 input SignedChallengeAnswer {
@@ -134,10 +135,16 @@ input SignedChallengeAnswer {
   accessToken: String!
 }
 
+enum ChannelType {
+  SMS,
+  WHATSAPP
+}
+
 input ChallengeDemandInput {
   # International telephone prefix for 'phone'
   countryCode: String!
   phone: String!
+  channel: ChannelType
 }
 
 input ChallengeAnswer{

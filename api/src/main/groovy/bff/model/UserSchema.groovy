@@ -64,6 +64,7 @@ class SignedChallengeDemandInput {
     String countryCode
     String phone
     String accessToken
+    ChannelType channel
 }
 
 class SignedChallengeAnswer {
@@ -75,6 +76,12 @@ class SignedChallengeAnswer {
 class ChallengeDemandInput {
     String countryCode
     String phone
+    ChannelType channel
+}
+
+enum ChannelType {
+    SMS,
+    WHATSAPP
 }
 
 class ChallengeAnswer {

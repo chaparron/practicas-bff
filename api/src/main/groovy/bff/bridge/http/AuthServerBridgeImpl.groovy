@@ -49,24 +49,27 @@ class AuthServerBridgeImpl implements AuthServerBridge {
     }
 
     @Override
-    Challenge challengeRequestForChangeToPasswordlessAuthentication(String countryCode, String phone, String accessToken, String remoteAddress){
+    Challenge challengeRequestForChangeToPasswordlessAuthentication(String countryCode, String phone, ChannelType channel, String accessToken, String remoteAddress) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/user/passwordless/authswitch/challenge")).toUriString().toURI()
-        try{
+        try {
             http.exchange(
                     RequestEntity.method(HttpMethod.POST, uri)
                             .contentType(MediaType.APPLICATION_JSON)
                             .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                             .header("Address-Received-In-Bff", remoteAddress)
-                            .body([countryCode : countryCode, phone : phone])
+                            .body([countryCode : countryCode, phone : phone, channel : channel])
                     , Challenge).body
-        }catch(AccessToBackendDeniedException accessToBackendDeniedException){
+        } catch (AccessToBackendDeniedException accessToBackendDeniedException) {
             SignedChallengeDemandFailureReason.valueOf((String)accessToBackendDeniedException.cause.statusCode.name()).doThrow()
             throw accessToBackendDeniedException
-        }catch (BadRequestErrorException badRequestErrorException) {
+        } catch (BadRequestErrorException badRequestErrorException) {
             String innerResponse = (String)badRequestErrorException.innerResponse
-            if ("TOO_MANY_SHIPMENTS" == innerResponse){
+            if ("TOO_MANY_SHIPMENTS" == innerResponse) {
                 int waitTime = ((BridgeHttpServerErrorException)badRequestErrorException.cause).responseHeaders.getFirst("wait-time").toInteger()
                 throw new TooManyShipmentsException(waitTime)
+            } else if ("WHATS_APP_CONTACT_NOT_FOUND" == innerResponse) {
+                int phoneNumber = ((BridgeHttpServerErrorException)badRequestErrorException.cause).responseHeaders.getFirst("phone").toInteger()
+                throw new WhatsAppContactNotFoundException(phoneNumber)
             }
             SignedChallengeDemandFailureReason.valueOf(innerResponse).doThrow()
             badRequestErrorException.printStackTrace()
@@ -94,23 +97,26 @@ class AuthServerBridgeImpl implements AuthServerBridge {
     }
 
     @Override
-    Challenge challengeRequestForPasswordlessLogin(String countryCode, String phone, String remoteAddress){
+    Challenge challengeRequestForPasswordlessLogin(String countryCode, String phone, ChannelType channel, String remoteAddress) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/user/passwordless/login/challenge")).toUriString().toURI()
-        try{
+        try {
             http.exchange(
                     RequestEntity.method(HttpMethod.POST, uri)
                             .contentType(MediaType.APPLICATION_JSON)
                             .header("Address-Received-In-Bff", remoteAddress)
-                            .body([countryCode : countryCode, phone : phone])
+                            .body([countryCode : countryCode, phone : phone, channel : channel])
                     , Challenge).body
-        }catch(AccessToBackendDeniedException accessToBackendDeniedException){
+        } catch (AccessToBackendDeniedException accessToBackendDeniedException) {
             ChallengeDemandFailureReason.valueOf((String)accessToBackendDeniedException.cause.statusCode.name()).doThrow()
             throw accessToBackendDeniedException
-        }catch (BadRequestErrorException badRequestErrorException) {
+        } catch (BadRequestErrorException badRequestErrorException) {
             String innerResponse = (String)badRequestErrorException.innerResponse
-            if ("TOO_MANY_SHIPMENTS" == innerResponse){
+            if ("TOO_MANY_SHIPMENTS" == innerResponse) {
                 int waitTime = ((BridgeHttpServerErrorException)badRequestErrorException.cause).responseHeaders.getFirst("wait-time").toInteger()
                 throw new TooManyShipmentsException(waitTime)
+            } else if ("WHATS_APP_CONTACT_NOT_FOUND" == innerResponse) {
+                int phoneNumber = ((BridgeHttpServerErrorException)badRequestErrorException.cause).responseHeaders.getFirst("phone").toInteger()
+                throw new WhatsAppContactNotFoundException(phoneNumber)
             }
             ChallengeDemandFailureReason.valueOf((String)badRequestErrorException.innerResponse).doThrow()
             badRequestErrorException.printStackTrace()

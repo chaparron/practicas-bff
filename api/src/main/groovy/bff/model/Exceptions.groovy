@@ -66,6 +66,18 @@ class TooManyShipmentsException extends RuntimeException {
     }
 }
 
+class WhatsAppContactNotFoundException extends RuntimeException {
+    private int phone
+
+    WhatsAppContactNotFoundException(int phone) {
+        this.phone = phone
+    }
+
+    def build() {
+        new WhatsAppContactNotFoundException(phone: phone)
+    }
+}
+
 class ChallengeDemandFailureException extends RuntimeException {
     ChallengeDemandFailureReason challengeDemandFailureReason
 

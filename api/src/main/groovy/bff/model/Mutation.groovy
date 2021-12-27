@@ -82,7 +82,7 @@ class Mutation implements GraphQLMutationResolver {
         def remoteAddress = DeviceIdentifierService.identifySource(env)
 
         try {
-            authServerBridge.challengeRequestForChangeToPasswordlessAuthentication(input.countryCode, input.phone, input.accessToken, remoteAddress)
+            authServerBridge.challengeRequestForChangeToPasswordlessAuthentication(input.countryCode, input.phone, input.channel, input.accessToken, remoteAddress)
         } catch (TooManyShipmentsException tooManyShipmentsException) {
             tooManyShipmentsException.build()
         } catch (SignedChallengeDemandFailureException signedChallengeDemandFailureException) {
@@ -106,7 +106,7 @@ class Mutation implements GraphQLMutationResolver {
     ChallengeDemandResult challengeRequestForPasswordlessLogin(ChallengeDemandInput input, DataFetchingEnvironment env) {
         def remoteAddress = DeviceIdentifierService.identifySource(env)
         try {
-            authServerBridge.challengeRequestForPasswordlessLogin(input.countryCode, input.phone, remoteAddress)
+            authServerBridge.challengeRequestForPasswordlessLogin(input.countryCode, input.phone, input.channel, remoteAddress)
         } catch (TooManyShipmentsException tooManyShipmentsException) {
             tooManyShipmentsException.build()
         } catch (ChallengeDemandFailureException challengeDemandFailureException) {
