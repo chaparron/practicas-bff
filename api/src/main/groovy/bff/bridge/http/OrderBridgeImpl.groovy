@@ -289,6 +289,7 @@ class OrderBridgeImpl implements OrderBridge {
                             value: sm.meta.get(key)
                     )
                 }
+                sm.accessToken = accessToken
             }
         }
 
