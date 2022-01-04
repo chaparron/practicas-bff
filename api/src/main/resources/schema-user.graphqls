@@ -205,6 +205,10 @@ type TooManyShipments{
   waitTime: Int!
 }
 
+type WhatsAppContactNotFound {
+  phone: String!
+}
+
 type RefreshCredentials {
   accessToken: String!
   refreshToken: String!
@@ -258,9 +262,9 @@ union ConfirmPasswordResult = ConfirmPasswordFailed | Void
 
 union LoginResult = LoginFailed | GenericCredentials | UpgradeRequired  | LegacyCredentials
 
-union SignedChallengeDemandResult = SignedChallengeDemandFailed | Challenge | TooManyShipments
+union SignedChallengeDemandResult = SignedChallengeDemandFailed | Challenge | TooManyShipments | WhatsAppContactNotFound
 
-union SignedChallengeAnswerResult = ChallengeAnswerFailed | GenericCredentials
+union SignedChallengeAnswerResult = ChallengeAnswerFailed | GenericCredentials | WhatsAppContactNotFound
 
 union ChallengeDemandResult = ChallengeDemandFailed | Challenge | TooManyShipments
 

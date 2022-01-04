@@ -241,6 +241,10 @@ class TooManyShipments implements SignedChallengeDemandResult, ChallengeDemandRe
     Integer waitTime
 }
 
+class WhatsAppContactNotFound implements SignedChallengeDemandResult, ChallengeDemandResult, SignedChallengeAnswerResult, ChallengeAnswerResult {
+    String phone
+}
+
 class ChallengeDemandFailed implements ChallengeDemandResult {
     ChallengeDemandFailureReason reason
 }
