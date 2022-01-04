@@ -264,9 +264,9 @@ union LoginResult = LoginFailed | GenericCredentials | UpgradeRequired  | Legacy
 
 union SignedChallengeDemandResult = SignedChallengeDemandFailed | Challenge | TooManyShipments | WhatsAppContactNotFound
 
-union SignedChallengeAnswerResult = ChallengeAnswerFailed | GenericCredentials | WhatsAppContactNotFound
+union SignedChallengeAnswerResult = ChallengeAnswerFailed | GenericCredentials
 
-union ChallengeDemandResult = ChallengeDemandFailed | Challenge | TooManyShipments
+union ChallengeDemandResult = ChallengeDemandFailed | Challenge | TooManyShipments | WhatsAppContactNotFound
 
 union ChallengeAnswerResult = ChallengeAnswerFailed | GenericCredentials
 
