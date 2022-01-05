@@ -17,6 +17,7 @@ import static scala.jdk.javaapi.OptionConverters.toScala
 import static wabi2b.grocery.listing.sdk.BrandQueryRequest.availableBrandsIn
 import static wabi2b.grocery.listing.sdk.ProductQueryRequest.availableProductsIn
 import static wabi2b.grocery.listing.sdk.ProductQueryRequest.similarProductsTo
+import static wabi2b.grocery.listing.sdk.PromotionQueryRequest.availablePromotionsIn
 import static wabi2b.grocery.listing.sdk.SuggestionQueryRequestBuilder.availableSuggestionsIn
 import static wabi2b.grocery.listing.sdk.SupplierQueryRequest.availableSuppliersIn
 
@@ -34,7 +35,11 @@ class GroceryListing {
                             .inject(
                                     ofNullable(input.similarTo)
                                             .map {
-                                                similarProductsForCustomer(it, input.accessToken)
+                                                def (customer, deliveryAddress) =
+                                                getCustomerAndDeliveryAddress(input.accessToken)
+                                                similarProductsTo(it.toString())
+                                                        .availableIn(*deliveryAddress)
+                                                        .forCustomer(*customer)
                                                         .sized(page.size)
                                                         .fetchingOptions(50, Option.empty()) as ProductQueryRequest
                                             }
@@ -116,18 +121,17 @@ class GroceryListing {
 
     Suggestions suggest(SuggestInput input) {
         try {
-            def customer = customerBridge.myProfile(input.accessToken)
-            def deliveryAddress = customer.preferredDeliveryAddress()
+            def (customer, deliveryAddress) = getCustomerAndDeliveryAddress(input.accessToken)
             def request =
-                    new SuggestionQueryRequestBuilder(input).apply(
-                            availableSuggestionsIn(
-                                    new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
-                                    Option.apply(customer.country_id)
-                            ).forTerm(
-                                    input.keyword,
-                                    toScala(ofNullable(input.languageTag).map { it.language })
+                    new SuggestionQueryRequestBuilder(input)
+                            .apply(
+                                    availableSuggestionsIn(*deliveryAddress)
+                                            .forTerm(
+                                                    input.keyword,
+                                                    toScala(ofNullable(input.languageTag).map { it.language })
+                                            )
                             )
-                    ).forCustomer(customer.id.toString(), customer.customerType.code)
+                            .forCustomer(*customer)
             def response = sdk.query(request)
             return new SuggestionsMapper().map(response)
         } catch (Exception ex) {
@@ -196,12 +200,9 @@ class GroceryListing {
             def request =
                     ofNullable(accessToken)
                             .map {
-                                def customer = customerBridge.myProfile(accessToken)
-                                def deliveryAddress = customer.preferredDeliveryAddress()
-                                availableBrandsIn(
-                                        new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
-                                        Option.apply(customer.country_id)
-                                ).forCustomer(customer.id.toString(), customer.customerType.code)
+                                def (customer, deliveryAddress) =
+                                getCustomerAndDeliveryAddress(accessToken)
+                                availableBrandsIn(*deliveryAddress).forCustomer(*customer)
                             }
                             .orElse(availableBrandsIn(country))
                             .sized(20)
@@ -231,10 +232,8 @@ class GroceryListing {
     PreviewHomeSupplierResponse previewHomeSuppliers(CoordinatesInput input) {
         try {
             def request =
-                    availableSuppliersIn(
-                            new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
-                            Option.empty()
-                    ).sized(20)
+                    availableSuppliersIn(new Coordinate(input.lat.toDouble(), input.lng.toDouble()), Option.empty())
+                            .sized(20)
             def response = sdk.query(request)
             return new PreviewHomeSupplierResponseMapper().map(response)
         } catch (Exception ex) {
@@ -243,28 +242,51 @@ class GroceryListing {
         }
     }
 
-    private def availableProductsForCustomer(String accessToken) {
-        def customer = customerBridge.myProfile(accessToken)
-        def deliveryAddress = customer.preferredDeliveryAddress()
-
-        return availableProductsIn(
-                new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
-                Option.apply(customer.country_id)
-        ).forCustomer(customer.id.toString(), customer.customerType.code)
+    PromotionResponse getPromotions(PromotionInput input) {
+        try {
+            def (customer, deliveryAddress) =
+            getCustomerAndDeliveryAddress(input.accessToken)
+            def request = availablePromotionsIn(*deliveryAddress).forCustomer(*customer)
+            def response = sdk.query(request)
+            return new PromotionResponseMapper().map(response)
+        } catch (Exception ex) {
+            log.error("Error fetching promotions for input {}", input, ex)
+            throw ex
+        }
     }
 
-    private def similarProductsForCustomer(Integer product, String accessToken) {
+    PromotionResponse getPromotions(CoordinatesInput input) {
+        try {
+            def request =
+                    availablePromotionsIn(new Coordinate(input.lat.toDouble(), input.lng.toDouble()), Option.empty())
+                            .sized(20)
+            def response = sdk.query(request)
+            return new PromotionResponseMapper().map(response)
+        } catch (Exception ex) {
+            log.error("Error fetching promotions for input {}", input, ex)
+            throw ex
+        }
+    }
+
+    private def availableProductsForCustomer(String accessToken) {
+        def (customer, deliveryAddress) = getCustomerAndDeliveryAddress(accessToken)
+        return availableProductsIn(*deliveryAddress).forCustomer(*customer)
+    }
+
+    private def getCustomerAndDeliveryAddress(String accessToken) {
         def customer = customerBridge.myProfile(accessToken)
         def deliveryAddress = customer.preferredDeliveryAddress()
-
-        return similarProductsTo(product.toString())
-                .availableIn(
+        [
+                [
+                        customer.id.toString(),
+                        customer.customerType.code
+                ],
+                [
                         new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
                         Option.apply(customer.country_id)
-                )
-                .forCustomer(customer.id.toString(), customer.customerType.code)
+                ]
+        ]
     }
-
 
 }
 
@@ -1264,6 +1286,23 @@ class PreviewHomeSupplierResponseMapper {
                             id: it.id().toInteger(),
                             name: it.name(),
                             avatar: toJava(it.avatar()).orElse(null)
+                    )
+                }
+        )
+    }
+
+}
+
+class PromotionResponseMapper {
+
+    static PromotionResponse map(PromotionQueryResponse response) {
+        new PromotionResponse(
+                content: asJava(response.hits()).collect {
+                    new Promotion(
+                            id: it.id().toInteger(),
+                            tag: it.tag(),
+                            banner: it.banner(),
+                            banner_mobile: it.bannerMobile()
                     )
                 }
         )

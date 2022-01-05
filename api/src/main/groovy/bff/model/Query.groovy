@@ -5,7 +5,6 @@ import bff.bridge.sdk.GroceryListing
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
 import com.coxautodev.graphql.tools.GraphQLQueryResolver
-import graphql.schema.DataFetchingEnvironment
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -245,17 +244,11 @@ class Query implements GraphQLQueryResolver {
     }
 
     PromotionResponse getPromotions(PromotionInput promotionInput) {
-        promotionBridge.getAll(promotionInput)
+        groceryListing.getPromotions(promotionInput)
     }
 
     PromotionResult previewPromotions(CoordinatesInput coordinatesInput) {
-        try {
-            promotionBridge.previewPromotions(coordinatesInput)
-        }
-        catch (BadRequestErrorException ex) {
-            GetLandingPromotionFailedReason.valueOf((String) ex.innerResponse).build()
-        }
-
+        groceryListing.getPromotions(coordinatesInput)
     }
 
     PromotionResult getLandingPromotion(GetLandingPromotionInput input) {
