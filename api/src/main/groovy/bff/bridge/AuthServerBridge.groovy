@@ -28,5 +28,8 @@ interface AuthServerBridge {
     void changePassword(String oldPassword, String newPassword, String accessToken)
 
     void completeProfile(String phone, String document, String address, String accessToken, String recaptcha)
+
+    Boolean isCountryCodeAndPhoneAvailable(String countryCode, String phone, String accessToken)
+
 }
 

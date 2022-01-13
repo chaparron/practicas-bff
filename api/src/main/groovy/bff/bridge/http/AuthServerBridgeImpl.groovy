@@ -261,6 +261,24 @@ class AuthServerBridgeImpl implements AuthServerBridge {
                 , Map).body
     }
 
+    @Override
+    Boolean isCountryCodeAndPhoneAvailable(String countryCode, String phone, String accessToken) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/user/passwordless/authswitch/is-phone-available")).toUriString().toURI()
+        try {
+            http.exchange(
+                    RequestEntity.method(HttpMethod.POST, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                            .body([countryCode : countryCode, phone : phone])
+                    , Boolean).body
+        } catch (AccessToBackendDeniedException accessToBackendDeniedException) {
+            throw accessToBackendDeniedException
+        }catch(Exception ex) {
+            log.warn "Error checking if phone ($countryCode-$phone) is available", ex
+            return false
+        }
+    }
+
     def private profileCredentials(def body) {
         new ProfileCredentials(accessToken: body.accessToken)
     }

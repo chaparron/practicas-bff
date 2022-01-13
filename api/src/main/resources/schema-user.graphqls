@@ -129,6 +129,13 @@ input SignedChallengeDemandInput {
   channel: ChannelType
 }
 
+input IsPhoneAvailableInput {
+  # International telephone prefix for 'phone'
+  countryCode: String!
+  phone: String!
+  accessToken: String!
+}
+
 input SignedChallengeAnswer {
   challengeId: String!
   challengeAnswer: String!
