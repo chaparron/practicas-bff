@@ -129,7 +129,7 @@ input SignedChallengeDemandInput {
   channel: ChannelType
 }
 
-input IsPhoneAvailableInput {
+input IsPhoneValidInput {
   # International telephone prefix for 'phone'
   countryCode: String!
   phone: String!

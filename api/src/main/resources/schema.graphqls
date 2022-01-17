@@ -124,7 +124,7 @@ type Query {
 
   findSupplierCreditBalances(input: FindSupplierCreditBalancesInput): PageResponse
 
-  isCountryCodeAndPhoneAvailable(input: IsPhoneAvailableInput!): Boolean
+  isCountryCodeAndPhoneValid(input: IsPhoneValidInput!): Boolean
 }
 
 type Mutation {
