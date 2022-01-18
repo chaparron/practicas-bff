@@ -67,9 +67,6 @@ class AuthServerBridgeImpl implements AuthServerBridge {
             if ("TOO_MANY_SHIPMENTS" == innerResponse) {
                 int waitTime = ((BridgeHttpServerErrorException)badRequestErrorException.cause).responseHeaders.getFirst("wait-time").toInteger()
                 throw new TooManyShipmentsException(waitTime)
-            } else if ("WHATS_APP_CONTACT_NOT_FOUND" == innerResponse) {
-                int phoneNumber = ((BridgeHttpServerErrorException)badRequestErrorException.cause).responseHeaders.getFirst("phone").toInteger()
-                throw new WhatsAppContactNotFoundException(phoneNumber)
             }
             SignedChallengeDemandFailureReason.valueOf(innerResponse).doThrow()
             badRequestErrorException.printStackTrace()
@@ -114,9 +111,6 @@ class AuthServerBridgeImpl implements AuthServerBridge {
             if ("TOO_MANY_SHIPMENTS" == innerResponse) {
                 int waitTime = ((BridgeHttpServerErrorException)badRequestErrorException.cause).responseHeaders.getFirst("wait-time").toInteger()
                 throw new TooManyShipmentsException(waitTime)
-            } else if ("WHATS_APP_CONTACT_NOT_FOUND" == innerResponse) {
-                int phoneNumber = ((BridgeHttpServerErrorException)badRequestErrorException.cause).responseHeaders.getFirst("phone").toInteger()
-                throw new WhatsAppContactNotFoundException(phoneNumber)
             }
             ChallengeDemandFailureReason.valueOf((String)badRequestErrorException.innerResponse).doThrow()
             badRequestErrorException.printStackTrace()

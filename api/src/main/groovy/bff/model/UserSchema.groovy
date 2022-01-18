@@ -162,6 +162,7 @@ enum SignedChallengeDemandFailureReason {
 
     PHONE_ALREADY_EXISTS,
     USER_ALREADY_USES_PASSWORDLESS,
+    WHATS_APP_CONTACT_NOT_FOUND,
     UNAUTHORIZED,
     FORBIDDEN
 
@@ -171,6 +172,7 @@ enum SignedChallengeDemandFailureReason {
 }
 
 enum ChallengeDemandFailureReason {
+    WHATS_APP_CONTACT_NOT_FOUND,
     UNKNOWN_PHONE
 
     def doThrow() {
@@ -245,10 +247,6 @@ class SignedChallengeDemandFailed implements SignedChallengeDemandResult {
 
 class TooManyShipments implements SignedChallengeDemandResult, ChallengeDemandResult {
     Integer waitTime
-}
-
-class WhatsAppContactNotFound implements SignedChallengeDemandResult, ChallengeDemandResult {
-    String phone
 }
 
 class ChallengeDemandFailed implements ChallengeDemandResult {

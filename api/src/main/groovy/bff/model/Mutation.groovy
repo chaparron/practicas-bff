@@ -87,8 +87,6 @@ class Mutation implements GraphQLMutationResolver {
             tooManyShipmentsException.build()
         } catch (SignedChallengeDemandFailureException signedChallengeDemandFailureException) {
             signedChallengeDemandFailureException.build()
-        } catch (WhatsAppContactNotFoundException whatsAppContactNotFoundException) {
-            whatsAppContactNotFoundException.build()
         }
     }
 
@@ -113,8 +111,6 @@ class Mutation implements GraphQLMutationResolver {
             tooManyShipmentsException.build()
         } catch (ChallengeDemandFailureException challengeDemandFailureException) {
             challengeDemandFailureException.build()
-        } catch (WhatsAppContactNotFoundException whatsAppContactNotFoundException) {
-            whatsAppContactNotFoundException.build()
         }
     }
 

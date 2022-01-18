@@ -35,7 +35,6 @@ class Main {
                 .add(LoginFailed.class)
                 .add(SignedChallengeDemandFailed.class)
                 .add(TooManyShipments.class)
-                .add(WhatsAppContactNotFound.class)
                 .add(ChallengeDemandFailed.class)
                 .add(ChallengeAnswerFailed.class)
                 .add(Challenge.class)
