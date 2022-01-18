@@ -67,7 +67,7 @@ class SignedChallengeDemandInput {
     ChannelType channel
 }
 
-class IsPhoneAvailableInput {
+class IsPhoneValidInput {
     String countryCode
     String phone
     String accessToken

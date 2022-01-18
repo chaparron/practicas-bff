@@ -323,8 +323,8 @@ class Query implements GraphQLQueryResolver {
         phoneNotifierBridge.isValidPhone(input.countryCode, input.phone)
     }
 
-    Boolean isCountryCodeAndPhoneAvailable(IsPhoneAvailableInput input) {
-        authServerBridge.isCountryCodeAndPhoneAvailable(input.countryCode, input.phone, input.accessToken)
+    Boolean isCountryCodeAndPhoneValid(IsPhoneValidInput input) {
+        authServerBridge.isCountryCodeAndPhoneValid(input.countryCode, input.phone, input.accessToken)
     }
 
 }

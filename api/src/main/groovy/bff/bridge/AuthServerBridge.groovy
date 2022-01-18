@@ -29,7 +29,7 @@ interface AuthServerBridge {
 
     void completeProfile(String phone, String document, String address, String accessToken, String recaptcha)
 
-    Boolean isCountryCodeAndPhoneAvailable(String countryCode, String phone, String accessToken)
+    Boolean isCountryCodeAndPhoneValid(String countryCode, String phone, String accessToken)
 
 }
 

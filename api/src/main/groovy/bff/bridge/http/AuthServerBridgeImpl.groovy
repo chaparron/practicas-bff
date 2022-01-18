@@ -262,7 +262,7 @@ class AuthServerBridgeImpl implements AuthServerBridge {
     }
 
     @Override
-    Boolean isCountryCodeAndPhoneAvailable(String countryCode, String phone, String accessToken) {
+    Boolean isCountryCodeAndPhoneValid(String countryCode, String phone, String accessToken) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/user/passwordless/authswitch/is-phone-available")).toUriString().toURI()
         try {
             http.exchange(
