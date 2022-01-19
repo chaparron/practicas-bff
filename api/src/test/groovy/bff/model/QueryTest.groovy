@@ -28,6 +28,16 @@ class QueryTest {
     Query query
 
     @Test
+    void 'find country should be resolved by grocery listing'() {
+        def input = new CoordinatesInput()
+        def result = new Country(id: "ar")
+
+        when(groceryListing.find(input)).thenReturn(Optional.of(result))
+
+        assertEquals(result, query.findCountry(input))
+    }
+
+    @Test
     void 'product detail should be resolved by grocery listing'() {
         def input = new ProductInput(
                 accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvdW50cmllcyI6W3siaWQiOiJhciJ9XX19.-lzJTqVJio3MI5XWyfwKtYQHYZkxG5uMvfrUkiJnx48",

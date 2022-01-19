@@ -229,6 +229,10 @@ class Query implements GraphQLQueryResolver {
         countryBridge.getCountry(countryId)
     }
 
+    Country findCountry(CoordinatesInput input) {
+        groceryListing.find(input).orElse(null)
+    }
+
     List<Category> findRootCategories(AccessTokenInput accessTokenInput) {
         categoryBridge.findRootCategories(accessTokenInput.accessToken)
     }

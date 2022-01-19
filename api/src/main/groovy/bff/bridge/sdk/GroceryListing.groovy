@@ -1,5 +1,6 @@
 package bff.bridge.sdk
 
+import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
 import bff.configuration.EntityNotFoundException
 import bff.model.*
@@ -25,7 +26,13 @@ import static wabi2b.grocery.listing.sdk.SupplierQueryRequest.availableSuppliers
 class GroceryListing {
 
     private Sdk sdk
+    private CountryBridge countryBridge
     private CustomerBridge customerBridge
+
+    Optional<Country> find(CoordinatesInput input) {
+        toJava(sdk.find(new Coordinate(input.lat.toDouble(), input.lng.toDouble())))
+                .flatMap { ofNullable(countryBridge.getCountry(it)) }
+    }
 
     SearchResult search(SearchInput input) {
         try {

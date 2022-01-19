@@ -87,6 +87,8 @@ type Query {
 
   getCountry(countryId: String!): Country
 
+  findCountry(input: CoordinatesInput!): Country
+
   #rating
 
   # Find supplier order rating

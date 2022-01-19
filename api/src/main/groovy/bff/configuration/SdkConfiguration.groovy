@@ -1,5 +1,6 @@
 package bff.configuration
 
+import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.sdk.GroceryListing
 import bff.bridge.sdk.credits.HttpCreditService
@@ -19,6 +20,8 @@ class SdkConfiguration {
     @Value('${supplier.credits.endpoint:}')
     String creditsEndpoint
     @Autowired
+    CountryBridge countryBridge
+    @Autowired
     CustomerBridge customerBridge
     @Autowired
     RestOperations client
@@ -27,6 +30,7 @@ class SdkConfiguration {
     GroceryListing groceryListing() {
         new GroceryListing(
                 sdk: new Sdk(client, groceryListingEndpoint.toURI()),
+                countryBridge: countryBridge,
                 customerBridge: customerBridge
         )
     }
