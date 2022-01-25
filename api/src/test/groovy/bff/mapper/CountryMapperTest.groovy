@@ -1,7 +1,6 @@
 package bff.mapper
 
 import bff.model.ContactInfo
-import bff.model.Country
 import bff.model.CountryTranslation
 import bff.model.Currency
 import bff.model.Detail
@@ -12,7 +11,6 @@ import bff.model.WabiPay
 import org.junit.Test
 
 import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertThrows
 
 class CountryMapperTest {
 
@@ -35,7 +33,7 @@ class CountryMapperTest {
                 [ "key" : "lng", "value"  : "-58.3870496", "private": false ],
                 [ "key" : "language", "value"  : "es", "private": false ],
                 [ "key" : "locale", "value"  : "es-AR", "private": false ],
-                [ "key" : "wabipay_enabled", "private": false ],
+                [ "key" : "wabipay_enabled", "value": "true", "private": false ],
                 [ "key" : "wabipay_wabicredits_enabled", "value"  : "true", "private": false],
                 [ "key" : "wabipay_money_enabled", "value"  : "true", "private": false ],
                 [ "key" : "wabipay_convert_wc_to_money_when_releasing", "value"  : "false", "private": false],
