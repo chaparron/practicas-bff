@@ -35,6 +35,7 @@ class CountryMapper {
     public static final String PARAM_CURRENCY = "currency"
     public static final String PARAM_WHATSAPP_NUMBER = "whatsapp_number"
     public static final String PARAM_PHONE_NUMBER = "phone_number"
+    public static final String PARAM_ZALO_NUMBER = "zalo_number"
     public static final String PARAM_VALUE = "value"
     public static final String PARAM_LANGUAGE = "language"
     public static final String PARAM_LOCALE = "locale"
@@ -136,6 +137,7 @@ class CountryMapper {
         return new ContactInfo(
                 whatsappNumber: params.find({ it[PARAM_KEY] == PARAM_WHATSAPP_NUMBER })?.value,
                 phoneNumber: params.find({ it[PARAM_KEY] == PARAM_PHONE_NUMBER })?.value,
+                zaloNumber: params.find({ it[PARAM_KEY] == PARAM_ZALO_NUMBER })?.value
         )
     }
 

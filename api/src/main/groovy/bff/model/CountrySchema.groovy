@@ -31,6 +31,7 @@ class Language{
 class ContactInfo {
     String whatsappNumber
     String phoneNumber
+    String zaloNumber
 }
 
 class Currency {
