@@ -7,7 +7,6 @@ import sun.util.locale.LanguageTag
 
 import static java.util.Optional.empty
 import static java.util.Optional.of
-import static java.util.Optional.ofNullable
 
 interface ProductResult {}
 
@@ -265,7 +264,7 @@ enum SortInput {
 }
 
 
-class PreviewProductSearch implements ProductResult {
+class PreviewProductSearch implements ProductResult, Piece {
     Long id
     String name
     Boolean enabled
@@ -289,6 +288,33 @@ class PreviewProductSearch implements ProductResult {
     Integer totalNumberOfSuppliers
     String title
     String country_id
+
+    PreviewProductSearch(ProductSearch product) {
+        def suppliers =
+                product.prices.collect { new PreviewSupplier(id: it.supplier.id, name: "") }
+                        .toSet().toList()
+        this.id = product.id
+        this.name = product.name
+        this.category = product.category
+        this.brand = product.brand
+        this.ean = product.ean
+        this.description = product.description
+        this.images = product.images
+        this.prices = product.prices.collect { price ->
+            new PreviewPrice(
+                    countryId: product.country_id,
+                    id: price.id,
+                    value: price.value,
+                    unitValue: price.unitValue,
+                    display: price.display,
+                    minUnits: price.minUnits
+            )
+        }
+        this.title = product.title
+        this.country_id = product.country_id
+        this.totalNumberOfSuppliers = suppliers.size()
+        this.suppliers = suppliers
+    }
 }
 
 class PreviewPrice {
@@ -303,14 +329,14 @@ class PreviewPrice {
 }
 
 @EqualsAndHashCode
-class PreviewSupplier {
+class PreviewSupplier implements Piece {
     Long id
     String name
     String legalName
     String avatar
 }
 
-class ProductSearch implements ProductResult {
+class ProductSearch implements ProductResult, Piece {
     String accessToken
     Long id
     String name

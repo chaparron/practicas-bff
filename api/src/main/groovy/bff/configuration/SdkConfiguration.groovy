@@ -2,6 +2,7 @@ package bff.configuration
 
 import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
+import bff.bridge.sdk.Cms
 import bff.bridge.sdk.GroceryListing
 import bff.bridge.sdk.credits.HttpCreditService
 import org.springframework.beans.factory.annotation.Autowired
@@ -9,7 +10,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.client.RestOperations
-import wabi2b.grocery.listing.sdk.Sdk
+import wabi2b.cms.sdk.Sdk as CmsSdk
+import wabi2b.grocery.listing.sdk.Sdk as GroceryListingSdk
 import wabi2b.sdk.credits.HttpSupplierCreditsSdk
 
 @Configuration
@@ -17,6 +19,8 @@ class SdkConfiguration {
 
     @Value('${grocery.listing.endpoint:}')
     String groceryListingEndpoint
+    @Value('${cms.endpoint:}')
+    String cmsEndpoint
     @Value('${supplier.credits.endpoint:}')
     String creditsEndpoint
     @Autowired
@@ -29,14 +33,22 @@ class SdkConfiguration {
     @Bean
     GroceryListing groceryListing() {
         new GroceryListing(
-                sdk: new Sdk(client, groceryListingEndpoint.toURI()),
+                sdk: new GroceryListingSdk(client, groceryListingEndpoint.toURI()),
                 countryBridge: countryBridge,
                 customerBridge: customerBridge
         )
     }
 
     @Bean
-    HttpCreditService creditService(){
+    Cms cms() {
+        new Cms(
+                sdk: new CmsSdk(client, cmsEndpoint.toURI()),
+                customerBridge: customerBridge
+        )
+    }
+
+    @Bean
+    HttpCreditService creditService() {
         new HttpCreditService(
                 creditsSdk: new HttpSupplierCreditsSdk.Builder().withBaseURI(creditsEndpoint.toURI()).build()
         )

@@ -1,0 +1,36 @@
+input HomeInput {
+  country: String!
+  tags: [String!]
+}
+
+input ListingInput {
+  country: String!,
+  tags: [String!],
+  keyword: String,
+  category: Int,
+  brand: Int,
+  tag: String,
+  supplier: Int,
+  favourites: Boolean
+  promoted: Boolean
+}
+
+input ContextInput {
+  accessToken: String
+  coordinates: CoordinatesInput
+}
+
+union Piece = AdBanner | ProductSearch | PreviewProductSearch | Brand | PreviewSupplier
+
+type AdBanner {
+  desktop: String!
+  mobile: String!
+  link: String
+}
+
+type Module {
+  id: String!
+  tag: String!
+  title: String
+  pieces(context: ContextInput, size: Int): [Piece!]!
+}

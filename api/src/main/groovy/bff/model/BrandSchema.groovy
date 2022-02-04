@@ -23,7 +23,7 @@ class GetHomeBrandsFailed implements GetHomeBrandsResponse {
 }
 
 
-class Brand {
+class Brand implements Piece {
     Long id
     String name
     Boolean enabled

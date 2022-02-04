@@ -80,6 +80,11 @@ class Main {
                 .add(PreviewHomeSupplierResponse.class)
                 .add(PreviewHomeSupplierFailed.class)
                 .add(LegacyCredentials.class)
+                .add(AdBanner.class)
+                .add(PreviewProductSearch.class)
+                .add(ProductSearch.class)
+                .add(Brand.class)
+                .add(PreviewSupplier.class)
     }
 
     /**

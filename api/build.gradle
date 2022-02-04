@@ -18,6 +18,7 @@ dependencies {
     implementation "com.github.ben-manes.caffeine:caffeine:2.9.2"
     implementation "wabi2b.sdk:grocery-listing:1229-1cd7850c71169a9fece18b0bfc1cd556b6769771"
     implementation "wabi2b.sdk:supplier-credits:10013-5b3ebcb2efd390ddb0fffcc003762f30b7f16055"
+    implementation "wabi2b.sdk:cms:10051-dafeba41eec120ef2a8495f636f966a3449119f6"
 
     def graphQL = '5.9.0'
 

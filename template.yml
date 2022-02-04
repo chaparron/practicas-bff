@@ -322,6 +322,11 @@ Resources:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-wabi2b-grocery-listing-ApiGatewayEndpoint"
 
         - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: CMS_ENDPOINT
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-wabi2b-cms-QueryHandlerGatewayEndpoint"
+
+        - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: SUPPLIER_CREDITS_ENDPOINT
           Value:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-supplier-credits-ApiRootURL"

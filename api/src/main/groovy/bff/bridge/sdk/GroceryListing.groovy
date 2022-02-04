@@ -1095,34 +1095,7 @@ class PreviewSearchResultMapper extends ProductQueryResponseMapper {
                 breadcrumb: breadCrumb(response),
                 filters: filters(response),
                 facets: facets(response),
-                products: products(response).collect {
-                    def suppliers =
-                            it.prices.collect { new PreviewSupplier(id: it.supplier.id, name: "") }
-                                    .toSet().toList()
-                    new PreviewProductSearch(
-                            id: it.id,
-                            name: it.name,
-                            category: it.category,
-                            brand: it.brand,
-                            ean: it.ean,
-                            description: it.description,
-                            images: it.images,
-                            prices: it.prices.collect { price ->
-                                new PreviewPrice(
-                                        countryId: it.country_id,
-                                        id: price.id,
-                                        value: price.value,
-                                        unitValue: price.unitValue,
-                                        display: price.display,
-                                        minUnits: price.minUnits
-                                )
-                            },
-                            title: it.title,
-                            country_id: it.country_id,
-                            totalNumberOfSuppliers: suppliers.size(),
-                            suppliers: suppliers
-                    )
-                }
+                products: products(response).collect {new PreviewProductSearch(it) }
         )
     }
 
