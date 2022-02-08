@@ -1,0 +1,27 @@
+union CommercialPromotionType = Discount | FreeProduct
+
+type CommercialPromotion {
+  id: ID!
+  description: String!
+  type: CommercialPromotionType!
+}
+
+type DiscountStep {
+  from: Int!
+  to: Int
+  value: Money!
+  percentage: Float
+  accessToken: String
+}
+
+type Discount {
+  steps: [DiscountStep!]!
+}
+
+type FreeProduct {
+  id: ID!
+  title: String!
+  images: [Image!]!
+  display: Display!
+  favorite: Boolean!
+}

@@ -2,6 +2,9 @@ package bff.bridge.sdk
 
 import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
+import bff.bridge.sdk.PreviewSearchResultMapper
+import bff.bridge.sdk.SearchResultMapper
+import bff.bridge.sdk.SuggestionQueryRequestBuilder
 import bff.configuration.EntityNotFoundException
 import bff.model.*
 import groovy.util.logging.Slf4j
@@ -9,8 +12,7 @@ import scala.Option
 import wabi2b.grocery.listing.sdk.*
 
 import static bff.model.SortInput.DESC
-import static java.util.Optional.empty
-import static java.util.Optional.ofNullable
+import static java.util.Optional.*
 import static scala.jdk.javaapi.CollectionConverters.asJava
 import static scala.jdk.javaapi.CollectionConverters.asScala
 import static scala.jdk.javaapi.OptionConverters.toJava
@@ -701,7 +703,75 @@ abstract class ProductQueryResponseMapper {
                 configuration: new SupplierProductConfiguration(
                         disableMinAmountCount: option.minPurchaseAmountCountDisabled()
                 ),
+                commercialPromotion: toJava(option.commercialPromotion())
+                        .flatMap { promo ->
+                            switch (promo) {
+                                case { it instanceof AvailableFixedDiscount }:
+                                    return of(commercialPromotion(option, promo as AvailableFixedDiscount))
+                                case { it instanceof AvailablePercentageDiscount }:
+                                    return of(commercialPromotion(option, promo as AvailablePercentageDiscount))
+                                case { it instanceof AvailableFreeProduct }:
+                                    return of(commercialPromotion(promo as AvailableFreeProduct))
+                                default: empty() as Optional<CommercialPromotion>
+                            }
+                        }
+                        .orElse(null),
                 accessToken: this.accessToken.orElse(null)
+        )
+    }
+
+    protected CommercialPromotion commercialPromotion(AvailableOption option,
+                                                      AvailableFixedDiscount discount) {
+        new CommercialPromotion(
+                id: discount.id(),
+                description: discount.description(),
+                type: new Discount(
+                        steps: asJava(discount.steps()).collect {
+                            def value = option.price().toBigDecimal() - it.value().toBigDecimal()
+                            def percentage = (100 - (value * 100) / option.price().toBigDecimal())
+                            new DiscountStep(
+                                    from: it.from(),
+                                    to: toJava(it.to()).orElse(null),
+                                    value: value,
+                                    percentage: percentage,
+                                    accessToken: this.accessToken.orElse(null)
+                            )
+                        }
+                )
+        )
+    }
+
+    protected CommercialPromotion commercialPromotion(AvailableOption option,
+                                                      AvailablePercentageDiscount discount) {
+        new CommercialPromotion(
+                id: discount.id(),
+                description: discount.description(),
+                type: new Discount(
+                        steps: asJava(discount.steps()).collect {
+                            def percentage = it.value().toBigDecimal()
+                            def value = (option.price().toBigDecimal() * (1 - percentage / 100))
+                            new DiscountStep(
+                                    from: it.from(),
+                                    to: toJava(it.to()).orElse(null),
+                                    value: value,
+                                    percentage: percentage,
+                                    accessToken: this.accessToken
+                            )
+                        }
+                )
+        )
+    }
+
+    protected static CommercialPromotion commercialPromotion(AvailableFreeProduct freeProduct) {
+        new CommercialPromotion(
+                id: freeProduct.id(),
+                description: freeProduct.description(),
+                type: new FreeProduct(
+                        id: freeProduct.product().toInteger(),
+                        display: new Display(
+                                id: freeProduct.display().toInteger()
+                        )
+                )
         )
     }
 
@@ -879,14 +949,14 @@ abstract class ProductQueryResponseMapper {
         def maybeSorting = toJava(request.sorting())
         def maybeByRelevance = maybeSorting
                 .filter { it instanceof ByRelevance$ }
-                .map { Optional.of(defaultAsc) }
+                .map { of(defaultAsc) }
         def maybeByLasAvailabilityUpdate = maybeSorting
                 .filter { it instanceof ByLastAvailabilityUpdate$ }
-                .map { Optional.of(new Tuple("RECENT", "ASC")) }
+                .map { of(new Tuple("RECENT", "ASC")) }
         def maybeByUnitPrice = maybeSorting
                 .filter { it instanceof ByUnitPrice }
                 .map { it as ByUnitPrice }
-                .map { Optional.of(new Tuple("PRICE", it.asc() ? "ASC" : "DESC")) }
+                .map { of(new Tuple("PRICE", it.asc() ? "ASC" : "DESC")) }
         def maybeAlphabetically = maybeSorting
                 .filter { it instanceof Alphabetically }
                 .map { it as Alphabetically }
@@ -1028,8 +1098,7 @@ abstract class ProductQueryResponseMapper {
                         toJava(doubleValue.measureUnit()).map { " " + it.name() }.orElse("")
             } else (value._1() as StringValue).value().defaultEntry()
         }
-        Optional
-                .of(value)
+        of(value)
                 .filter { t ->
                     [IntValue, DoubleValue, StringValue].any { t._1() in it }
                 }
@@ -1095,7 +1164,7 @@ class PreviewSearchResultMapper extends ProductQueryResponseMapper {
                 breadcrumb: breadCrumb(response),
                 filters: filters(response),
                 facets: facets(response),
-                products: products(response).collect {new PreviewProductSearch(it) }
+                products: products(response).collect { new PreviewProductSearch(it) }
         )
     }
 
@@ -1216,7 +1285,7 @@ class ProductMapper extends ProductQueryResponseMapper {
 
     Optional<Product> map(ProductQueryResponse response) {
         def products = products(response)
-        products.isEmpty() ? empty() : Optional.of(products.head()).map {
+        products.isEmpty() ? empty() : of(products.head()).map {
             new Product(
                     id: it.id,
                     name: it.name,

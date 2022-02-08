@@ -316,6 +316,7 @@ type Price {
   display: Display
   promotions: [Promotion]
   configuration: SupplierProductConfiguration
+  commercialPromotion: CommercialPromotion
 }
 
 type SupplierProductConfiguration {

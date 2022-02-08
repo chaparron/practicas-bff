@@ -427,6 +427,7 @@ class Price {
     TimestampOutput updated
     List<Promotion> promotions
     SupplierProductConfiguration configuration
+    CommercialPromotion commercialPromotion
 }
 
 @EqualsAndHashCode

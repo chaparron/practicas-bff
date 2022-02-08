@@ -85,6 +85,8 @@ class Main {
                 .add(ProductSearch.class)
                 .add(Brand.class)
                 .add(PreviewSupplier.class)
+                .add(Discount.class)
+                .add(FreeProduct.class)
     }
 
     /**
