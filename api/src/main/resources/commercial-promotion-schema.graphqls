@@ -10,7 +10,7 @@ type DiscountStep {
   from: Int!
   to: Int
   value: Money!
-  percentage: Float
+  percentage: Float!
 }
 
 type Discount {
