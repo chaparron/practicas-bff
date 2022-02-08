@@ -11,7 +11,6 @@ type DiscountStep {
   to: Int
   value: Money!
   percentage: Float
-  accessToken: String
 }
 
 type Discount {
