@@ -45,8 +45,8 @@ abstract class CustomerBridgeImplTestData {
                             translations: [new CountryTranslation(language: "ar", value: "langValue")]),
                     contactInfo: new ContactInfo(),
                     currency: new Currency(symbol: "symbol", code: "code"),
-                    fee: new Fee(serviceFeeType: "serviceFeeType", serviceFee: BigDecimal.ZERO, displayFeeOnSupplierAdm: false),
-                    wabiPay: new WabiPay(enabled: false, creditEnabled: false, moneyEnabled: false, wcToMoneyWhenReleasingEnabled: false),
+                    fee: new Fee(serviceFeeType: "serviceFeeType", serviceFee: BigDecimal.ZERO),
+                    wabiPay: new WabiPay(enabled: false, creditEnabled: false, moneyEnabled: false),
                     legalDocumentInformation: new LegalDocumentInformation(id: "legalDocId", mask: "mask", maskRegex: "maskRegex")
             ),
             customerType: new CustomerType(id: "customerTypeId", code: "customerTypeCode"),

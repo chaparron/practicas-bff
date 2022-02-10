@@ -20,6 +20,8 @@ dependencies {
     implementation "wabi2b.sdk:supplier-credits:10013-5b3ebcb2efd390ddb0fffcc003762f30b7f16055"
     implementation "wabi2b.sdk:cms:10051-dafeba41eec120ef2a8495f636f966a3449119f6"
 
+    implementation "wabi2b:regional-config:1157-a17061cc653084ce8a1900f8be8e6107100e2d83"
+
     def graphQL = '5.9.0'
 
     compile 'com.sendgrid:sendgrid-java:4.2.1'

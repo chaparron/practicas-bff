@@ -15,31 +15,14 @@ import bff.model.WabiPay
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import org.springframework.stereotype.Component
+import wabi2b.sdk.regional.ContactInformation
+import wabi2b.sdk.regional.CurrencyInformation
+import wabi2b.sdk.regional.FeeConfiguration
+import wabi2b.sdk.regional.LegalLink
+import wabi2b.sdk.regional.WabipayConfiguration
 
 @Component
 class CountryMapper {
-
-    public static final String TRANSLATION_LOCALE_REGEXP = "^name-[a-zA-Z]{2}"
-
-    public static final String PARAM_KEY = "key"
-    public static final String PARAM_NAME = "name"
-    public static final String PARAM_FLAG = "flag"
-    public static final String PARAM_WABIPAY_ENABLED = "wabipay_enabled"
-    public static final String PARAM_WABIPAY_WABICREDITS_ENABLED = "wabipay_wabicredits_enabled"
-    public static final String PARAM_WABIPAY_MONEY_ENABLED = "wabipay_money_enabled"
-    public static final String PARAM_WABIPAY_CONVERT_WC_TO_MONEY_WHEN_RELEASING = "wabipay_convert_wc_to_money_when_releasing"
-    public static final String PARAM_DISPLAY_FEE_ON_SUPPLIER_ADM = "display_fee_on_supplier_adm"
-    public static final String PARAM_SERVICE_FEE_TYPE = "service_fee_type"
-    public static final String PARAM_SERVICE_FEE = "service_fee"
-    public static final String PARAM_CURRENCY_CODE = "currency_code"
-    public static final String PARAM_CURRENCY = "currency"
-    public static final String PARAM_WHATSAPP_NUMBER = "whatsapp_number"
-    public static final String PARAM_PHONE_NUMBER = "phone_number"
-    public static final String PARAM_ZALO_NUMBER = "zalo_number"
-    public static final String PARAM_VALUE = "value"
-    public static final String PARAM_LANGUAGE = "language"
-    public static final String PARAM_LOCALE = "locale"
-    public static final String PARAM_DIRECTION = "direction"
     public static final String PARAM_TERMS = "terms"
     public static final String PARAM_TYC = "tyc"
     public static final String PARAM_PP = "pp"
@@ -50,161 +33,134 @@ class CountryMapper {
     public static final String PARAM_ABOUT = "about"
     public static final String PARAM_OPERATION = "operation"
     public static final String PARAM_COMPLAINT = "complaint"
-    public static final String PARAM_COUNTRY_CODE = "country_code"
-    public static final String PARAM_LEGAL_ID = "legalId"
-    public static final String PARAM_LEGAL_MASK = "legalMask"
-    public static final String PARAM_LEGAL_MASK_REGEX = "legalMaskRegex"
-    public static final String PARAM_TIMEZONE = "timezone"
 
     @Autowired
     MessageSource messageSource
 
-    /**
-     * Build Country Object from original API params
-     * @param params The original API parameters
-     * @return Country
-     */
-    Country buildCountryFromParams(
-            String countryId,
-            ArrayList params
+    Country buildCountry(
+            wabi2b.sdk.regional.Country country
     ) {
         return new Country(
-                id: countryId,
-                name: params.find({ it[PARAM_KEY] == PARAM_NAME })?.value,
-                flag: params.find({ it[PARAM_KEY] == PARAM_FLAG })?.value,
-                legalUrls: buildLegalUrls(params),
-                detail: buildDetail(params),
-                language: buildLanguage(params),
-                contactInfo: buildContactInfo(params),
-                currency: buildCurrency(params),
-                fee: buildFee(params),
-                wabiPay: buildWabiPay(params),
-                legalDocumentInformation: buildLegalDocumentInformation(params)
+                id: country.code,
+                name: country.name,
+                flag: country.flag,
+                legalUrls: buildLegalUrls(country.language.locale, country.links),
+                detail: buildDetail(country),
+                language: buildLanguage(country.language),
+                contactInfo: buildContactInfo(country.contactInformation),
+                currency: buildCurrency(country.currencyInformation),
+                fee: buildFee(country.feeConfiguration),
+                wabiPay: buildWabiPay(country.wabipayConfiguration),
+                legalDocumentInformation: buildLegalDocumentInformation(country.legalDocumentInformation)
         )
     }
 
-    /**
-     * Build Country Object from original API params with translated name
-     * @param params The original API parameters
-     * @return Country
-     */
-    Country buildCountryFromParamsWithLocale(
-            String countryId,
-            ArrayList params,
+    Country buildCountryWithLocale(
+            wabi2b.sdk.regional.Country country,
             String locale
     ) {
         return new Country(
-                id: countryId,
-                name: params.find({ it[PARAM_KEY] == "$PARAM_NAME-$locale" })?.value
-                        ?: params.find({ it[PARAM_KEY] == "$PARAM_NAME-en" })?.value,
-                flag: params.find({ it[PARAM_KEY] == PARAM_FLAG })?.value,
-                legalUrls: buildLegalUrls(params),
-                detail: buildDetail(params),
-                language: buildLanguage(params),
-                contactInfo: buildContactInfo(params),
-                currency: buildCurrency(params),
-                fee: buildFee(params),
-                wabiPay: buildWabiPay(params),
-                legalDocumentInformation: buildLegalDocumentInformation(params)
+                id: country.code,
+                name: country.language.nameTranslations.find({ it.language == locale })?.value
+                        ?: country.language.nameTranslations.find({ it.language == "en" })?.value,
+                flag: country.flag,
+                legalUrls: buildLegalUrls(locale, country.links),
+                detail: buildDetail(country),
+                language: buildLanguage(country.language),
+                contactInfo: buildContactInfo(country.contactInformation),
+                currency: buildCurrency(country.currencyInformation),
+                fee: buildFee(country.feeConfiguration),
+                wabiPay: buildWabiPay(country.wabipayConfiguration),
+                legalDocumentInformation: buildLegalDocumentInformation(country.legalDocumentInformation)
         )
     }
 
-    private static WabiPay buildWabiPay(Object params) {
+    private static WabiPay buildWabiPay(WabipayConfiguration wabipayConfiguration) {
         return new WabiPay(
-                enabled: params.find({ it[PARAM_KEY] == PARAM_WABIPAY_ENABLED })?.value,
-                creditEnabled: params.find({ it[PARAM_KEY] == PARAM_WABIPAY_WABICREDITS_ENABLED })?.value,
-                moneyEnabled: params.find({ it[PARAM_KEY] == PARAM_WABIPAY_MONEY_ENABLED })?.value,
-                wcToMoneyWhenReleasingEnabled: params.find({ it[PARAM_KEY] == PARAM_WABIPAY_CONVERT_WC_TO_MONEY_WHEN_RELEASING })?.value,
+                enabled: wabipayConfiguration.enabled,
+                creditEnabled: wabipayConfiguration.creditEnabled,
+                moneyEnabled: wabipayConfiguration.moneyEnabled
         )
     }
 
-    private static Fee buildFee(Object params) {
+    private static Fee buildFee(FeeConfiguration feeConfiguration) {
         return new Fee(
-                displayFeeOnSupplierAdm: params.find({ it[PARAM_KEY] == PARAM_DISPLAY_FEE_ON_SUPPLIER_ADM })?.value,
-                serviceFeeType: params.find({ it[PARAM_KEY] == PARAM_SERVICE_FEE_TYPE })?.value,
-                serviceFee: new BigDecimal(params.find({ it[PARAM_KEY] == PARAM_SERVICE_FEE })?.value ?: 0)
+                serviceFeeType: feeConfiguration.type,
+                serviceFee: new BigDecimal(feeConfiguration.amount)
         )
     }
 
-    private static Currency buildCurrency(Object params) {
-        return new Currency(
-                code: params.find({ it[PARAM_KEY] == PARAM_CURRENCY_CODE })?.value,
-                symbol: params.find({ it[PARAM_KEY] == PARAM_CURRENCY })?.value
-        )
+    private static Currency buildCurrency(CurrencyInformation currencyInformation) {
+        return new Currency(code: currencyInformation.code, symbol: currencyInformation.symbol)
     }
 
-    private static ContactInfo buildContactInfo(Object params) {
+    private static ContactInfo buildContactInfo(ContactInformation contactInformation) {
         return new ContactInfo(
-                whatsappNumber: params.find({ it[PARAM_KEY] == PARAM_WHATSAPP_NUMBER })?.value,
-                phoneNumber: params.find({ it[PARAM_KEY] == PARAM_PHONE_NUMBER })?.value,
-                zaloNumber: params.find({ it[PARAM_KEY] == PARAM_ZALO_NUMBER })?.value
+                whatsappNumber: contactInformation.whatsapp,
+                phoneNumber: contactInformation.phone,
+                zaloNumber: contactInformation.zalo
         )
     }
 
-    private static Language buildLanguage(Object params) {
+    private static Language buildLanguage(wabi2b.sdk.regional.Language language) {
         def translations = []
-        params.each({
-            if (it[PARAM_KEY].matches(TRANSLATION_LOCALE_REGEXP))
-                translations.add(new CountryTranslation(
-                        language: Locale.forLanguageTag(it[PARAM_KEY].toString().split("-")[1]).language,
-                        value: it[PARAM_VALUE])
-                )
-        })
+        language.nameTranslations.each {
+            translations.add(new CountryTranslation(
+                    language: Locale.forLanguageTag(it.language).language,
+                    value: it.value)
+            )
+        }
         return new Language(
-                language: params.find({ it[PARAM_KEY] == PARAM_LANGUAGE })?.value,
-                locale: params.find({ it[PARAM_KEY] == PARAM_LOCALE })?.value,
-                direction: params.find({ it[PARAM_KEY] == PARAM_DIRECTION })?.value ?: "",
+                language: language.id,
+                locale: language.locale,
+                direction: language.direction,
                 translations: translations
         )
     }
 
-    private static Detail buildDetail(Object params) {
-        return new Detail(
-                countryCode: params.find({ it[PARAM_KEY] == PARAM_COUNTRY_CODE })?.value,
-                timezone: params.find({ it[PARAM_KEY] == PARAM_TIMEZONE })?.value
-        )
+    private static Detail buildDetail(wabi2b.sdk.regional.Country country) {
+        return new Detail(countryCode: country.countryCode, timezone: country.timezone)
     }
 
-    private static LegalDocumentInformation buildLegalDocumentInformation(Object params) {
+    private static LegalDocumentInformation buildLegalDocumentInformation(
+            wabi2b.sdk.regional.LegalDocumentInformation legalDocumentInformation
+    ) {
         return new LegalDocumentInformation(
-                id: params.find({ it[PARAM_KEY] == PARAM_LEGAL_ID })?.value ?: "",
-                mask: params.find({ it[PARAM_KEY] == PARAM_LEGAL_MASK })?.value ?: "",
-                maskRegex: params.find({ it[PARAM_KEY] == PARAM_LEGAL_MASK_REGEX })?.value ?: "",
+                id: legalDocumentInformation.id,
+                mask: legalDocumentInformation.mask,
+                maskRegex: legalDocumentInformation.maskRegex
         )
     }
 
-    def private buildLegalUrls(ArrayList params) {
-        def targetLocale = Locale.forLanguageTag(params.find({ it[PARAM_KEY] == PARAM_LOCALE })?.value ?: "en")
+    def private buildLegalUrls(String languageTag, List<LegalLink> legalLinks) {
+        def targetLocale = Locale.forLanguageTag(languageTag ?: "en")
 
         def legalUrls = []
-        params.find({ it[PARAM_KEY] == PARAM_TYC })?.with{
-            legalUrls.add(getLegalUrl(it, LegalUrlType.TERMS_AND_CONDITIONS, PARAM_TERMS, targetLocale))
+        legalLinks.find({ it.type == PARAM_TYC })?.with {
+            legalUrls.add(getLegalUrl(it.value, LegalUrlType.TERMS_AND_CONDITIONS, PARAM_TERMS, targetLocale))
         }
-        params.find({ it[PARAM_KEY] == PARAM_PP })?.with{
-            legalUrls.add(getLegalUrl(it, LegalUrlType.PRIVACY_POLICY, PARAM_PP, targetLocale))
+        legalLinks.find({ it.type == PARAM_PP })?.with {
+            legalUrls.add(getLegalUrl(it.value, LegalUrlType.PRIVACY_POLICY, PARAM_PP, targetLocale))
         }
-        params.find({ it[PARAM_KEY] == PARAM_COOKIES })?.with{
-            legalUrls.add(getLegalUrl(it, LegalUrlType.COOKIES, PARAM_COOKIE_PRIVACY, targetLocale))
+        legalLinks.find({ it.type == PARAM_COOKIES })?.with {
+            legalUrls.add(getLegalUrl(it.value, LegalUrlType.COOKIES, PARAM_COOKIE_PRIVACY, targetLocale))
         }
-        params.find({ it[PARAM_KEY] == PARAM_FAQS })?.with{
-            legalUrls.add(getLegalUrl(it, LegalUrlType.FAQS, PARAM_FAQ, targetLocale))
+        legalLinks.find({ it.type == PARAM_FAQS })?.with {
+            legalUrls.add(getLegalUrl(it.value, LegalUrlType.FAQS, PARAM_FAQ, targetLocale))
         }
-        params.find({ it[PARAM_KEY] == PARAM_ABOUT })?.with{
-            legalUrls.add(getLegalUrl(it, LegalUrlType.ABOUT, PARAM_ABOUT, targetLocale))
+        legalLinks.find({ it.type == PARAM_ABOUT })?.with {
+            legalUrls.add(getLegalUrl(it.value, LegalUrlType.ABOUT, PARAM_ABOUT, targetLocale))
         }
-        params.find({ it[PARAM_KEY] == PARAM_OPERATION })?.with{
-            legalUrls.add(getLegalUrl(it, LegalUrlType.OPERATION, PARAM_OPERATION, targetLocale))
+        legalLinks.find({ it.type == PARAM_OPERATION })?.with {
+            legalUrls.add(getLegalUrl(it.value, LegalUrlType.OPERATION, PARAM_OPERATION, targetLocale))
         }
-        params.find({ it[PARAM_KEY] == PARAM_COMPLAINT })?.with{
-            legalUrls.add(getLegalUrl(it, LegalUrlType.COMPLAINT, PARAM_COMPLAINT, targetLocale))
+        legalLinks.find({ it.type == PARAM_COMPLAINT })?.with {
+            legalUrls.add(getLegalUrl(it.value, LegalUrlType.COMPLAINT, PARAM_COMPLAINT, targetLocale))
         }
         return legalUrls
     }
 
-    private getLegalUrl(Object url, LegalUrlType type, String label, Locale locale) {
-        new LegalUrl(
-                type: type,
-                label: messageSource.getMessage(label, null, locale),
-                value: url.value)
+    private getLegalUrl(String url, LegalUrlType type, String label, Locale locale) {
+        new LegalUrl(type: type, label: messageSource.getMessage(label, null, locale), value: url)
     }
 }

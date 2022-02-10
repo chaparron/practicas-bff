@@ -10,9 +10,12 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.client.RestOperations
+import org.springframework.web.reactive.function.client.WebClient
 import wabi2b.cms.sdk.Sdk as CmsSdk
 import wabi2b.grocery.listing.sdk.Sdk as GroceryListingSdk
 import wabi2b.sdk.credits.HttpSupplierCreditsSdk
+import wabi2b.sdk.regional.HttpRegionalConfigSdk
+import wabi2b.sdk.regional.RegionalConfigSdk
 
 @Configuration
 class SdkConfiguration {
@@ -29,6 +32,8 @@ class SdkConfiguration {
     CustomerBridge customerBridge
     @Autowired
     RestOperations client
+    @Value('${regional.config.url:}')
+    URI regionalConfigUrl
 
     @Bean
     GroceryListing groceryListing() {
@@ -54,4 +59,11 @@ class SdkConfiguration {
         )
     }
 
+    @Bean
+    RegionalConfigSdk regionalConfigSdk(WebClient.Builder webClientBuilder) {
+        new HttpRegionalConfigSdk(
+                regionalConfigUrl,
+                webClientBuilder
+        )
+    }
 }

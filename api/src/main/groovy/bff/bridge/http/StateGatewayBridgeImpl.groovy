@@ -8,8 +8,8 @@ import com.github.benmanes.caffeine.cache.CacheLoader
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.util.UriComponentsBuilder
+import wabi2b.sdk.regional.RegionalConfigSdk
 
 import javax.annotation.PostConstruct
 import java.util.concurrent.TimeUnit
@@ -18,8 +18,8 @@ class StateGatewayBridgeImpl implements StateBridge {
     @Autowired
     private HttpBridge httpBridge
 
-    @Value('${regional.config.url:}')
-    URI regionalConfigUrl
+    @Autowired
+    private RegionalConfigSdk regionalConfigSdk
 
     @Autowired
     private CacheConfigurationProperties cacheConfiguration
@@ -46,10 +46,8 @@ class StateGatewayBridgeImpl implements StateBridge {
     }
 
     private def getUnCachedState(String countryId) {
-        httpBridge.get(
-                UriComponentsBuilder.fromUri(regionalConfigUrl.resolve("state/$countryId")).toUriString().toURI(),
-                null)?.config?.collect {
-            new State(id: it.iso_code, name: it.name)
+        regionalConfigSdk.findStatesForCountry(countryId).block().collect {
+            new State(id: it.isoCode, name: it.name)
         }
     }
 }

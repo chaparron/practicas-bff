@@ -13,12 +13,14 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
+import reactor.core.publisher.Mono
+import wabi2b.sdk.regional.RegionalConfigSdk
 
 @RunWith(MockitoJUnitRunner.class)
 class StateGatewayBridgeImplTest extends StateGatewayBridgeImplTestData {
 
     @Mock
-    private HttpBridge httpBridge
+    private RegionalConfigSdk regionalConfigSdk
 
     @Mock
     CacheConfigurationProperties cacheConfiguration
@@ -29,18 +31,12 @@ class StateGatewayBridgeImplTest extends StateGatewayBridgeImplTestData {
     @Before
     void init() {
         Mockito.when(cacheConfiguration.states).thenReturn(1L)
-        stateBridge.regionalConfigUrl = new URI("http://localhost:3000/")
         stateBridge.init()
     }
 
     @Test
     void getByCountryIdTest() {
-        Mockito.when(
-                httpBridge.get(
-                        (URI) Mockito.any(URI.class),
-                        (String) Mockito.isNull()))
-                .thenReturn(
-                        new JsonSlurper().parseText(stateEsStr) as Map)
+        Mockito.when(regionalConfigSdk.findStatesForCountry("es")).thenReturn(Mono.just(statesEs))
 
         def response = stateBridge.getByCountryId("es")
         Assert.assertNotNull(response)
@@ -52,11 +48,7 @@ class StateGatewayBridgeImplTest extends StateGatewayBridgeImplTestData {
         Assert.assertFalse(response.empty)
         Assert.assertTrue(response.size() == 2)
 
-        Mockito.verify(httpBridge, Mockito.times(1))
-                .get(
-                        (URI) Mockito.any(URI.class),
-                        (String) Mockito.isNull())
+        Mockito.verify(regionalConfigSdk, Mockito.times(1)).findStatesForCountry("es")
     }
-
 
 }

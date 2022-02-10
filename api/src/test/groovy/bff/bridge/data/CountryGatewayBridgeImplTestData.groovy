@@ -1,450 +1,176 @@
 package bff.bridge.data
 
+import wabi2b.sdk.regional.ContactInformation
+import wabi2b.sdk.regional.Country
+import wabi2b.sdk.regional.CountryServiceResponse
+import wabi2b.sdk.regional.CurrencyInformation
+import wabi2b.sdk.regional.FeeConfiguration
+import wabi2b.sdk.regional.KeyValueResponse
+import wabi2b.sdk.regional.Language
+import wabi2b.sdk.regional.LegalDocumentInformation
+import wabi2b.sdk.regional.LegalLink
+import wabi2b.sdk.regional.Translation
+import wabi2b.sdk.regional.WabipayConfiguration
+
 abstract class CountryGatewayBridgeImplTestData {
+    protected static CountryServiceResponse countryServiceResponseEs =
+            new CountryServiceResponse(
+                    "es",
+                    [
+                            new KeyValueResponse("name", "España"),
+                            new KeyValueResponse("name-en", "Spain"),
+                            new KeyValueResponse("locale", "es_ES"),
+                    ]
+            )
 
-    protected static String countryEsPublicStr =
-            "{\n" +
-                    "    \"id\": \"es\",\n" +
-                    "    \"config\": [\n" +
-                    "        {\n" +
-                    "            \"key\": \"name\",\n" +
-                    "            \"value\": \"España\",\n" +
-                    "            \"private\": false\n" +
-                    "        },\n" +
-                    "        {\n" +
-                    "            \"key\": \"name-en\",\n" +
-                    "            \"value\": \"Spain\",\n" +
-                    "            \"private\": false\n" +
-                    "        },\n" +
-                    "        {\n" +
-                    "            \"key\": \"locale\",\n" +
-                    "            \"value\": \"es_ES\",\n" +
-                    "            \"private\": false\n" +
-                    "        }\n" +
-                    "    ]\n" +
-                    "}"
+    protected static Country regionalCountryEs =
+            new Country(
+                    "es",
+                    "España",
+                    new ContactInformation("+541120400002", "541161290635", "0862000780"),
+                    new CurrencyInformation("€", "EUR"),
+                    "Europe/España/Madrid",
+                    "7ab0fd14-efa9-11eb-9a03-0242ac1300ar.png",
+                    "+94",
+                    [new LegalLink("tyc.com", "tyc")],
+                    new LegalDocumentInformation(
+                            "CUIT",
+                            "999999999999",
+                            "^\\\\d{1,12}\$",
+                            []
+                    ),
+                    new FeeConfiguration("WABICREDITS_PERCENTAGE", 1),
+                    new Language(
+                            "es",
+                            "es_ES",
+                            "ltr",
+                            [new Translation("en", "Spain")]
+                    ),
+                    new WabipayConfiguration(true, true, true)
+            )
 
-    protected static String countryArPublicStr =
-            "{\n" +
-                    "    \"id\": \"ar\",\n" +
-                    "    \"config\": [\n" +
-                    "        {\n" +
-                    "            \"key\": \"name\",\n" +
-                    "            \"value\": \"Argentina\",\n" +
-                    "            \"private\": false\n" +
-                    "        },\n" +
-                    "        {\n" +
-                    "            \"key\": \"name-en\",\n" +
-                    "            \"value\": \"Argentina\",\n" +
-                    "            \"private\": false\n" +
-                    "        },\n" +
-                    "        {\n" +
-                    "            \"key\": \"locale\",\n" +
-                    "            \"value\": \"es_AR\",\n" +
-                    "            \"private\": false\n" +
-                    "        }\n" +
-                    "    ]\n" +
-                    "}"
+    protected static Country regionalCountryAr =
+            new Country(
+                    "ar",
+                    "Argentina",
+                    new ContactInformation("+541120400002", "541161290635", "0862000780"),
+                    new CurrencyInformation("€", "EUR"),
+                    "America/Argentina/Buenos Aires",
+                    "7ab0fd14-efa9-11eb-9a03-0242ac1300ar.png",
+                    "+54",
+                    [new LegalLink("tyc.com", "tyc")],
+                    new LegalDocumentInformation(
+                            "CUIT",
+                            "999999999999",
+                            "^\\\\d{1,12}\$",
+                            []
+                    ),
+                    new FeeConfiguration("WABICREDITS_PERCENTAGE", 1),
+                    new Language(
+                            "es",
+                            "es_AR",
+                            "ltr",
+                            [new Translation("en", "Argentina")]
+                    ),
+                    new WabipayConfiguration(true, true, true)
+            )
 
-    protected static String homeCountriesResponse = "[\n" +
-            "  {\n" +
-            "    \"id\": \"eg\",\n" +
-            "    \"config\": [\n" +
-            "      {\n" +
-            "        \"key\": \"name\",\n" +
-            "        \"value\": \"Egipto\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "    {\n" +
-            "      \"key\": \"timezone\",\n" +
-            "      \"value\": \"Africa/Cairo\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"legalId\",\n" +
-            "      \"value\": \"TIN\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"legalMask\",\n" +
-            "      \"value\": \"D*\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"legalMaskRegex\",\n" +
-            "      \"value\": \"^[a-zA-Z0-9]*\$\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "      {\n" +
-            "        \"key\": \"locale\",\n" +
-            "        \"value\": \"ar-EG\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"name-ar\",\n" +
-            "        \"value\": \"مصر\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"name-en\",\n" +
-            "        \"value\": \"Egypt\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"name-es\",\n" +
-            "        \"value\": \"Egipto\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"flag\",\n" +
-            "        \"value\": \"7ab0fd14-efa9-11eb-9a03-0242ac1300eg.png\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"tyc\",\n" +
-            "        \"value\": \"https://wabi.force.com/wabi2b/s/article/Wabi2b-Store-Egypt-T-C?language=ar_EG\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"pp\",\n" +
-            "        \"value\": \"https://wabi.force.com/wabi2b/s/article/Wabi2b-Store-Egypt-P-P?language=ar_EG\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"cookies\",\n" +
-            "        \"value\": \"https://wabi.force.com/wabi2b/s/article/Wabi2b-Store-Egypt-P-C?language=ar_EG\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"faqs\",\n" +
-            "        \"value\": \"https://wabi.force.com/wabi2b/s/topic/0TO2E00000029SOWAY/preguntas-frecuentes?language=ar_EG\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"about\",\n" +
-            "        \"value\": \"https://wabi.force.com/wabi2b/s/topic/0TO2E00000029SOWAY/preguntas-frecuentes?language=ar_EG\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"operation\",\n" +
-            "        \"value\": \"https://wabi.force.com/wabi2b/s/topic/0TO2E00000029SOWAY/preguntas-frecuentes?language=ar_EG\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"complaint\",\n" +
-            "        \"value\": \"https://wabi.force.com/wabi2b/s/topic/0TO2E00000029SOWAY/preguntas-frecuentes?language=ar_EG\",\n" +
-            "        \"private\": false\n" +
-            "      }\n" +
-            "    ],\n" +
-            "    \"enabled\": true\n" +
-            "  },\n" +
-            "  {\n" +
-            "    \"id\": \"ph\",\n" +
-            "    \"config\": [\n" +
-            "      {\n" +
-            "        \"key\": \"name\",\n" +
-            "        \"value\": \"Philippines\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "    {\n" +
-            "      \"key\": \"timezone\",\n" +
-            "      \"value\": \"Asia/Manila\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"legalId\",\n" +
-            "      \"value\": \"TIN\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"legalMask\",\n" +
-            "      \"value\": \"000000009999\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"legalMaskRegex\",\n" +
-            "      \"value\": \"^\\\\d{8,12}\$\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "      {\n" +
-            "        \"key\": \"locale\",\n" +
-            "        \"value\": \"ms-MY\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"name-ar\",\n" +
-            "        \"value\": \"فيلبيني\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"name-en\",\n" +
-            "        \"value\": \"Philippines\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"name-es\",\n" +
-            "        \"value\": \"Filipinas\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"flag\",\n" +
-            "        \"value\": \"7ab0fd14-efa9-11eb-9a03-0242ac1300ph.png\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"tyc\",\n" +
-            "        \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Philipines-T-C?language=en_US\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"pp\",\n" +
-            "        \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Philipines-P-P?language=en_US\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"cookies\",\n" +
-            "        \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Algeria-P-C?language=en_US\",\n" +
-            "        \"private\": false\n" +
-            "      }\n" +
-            "    ],\n" +
-            "    \"enabled\": true\n" +
-            "  },\n" +
-            "  {\n" +
-            "    \"id\": \"ma\",\n" +
-            "    \"config\": [\n" +
-            "      {\n" +
-            "        \"key\": \"name\",\n" +
-            "        \"value\": \"Morocco\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "    {\n" +
-            "      \"key\": \"timezone\",\n" +
-            "      \"value\": \"Africa/Casablanca\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"legalId\",\n" +
-            "      \"value\": \"ICE\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"legalMask\",\n" +
-            "      \"value\": \"000000000000000\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"legalMaskRegex\",\n" +
-            "      \"value\": \"^\\\\d{15}\$\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "      {\n" +
-            "        \"key\": \"locale\",\n" +
-            "        \"value\": \"ar-MA\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"name-ar\",\n" +
-            "        \"value\": \"المغرب\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"name-en\",\n" +
-            "        \"value\": \"Morocco\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"name-es\",\n" +
-            "        \"value\": \"Marruecos\",\n" +
-            "        \"private\": false\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"key\": \"flag\",\n" +
-            "        \"value\": \"7ab0fd14-efa9-11eb-9a03-0242ac1300ma.png\",\n" +
-            "        \"private\": false\n" +
-            "      }\n" +
-            "    ],\n" +
-            "    \"enabled\": true\n" +
-            "  }]"
+    protected static List<Country> homeCountriesResponse =
+            [
+                    new Country(
+                            "eg",
+                            "Egipto",
+                            new ContactInformation("xxx", "xxx", "xxx"),
+                            new CurrencyInformation("xxx", "xxx"),
+                            "Africa/Cairo",
+                            "xxx",
+                            "xxx",
+                            [
+                                    new LegalLink("tyc.com", "tyc"),
+                                    new LegalLink("pp.com", "pp"),
+                                    new LegalLink("cookies.com", "cookies"),
+                                    new LegalLink("faqs.com", "faqs"),
+                                    new LegalLink("about.com", "about"),
+                                    new LegalLink("operation.com", "operation"),
+                                    new LegalLink("complaint.com", "complaint")
+                            ],
+                            new LegalDocumentInformation("TIN", "D*", "^[a-zA-Z0-9]*\$", []),
+                            new FeeConfiguration("xxx", 1),
+                            new Language("xxx", "xxx", "xxx",
+                                    [
+                                            new Translation("ar", "مصر"),
+                                            new Translation("en", "Egypt"),
+                                            new Translation("es", "Egipto")
+                                    ]
+                            ),
+                            new WabipayConfiguration(true, true, true)
+                    ),
+                    new Country(
+                            "ph",
+                            "Philippines",
+                            new ContactInformation("xxx", "xxx", "xxx"),
+                            new CurrencyInformation("xxx", "xxx"),
+                            "Asia/Manila",
+                            "xxx",
+                            "xxx",
+                            [new LegalLink("tyc.com", "tyc")],
+                            new LegalDocumentInformation("TIN", "000000009999", "^\\d{8,12}\$", []),
+                            new FeeConfiguration("xxx", 1),
+                            new Language("xxx", "xxx", "xxx",
+                                    [
+                                            new Translation("ar", "فيلبيني"),
+                                            new Translation("en", "Philippines"),
+                                            new Translation("es", "Filipinas")
+                                    ]
+                            ),
+                            new WabipayConfiguration(true, true, true)
+                    ),
+                    new Country(
+                            "ma",
+                            "Morocco",
+                            new ContactInformation("xxx", "xxx", "xxx"),
+                            new CurrencyInformation("xxx", "xxx"),
+                            "Africa/Casablanca",
+                            "xxx",
+                            "xxx",
+                            [],
+                            new LegalDocumentInformation("ICE", "000000000000000", "^\\d{15}\$", []),
+                            new FeeConfiguration("xxx", 1),
+                            new Language("xxx", "xxx", "xxx",
+                                    [
+                                            new Translation("ar", "المغرب"),
+                                            new Translation("en", "Morocco"),
+                                            new Translation("es", "Marruecos")
+                                    ]
+                            ),
+                            new WabipayConfiguration(true, true, true)
+                    )
+            ]
 
-    protected static final publicCountryResponse = "{\n" +
-            "  \"id\": \"ru\",\n" +
-            "  \"config\": [\n" +
-            "    {\n" +
-            "      \"key\": \"name\",\n" +
-            "      \"value\": \"Rusia\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"timezone\",\n" +
-            "      \"value\": \"Europe/Moscow\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"legalId\",\n" +
-            "      \"value\": \"INN\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"legalMask\",\n" +
-            "      \"value\": \"000000000099999\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"legalMaskRegex\",\n" +
-            "      \"value\": \"^\\\\d{10,15}\$\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"name-ar\",\n" +
-            "      \"value\": \"Rusia\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"name-en\",\n" +
-            "      \"value\": \"Rusia\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"name-es\",\n" +
-            "      \"value\": \"Rusia\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"name-my\",\n" +
-            "      \"value\": \"Rusia\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"name-pt\",\n" +
-            "      \"value\": \"Rusia\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"name-ru\",\n" +
-            "      \"value\": \"Россия\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"name-vn\",\n" +
-            "      \"value\": \"Rusia\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"name-zh\",\n" +
-            "      \"value\": \"Rusia\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"country_code\",\n" +
-            "      \"value\": \"+7\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"currency\",\n" +
-            "      \"value\": \"₽\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"currency_code\",\n" +
-            "      \"value\": \"RUB\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"lat\",\n" +
-            "      \"value\": \"55.6641779\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"lng\",\n" +
-            "      \"value\": \"37.1684867\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"language\",\n" +
-            "      \"value\": \"ru\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"locale\",\n" +
-            "      \"value\": \"ru-RU\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"wabipay_enabled\",\n" +
-            "      \"value\": \"true\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"wabipay_wabicredits_enabled\",\n" +
-            "      \"value\": \"true\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"wabipay_money_enabled\",\n" +
-            "      \"value\": \"true\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"wabipay_convert_wc_to_money_when_releasing\",\n" +
-            "      \"value\": \"false\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"whatsapp_number\",\n" +
-            "      \"value\": \"541161290635\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"phone_number\",\n" +
-            "      \"value\": \"+541120400002\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"direction\",\n" +
-            "      \"value\": \"ltr\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"service_fee\",\n" +
-            "      \"value\": \"0.00\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"service_fee_type\",\n" +
-            "      \"value\": \"WABICREDITS_PERCENTAGE\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"display_fee_on_supplier_adm\",\n" +
-            "      \"value\": \"false\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"flag\",\n" +
-            "      \"value\": \"7ab0fd14-efa9-11eb-9a03-0242ac1300ru.png\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"tyc\",\n" +
-            "      \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Russia-T-C?language=ru\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"pp\",\n" +
-            "      \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Russia-P-P?language=ru\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"cookies\",\n" +
-            "      \"value\": \"https://wabi2u.force.com/wabi2b/s/article/Wabi2b-Store-Russia-P-C?language=ru\",\n" +
-            "      \"private\": false\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"key\": \"faqs\",\n" +
-            "      \"value\": \"https://wabi.force.com/wabi2b/s/topic/0TO2E00000029SOWAY/preguntas-frecuentes?language=ru\",\n" +
-            "      \"private\": false\n" +
-            "    }\n" +
-            "  ],\n" +
-            "  \"enabled\": true\n" +
-            "}"
+    protected static final publicCountryResponse =
+            new Country(
+                    "ru",
+                    "Rusia",
+                    new ContactInformation("xxx", "xxx", "xxx"),
+                    new CurrencyInformation("xxx", "xxx"),
+                    "xxx",
+                    "xxx",
+                    "+7",
+                    [new LegalLink("xxx", "xxx")],
+                    new LegalDocumentInformation("xxx", "xxx", "xxx", []),
+                    new FeeConfiguration("WABICREDITS_PERCENTAGE", 1),
+                    new Language("xxx", "ru-RU", "xxx",
+                            [
+                                    new Translation("l1", "xxx"),
+                                    new Translation("l2", "xxx"),
+                                    new Translation("l3", "xxx"),
+                                    new Translation("l4", "xxx"),
+                                    new Translation("l5", "xxx"),
+                                    new Translation("l6", "xxx"),
+                                    new Translation("l7", "xxx"),
+                                    new Translation("l8", "xxx"),
+                            ]
+                    ),
+                    new WabipayConfiguration(true, true, true)
+            )
 }

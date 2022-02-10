@@ -1,19 +1,12 @@
 package bff.bridge.data
 
+import wabi2b.sdk.regional.State
+
 abstract class StateGatewayBridgeImplTestData {
 
-    protected static String stateEsStr =
-            "{\n" +
-                    "    \"id\": \"es\",\n" +
-                    "    \"config\": [\n" +
-                    "        {\n" +
-                    "            \"name\": \"Álava\",\n" +
-                    "            \"iso_code\": \"ES-VI\"\n" +
-                    "        },\n" +
-                    "        {\n" +
-                    "            \"name\": \"Albacete\",\n" +
-                    "            \"iso_code\": \"ES-AB\"\n" +
-                    "        }\n" +
-                    "    ]\n" +
-                    "}"
+    protected static List<State> statesEs =
+            [
+                    new State("Álava", "ES-VI"),
+                    new State("Albacete", "ES-AB")
+            ]
 }

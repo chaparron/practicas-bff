@@ -53,13 +53,11 @@ type WabiPay {
   enabled:Boolean!
   creditEnabled:Boolean!
   moneyEnabled:Boolean!
-  wcToMoneyWhenReleasingEnabled:Boolean!
 }
 
 type Fee{
   serviceFeeType:String!
   serviceFee:Float!
-  displayFeeOnSupplierAdm:Boolean!
 }
 
 type LegalUrl{

@@ -7,47 +7,87 @@ import bff.model.Detail
 import bff.model.Fee
 import bff.model.Language
 import bff.model.LegalDocumentInformation
+import bff.model.LegalUrl
+import bff.model.LegalUrlType
 import bff.model.WabiPay
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.InjectMocks
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.junit.MockitoJUnitRunner
+import org.springframework.context.MessageSource
+import wabi2b.sdk.regional.ContactInformation
+import wabi2b.sdk.regional.Country
+import wabi2b.sdk.regional.CurrencyInformation
+import wabi2b.sdk.regional.FeeConfiguration
+import wabi2b.sdk.regional.LegalLink
+import wabi2b.sdk.regional.Translation
+import wabi2b.sdk.regional.WabipayConfiguration
 
 import static org.junit.Assert.assertEquals
 
+@RunWith(MockitoJUnitRunner.class)
 class CountryMapperTest {
 
+    @Mock
+    private MessageSource messageSource
+
+    @InjectMocks
     private CountryMapper mapper = new CountryMapper()
 
     @Test
     void 'get mapped country'() {
-        def id = "ar"
-        def params = [
-                [ "key" : "name", "value"  : "Argentina", "private": false ],
-                [ "key" : "timezone", "value"  : "America/Argentina/Buenos_Aires", "private": false],
-                [ "key" : "legalId", "value"  : "CUIT", "private": false ],
-                [ "key" : "legalMask", "value"  : "999999999999", "private": false ],
-                [ "key" : "legalMaskRegex", "value"  : "^\\\\d{1,12}\$", "private": false ],
-                [ "key" : "name-es", "value"  : "Argentina", "private": false ],
-                [ "key" : "country_code", "value"  : "+54", "private": false ],
-                [ "key" : "currency", "value"  : "\$", "private": false ],
-                [ "key" : "currency_code", "value"  : "ARS", "private": false ],
-                [ "key" : "lat", "value"  : "-34.6052956", "private": false ],
-                [ "key" : "lng", "value"  : "-58.3870496", "private": false ],
-                [ "key" : "language", "value"  : "es", "private": false ],
-                [ "key" : "locale", "value"  : "es-AR", "private": false ],
-                [ "key" : "wabipay_enabled", "value": "true", "private": false ],
-                [ "key" : "wabipay_wabicredits_enabled", "value"  : "true", "private": false],
-                [ "key" : "wabipay_money_enabled", "value"  : "true", "private": false ],
-                [ "key" : "wabipay_convert_wc_to_money_when_releasing", "value"  : "false", "private": false],
-                [ "key" : "whatsapp_number", "value"  : "541161290635", "private": false ],
-                [ "key" : "zalo_number", "value"  : "0862000780", "private": false ],
-                [ "key" : "phone_number", "value"  : "+541120400002", "private": false ],
-                [ "key" : "direction", "value"  : "ltr", "private": false ],
-                [ "key" : "service_fee", "value"  : "1", "private": false ],
-                [ "key" : "service_fee_type", "value"  : "WABICREDITS_PERCENTAGE", "private": false ],
-                [ "key" : "display_fee_on_supplier_adm", "value"  : "false", "private": false ],
-                [ "key" : "flag", "value"  : "7ab0fd14-efa9-11eb-9a03-0242ac1300ar.png", "private": false ]
-        ]
+        Mockito.when(messageSource.getMessage(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn("labelMsg")
 
-        def country = mapper.buildCountryFromParams(id, params)
+        Country regionalConfigCountry = new Country(
+                "ar",
+                "Argentina",
+                new ContactInformation(
+                        "+541120400002",
+                        "541161290635",
+                        "0862000780"
+                ),
+                new CurrencyInformation(
+                        "\$",
+                        "ARS"
+                ),
+                "America/Argentina/Buenos_Aires",
+                "7ab0fd14-efa9-11eb-9a03-0242ac1300ar.png",
+                "+54",
+                [
+                        new LegalLink("tyc.com", "tyc"),
+                        new LegalLink("pp.com", "pp"),
+                        new LegalLink("cookies.com", "cookies"),
+                        new LegalLink("faqs.com", "faqs"),
+                        new LegalLink("about.com", "about"),
+                        new LegalLink("operation.com", "operation"),
+                        new LegalLink("complaint.com", "complaint")
+                ],
+                new wabi2b.sdk.regional.LegalDocumentInformation(
+                        "CUIT",
+                        "999999999999",
+                        "^\\\\d{1,12}\$",
+                        []
+                ),
+                new FeeConfiguration(
+                        "WABICREDITS_PERCENTAGE",
+                        1
+                ),
+                new wabi2b.sdk.regional.Language(
+                        "es",
+                        "es-AR",
+                        "ltr",
+                        [new Translation("es", "Argentina")]
+                ),
+                new WabipayConfiguration(
+                        true,
+                        true,
+                        true
+                )
+        )
+
+        def country = mapper.buildCountry(regionalConfigCountry)
         def expectedContactInfo = new ContactInfo(
                 whatsappNumber: "541161290635", phoneNumber: "+541120400002", zaloNumber: "0862000780")
         def expectedDetail = new Detail(countryCode: "+54", timezone: "America/Argentina/Buenos_Aires")
@@ -56,14 +96,23 @@ class CountryMapperTest {
                 language: "es", locale: "es-AR", direction: "ltr", translations: [expectedTranslation])
         def expectedCurrency = new Currency(symbol: "\$", code: "ARS")
         def expectedFee = new Fee(
-                serviceFeeType: "WABICREDITS_PERCENTAGE", serviceFee: new BigDecimal(1), displayFeeOnSupplierAdm: true
+                serviceFeeType: "WABICREDITS_PERCENTAGE", serviceFee: new BigDecimal(1)
         )
         def expectedWabipay = new WabiPay(
-                enabled: true, creditEnabled: true, moneyEnabled: true, wcToMoneyWhenReleasingEnabled: true
+                enabled: true, creditEnabled: true, moneyEnabled: true
         )
         def expectedLegalDocumentInfo = new LegalDocumentInformation(
                 id: "CUIT", mask: "999999999999", maskRegex: "^\\\\d{1,12}\$"
         )
+        def expectedLegalUrls = [
+                new LegalUrl(type: LegalUrlType.TERMS_AND_CONDITIONS, value: "tyc.com", label: "labelMsg"),
+                new LegalUrl(type: LegalUrlType.PRIVACY_POLICY, value: "pp.com", label: "labelMsg"),
+                new LegalUrl(type: LegalUrlType.COOKIES, value: "cookies.com", label: "labelMsg"),
+                new LegalUrl(type: LegalUrlType.FAQS, value: "faqs.com", label: "labelMsg"),
+                new LegalUrl(type: LegalUrlType.ABOUT, value: "about.com", label: "labelMsg"),
+                new LegalUrl(type: LegalUrlType.OPERATION, value: "operation.com", label: "labelMsg"),
+                new LegalUrl(type: LegalUrlType.COMPLAINT, value: "complaint.com", label: "labelMsg"),
+        ]
         assertEquals("ar", country.id)
         assertEquals("Argentina", country.name)
         assertEquals(expectedDetail.countryCode, country.detail.countryCode)
@@ -80,13 +129,21 @@ class CountryMapperTest {
         assertEquals(expectedCurrency.code, country.currency.code)
         assertEquals(expectedFee.serviceFeeType, country.fee.serviceFeeType)
         assertEquals(expectedFee.serviceFee, country.fee.serviceFee)
-        assertEquals(expectedFee.displayFeeOnSupplierAdm, country.fee.displayFeeOnSupplierAdm)
         assertEquals(expectedWabipay.enabled, country.wabiPay.enabled)
         assertEquals(expectedWabipay.creditEnabled, country.wabiPay.creditEnabled)
         assertEquals(expectedWabipay.moneyEnabled, country.wabiPay.moneyEnabled)
-        assertEquals(expectedWabipay.wcToMoneyWhenReleasingEnabled, country.wabiPay.wcToMoneyWhenReleasingEnabled)
         assertEquals(expectedLegalDocumentInfo.id, country.legalDocumentInformation.id)
         assertEquals(expectedLegalDocumentInfo.mask, country.legalDocumentInformation.mask)
         assertEquals(expectedLegalDocumentInfo.maskRegex, country.legalDocumentInformation.maskRegex)
+        checkLegalUrls(expectedLegalUrls, country.legalUrls)
+    }
+
+    private static checkLegalUrls(List<LegalUrl> expectedLegalUrls, List<LegalUrl> resultLegalUrls) {
+        expectedLegalUrls.eachWithIndex { expected, idx ->
+            def result = resultLegalUrls[idx]
+            assertEquals(expected.type, result.type)
+            assertEquals(expected.value, result.value)
+            assertEquals(expected.label, result.label)
+        }
     }
 }
