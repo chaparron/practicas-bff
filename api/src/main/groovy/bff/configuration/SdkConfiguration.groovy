@@ -33,7 +33,7 @@ class SdkConfiguration {
     @Autowired
     RestOperations client
     @Value('${regional.config.url:}')
-    URI regionalConfigUrl
+    String regionalConfigUrl
 
     @Bean
     GroceryListing groceryListing() {
@@ -60,7 +60,7 @@ class SdkConfiguration {
     }
 
     @Bean
-    RegionalConfigSdk regionalConfigSdk() {
-        new HttpRegionalConfigSdk(regionalConfigUrl, WebClient.builder())
+    RegionalConfigSdk regionalConfigSdk(WebClient.Builder webClientBuilder) {
+        new HttpRegionalConfigSdk(regionalConfigUrl.toURI(), webClientBuilder)
     }
 }
