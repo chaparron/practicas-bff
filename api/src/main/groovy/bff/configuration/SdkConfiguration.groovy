@@ -5,6 +5,7 @@ import bff.bridge.CustomerBridge
 import bff.bridge.sdk.Cms
 import bff.bridge.sdk.GroceryListing
 import bff.bridge.sdk.credits.HttpCreditService
+import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -17,6 +18,7 @@ import wabi2b.sdk.credits.HttpSupplierCreditsSdk
 import wabi2b.sdk.regional.HttpRegionalConfigSdk
 import wabi2b.sdk.regional.RegionalConfigSdk
 
+@Slf4j
 @Configuration
 class SdkConfiguration {
 
@@ -26,14 +28,17 @@ class SdkConfiguration {
     String cmsEndpoint
     @Value('${supplier.credits.endpoint:}')
     String creditsEndpoint
+
+    @Value('${regional.config.url:}')
+    String regionalConfigUrl
+
     @Autowired
     CountryBridge countryBridge
     @Autowired
     CustomerBridge customerBridge
     @Autowired
     RestOperations client
-    @Value('${regional.config.url:}')
-    String regionalConfigUrl
+
 
     @Bean
     GroceryListing groceryListing() {
@@ -61,6 +66,7 @@ class SdkConfiguration {
 
     @Bean
     RegionalConfigSdk regionalConfigSdk(WebClient.Builder webClientBuilder) {
+        log.info("regional url: $regionalConfigUrl")
         new HttpRegionalConfigSdk(regionalConfigUrl.toURI(), webClientBuilder)
     }
 }
