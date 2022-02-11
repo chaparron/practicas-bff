@@ -1,9 +1,9 @@
 package bff.bridge
 
 import bff.model.Challenge
+import bff.model.ChannelType
 import bff.model.Credentials
 import bff.model.Site
-import bff.model.ChannelType
 
 interface AuthServerBridge {
 

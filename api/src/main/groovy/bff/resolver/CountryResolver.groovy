@@ -1,7 +1,7 @@
 package bff.resolver
 
-import bff.model.CountryFlagSize
 import bff.model.Country
+import bff.model.CountryFlagSize
 import bff.service.ImageService
 import com.coxautodev.graphql.tools.GraphQLResolver
 import groovy.util.logging.Slf4j

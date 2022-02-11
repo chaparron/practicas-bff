@@ -1,25 +1,10 @@
 package bff.mapper
 
-
-import bff.model.ContactInfo
-import bff.model.Country
-import bff.model.CountryTranslation
-import bff.model.Currency
-import bff.model.Detail
-import bff.model.Fee
-import bff.model.Language
-import bff.model.LegalDocumentInformation
-import bff.model.LegalUrl
-import bff.model.LegalUrlType
-import bff.model.WabiPay
+import bff.model.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import org.springframework.stereotype.Component
-import wabi2b.sdk.regional.ContactInformation
-import wabi2b.sdk.regional.CurrencyInformation
-import wabi2b.sdk.regional.FeeConfiguration
-import wabi2b.sdk.regional.LegalLink
-import wabi2b.sdk.regional.WabipayConfiguration
+import wabi2b.sdk.regional.*
 
 @Component
 class CountryMapper {

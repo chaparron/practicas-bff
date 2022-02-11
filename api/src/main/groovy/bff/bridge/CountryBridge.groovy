@@ -1,7 +1,7 @@
 package bff.bridge
 
-import bff.model.CountryConfigurationEntry
 import bff.model.Country
+import bff.model.CountryConfigurationEntry
 
 interface CountryBridge {
 

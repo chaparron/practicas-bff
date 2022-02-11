@@ -8,7 +8,6 @@ import com.github.benmanes.caffeine.cache.CacheLoader
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.util.UriComponentsBuilder
 import wabi2b.sdk.regional.RegionalConfigSdk
 
 import javax.annotation.PostConstruct

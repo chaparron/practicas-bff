@@ -1,12 +1,8 @@
 package bff.bridge.http
 
 import bff.bridge.PhoneNotifierBridge
-import bff.model.Category
-import bff.model.Challenge
 import bff.model.UserDeviceInput
 import groovy.util.logging.Slf4j
-import org.springframework.core.ParameterizedTypeReference
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType

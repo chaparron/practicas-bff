@@ -2,12 +2,7 @@ package bff.resolver
 
 import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
-import bff.model.AccessTokenInput
-import bff.model.Address
-import bff.model.Country
-import bff.model.Customer
-import bff.model.CustomerStatus
-import bff.model.VerificationDocument
+import bff.model.*
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component

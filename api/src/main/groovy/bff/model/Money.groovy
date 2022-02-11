@@ -4,7 +4,6 @@ import groovy.transform.Immutable
 import groovy.util.logging.Slf4j
 
 import java.text.NumberFormat
-import java.util.Currency
 
 @Immutable
 @Slf4j

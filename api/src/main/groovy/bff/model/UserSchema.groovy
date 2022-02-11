@@ -1,6 +1,6 @@
 package bff.model
 
-import cats.kernel.Eq
+
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.InheritConstructors
 import groovy.transform.ToString
