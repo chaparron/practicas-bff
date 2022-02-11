@@ -60,10 +60,7 @@ class SdkConfiguration {
     }
 
     @Bean
-    RegionalConfigSdk regionalConfigSdk(WebClient.Builder webClientBuilder) {
-        new HttpRegionalConfigSdk(
-                regionalConfigUrl,
-                webClientBuilder
-        )
+    RegionalConfigSdk regionalConfigSdk() {
+        new HttpRegionalConfigSdk(regionalConfigUrl, WebClient.builder())
     }
 }
