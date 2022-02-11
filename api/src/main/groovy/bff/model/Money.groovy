@@ -2,7 +2,7 @@ package bff.model
 
 import groovy.transform.Immutable
 import groovy.util.logging.Slf4j
-
+import java.util.Currency
 import java.text.NumberFormat
 
 @Immutable
