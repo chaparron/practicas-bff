@@ -96,10 +96,10 @@ class CountryMapperTest {
                 language: "es", locale: "es-AR", direction: "ltr", translations: [expectedTranslation])
         def expectedCurrency = new Currency(symbol: "\$", code: "ARS")
         def expectedFee = new Fee(
-                serviceFeeType: "WABICREDITS_PERCENTAGE", serviceFee: new BigDecimal(1)
+                serviceFeeType: "WABICREDITS_PERCENTAGE", serviceFee: new BigDecimal(1), displayFeeOnSupplierAdm: false
         )
         def expectedWabipay = new WabiPay(
-                enabled: true, creditEnabled: true, moneyEnabled: true
+                enabled: true, creditEnabled: true, moneyEnabled: true, wcToMoneyWhenReleasingEnabled: false
         )
         def expectedLegalDocumentInfo = new LegalDocumentInformation(
                 id: "CUIT", mask: "999999999999", maskRegex: "^\\\\d{1,12}\$"
@@ -129,9 +129,11 @@ class CountryMapperTest {
         assertEquals(expectedCurrency.code, country.currency.code)
         assertEquals(expectedFee.serviceFeeType, country.fee.serviceFeeType)
         assertEquals(expectedFee.serviceFee, country.fee.serviceFee)
+        assertEquals(expectedFee.displayFeeOnSupplierAdm, country.fee.displayFeeOnSupplierAdm)
         assertEquals(expectedWabipay.enabled, country.wabiPay.enabled)
         assertEquals(expectedWabipay.creditEnabled, country.wabiPay.creditEnabled)
         assertEquals(expectedWabipay.moneyEnabled, country.wabiPay.moneyEnabled)
+        assertEquals(expectedWabipay.wcToMoneyWhenReleasingEnabled, country.wabiPay.wcToMoneyWhenReleasingEnabled)
         assertEquals(expectedLegalDocumentInfo.id, country.legalDocumentInformation.id)
         assertEquals(expectedLegalDocumentInfo.mask, country.legalDocumentInformation.mask)
         assertEquals(expectedLegalDocumentInfo.maskRegex, country.legalDocumentInformation.maskRegex)

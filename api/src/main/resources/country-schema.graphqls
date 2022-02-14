@@ -53,11 +53,15 @@ type WabiPay {
   enabled:Boolean!
   creditEnabled:Boolean!
   moneyEnabled:Boolean!
+  wcToMoneyWhenReleasingEnabled:Boolean!
+  @deprecated(reason: "Must not be used at store, always return false")
 }
 
 type Fee{
   serviceFeeType:String!
   serviceFee:Float!
+  displayFeeOnSupplierAdm:Boolean!
+  @deprecated(reason: "Must not be used at store, always return false")
 }
 
 type LegalUrl{

@@ -48,11 +48,13 @@ class WabiPay {
     Boolean enabled
     Boolean creditEnabled
     Boolean moneyEnabled
+    Boolean wcToMoneyWhenReleasingEnabled
 }
 
 class Fee{
     String serviceFeeType
     BigDecimal serviceFee
+    Boolean displayFeeOnSupplierAdm
 }
 
 class LegalDocumentInformation{

@@ -68,14 +68,16 @@ class CountryMapper {
         return new WabiPay(
                 enabled: wabipayConfiguration.enabled,
                 creditEnabled: wabipayConfiguration.creditEnabled,
-                moneyEnabled: wabipayConfiguration.moneyEnabled
+                moneyEnabled: wabipayConfiguration.moneyEnabled,
+                wcToMoneyWhenReleasingEnabled: false
         )
     }
 
     private static Fee buildFee(FeeConfiguration feeConfiguration) {
         return new Fee(
                 serviceFeeType: feeConfiguration.type,
-                serviceFee: new BigDecimal(feeConfiguration.amount)
+                serviceFee: new BigDecimal(feeConfiguration.amount),
+                displayFeeOnSupplierAdm: false
         )
     }
 
