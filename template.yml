@@ -9,8 +9,8 @@ Mappings:
   Config:
     qa:
       MinPoolSize: '1'
-      MaxPoolSize: '1'
-      InstanceType: 't2.micro'
+      MaxPoolSize: '2'
+      InstanceType: 't2.small'
       HttpMaxConnections: '10'
       TasksPoolCoreSize: '20'
       MaxHeapSize: '-Xmx1024m'
