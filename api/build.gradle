@@ -16,7 +16,7 @@ dependencies {
     implementation(platform("org.springframework.cloud:spring-cloud-sleuth:2.0.4.RELEASE"))
 
     implementation "com.github.ben-manes.caffeine:caffeine:2.9.2"
-    implementation "wabi2b.sdk:grocery-listing:10066-26561f67664a4f9da76aa0461561a81d90f9e3fe"
+    implementation "wabi2b.sdk:grocery-listing:10075-1846afdd184b144fb7d272b5c0b08f82cc3cdd70"
     implementation "wabi2b.sdk:supplier-credits:10013-5b3ebcb2efd390ddb0fffcc003762f30b7f16055"
     implementation "wabi2b.sdk:cms:10051-dafeba41eec120ef2a8495f636f966a3449119f6"
 

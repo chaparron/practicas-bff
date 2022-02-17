@@ -2,9 +2,6 @@ package bff.bridge.sdk
 
 import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
-import bff.bridge.sdk.PreviewSearchResultMapper
-import bff.bridge.sdk.SearchResultMapper
-import bff.bridge.sdk.SuggestionQueryRequestBuilder
 import bff.configuration.EntityNotFoundException
 import bff.model.*
 import groovy.util.logging.Slf4j
@@ -706,10 +703,8 @@ abstract class ProductQueryResponseMapper {
                 commercialPromotion: toJava(option.commercialPromotion())
                         .flatMap { promo ->
                             switch (promo) {
-                                case { it instanceof AvailableFixedDiscount }:
-                                    return of(commercialPromotion(option, promo as AvailableFixedDiscount))
-                                case { it instanceof AvailablePercentageDiscount }:
-                                    return of(commercialPromotion(option, promo as AvailablePercentageDiscount))
+                                case { it instanceof AvailableDiscount }:
+                                    return of(commercialPromotion(promo as AvailableDiscount))
                                 case { it instanceof AvailableFreeProduct }:
                                     return of(commercialPromotion(promo as AvailableFreeProduct))
                                 default: empty() as Optional<CommercialPromotion>
@@ -720,42 +715,18 @@ abstract class ProductQueryResponseMapper {
         )
     }
 
-    protected CommercialPromotion commercialPromotion(AvailableOption option,
-                                                      AvailableFixedDiscount discount) {
+    protected CommercialPromotion commercialPromotion(AvailableDiscount discount) {
         new CommercialPromotion(
                 id: discount.id(),
                 description: discount.description(),
                 type: new Discount(
                         steps: asJava(discount.steps()).collect {
-                            def value = option.price().toBigDecimal() - it.value().toBigDecimal()
-                            def percentage = (100 - (value * 100) / option.price().toBigDecimal())
                             new DiscountStep(
                                     from: it.from(),
                                     to: toJava(it.to()).orElse(null),
-                                    value: value,
-                                    percentage: percentage,
+                                    value: it.amount().toBigDecimal(),
+                                    percentage: it.percentage().toBigDecimal(),
                                     accessToken: this.accessToken.orElse(null)
-                            )
-                        }
-                )
-        )
-    }
-
-    protected CommercialPromotion commercialPromotion(AvailableOption option,
-                                                      AvailablePercentageDiscount discount) {
-        new CommercialPromotion(
-                id: discount.id(),
-                description: discount.description(),
-                type: new Discount(
-                        steps: asJava(discount.steps()).collect {
-                            def percentage = it.value().toBigDecimal()
-                            def value = (option.price().toBigDecimal() * (1 - percentage / 100))
-                            new DiscountStep(
-                                    from: it.from(),
-                                    to: toJava(it.to()).orElse(null),
-                                    value: value,
-                                    percentage: percentage,
-                                    accessToken: this.accessToken
                             )
                         }
                 )
