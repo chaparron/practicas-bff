@@ -10,6 +10,7 @@ type DiscountStep {
   from: Int!
   to: Int
   value: Money!
+  unitValue: Money!
   percentage: Float!
 }
 

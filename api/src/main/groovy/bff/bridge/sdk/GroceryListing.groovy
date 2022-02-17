@@ -678,8 +678,8 @@ abstract class ProductQueryResponseMapper {
                     minUnitsPrice: prices.min { Price a, Price b ->
                         (a.minUnits == b.minUnits) ? a.unitValue <=> b.unitValue : a.minUnits <=> b.minUnits
                     },
-                    highlightedPrice: prices.min { it.unitValue },
-                    priceFrom: prices.min { it.value },
+                    highlightedPrice: prices.min { it.netUnitValue() },
+                    priceFrom: prices.min { it.netValue() },
                     title: it.name().defaultEntry(),
                     country_id: it.manufacturer().country(),
                     favorite: toJava(it.favourite()).orElse(false),
@@ -704,7 +704,7 @@ abstract class ProductQueryResponseMapper {
                         .flatMap { promo ->
                             switch (promo) {
                                 case { it instanceof AvailableDiscount }:
-                                    return of(commercialPromotion(promo as AvailableDiscount))
+                                    return of(commercialPromotion(option.display(), promo as AvailableDiscount))
                                 case { it instanceof AvailableFreeProduct }:
                                     return of(commercialPromotion(promo as AvailableFreeProduct))
                                 default: empty() as Optional<CommercialPromotion>
@@ -715,7 +715,7 @@ abstract class ProductQueryResponseMapper {
         )
     }
 
-    protected CommercialPromotion commercialPromotion(AvailableDiscount discount) {
+    protected CommercialPromotion commercialPromotion(AvailableDisplay display, AvailableDiscount discount) {
         new CommercialPromotion(
                 id: discount.id(),
                 description: discount.description(),
@@ -725,6 +725,7 @@ abstract class ProductQueryResponseMapper {
                                     from: it.from(),
                                     to: toJava(it.to()).orElse(null),
                                     value: it.amount().toBigDecimal(),
+                                    unitValue: it.amount() / display.units(),
                                     percentage: it.percentage().toBigDecimal(),
                                     accessToken: this.accessToken.orElse(null)
                             )

@@ -18,4 +18,8 @@ class DiscountStepResolver implements GraphQLResolver<DiscountStep> {
         moneyService.getMoney(step.accessToken, step.value)
     }
 
+    Money unitValue(DiscountStep step) {
+        moneyService.getMoney(step.accessToken, step.unitValue)
+    }
+
 }

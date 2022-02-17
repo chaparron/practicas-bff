@@ -7,6 +7,7 @@ import sun.util.locale.LanguageTag
 
 import static java.util.Optional.empty
 import static java.util.Optional.of
+import static java.util.Optional.ofNullable
 
 interface ProductResult {}
 
@@ -428,6 +429,21 @@ class Price {
     List<Promotion> promotions
     SupplierProductConfiguration configuration
     CommercialPromotion commercialPromotion
+
+    def netValue() {
+        ofNullable(commercialPromotion)
+                .filter { it.type instanceof Discount }
+                .map { (it.type as Discount).minValue() }
+                .orElse(value)
+    }
+
+    def netUnitValue() {
+        ofNullable(commercialPromotion)
+                .filter { it.type instanceof Discount }
+                .map { (it.type as Discount).minUnitValue() }
+                .orElse(unitValue)
+    }
+
 }
 
 @EqualsAndHashCode
