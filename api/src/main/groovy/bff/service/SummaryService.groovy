@@ -2,9 +2,7 @@ package bff.service
 
 import bff.model.CartSummaryItemType
 import bff.model.Summary
-import groovy.util.logging.Slf4j
 
-@Slf4j
 class SummaryService {
 
     static List<Summary> sortAndGetVisibleForMe(List<Summary> summary, String country) {
