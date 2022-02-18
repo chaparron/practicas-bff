@@ -66,7 +66,6 @@ class SdkConfiguration {
 
     @Bean
     RegionalConfigSdk regionalConfigSdk(WebClient.Builder webClientBuilder) {
-        log.info("regional url: $regionalConfigUrl")
         new HttpRegionalConfigSdk(regionalConfigUrl.toURI(), webClientBuilder)
     }
 }

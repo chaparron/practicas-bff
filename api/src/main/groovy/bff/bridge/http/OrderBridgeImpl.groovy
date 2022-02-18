@@ -1,8 +1,10 @@
 package bff.bridge.http
 
+import bff.JwtToken
 import bff.bridge.OrderBridge
 import bff.configuration.BadRequestErrorException
 import bff.model.*
+import bff.service.SummaryService
 import groovy.util.logging.Slf4j
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders
@@ -139,6 +141,7 @@ class OrderBridgeImpl implements OrderBridge {
 
         customerOrderResponse.accessToken = findOrderAndSupplierOrderInput.accessToken
         customerOrderResponse.customer.accessToken = findOrderAndSupplierOrderInput.accessToken
+        String country = JwtToken.countryFromString(findOrderAndSupplierOrderInput.accessToken)
         customerOrderResponse.supplierOrderAndOrderCancellations.collect {
             it.accessToken = findOrderAndSupplierOrderInput.accessToken
             it.order.accessToken = findOrderAndSupplierOrderInput.accessToken
@@ -159,7 +162,7 @@ class OrderBridgeImpl implements OrderBridge {
                 )
             }
 
-            it.orderedSummary = it.summary.findAll {it.type.visibleToSummary}.sort{it.type.position}
+            it.orderedSummary = SummaryService.sortAndGetVisibleForMe(it.summary, country)
         }
 
         customerOrderResponse
@@ -279,7 +282,7 @@ class OrderBridgeImpl implements OrderBridge {
 
         response.orderSummary.forEach {
             it.supplier.accessToken = accessToken
-            it.supplier.deliveryZones.forEach {deliveryZone ->
+            it.supplier.deliveryZones.forEach { deliveryZone ->
                 deliveryZone.accessToken = accessToken
             }
             it.summary.forEach { sm ->
@@ -292,15 +295,15 @@ class OrderBridgeImpl implements OrderBridge {
                 sm.accessToken = accessToken
             }
         }
-
+        String country = JwtToken.countryFromString(accessToken)
         response.orderedOrderSummary = response.orderSummary.collect {
             it.supplier.accessToken = accessToken
-            it.supplier.deliveryZones.forEach {deliveryZone ->
+            it.supplier.deliveryZones.forEach { deliveryZone ->
                 deliveryZone.accessToken = accessToken
             }
             return new OrderSummary(
                     supplier: it.supplier,
-                    summary: it.summary.findAll{it.type.visibleToSummary}.sort{it.type.position}
+                    summary: SummaryService.sortAndGetVisibleForMe(it.summary, country)
             )
         }
 
@@ -337,7 +340,7 @@ class OrderBridgeImpl implements OrderBridge {
                         .body([orders: validateOrderInput.orders])
                 , ValidateOrderResponse).body
 
-        validateOrderResponse.errors = validateOrderResponse.errors?.collect {error ->
+        validateOrderResponse.errors = validateOrderResponse.errors?.collect { error ->
             new OrderError(
                     accessToken: validateOrderInput.accessToken,
                     error: error.error,

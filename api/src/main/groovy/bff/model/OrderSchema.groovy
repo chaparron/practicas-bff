@@ -31,7 +31,6 @@ enum OrderUpdateReason {
 }
 
 
-
 enum SupplierOrderStatus {
     PENDING,
     CONFIRMED,
@@ -90,10 +89,14 @@ enum CustomerCancelOptionReason {
 }
 
 interface OrderUpdateResult {}
+
 interface CustomerOrdersResult {}
+
 interface CustomerOrderResult {}
-interface CustomerSupplierOrderResult{}
-interface CustomerLegalDocumentResult{}
+
+interface CustomerSupplierOrderResult {}
+
+interface CustomerLegalDocumentResult {}
 
 class CancelOrderInput {
     String accessToken
@@ -169,7 +172,7 @@ class GetSupplierRatingsInput extends PaginatedInput {
     Long supplierId
 }
 
-class GetSupplierOrdersInput{
+class GetSupplierOrdersInput {
     String accessToken
     Long orderId
 }
@@ -384,7 +387,7 @@ class SupplierOrderAndOrderCancellations {
     List<Summary> orderedSummary
 
     OrderCancellation getOrderCancellation() {
-        orderCancellation?:cancellationDetails
+        orderCancellation ?: cancellationDetails
     }
 }
 
@@ -592,6 +595,8 @@ class OrderSummary {
     List<Summary> summary
 }
 
+
+
 class Summary {
     String accessToken
     CartSummaryItemType type
@@ -599,6 +604,7 @@ class Summary {
     Money valueMoney
     Map meta
     List<MetaEntry> metadata
+    String description
 }
 
 enum CartSummaryItemType {
@@ -615,7 +621,8 @@ enum CartSummaryItemType {
     SUBTOTAL(11, false),
     NET_SUBTOTAL(12, false),
     DISCOUNT_USED(13, false),
-    TOTAL_BILLED(14, false)
+    TOTAL_BILLED(14, false),
+    PROMOTION(15, false)
     private int position
     private Boolean visibleToSummary
 
@@ -658,7 +665,7 @@ enum CustomerRateSupplierFailedReason {
     INVALID_SUPPLIER_ID,
     INVALID_SCORE
 
-    def build () {
+    def build() {
         new CustomerRateSupplierFailed(reason: this)
     }
 }
@@ -718,11 +725,11 @@ enum OrderErrorType {
 
 interface ValidateOrderResult {}
 
-class ValidateOrderResponse implements  ValidateOrderResult {
+class ValidateOrderResponse implements ValidateOrderResult {
     List<OrderError> errors
 }
 
-class ValidateOrderFailed implements  ValidateOrderResult {
+class ValidateOrderFailed implements ValidateOrderResult {
     ValidateOrderFailedReason reason
 }
 

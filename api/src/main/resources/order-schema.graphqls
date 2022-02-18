@@ -623,8 +623,9 @@ enum CartSummaryItemType {
 
   SERVICE_FEE
   #Max ammount allowed to pay with wabipay
-  MAX_AMOUNT_WABIPAY_ALLOWED
+  MAX_AMOUNT_WABIPAY_ALLOWED,
 
+  PROMOTION
 }
 
 type Summary {
@@ -632,6 +633,7 @@ type Summary {
   value: Float!
   valueMoney: Money!
   metadata: [MetaEntry]
+  description(languageTag: String!): String!
 }
 
 type MetaEntry {
