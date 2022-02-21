@@ -132,8 +132,8 @@ class Slices {
 
 class Slice {
     String id
-    String name
     String key
+    Closure<String> name
 }
 
 class Sort {

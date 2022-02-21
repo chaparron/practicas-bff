@@ -14,6 +14,7 @@ input SearchInput {
   favourites: Boolean
   similarTo: Int
   promoted: Boolean
+  discount: Int
 }
 
 input SearchScrollInput {
@@ -36,6 +37,7 @@ input PreviewSearchInput {
   countryId: String
   similarTo: Int
   promoted: Boolean
+  discount: Int
 }
 
 input PreviewSearchScrollInput {

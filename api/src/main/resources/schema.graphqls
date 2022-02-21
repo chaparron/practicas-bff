@@ -396,7 +396,7 @@ type Slices{
 
 type Slice {
   id: String!
-  name: String!
+  name(languageTag: LanguageTag): String!
   key: String!
 }
 

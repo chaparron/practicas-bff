@@ -156,6 +156,7 @@ class PreviewSearchInput {
     BigDecimal lng
     Integer similarTo
     Boolean promoted
+    Integer discount
 }
 
 @ToString
@@ -175,6 +176,7 @@ class SearchInput {
     Boolean favourites
     Integer similarTo
     Boolean promoted
+    Integer discount
 }
 
 @ToString

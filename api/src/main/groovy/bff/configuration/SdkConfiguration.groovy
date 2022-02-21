@@ -8,6 +8,7 @@ import bff.bridge.sdk.credits.HttpCreditService
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.client.RestOperations
@@ -38,14 +39,16 @@ class SdkConfiguration {
     CustomerBridge customerBridge
     @Autowired
     RestOperations client
-
+    @Autowired
+    MessageSource messageSource
 
     @Bean
     GroceryListing groceryListing() {
         new GroceryListing(
                 sdk: new GroceryListingSdk(client, groceryListingEndpoint.toURI()),
                 countryBridge: countryBridge,
-                customerBridge: customerBridge
+                customerBridge: customerBridge,
+                messageSource: messageSource
         )
     }
 
