@@ -21,7 +21,7 @@ dependencies {
     implementation "wabi2b.sdk:cms:10051-dafeba41eec120ef2a8495f636f966a3449119f6"
 
     implementation "wabi2b:regional-config:1157-a17061cc653084ce8a1900f8be8e6107100e2d83"
-    implementation "com.wabi2b:phone-notifier-sdk:SNAPSHOT-2022-02-18-10_23_37"
+    implementation "com.wabi2b:phone-notifier-sdk:10141-360c1a1a5b2c79ca575a6006908a7d48dbfa0da4"
     implementation "io.ktor:ktor-client-cio:1.6.5"
 
     def graphQL = '5.9.0'
