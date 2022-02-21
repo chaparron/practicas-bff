@@ -588,11 +588,14 @@ input CartItemInput {
 }
 
 type OrderSummaryResponse {
+  #Deprecated. Use orderedOrderSummary
   orderSummary: [OrderSummary]
   orderedOrderSummary: [OrderSummary]
 }
 
 type OrderSummary {
+  #sum of products
+  totalProducts: Money!
   supplier: Supplier!
   summary: [Summary]
 }

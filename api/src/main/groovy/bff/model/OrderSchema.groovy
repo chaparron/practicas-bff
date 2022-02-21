@@ -591,6 +591,7 @@ class OrderSummaryResponse implements SummaryResult {
 }
 
 class OrderSummary {
+    Money totalProducts
     Supplier supplier
     List<Summary> summary
 }
