@@ -395,6 +395,11 @@ class UserDeviceInput {
     String appVersion
 }
 
+class DeleteUserDeviceInput {
+    String pushToken
+    String accessToken
+}
+
 class SuppliersNameResult{
     Long id
     Long supplierId

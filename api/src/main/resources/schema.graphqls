@@ -205,7 +205,7 @@ type Mutation {
 
   userDevice(input: UserDeviceInput!): Void!
 
-  deleteUserDevice(input: AccessTokenInput!): Void!
+  deleteUserDevice(input: DeleteUserDeviceInput!): Void!
 
   markSuggestionAsRead(input: MarkSuggestionInput !): Void!
 
@@ -429,6 +429,11 @@ input UserDeviceInput{
   accessToken: String!
   os: String
   appVersion: String
+}
+
+input DeleteUserDeviceInput{
+  accessToken: String!
+  pushToken: String
 }
 
 input CoordinatesInput {

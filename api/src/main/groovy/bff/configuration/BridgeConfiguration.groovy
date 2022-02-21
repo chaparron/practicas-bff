@@ -19,7 +19,7 @@ class BridgeConfiguration {
     URI root
 
     @Value('${phone.notifier.url}')
-    URI phone_notifier_url
+    String phone_notifier_url
 
     @Value('${marketing.bridge.url}')
     URI marketing_bridge_url
@@ -149,7 +149,6 @@ class BridgeConfiguration {
     @Bean
     PhoneNotifierBridge phoneNotifierBridge() {
         new PhoneNotifierBridgeImpl(
-                http: http,
                 root: phone_notifier_url
         )
     }
