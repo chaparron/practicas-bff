@@ -10,9 +10,11 @@ import groovy.util.logging.Slf4j
 @Slf4j
 class PhoneNotifierBridgeImpl implements PhoneNotifierBridge {
 
-    String root
+    private final PhoneNotifierClient client
 
-    PhoneNotifierClient client = new PhoneNotifierClient(root)
+    PhoneNotifierBridgeImpl(String root) {
+        client = new PhoneNotifierClient(root)
+    }
 
     @Override
     Boolean isValidPhone(String countryCode, String phone) {

@@ -148,9 +148,7 @@ class BridgeConfiguration {
 
     @Bean
     PhoneNotifierBridge phoneNotifierBridge() {
-        new PhoneNotifierBridgeImpl(
-                root: phone_notifier_url
-        )
+        new PhoneNotifierBridgeImpl(phone_notifier_url)
     }
 
     @Bean
