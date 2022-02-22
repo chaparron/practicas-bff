@@ -339,6 +339,7 @@ class GroceryListing {
         Optional<Boolean> maybeFavourites
         Optional<Boolean> maybePromoted
         Optional<Integer> maybeDiscount
+        Optional<String> maybeCommercialPromotion
 
         ProductQueryRequestFilteringBuilder(SearchInput input) {
             this(
@@ -350,7 +351,8 @@ class GroceryListing {
                     input.features,
                     input.favourites,
                     input.promoted,
-                    input.discount
+                    input.discount,
+                    input.commercialPromotion
             )
         }
 
@@ -364,7 +366,8 @@ class GroceryListing {
                     input.features,
                     null,
                     input.promoted,
-                    input.discount
+                    input.discount,
+                    input.commercialPromotion
             )
         }
 
@@ -376,7 +379,8 @@ class GroceryListing {
                                                     List<FeatureInput> features,
                                                     Boolean favourites,
                                                     Boolean promoted,
-                                                    Integer discount) {
+                                                    Integer discount,
+                                                    String commercialPromotion) {
             this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }
             this.maybeCategory = ofNullable(category)
             this.maybeBrand = ofNullable(brand)
@@ -386,6 +390,7 @@ class GroceryListing {
             this.maybeFavourites = ofNullable(favourites)
             this.maybePromoted = ofNullable(promoted)
             this.maybeDiscount = ofNullable(discount)
+            this.maybeCommercialPromotion = ofNullable(commercialPromotion)
         }
 
         ProductQueryRequest apply(ProductQueryRequest request) {
@@ -397,7 +402,8 @@ class GroceryListing {
                             supplierFiltering(),
                             promotionFiltering(),
                             favouritesFiltering(),
-                            discountFiltering()
+                            discountFiltering(),
+                            commercialPromotionFiltering()
                     ] + featuresFiltering()
             )
                     .inject(request, { acc, filter -> filter(acc) })
@@ -500,6 +506,16 @@ class GroceryListing {
                     .map { discount ->
                         { ProductQueryRequest r ->
                             r.filteredByDiscount(discount) as ProductQueryRequest
+                        }
+                    }
+                    .orElse(identity)
+        }
+
+        private Closure<ProductQueryRequest> commercialPromotionFiltering() {
+            maybeCommercialPromotion
+                    .map { promotion ->
+                        { ProductQueryRequest r ->
+                            r.filteredByCommercialPromotion(promotion) as ProductQueryRequest
                         }
                     }
                     .orElse(identity)

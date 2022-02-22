@@ -15,6 +15,7 @@ input SearchInput {
   similarTo: Int
   promoted: Boolean
   discount: Int
+  commercialPromotion: String
 }
 
 input SearchScrollInput {
@@ -38,6 +39,7 @@ input PreviewSearchInput {
   similarTo: Int
   promoted: Boolean
   discount: Int
+  commercialPromotion: String
 }
 
 input PreviewSearchScrollInput {

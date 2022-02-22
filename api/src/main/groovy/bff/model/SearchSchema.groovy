@@ -157,6 +157,7 @@ class PreviewSearchInput {
     Integer similarTo
     Boolean promoted
     Integer discount
+    String commercialPromotion
 }
 
 @ToString
@@ -177,6 +178,7 @@ class SearchInput {
     Integer similarTo
     Boolean promoted
     Integer discount
+    String commercialPromotion
 }
 
 @ToString
