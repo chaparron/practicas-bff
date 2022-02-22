@@ -60,7 +60,7 @@ class GroceryListing {
                                                             .aggregatedByCategories(1, true)
                                                             .aggregatedBySuppliers(10)
                                                             .aggregatedByFeatures()
-                                                            .aggregatedByDiscounts(10)
+                                                            .aggregatedByDiscounts(5)
                                                             .fetchingOptions(50, Option.empty())
                                             ),
                                     { request, builder -> builder.apply(request) }
@@ -98,7 +98,7 @@ class GroceryListing {
                                                             .aggregatedByBrands(10)
                                                             .aggregatedByCategories(1, true)
                                                             .aggregatedByFeatures()
-                                                            .aggregatedByDiscounts(10)
+                                                            .aggregatedByDiscounts(5)
                                                             .fetchingOptions(50, Option.empty())
                                             ),
                                     { request, builder -> builder.apply(request) }
@@ -991,8 +991,8 @@ class GroceryListing {
             [
                     categoriesFacet(response),
                     brandsFacet(response),
-                    suppliersFacet(response),
-                    discountFacet(response)
+                    discountFacet(response),
+                    suppliersFacet(response)
             ]
                     .findAll { it.isPresent() }
                     .collect { it.get() } +
