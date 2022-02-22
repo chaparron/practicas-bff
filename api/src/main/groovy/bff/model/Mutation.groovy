@@ -289,7 +289,7 @@ class Mutation implements GraphQLMutationResolver {
 
     Void deleteUserDevice(DeleteUserDeviceInput input) {
         phoneNotifierBridge.deleteUserDevice(input)
-        customerBridge.deleteUserDevice(input)
+        customerBridge.deleteUserDevice(new AccessTokenInput(accessToken: input.accessToken))
     }
 
     OrderUpdateResult cancelOrder(CancelOrderInput cancelOrderInput) {
