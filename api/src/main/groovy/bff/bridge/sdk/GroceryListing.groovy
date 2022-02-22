@@ -812,6 +812,7 @@ class GroceryListing {
             termFilter() +
                     categoryFilter(response) +
                     brandFilter(response) +
+                    discountFilter() +
                     supplierFilter(response) +
                     featuresFilter(response)
         }
@@ -840,7 +841,7 @@ class GroceryListing {
                                         values: [
                                                 new FilterItem(
                                                         id: it.id,
-                                                        name: it.name
+                                                        name: { LanguageTag languageTag -> it.name }
                                                 )
                                         ]
                                 )
@@ -865,12 +866,39 @@ class GroceryListing {
                                         values: [
                                                 new FilterItem(
                                                         id: it.id() as Integer,
-                                                        name: it.name().defaultEntry()
+                                                        name: { LanguageTag languageTag -> it.name().defaultEntry() }
                                                 )
                                         ]
                                 )
                             }
                         }
+                    }
+                    .orElse([])
+        }
+
+        protected List<Filter> discountFilter() {
+            toJava(request.filtering().byDiscount())
+                    .map {
+                        [
+                                new Filter(
+                                        key: "discount",
+                                        values: [
+                                                new FilterItem(
+                                                        id: it.min() as Integer,
+                                                        name: { LanguageTag languageTag ->
+                                                            messageSource.getMessage(
+                                                                    "search.DISCOUNT_SLICE",
+                                                                    [it.min()].toArray(),
+                                                                    forLanguageTag(
+                                                                            ofNullable(languageTag.toString()).
+                                                                                    orElse("en")
+                                                                    )
+                                                            )
+                                                        }
+                                                )
+                                        ]
+                                )
+                        ]
                     }
                     .orElse([])
         }
@@ -891,7 +919,7 @@ class GroceryListing {
                                         values: [
                                                 new FilterItem(
                                                         id: it.id() as Integer,
-                                                        name: it.name()
+                                                        name: { LanguageTag languageTag -> it.name() }
                                                 )
                                         ]
                                 )

@@ -115,7 +115,7 @@ class Filter {
 
 class FilterItem {
     Integer id
-    String name
+    Closure<String> name
 }
 
 class Facet {

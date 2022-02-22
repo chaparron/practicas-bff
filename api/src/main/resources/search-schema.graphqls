@@ -146,7 +146,7 @@ type Filter{
 
 type FilterItem {
   id: Int!
-  name: String!
+  name(languageTag: LanguageTag): String!
 }
 
 type Header {
