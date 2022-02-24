@@ -19,6 +19,7 @@ class DiscountStep {
 }
 
 class Discount implements CommercialPromotionType {
+    Boolean progressive
     List<DiscountStep> steps
 
     def minValue() { steps.min { it.value }.value }

@@ -757,6 +757,7 @@ class GroceryListing {
                     description: discount.description(),
                     expiration: new TimestampOutput(discount.expiration().toString()),
                     type: new Discount(
+                            progressive: discount.progressive(),
                             steps: asJava(discount.steps()).collect {
                                 new DiscountStep(
                                         from: it.from(),

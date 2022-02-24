@@ -16,6 +16,7 @@ type DiscountStep {
 }
 
 type Discount {
+  progressive: Boolean!
   steps: [DiscountStep!]!
 }
 
