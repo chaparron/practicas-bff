@@ -3,6 +3,7 @@ union CommercialPromotionType = Discount | FreeProduct
 type CommercialPromotion {
   id: ID!
   description: String!
+  expiration: TimestampOutput!
   type: CommercialPromotionType!
 }
 

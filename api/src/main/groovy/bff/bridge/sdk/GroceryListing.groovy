@@ -755,6 +755,7 @@ class GroceryListing {
             new CommercialPromotion(
                     id: discount.id(),
                     description: discount.description(),
+                    expiration: new TimestampOutput(discount.expiration().toString()),
                     type: new Discount(
                             steps: asJava(discount.steps()).collect {
                                 new DiscountStep(
@@ -774,6 +775,7 @@ class GroceryListing {
             new CommercialPromotion(
                     id: freeProduct.id(),
                     description: freeProduct.description(),
+                    expiration: new TimestampOutput(freeProduct.expiration().toString()),
                     type: new FreeProduct(
                             id: freeProduct.product().toInteger(),
                             display: new Display(

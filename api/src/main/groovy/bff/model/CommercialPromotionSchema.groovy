@@ -5,6 +5,7 @@ interface CommercialPromotionType {}
 class CommercialPromotion {
     String id
     String description
+    TimestampOutput expiration
     CommercialPromotionType type
 }
 
