@@ -15,11 +15,11 @@ class DiscountStepResolver implements GraphQLResolver<DiscountStep> {
     MoneyService moneyService
 
     Money value(DiscountStep step) {
-        moneyService.getMoney(step.accessToken, step.value)
+        moneyService.getMoneyByCountry(step.countryId, step.value)
     }
 
     Money unitValue(DiscountStep step) {
-        moneyService.getMoney(step.accessToken, step.unitValue)
+        moneyService.getMoneyByCountry(step.countryId, step.unitValue)
     }
 
 }

@@ -175,6 +175,9 @@ type PreviewProductSearch {
   created: TimestampOutput!
   manufacturer: Manufacturer
   prices: [PreviewPrice]
+  priceFrom: PreviewPrice
+  minUnitsPrice: PreviewPrice
+  highlightedPrice: PreviewPrice
   title: String
   suppliers: [PreviewSupplier]
   totalNumberOfSuppliers: Int!
@@ -189,6 +192,7 @@ type PreviewPrice {
   unitValueMoney: Money
   display: Display
   minUnits: Int
+  commercialPromotion: CommercialPromotion
 }
 
 type PreviewSupplier {

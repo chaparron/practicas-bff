@@ -15,7 +15,7 @@ class DiscountStep {
     BigDecimal value
     BigDecimal unitValue
     BigDecimal percentage
-    String accessToken
+    String countryId
 }
 
 class Discount implements CommercialPromotionType {

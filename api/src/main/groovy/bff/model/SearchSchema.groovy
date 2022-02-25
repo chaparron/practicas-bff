@@ -1,13 +1,12 @@
 package bff.model
 
+
 import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import sun.util.locale.LanguageTag
 
-import static java.util.Optional.empty
-import static java.util.Optional.of
-import static java.util.Optional.ofNullable
+import static java.util.Optional.*
 
 interface ProductResult {}
 
@@ -283,6 +282,9 @@ class PreviewProductSearch implements ProductResult, Piece {
     TimestampOutput created
     Manufacturer manufacturer
     List<PreviewPrice> prices
+    PreviewPrice priceFrom
+    PreviewPrice minUnitsPrice
+    PreviewPrice highlightedPrice
     /**
      * @deprecated Suppliers list should not be used in search preview due private information.
      * Use {@link PreviewProductSearch#totalNumberOfSuppliers} instead to retrieve the total number
@@ -305,16 +307,10 @@ class PreviewProductSearch implements ProductResult, Piece {
         this.ean = product.ean
         this.description = product.description
         this.images = product.images
-        this.prices = product.prices.collect { price ->
-            new PreviewPrice(
-                    countryId: product.country_id,
-                    id: price.id,
-                    value: price.value,
-                    unitValue: price.unitValue,
-                    display: price.display,
-                    minUnits: price.minUnits
-            )
-        }
+        this.prices = product.prices.collect { new PreviewPrice(it) }
+        this.priceFrom = new PreviewPrice(product.priceFrom)
+        this.minUnitsPrice = new PreviewPrice(product.minUnitsPrice)
+        this.highlightedPrice = new PreviewPrice(product.highlightedPrice)
         this.title = product.title
         this.country_id = product.country_id
         this.totalNumberOfSuppliers = suppliers.size()
@@ -331,6 +327,17 @@ class PreviewPrice {
     Money unitValueMoney
     Display display
     Integer minUnits
+    CommercialPromotion commercialPromotion
+
+    PreviewPrice(Price price) {
+        this.countryId = price.countryId
+        this.id = price.id
+        this.value = price.value
+        this.unitValue = price.unitValue
+        this.display = price.display
+        this.minUnits = price.minUnits
+        this.commercialPromotion = price.commercialPromotion
+    }
 }
 
 @EqualsAndHashCode
@@ -433,6 +440,7 @@ class Price {
     List<Promotion> promotions
     SupplierProductConfiguration configuration
     CommercialPromotion commercialPromotion
+    String countryId
 
     def netValue() {
         ofNullable(commercialPromotion)

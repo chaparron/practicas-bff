@@ -689,7 +689,8 @@ class GroceryListing {
 
         protected List<ProductSearch> products(ProductQueryResponse response) {
             asJava(response.hits()).collect {
-                def prices = asJava(it.options()).collect { price(it) }
+                def country = it.manufacturer().country()
+                def prices = asJava(it.options()).collect { option -> price(option, country) }
                 def displays = asJava(it.options()).collect { display(it) }.toSet().toList()
                 new ProductSearch(
                         id: it.id().toLong(),
@@ -724,7 +725,7 @@ class GroceryListing {
             }
         }
 
-        protected Price price(AvailableOption option) {
+        protected Price price(AvailableOption option, String countryId) {
             new Price(
                     id: option.id() as Integer,
                     supplier: supplier(option),
@@ -740,18 +741,27 @@ class GroceryListing {
                             .flatMap { promo ->
                                 switch (promo) {
                                     case { it instanceof AvailableDiscount }:
-                                        return of(commercialPromotion(option.display(), promo as AvailableDiscount))
+                                        return of(
+                                                commercialPromotion(
+                                                        option.display(),
+                                                        promo as AvailableDiscount,
+                                                        countryId
+                                                )
+                                        )
                                     case { it instanceof AvailableFreeProduct }:
                                         return of(commercialPromotion(promo as AvailableFreeProduct))
                                     default: empty() as Optional<CommercialPromotion>
                                 }
                             }
                             .orElse(null),
-                    accessToken: this.accessToken.orElse(null)
+                    accessToken: this.accessToken.orElse(null),
+                    countryId: countryId
             )
         }
 
-        protected CommercialPromotion commercialPromotion(AvailableDisplay display, AvailableDiscount discount) {
+        protected CommercialPromotion commercialPromotion(AvailableDisplay display,
+                                                          AvailableDiscount discount,
+                                                          String countryId) {
             new CommercialPromotion(
                     id: discount.id(),
                     description: discount.description(),
@@ -765,14 +775,14 @@ class GroceryListing {
                                         value: it.amount().toBigDecimal(),
                                         unitValue: it.amount() / display.units(),
                                         percentage: it.percentage().toBigDecimal(),
-                                        accessToken: this.accessToken.orElse(null)
+                                        countryId: countryId
                                 )
                             }
                     )
             )
         }
 
-        protected static CommercialPromotion commercialPromotion(AvailableFreeProduct freeProduct) {
+        protected CommercialPromotion commercialPromotion(AvailableFreeProduct freeProduct) {
             new CommercialPromotion(
                     id: freeProduct.id(),
                     description: freeProduct.description(),
