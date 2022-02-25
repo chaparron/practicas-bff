@@ -9,7 +9,10 @@ import wabi2b.cms.sdk.Brand as CmsBrand
 import wabi2b.cms.sdk.Module as CmsModule
 import wabi2b.cms.sdk.Piece as CmsPiece
 import wabi2b.cms.sdk.Product as CmsProduct
+import wabi2b.cms.sdk.Display as CmsDisplay
 import wabi2b.cms.sdk.Supplier as CmsSupplier
+import wabi2b.cms.sdk.Discount as CmsDiscount
+import wabi2b.cms.sdk.FreeProduct as CmsFreeProduct
 
 import static groovy.lang.Closure.IDENTITY
 import static java.util.Optional.*
@@ -198,7 +201,8 @@ class BuildModulePiecesQueryResponseMapper {
     }
 
     private ProductSearch product(CmsProduct product) {
-        def prices = asJava(product.options()).collect { price(it) }
+        def country = product.manufacturer().country()
+        def prices = asJava(product.options()).collect { price(it, country) }
         def displays = asJava(product.options()).collect { display(it) }.toSet().toList()
         new ProductSearch(
                 id: product.id().toLong(),
@@ -249,7 +253,7 @@ class BuildModulePiecesQueryResponseMapper {
         )
     }
 
-    private Price price(AvailableOption option) {
+    private Price price(AvailableOption option, String countryId) {
         new Price(
                 id: option.id() as Integer,
                 supplier: supplier(option),
@@ -261,7 +265,62 @@ class BuildModulePiecesQueryResponseMapper {
                 configuration: new SupplierProductConfiguration(
                         disableMinAmountCount: option.minPurchaseAmountCountDisabled()
                 ),
-                accessToken: accessToken.orElse(null)
+                commercialPromotion: toJava(option.commercialPromotion())
+                        .flatMap { promo ->
+                            switch (promo) {
+                                case { it instanceof CmsDiscount }:
+                                    return of(
+                                            commercialPromotion(
+                                                    option.display(),
+                                                    promo as CmsDiscount,
+                                                    countryId
+                                            )
+                                    )
+                                case { it instanceof CmsFreeProduct }:
+                                    return of(commercialPromotion(promo as CmsFreeProduct))
+                                default: empty() as Optional<CommercialPromotion>
+                            }
+                        }
+                        .orElse(null),
+                accessToken: this.accessToken.orElse(null),
+                countryId: countryId
+        )
+    }
+
+    protected static CommercialPromotion commercialPromotion(CmsDisplay display,
+                                                             CmsDiscount discount,
+                                                             String countryId) {
+        new CommercialPromotion(
+                id: discount.id(),
+                description: discount.description(),
+                expiration: new TimestampOutput(discount.expiration().toString()),
+                type: new Discount(
+                        progressive: discount.progressive(),
+                        steps: asJava(discount.steps()).collect {
+                            new DiscountStep(
+                                    from: it.from(),
+                                    to: toJava(it.to()).orElse(null),
+                                    value: it.amount().toBigDecimal(),
+                                    unitValue: it.amount() / display.units(),
+                                    percentage: it.percentage().toBigDecimal(),
+                                    countryId: countryId
+                            )
+                        }
+                )
+        )
+    }
+
+    protected static CommercialPromotion commercialPromotion(CmsFreeProduct freeProduct) {
+        new CommercialPromotion(
+                id: freeProduct.id(),
+                description: freeProduct.description(),
+                expiration: new TimestampOutput(freeProduct.expiration().toString()),
+                type: new FreeProduct(
+                        id: freeProduct.product().toInteger(),
+                        display: new Display(
+                                id: freeProduct.display().toInteger()
+                        )
+                )
         )
     }
 
