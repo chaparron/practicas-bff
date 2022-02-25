@@ -519,6 +519,7 @@ class PlaceOrderFailed implements PlaceOrderResult {
 
 class ProductOrderInput extends CartItemInput {
     BigDecimal price
+    BigDecimal totalPrice
 }
 
 class OrderInput {

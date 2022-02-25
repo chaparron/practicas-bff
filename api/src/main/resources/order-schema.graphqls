@@ -528,7 +528,10 @@ input ProductOrderInput {
   productId: Int!
   quantity: Int!
   units: Int
+  #precio original
   price: Float!
+  #sumatoria de precio real (incluido con promociones)
+  totalPrice: Float
 }
 
 enum SupplierFailedReason {
