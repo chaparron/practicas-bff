@@ -417,7 +417,9 @@ class OrderItem {
     String productTitle
     String productEan
     BigDecimal price
+    BigDecimal originalPrice
     Money priceMoney
+    Money originalPriceMoney
     Integer quantity
     BigDecimal subtotal
     Money subtotalMoney

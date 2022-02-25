@@ -31,6 +31,10 @@ class OrderItemResolver implements GraphQLResolver<OrderItem> {
         moneyService.getMoney(orderItem.accessToken, orderItem.price)
     }
 
+    Money originalPriceMoney(OrderItem orderItem) {
+        moneyService.getMoney(orderItem.accessToken, orderItem.originalPrice ?:orderItem.price)
+    }
+
     Money subtotalMoney(OrderItem orderItem) {
         moneyService.getMoney(orderItem.accessToken, orderItem.subtotal)
     }

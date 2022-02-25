@@ -130,6 +130,7 @@ type OrderItems {
   productEan: String!
   price: Float!
   priceMoney: Money!
+  originalPriceMoney: Money!
   quantity: Int!
   subtotal: Float!
   subtotalMoney: Money!
