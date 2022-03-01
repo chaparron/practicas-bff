@@ -221,6 +221,7 @@ type Mutation {
 scalar NonEmptyString
 scalar LanguageTag
 scalar PosIntEqualsOrLessThan10
+scalar Long
 
 input CustomerRateSupplierInput {
   accessToken: String!
@@ -534,3 +535,7 @@ union PasswordlessSignUpResult = PasswordlessSignUpFailed | Customer
 
 union BannerDialogResult = SiteConfigurationFailed | BannerDialog
 
+input MillisecondsPeriodInput {
+  from: Long,
+  to: Long
+}

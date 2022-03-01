@@ -65,6 +65,8 @@ class OrderBridgeImpl implements OrderBridge {
                 .queryParam("size", findOrdersInput.size)
                 .queryParam("status", findOrdersInput.status)
                 .queryParam("id", findOrdersInput?.orderId)
+                .queryParam("from", findOrdersInput.period?.from)
+                .queryParam("to", findOrdersInput.period?.to)
                 .toUriString().toURI()
 
         def r = http.exchange(

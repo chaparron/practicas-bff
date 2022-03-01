@@ -147,7 +147,7 @@ class FindOrdersInput extends PaginatedInput {
     Integer orderId
     String countryId
     FilterOrderStatus status
-
+    MillisecondsPeriodInput period
 }
 
 class FindCustomerAndSupplierOrdersInput {

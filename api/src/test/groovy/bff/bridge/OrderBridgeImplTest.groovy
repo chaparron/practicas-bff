@@ -2,6 +2,8 @@ package bff.bridge
 
 import bff.bridge.data.OrderBridgeImplTestData
 import bff.bridge.http.OrderBridgeImpl
+import bff.model.CustomerOrdersResponse
+import bff.model.FilterOrderStatus
 import bff.model.ValidateOrderResponse
 import groovy.json.JsonSlurper
 import org.junit.Assert
@@ -64,5 +66,42 @@ class OrderBridgeImplTest extends OrderBridgeImplTestData {
 
         def validateOrder = orderBridge.validateOrder(VALIDATE_ORDER_INPUT)
         Assert.assertNull(validateOrder.errors)
+    }
+
+    @Test
+    void findCustomerOrders() {
+        def uriStr = UriComponentsBuilder.fromUri(
+                orderBridge.root.resolve("/customer/me/order")
+        ).toUriString()
+
+        String expectedUrl = UriComponentsBuilder.fromHttpUrl(uriStr)
+                .queryParam("page", 1L)
+                .queryParam("size", 10L)
+                .queryParam("status", FilterOrderStatus.ALL)
+                .queryParam("id", 1)
+                .queryParam("from", 1646036565193L)
+                .queryParam("to", null)
+                .encode()
+                .toUriString()
+        def expectedRequestEntity = RequestEntity.method(HttpMethod.GET, expectedUrl.toURI())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer $FIND_ORDERS_INPUT.accessToken")
+                .build()
+        Mockito.when(
+                http.exchange(expectedRequestEntity, CustomerOrdersResponse))
+                .thenReturn(
+                        new ResponseEntity<CustomerOrdersResponse>(
+                                new JsonSlurper().parseText(CUSTOMER_ORDERS_RESPONSE_EMPTY) as CustomerOrdersResponse,
+                                HttpStatus.OK
+                        )
+                )
+
+        def validateOrder = orderBridge.findCustomerOrders(FIND_ORDERS_INPUT)
+        Assert.assertEquals(1, validateOrder.headers.getPage())
+        Assert.assertEquals(10, validateOrder.headers.getPage_size())
+        Assert.assertEquals(0, validateOrder.headers.getTotal())
+        Assert.assertNull(validateOrder.headers.getSort().field)
+        Assert.assertNull(validateOrder.headers.getSort().direction)
+        Assert.assertEquals([], validateOrder.content)
     }
 }

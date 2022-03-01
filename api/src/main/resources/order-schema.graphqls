@@ -81,6 +81,7 @@ input FindOrdersInput {
   size: Int!,
   page: Int!,
   status: FilterOrderStatus
+  period: MillisecondsPeriodInput
 }
 
 input FindSupplierOrderInput {

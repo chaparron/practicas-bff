@@ -243,3 +243,8 @@ class PreviewSuppliersResponse implements PreviewSupplierResult {
 interface PreviewSupplierResult {
 
 }
+
+class MillisecondsPeriodInput {
+    Long from
+    Long to
+}
