@@ -739,7 +739,8 @@ class ValidateOrderFailed implements ValidateOrderResult {
 }
 
 enum ValidateOrderFailedReason {
-    INVALID_ORDER
+    INVALID_ORDER,
+    INVALID_PROMOTION
 
     def build() {
         new ValidateOrderFailed(reason: this)

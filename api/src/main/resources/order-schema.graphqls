@@ -496,7 +496,8 @@ type ValidateOrderFailed {
 }
 
 enum ValidateOrderFailedReason {
-  INVALID_ORDER
+  INVALID_ORDER,
+  INVALID_PROMOTION
 }
 
 type ValidateOrderResponse {
