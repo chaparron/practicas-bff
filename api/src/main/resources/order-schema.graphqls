@@ -423,6 +423,7 @@ type Cart {
 
 type ProductCart {
   product: Product!
+  #Deprecated.
   supplierPrices: [SupplierPrice]!
 }
 
