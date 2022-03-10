@@ -9,7 +9,7 @@ type CommercialPromotion {
 
 type DiscountStep {
   from: Int!
-  to: Int
+  to: Int!
   value: Money!
   unitValue: Money!
   percentage: Float!

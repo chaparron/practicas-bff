@@ -771,7 +771,7 @@ class GroceryListing {
                             steps: asJava(discount.steps()).collect {
                                 new DiscountStep(
                                         from: it.from(),
-                                        to: toJava(it.to()).orElse(null),
+                                        to: it.to(),
                                         value: it.amount().toBigDecimal(),
                                         unitValue: it.amount() / display.units(),
                                         percentage: it.percentage().toBigDecimal(),
