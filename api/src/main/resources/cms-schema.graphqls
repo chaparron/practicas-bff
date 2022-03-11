@@ -32,5 +32,6 @@ type Module {
   id: String!
   tag: String!
   title: String
+  expiration: TimestampOutput
   pieces(context: ContextInput, size: Int): [Piece!]!
 }

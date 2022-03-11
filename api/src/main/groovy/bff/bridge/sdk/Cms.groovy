@@ -6,13 +6,13 @@ import scala.Option
 import wabi2b.cms.sdk.*
 import wabi2b.cms.sdk.Banner as CmsBanner
 import wabi2b.cms.sdk.Brand as CmsBrand
+import wabi2b.cms.sdk.Discount as CmsDiscount
+import wabi2b.cms.sdk.Display as CmsDisplay
+import wabi2b.cms.sdk.FreeProduct as CmsFreeProduct
 import wabi2b.cms.sdk.Module as CmsModule
 import wabi2b.cms.sdk.Piece as CmsPiece
 import wabi2b.cms.sdk.Product as CmsProduct
-import wabi2b.cms.sdk.Display as CmsDisplay
 import wabi2b.cms.sdk.Supplier as CmsSupplier
-import wabi2b.cms.sdk.Discount as CmsDiscount
-import wabi2b.cms.sdk.FreeProduct as CmsFreeProduct
 
 import static groovy.lang.Closure.IDENTITY
 import static java.util.Optional.*
@@ -153,7 +153,10 @@ class FindModulesQueryResponseMapper {
             new Module(
                     id: it.id(),
                     tag: it.tag(),
-                    title: toJava(it.title()).map { it.defaultEntry() }.orElse(null)
+                    title: toJava(it.title()).map { it.defaultEntry() }.orElse(null),
+                    expiration: toJava(it.expiresIn())
+                            .map { new TimestampOutput(it.toString()) }
+                            .orElse(null)
             )
         }
     }

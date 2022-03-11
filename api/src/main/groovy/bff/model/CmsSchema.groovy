@@ -31,6 +31,7 @@ class Module {
     String id
     String tag
     String title
+    TimestampOutput expiration
 }
 
 interface Piece {}
