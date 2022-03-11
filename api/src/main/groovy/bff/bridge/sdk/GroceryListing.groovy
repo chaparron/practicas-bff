@@ -315,7 +315,7 @@ class GroceryListing {
         }
 
         private Page(Integer number, Integer size) {
-            this.number = ofNullable(number).orElse(1)
+            this.number = ofNullable(number).filter { it > 0 }.orElse(1)
             this.size = ofNullable(size).orElse(10)
             this.offset = (this.number - 1) * this.size
         }
