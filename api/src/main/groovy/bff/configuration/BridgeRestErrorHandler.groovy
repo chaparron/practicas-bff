@@ -1,6 +1,8 @@
 package bff.configuration
 
 import bff.model.InvalidBodyException
+import bff.model.TooManyRequestException
+import bff.model.TooManyRequests
 import graphql.ErrorType
 import graphql.GraphQLError
 import graphql.language.SourceLocation
@@ -54,8 +56,6 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
                 if (statusCode == HttpStatus.UNAUTHORIZED || statusCode == HttpStatus.FORBIDDEN) {
                     throw new AccessToBackendDeniedException(response.getStatusText(), new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
                         response.getHeaders(), getResponseBody(response), getCharset(response)))
-
-
                 } else if (statusCode == HttpStatus.BAD_REQUEST) {
                     def innerResponse = response.body.with { new JsonSlurper().parse(it) }
                     BadRequestErrorException badRequestErrorException = new BadRequestErrorException(response.getStatusText(), new BridgeHttpServerErrorException(statusCode, response.getStatusText(),
@@ -114,6 +114,8 @@ class BridgeRestTemplateResponseErrorHandler implements ResponseErrorHandler {
 
                     throw notAcceptableException
 
+                } else if(statusCode == HttpStatus.TOO_MANY_REQUESTS) {
+                    throw new TooManyRequestException(response.getStatusText())
                 } else {
                     throw new BridgeHttpClientErrorException(statusCode, response.getStatusText(),
                         response.getHeaders(), getResponseBody(response), getCharset(response))

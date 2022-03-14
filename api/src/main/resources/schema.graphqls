@@ -128,6 +128,8 @@ type Query {
 
   isValidPhone(input: IsValidPhoneInput!): Boolean
 
+  getPhoneStatus(input: PhoneInput!): PhoneStatusResult
+
   findSupplierCreditBalances(input: FindSupplierCreditBalancesInput): PageResponse
 
   isCountryCodeAndPhoneValid(input: IsPhoneValidInput!): Boolean
@@ -511,6 +513,8 @@ type DialogContent {
   text: String
   lang: String!
 }
+
+union PhoneStatusResult = PhoneStatus | TooManyRequests
 
 union PreSignUpResult = PreSignUpFailed | Void
 

@@ -21,6 +21,8 @@ interface ChangePasswordResult {}
 
 interface ConfirmPasswordResult {}
 
+interface PhoneStatusResult {}
+
 class User {
     String accessToken
     Long id
@@ -128,6 +130,15 @@ class Challenge implements SignedChallengeDemandResult, ChallengeDemandResult {
     String challengeId
 }
 
+enum PhoneStatusType {
+    UNKNOWN_PHONE,
+    PASSWORDLESS_USER,
+    EMAIL_USER
+}
+
+class PhoneStatus implements PhoneStatusResult {
+    PhoneStatusType status
+}
 
 //TODO: Verificar  si es necesario el retorno del site para el tipo de web que lo este pidiendo.
 enum Site {
@@ -207,7 +218,6 @@ enum AuthType {
     ADMIN
 }
 
-
 enum ChangePasswordReason {
     PASSWORD_MISMATCH,
     CANNOT_CHANGE_PWD
@@ -247,6 +257,10 @@ class SignedChallengeDemandFailed implements SignedChallengeDemandResult {
 
 class TooManyShipments implements SignedChallengeDemandResult, ChallengeDemandResult {
     Integer waitTime
+}
+
+class TooManyRequests implements PhoneStatusResult {
+    String error
 }
 
 class ChallengeDemandFailed implements ChallengeDemandResult {
@@ -290,6 +304,7 @@ class ChangePasswordInput {
 }
 
 class PhoneInput {
+    String countryCode
     String phone
 }
 

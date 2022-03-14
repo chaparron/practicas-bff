@@ -35,6 +35,7 @@ class Main {
                 .add(LoginFailed.class)
                 .add(SignedChallengeDemandFailed.class)
                 .add(TooManyShipments.class)
+                .add(TooManyRequests.class)
                 .add(ChallengeDemandFailed.class)
                 .add(ChallengeAnswerFailed.class)
                 .add(Challenge.class)
@@ -87,6 +88,7 @@ class Main {
                 .add(PreviewSupplier.class)
                 .add(Discount.class)
                 .add(FreeProduct.class)
+                .add(PhoneStatus.class)
     }
 
     /**

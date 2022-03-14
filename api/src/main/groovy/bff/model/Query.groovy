@@ -4,7 +4,9 @@ import bff.bridge.*
 import bff.bridge.sdk.GroceryListing
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
+import bff.service.DeviceIdentifierService
 import com.coxautodev.graphql.tools.GraphQLQueryResolver
+import graphql.schema.DataFetchingEnvironment
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -325,6 +327,10 @@ class Query implements GraphQLQueryResolver {
 
     Boolean isValidPhone(IsValidPhoneInput input) {
         phoneNotifierBridge.isValidPhone(input.countryCode, input.phone)
+    }
+
+    PhoneStatusResult getPhoneStatus(PhoneInput input, DataFetchingEnvironment env) {
+        validationsBridge.getPhoneStatus(input,  DeviceIdentifierService.identifySource(env))
     }
 
     Boolean isCountryCodeAndPhoneValid(IsPhoneValidInput input) {

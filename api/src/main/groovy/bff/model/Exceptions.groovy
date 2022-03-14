@@ -66,6 +66,18 @@ class TooManyShipmentsException extends RuntimeException {
     }
 }
 
+class TooManyRequestException extends RuntimeException {
+    private String error
+
+    TooManyRequestException(String error) {
+        this.error = error
+    }
+
+    def build() {
+        new TooManyRequests(error: error)
+    }
+}
+
 class ChallengeDemandFailureException extends RuntimeException {
     ChallengeDemandFailureReason challengeDemandFailureReason
 

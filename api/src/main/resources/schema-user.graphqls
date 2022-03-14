@@ -87,6 +87,12 @@ enum EntityType {
   USER
 }
 
+enum PhoneStatusType {
+  UNKNOWN_PHONE,
+  PASSWORDLESS_USER,
+  EMAIL_USER
+}
+
 input ChangePasswordInput {
   currentPassword: String!
   newPassword: String!
@@ -151,6 +157,11 @@ enum ChannelType {
   WHATSAPP
 }
 
+input PhoneInput {
+  countryCode: String!
+  phone: String!
+}
+
 input ChallengeDemandInput {
   # International telephone prefix for 'phone'
   countryCode: String!
@@ -161,10 +172,6 @@ input ChallengeDemandInput {
 input ChallengeAnswer{
   challengeId: String!
   challengeAnswer: String!
-}
-
-input PhoneInput {
-  phone: String!
 }
 
 type Void {
@@ -194,6 +201,10 @@ type Challenge {
   challengeId: String!
 }
 
+type PhoneStatus {
+  status: PhoneStatusType!
+}
+
 type LoginFailed {
   reason: LoginFailureReason!
 }
@@ -214,6 +225,10 @@ type ChallengeAnswerFailed {
 type TooManyShipments{
   # Time to wait in seconds
   waitTime: Int!
+}
+
+type TooManyRequests {
+  error: String
 }
 
 type RefreshCredentials {

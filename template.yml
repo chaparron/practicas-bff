@@ -344,6 +344,12 @@ Resources:
           OptionName: google_spreadsheet_id_presignup
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, GoogleSpreadsheetIdPreSignUp ]
 
+        - Namespace: aws:elasticbeanstalk:application:environment
+            OptionName: JWT_PRIVATE_KEY
+            Value: !Sub
+              - "{{resolve:secretsmanager:${secretId}:SecretString:secret}}"
+              - secretId: !FindInMap [ Config, !Ref EnvironmentStackName, JwtSigningKeyId ]
+
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
