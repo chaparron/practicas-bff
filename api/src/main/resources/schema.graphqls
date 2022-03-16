@@ -1,8 +1,8 @@
 type Query {
 
-  homeModules(input: HomeInput!): [Module]!
+  homeModules(input: HomeInput!): [Module!]!
 
-  listingModules(input: ListingInput!): [Module]!
+  listingModules(input: ListingInput!): [Module!]!
 
   # Find Customer by Id
   myProfile(input: CustomerInput!): Customer!
