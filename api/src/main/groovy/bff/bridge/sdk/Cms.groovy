@@ -153,13 +153,15 @@ class FindModulesQueryResponseMapper {
             new Module(
                     id: it.id(),
                     tag: it.tag(),
-                    title: toJava(it.title()).map { it.defaultEntry() }.orElse(null),
+                    title: toJava(it.title())
+                            .map { new I18N(entries: asJava(it.entries()), defaultEntry: it.defaultEntry()) },
+                    link: toJava(it.link()),
                     expiration: toJava(it.expiresIn())
                             .map { new TimestampOutput(it.toString()) }
-                            .orElse(null)
             )
         }
     }
+
 }
 
 class BuildModulePiecesQueryResponseMapper {
@@ -197,9 +199,11 @@ class BuildModulePiecesQueryResponseMapper {
 
     private static AdBanner banner(CmsBanner banner) {
         new AdBanner(
-                desktop: asJava(banner.images()).get("desktop", null),
-                mobile: asJava(banner.images()).get("mobile", null),
-                link: toJava(banner.link()).orElse(null)
+                id: banner.id(),
+                name: banner.name(),
+                desktop: asJava(banner.images()).get("desktop"),
+                mobile: asJava(banner.images()).get("mobile"),
+                link: toJava(banner.link())
         )
     }
 

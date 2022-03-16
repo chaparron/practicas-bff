@@ -1,6 +1,6 @@
 package bff.model
 
-
+import bff.service.ImageSizeEnum
 import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
@@ -340,12 +340,32 @@ class PreviewPrice {
     }
 }
 
+enum SupplierAvatarSize implements ImageSizeEnum {
+    SIZE_120x50, SIZE_96x40, SIZE_22x22
+
+    @Override
+    String value() {
+        name().substring("SIZE_".length())
+    }
+
+}
+
 @EqualsAndHashCode
 class PreviewSupplier implements Piece {
     Long id
     String name
     String legalName
     String avatar
+}
+
+enum ProductImageSize implements ImageSizeEnum {
+    SIZE_148x148, SIZE_85x85, SIZE_96x96
+
+    @Override
+    String value() {
+        name().substring("SIZE_".length())
+    }
+
 }
 
 class ProductSearch implements ProductResult, Piece {

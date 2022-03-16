@@ -1,8 +1,12 @@
+enum BrandLogoSize {
+  SIZE_130x61, SIZE_96x40, SIZE_22x22
+}
+
 type Brand {
     id: Int!,
     name: String!,
     enabled: Boolean
-    logo: String
+    logo(size: BrandLogoSize): String
     country_id: String
 }
 

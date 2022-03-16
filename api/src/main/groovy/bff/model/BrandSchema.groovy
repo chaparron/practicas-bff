@@ -1,5 +1,7 @@
 package bff.model
 
+import bff.service.ImageSizeEnum
+
 interface GetHomeBrandsResponse { }
 
 class GetHomeBrandsResult implements GetHomeBrandsResponse {
@@ -29,6 +31,16 @@ class Brand implements Piece {
     Boolean enabled
     String logo
     String country_id
+}
+
+enum BannerLogoSize implements ImageSizeEnum {
+    SIZE_130x61, SIZE_96x40, SIZE_22x22
+
+    @Override
+    String value() {
+        name().substring("SIZE_".length())
+    }
+
 }
 
 class GetBrandsInput {

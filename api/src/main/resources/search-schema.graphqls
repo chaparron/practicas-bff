@@ -172,6 +172,7 @@ type PreviewProductSearch {
   ean: String
   description: String
   images: [Image]!
+  photos(size: ProductImageSize!, take: Int): [String!]!
   created: TimestampOutput!
   manufacturer: Manufacturer
   prices: [PreviewPrice]
@@ -195,11 +196,19 @@ type PreviewPrice {
   commercialPromotion: CommercialPromotion
 }
 
+enum SupplierAvatarSize {
+  SIZE_120x50, SIZE_96x40, SIZE_22x22
+}
+
 type PreviewSupplier {
   id: Int!
   name: String!
   legalName: String
-  avatar: String
+  avatar(size: SupplierAvatarSize): String
+}
+
+enum ProductImageSize {
+  SIZE_148x148, SIZE_85x85, SIZE_96x96
 }
 
 type ProductSearch {
@@ -211,6 +220,7 @@ type ProductSearch {
   ean: String
   description: String
   images: [Image]!
+  photos(size: ProductImageSize!, take: Int): [String!]!
   displays: [Display]
   manufacturer: Manufacturer
   prices: [Price]
@@ -273,7 +283,7 @@ type Supplier {
   id: Int!
   name: String!
   legalName: String
-  avatar: String
+  avatar(size: SupplierAvatarSize): String
   enabled: Boolean
   phone: String
   legalId: String

@@ -30,7 +30,7 @@ class Discount implements CommercialPromotionType {
 class FreeProduct implements CommercialPromotionType {
     Long id
     String title
-    List<Image> images
+    List<String> images
     Display display
     Boolean favorite
 }

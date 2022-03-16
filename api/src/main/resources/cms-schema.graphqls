@@ -22,16 +22,23 @@ input ContextInput {
 
 union Piece = AdBanner | ProductSearch | PreviewProductSearch | Brand | PreviewSupplier
 
+enum AdBannerImageSize {
+  SIZE_1920x314, SIZE_320x162, SIZE_315x135
+}
+
 type AdBanner {
-  desktop: String!
-  mobile: String!
+  id: String!
+  name: String!
+  desktop(size: AdBannerImageSize!): String!
+  mobile(size: AdBannerImageSize!): String!
   link: String
 }
 
 type Module {
   id: String!
   tag: String!
-  title: String
+  title(languageTag: LanguageTag!): String
+  link: String
   expiration: TimestampOutput
-  pieces(context: ContextInput, size: Int): [Piece!]!
+  pieces(context: ContextInput!, size: Int): [Piece!]!
 }

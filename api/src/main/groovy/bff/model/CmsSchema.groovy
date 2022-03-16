@@ -1,5 +1,6 @@
 package bff.model
 
+import bff.service.ImageSizeEnum
 import groovy.transform.ToString
 
 @ToString
@@ -30,15 +31,28 @@ class ContextInput {
 class Module {
     String id
     String tag
-    String title
-    TimestampOutput expiration
+    Optional<I18N> title
+    Optional<String> link
+    Optional<TimestampOutput> expiration
 }
 
 interface Piece {}
 
+enum AdBannerImageSize implements ImageSizeEnum {
+    SIZE_1920x314, SIZE_320x162, SIZE_315x135
+
+    @Override
+    String value() {
+        name().substring("SIZE_".length())
+    }
+
+}
+
 @ToString
 class AdBanner implements Piece {
+    String id
+    String name
     String desktop
     String mobile
-    String link
+    Optional<String> link
 }
