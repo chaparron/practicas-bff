@@ -68,4 +68,6 @@ interface CustomerBridge {
     Void acceptTc(AcceptTcInput acceptTcInput)
 
     List<SupplierOrder> findPendingRateSinceLastLogin(String accessToken)
+
+    CustomerResponse getChildStores(String accessToken, Long page, Long size)
 }

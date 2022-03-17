@@ -337,6 +337,9 @@ class Query implements GraphQLQueryResolver {
         authServerBridge.isCountryCodeAndPhoneValid(input.countryCode, input.phone, input.accessToken)
     }
 
+    CustomerResponse getChildStores(GetChildStoresInput getChildStoresInput) {
+        customerBridge.getChildStores(getChildStoresInput.accessToken, getChildStoresInput.page, getChildStoresInput.size)
+    }
 }
 
 

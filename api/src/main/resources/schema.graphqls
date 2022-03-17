@@ -133,6 +133,8 @@ type Query {
   findSupplierCreditBalances(input: FindSupplierCreditBalancesInput): PageResponse
 
   isCountryCodeAndPhoneValid(input: IsPhoneValidInput!): Boolean
+
+  getChildStores(input: GetChildStoresInput): CustomerResponse
 }
 
 type Mutation {

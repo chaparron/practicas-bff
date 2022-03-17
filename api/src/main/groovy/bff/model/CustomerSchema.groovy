@@ -125,6 +125,10 @@ class CustomerType {
     String name
 }
 
+enum StoreType {
+    STORE_OWNER, STORE
+}
+
 class Customer implements CustomerUpdateResult, PasswordlessSignUpResult {
     String accessToken
     String id
@@ -146,6 +150,8 @@ class Customer implements CustomerUpdateResult, PasswordlessSignUpResult {
     List<VerificationDocument> verificationDocuments
     String country_id
     Country country
+    StoreType storeType
+    Long storeOwnerId
 
     DeliveryPreference getDeliveryPreference() {
         if (workingDays.hours) {
@@ -453,4 +459,11 @@ class FavouriteProductInput {
 class IsValidPhoneInput {
     String phone
     String countryCode
+}
+
+class CustomerResponse extends PaginatedResponse<Customer> {
+}
+
+class GetChildStoresInput extends PaginatedInput {
+    String accessToken
 }

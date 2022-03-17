@@ -289,6 +289,12 @@ type Customer {
     customerType: CustomerType!
     hasOrders: Boolean
     marketingEnabled: Boolean!
+    storeType: StoreType
+    storeOwnerId: Long
+}
+
+enum StoreType {
+  STORE_OWNER, STORE
 }
 
 type WorkingDays {
@@ -357,3 +363,13 @@ input FavouriteProductInput {
     productId: ID!,
 }
 
+type CustomerResponse {
+  headers: Headers!
+  content: [Customer]!
+}
+
+input GetChildStoresInput {
+    accessToken: String
+    page: Int
+    size: Int
+}
