@@ -123,6 +123,8 @@ class OrderBridgeImpl implements OrderBridge {
                     }
             )
         }
+        customerOrderResponse.supplierOrder.summary = SummaryService.sortAndGetVisibleForMe(customerOrderResponse.supplierOrder.summary,
+                JwtToken.countryFromString(findSupplierOrderInput.accessToken))
 
         customerOrderResponse
 
