@@ -743,7 +743,7 @@ class GroceryListing {
                                     case { it instanceof AvailableDiscount }:
                                         return of(
                                                 commercialPromotion(
-                                                        option.display(),
+                                                        option,
                                                         promo as AvailableDiscount,
                                                         countryId
                                                 )
@@ -759,7 +759,7 @@ class GroceryListing {
             )
         }
 
-        protected CommercialPromotion commercialPromotion(AvailableDisplay display,
+        protected CommercialPromotion commercialPromotion(AvailableOption option,
                                                           AvailableDiscount discount,
                                                           String countryId) {
             new CommercialPromotion(
@@ -772,8 +772,8 @@ class GroceryListing {
                                 new DiscountStep(
                                         from: it.from(),
                                         to: it.to(),
-                                        value: it.amount().toBigDecimal(),
-                                        unitValue: it.amount() / display.units(),
+                                        value: option.price().toBigDecimal() - it.amount().toBigDecimal(),
+                                        unitValue: option.price() / option.display().units() - it.amount() / option.display().units(),
                                         percentage: it.percentage().toBigDecimal(),
                                         countryId: countryId
                                 )

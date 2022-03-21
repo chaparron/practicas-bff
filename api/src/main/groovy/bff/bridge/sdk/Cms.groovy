@@ -7,7 +7,6 @@ import wabi2b.cms.sdk.*
 import wabi2b.cms.sdk.Banner as CmsBanner
 import wabi2b.cms.sdk.Brand as CmsBrand
 import wabi2b.cms.sdk.Discount as CmsDiscount
-import wabi2b.cms.sdk.Display as CmsDisplay
 import wabi2b.cms.sdk.FreeProduct as CmsFreeProduct
 import wabi2b.cms.sdk.Module as CmsModule
 import wabi2b.cms.sdk.Piece as CmsPiece
@@ -278,7 +277,7 @@ class BuildModulePiecesQueryResponseMapper {
                                 case { it instanceof CmsDiscount }:
                                     return of(
                                             commercialPromotion(
-                                                    option.display(),
+                                                    option,
                                                     promo as CmsDiscount,
                                                     countryId
                                             )
@@ -294,7 +293,7 @@ class BuildModulePiecesQueryResponseMapper {
         )
     }
 
-    protected static CommercialPromotion commercialPromotion(CmsDisplay display,
+    protected static CommercialPromotion commercialPromotion(AvailableOption option,
                                                              CmsDiscount discount,
                                                              String countryId) {
         new CommercialPromotion(
@@ -307,8 +306,8 @@ class BuildModulePiecesQueryResponseMapper {
                             new DiscountStep(
                                     from: it.from(),
                                     to: it.to(),
-                                    value: it.amount().toBigDecimal(),
-                                    unitValue: it.amount() / display.units(),
+                                    value: option.price().toBigDecimal() - it.amount().toBigDecimal(),
+                                    unitValue: option.price() / option.display().units() - it.amount() / option.display().units(),
                                     percentage: it.percentage().toBigDecimal(),
                                     countryId: countryId
                             )
