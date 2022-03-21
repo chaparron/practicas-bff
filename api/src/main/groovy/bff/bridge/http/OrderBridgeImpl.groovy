@@ -213,6 +213,7 @@ class OrderBridgeImpl implements OrderBridge {
                         }
                 )
             }
+            it.summary = SummaryService.sortAndGetVisibleForMe(it.summary, JwtToken.countryFromString(accessToken))
         }
         r
     }
