@@ -152,6 +152,7 @@ class Customer implements CustomerUpdateResult, PasswordlessSignUpResult {
     Country country
     StoreType storeType
     Long storeOwnerId
+    Boolean permissionOnBranchOffice
 
     DeliveryPreference getDeliveryPreference() {
         if (workingDays.hours) {

@@ -291,6 +291,7 @@ type Customer {
     marketingEnabled: Boolean!
     storeType: StoreType
     storeOwnerId: Long
+    permissionOnBranchOffice: Boolean
 }
 
 enum StoreType {
