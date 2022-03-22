@@ -456,16 +456,6 @@ input MarkSuggestionInput {
   supplierIds: [Int]!
 }
 
-input EnableStoreInput {
-  accessToken: String!
-  storeId: Int!
-}
-
-input DisableStoreInput {
-  accessToken: String!
-  storeId: Int!
-}
-
 enum ValidationType{
   USER_PHONE,
   USER_CELL_PHONE,

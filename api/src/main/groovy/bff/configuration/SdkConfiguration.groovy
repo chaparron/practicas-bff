@@ -15,6 +15,8 @@ import org.springframework.web.client.RestOperations
 import org.springframework.web.reactive.function.client.WebClient
 import wabi2b.cms.sdk.Sdk as CmsSdk
 import wabi2b.grocery.listing.sdk.Sdk as GroceryListingSdk
+import wabi2b.sdk.api.HttpWabi2bSdk
+import wabi2b.sdk.api.Wabi2bSdk
 import wabi2b.sdk.credits.HttpSupplierCreditsSdk
 import wabi2b.sdk.regional.HttpRegionalConfigSdk
 import wabi2b.sdk.regional.RegionalConfigSdk
@@ -29,9 +31,10 @@ class SdkConfiguration {
     String cmsEndpoint
     @Value('${supplier.credits.endpoint:}')
     String creditsEndpoint
-
     @Value('${regional.config.url:}')
     String regionalConfigUrl
+    @Value('${api.root}')
+    URI wabi2bApiURI
 
     @Autowired
     CountryBridge countryBridge
@@ -70,5 +73,10 @@ class SdkConfiguration {
     @Bean
     RegionalConfigSdk regionalConfigSdk(WebClient.Builder webClientBuilder) {
         new HttpRegionalConfigSdk(regionalConfigUrl.toURI(), webClientBuilder)
+    }
+
+    @Bean
+    Wabi2bSdk wabi2bSdk(){
+        return new HttpWabi2bSdk.Builder().withBaseURI(wabi2bApiURI).build()
     }
 }

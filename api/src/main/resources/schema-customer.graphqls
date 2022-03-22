@@ -172,6 +172,16 @@ input PasswordlessSignUpInput {
   captchaToken: String!
 }
 
+input EnableStoreInput {
+  accessToken: String!
+  storeId: ID!
+}
+
+input DisableStoreInput {
+  accessToken: String!
+  storeId: ID!
+}
+
 enum AddressFailedReason {
     ADDRESS_NOT_FOUND
 }

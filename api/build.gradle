@@ -19,9 +19,10 @@ dependencies {
     implementation "wabi2b.sdk:grocery-listing:10118-cdf7b09a9e368bafe6dac78e278b73aaf9e5152c"
     implementation "wabi2b.sdk:supplier-credits:10013-5b3ebcb2efd390ddb0fffcc003762f30b7f16055"
     implementation "wabi2b.sdk:cms:10069-07d1c9321c3646c930746f481e0adbe5c6fc54fd"
-
     implementation "wabi2b:regional-config:1157-a17061cc653084ce8a1900f8be8e6107100e2d83"
     implementation "com.wabi2b:phone-notifier-sdk:10144-76744096d3a1c81c01910dfeb44eff235aa2f690"
+    implementation "wabi2b.sdk:wabi2b-api-sdk:SNAPSHOT-2022-03-22-17_52_47"
+
     implementation "io.ktor:ktor-client-cio:1.6.5"
 
     def graphQL = '5.9.0'

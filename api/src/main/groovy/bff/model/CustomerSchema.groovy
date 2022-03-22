@@ -473,11 +473,11 @@ class GetChildStoresInput extends PaginatedInput {
 }
 
 class EnableStoreInput {
-    Long storeId
+    String storeId
     String accessToken
 }
 class DisableStoreInput {
-    Long storeId
+    String storeId
     String accessToken
 }
 

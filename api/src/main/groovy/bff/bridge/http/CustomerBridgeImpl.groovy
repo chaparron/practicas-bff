@@ -3,19 +3,22 @@ package bff.bridge.http
 import bff.DecoderName
 import bff.JwtToken
 import bff.bridge.CustomerBridge
-import bff.configuration.AccessToBackendDeniedException
 import bff.configuration.BadRequestErrorException
 import bff.configuration.ConflictErrorException
 import bff.model.*
 import groovy.util.logging.Slf4j
 import org.apache.commons.lang3.NotImplementedException
 import org.apache.http.HttpHeaders
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
+import wabi2b.sdk.api.DetailedException
+import wabi2b.sdk.api.Wabi2bSdk
+import java.time.Duration
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION
 
@@ -23,6 +26,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION
 class CustomerBridgeImpl implements CustomerBridge {
     URI root
     RestOperations http
+    @Autowired
+    Wabi2bSdk wabi2bSdk
 
     @Override
     Customer myProfile(String accessToken) {
@@ -631,36 +636,20 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    def enableStore(String accessToken, Long storeId) {
-        try {
-            def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/store/${storeId}")).toUriString()
-            def uri = url.toURI()
-            http.exchange(
-                    RequestEntity.method(HttpMethod.PUT, uri)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .header(AUTHORIZATION, "Bearer $accessToken")
-                            .build()
-                    , Map)
-            Void.SUCCESS
-        } catch (BadRequestErrorException exception) {
-            UpdateStoreFailureReason.valueOf((String)exception.innerResponse).doThrow()
+    def enableStore(String accessToken, String storeId) {
+        try{
+            wabi2bSdk.enableStore(storeId, accessToken).block(Duration.ofMillis(25000))
+        } catch(DetailedException e){
+            UpdateStoreFailureReason.valueOf(e.message).doThrow()
         }
     }
 
     @Override
-    def disableStore(String accessToken, Long storeId) {
-        try {
-            def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/store/${storeId}")).toUriString()
-            def uri = url.toURI()
-            http.exchange(
-                    RequestEntity.method(HttpMethod.DELETE, uri)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .header(AUTHORIZATION, "Bearer $accessToken")
-                            .build()
-                    , Map)
-            Void.SUCCESS
-        } catch (BadRequestErrorException exception) {
-            UpdateStoreFailureReason.valueOf((String)exception.innerResponse).doThrow()
+    def disableStore(String accessToken, String storeId) {
+        try{
+            wabi2bSdk.disableStore(storeId, accessToken).block(Duration.ofMillis(25000))
+        } catch(DetailedException e){
+            UpdateStoreFailureReason.valueOf(e.message).doThrow()
         }
     }
 
