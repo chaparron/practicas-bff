@@ -22,7 +22,10 @@ interface AddressResult {}
 interface AddAddressResult {}
 
 interface SignInResult {}
+
 interface PasswordlessSignUpResult {}
+
+interface UpdateStoreResult {}
 
 enum CustomerStatus {
     PENDING,
@@ -468,3 +471,26 @@ class CustomerResponse extends PaginatedResponse<Customer> {
 class GetChildStoresInput extends PaginatedInput {
     String accessToken
 }
+
+class EnableStoreInput {
+    Long storeId
+    String accessToken
+}
+class DisableStoreInput {
+    Long storeId
+    String accessToken
+}
+
+enum UpdateStoreFailureReason {
+    STORE_DOES_NOT_BELONGS_TO_CUSTOMER,
+    STORE_HAS_PENDING_ORDERS
+
+    def doThrow() {
+        throw new UpdateStoreException(updateStoreFailureReason: this)
+    }
+}
+
+class UpdateStoreFailed implements UpdateStoreResult {
+    UpdateStoreFailureReason reason
+}
+

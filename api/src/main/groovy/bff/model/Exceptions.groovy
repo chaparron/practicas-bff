@@ -129,3 +129,12 @@ class WebRegisterException extends RuntimeException {
         new RegisterFailed(registerReason: this.registerReason)
     }
 }
+
+
+class UpdateStoreException extends RuntimeException {
+    UpdateStoreFailureReason updateStoreFailureReason
+
+    def build() {
+        new UpdateStoreFailed(reason: this.updateStoreFailureReason)
+    }
+}

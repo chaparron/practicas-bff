@@ -89,6 +89,7 @@ class Main {
                 .add(Discount.class)
                 .add(FreeProduct.class)
                 .add(PhoneStatus.class)
+                .add(UpdateStoreFailed.class)
     }
 
     /**

@@ -100,7 +100,8 @@ class Void implements ChangePasswordResult,
         AddAddressResult,
         CustomerRateSupplierResult,
         CustomerReportRateResult,
-        PreSignUpResult {
+        PreSignUpResult ,
+        UpdateStoreResult{
     static final SUCCESS = new Void(voidReason: VoidReason.SUCCESS)
     VoidReason voidReason
     Integer id

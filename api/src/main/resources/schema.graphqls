@@ -220,6 +220,10 @@ type Mutation {
   unsetFavouriteProduct(input: FavouriteProductInput): Boolean!
 
   supplierLead(input: SupplierLeadInput): Boolean!
+
+  enableStore(input: EnableStoreInput!): UpdateStoreResult!
+
+  disableStore(input: DisableStoreInput!): UpdateStoreResult!
 }
 
 scalar NonEmptyString
@@ -450,6 +454,16 @@ input CoordinatesInput {
 input MarkSuggestionInput {
   accessToken: String!
   supplierIds: [Int]!
+}
+
+input EnableStoreInput {
+  accessToken: String!
+  storeId: Int!
+}
+
+input DisableStoreInput {
+  accessToken: String!
+  storeId: Int!
 }
 
 enum ValidationType{

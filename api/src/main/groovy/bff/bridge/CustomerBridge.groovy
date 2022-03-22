@@ -70,4 +70,8 @@ interface CustomerBridge {
     List<SupplierOrder> findPendingRateSinceLastLogin(String accessToken)
 
     CustomerResponse getChildStores(String accessToken, Long page, Long size)
+
+    def enableStore(String accessToken, Long storeId)
+
+    def disableStore(String accessToken, Long storeId)
 }

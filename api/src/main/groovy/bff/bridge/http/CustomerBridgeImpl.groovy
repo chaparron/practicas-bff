@@ -3,6 +3,7 @@ package bff.bridge.http
 import bff.DecoderName
 import bff.JwtToken
 import bff.bridge.CustomerBridge
+import bff.configuration.AccessToBackendDeniedException
 import bff.configuration.BadRequestErrorException
 import bff.configuration.ConflictErrorException
 import bff.model.*
@@ -627,6 +628,40 @@ class CustomerBridgeImpl implements CustomerBridge {
             it.accessToken = accessToken
         }
         response
+    }
+
+    @Override
+    def enableStore(String accessToken, Long storeId) {
+        try {
+            def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/store/${storeId}")).toUriString()
+            def uri = url.toURI()
+            http.exchange(
+                    RequestEntity.method(HttpMethod.PUT, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION, "Bearer $accessToken")
+                            .build()
+                    , Map)
+            Void.SUCCESS
+        } catch (BadRequestErrorException exception) {
+            UpdateStoreFailureReason.valueOf((String)exception.innerResponse).doThrow()
+        }
+    }
+
+    @Override
+    def disableStore(String accessToken, Long storeId) {
+        try {
+            def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/store/${storeId}")).toUriString()
+            def uri = url.toURI()
+            http.exchange(
+                    RequestEntity.method(HttpMethod.DELETE, uri)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION, "Bearer $accessToken")
+                            .build()
+                    , Map)
+            Void.SUCCESS
+        } catch (BadRequestErrorException exception) {
+            UpdateStoreFailureReason.valueOf((String)exception.innerResponse).doThrow()
+        }
     }
 
     private Customer mapCustomer(Customer customer, String accessToken) {

@@ -363,6 +363,24 @@ class Mutation implements GraphQLMutationResolver {
         recommendedOrderBridge.unsetFavouriteProduct(favouriteProductInput)
     }
 
+    UpdateStoreResult enableStore(EnableStoreInput enableStoreInput){
+        try {
+            customerBridge.enableStore(enableStoreInput.accessToken, enableStoreInput.storeId)
+            Void.SUCCESS
+        } catch (UpdateStoreException updateStoreException) {
+            updateStoreException.build()
+        }
+    }
+
+    UpdateStoreResult disableStore(DisableStoreInput disableStoreInput){
+        try {
+            customerBridge.disableStore(disableStoreInput.accessToken, disableStoreInput.storeId)
+            Void.SUCCESS
+        } catch (UpdateStoreException updateStoreException) {
+            updateStoreException.build()
+        }
+    }
+
     private LoginResult resolveCredentialsResponse(Credentials credentials, Boolean deviceSupportLegacy) {
 
         List<String> authorities = JwtToken.authorities(credentials.accessToken)

@@ -374,3 +374,13 @@ input GetChildStoresInput {
     page: Int
     size: Int
 }
+
+type UpdateStoreFailed {
+  reason: UpdateStoreFailureReason!
+}
+union UpdateStoreResult = UpdateStoreFailed | Void
+
+enum UpdateStoreFailureReason {
+  STORE_DOES_NOT_BELONGS_TO_CUSTOMER
+  STORE_HAS_PENDING_ORDERS
+}
