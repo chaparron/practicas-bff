@@ -29,10 +29,10 @@ class SdkConfiguration {
     String cmsEndpoint
     @Value('${supplier.credits.endpoint:}')
     String creditsEndpoint
-
     @Value('${regional.config.url:}')
     String regionalConfigUrl
-
+    @Value('${site.root:}')
+    String siteRoot
     @Autowired
     CountryBridge countryBridge
     @Autowired
@@ -56,7 +56,8 @@ class SdkConfiguration {
     Cms cms() {
         new Cms(
                 sdk: new CmsSdk(client, cmsEndpoint.toURI()),
-                customerBridge: customerBridge
+                customerBridge: customerBridge,
+                siteRoot: siteRoot
         )
     }
 

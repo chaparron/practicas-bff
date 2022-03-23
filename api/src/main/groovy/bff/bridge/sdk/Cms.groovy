@@ -2,6 +2,8 @@ package bff.bridge.sdk
 
 import bff.bridge.CustomerBridge
 import bff.model.*
+import org.springframework.web.util.DefaultUriBuilderFactory
+import org.springframework.web.util.UriBuilder
 import scala.Option
 import wabi2b.cms.sdk.*
 import wabi2b.cms.sdk.Banner as CmsBanner
@@ -25,6 +27,7 @@ class Cms {
 
     private Sdk sdk
     private CustomerBridge customerBridge
+    private String siteRoot
 
     List<Module> find(HomeInput input) {
         def request =
@@ -36,7 +39,7 @@ class Cms {
                                 }
                         )
         def response = sdk.query(request)
-        new FindModulesQueryResponseMapper().map(response)
+        new FindModulesQueryResponseMapper(siteRoot: siteRoot).map(response)
     }
 
     List<Module> find(ListingInput input) {
@@ -91,7 +94,7 @@ class Cms {
                                 }
                         )
         def response = sdk.query(request)
-        new FindModulesQueryResponseMapper().map(response)
+        new FindModulesQueryResponseMapper(siteRoot: siteRoot).map(response)
     }
 
     List<Piece> build(Module module, ContextInput context, Optional<Integer> maybeSize) {
@@ -147,17 +150,101 @@ class Cms {
 
 class FindModulesQueryResponseMapper {
 
-    static List<Module> map(scala.collection.immutable.List<CmsModule> modules) {
+    private String siteRoot
+
+    List<Module> map(scala.collection.immutable.List<CmsModule> modules) {
         asJava(modules).collect {
             new Module(
                     id: it.id(),
                     tag: it.tag(),
                     title: toJava(it.title())
                             .map { new I18N(entries: asJava(it.entries()), defaultEntry: it.defaultEntry()) },
-                    link: toJava(it.link()),
+                    link: link(it),
                     expiration: toJava(it.expiresIn())
                             .map { new TimestampOutput(it.toString()) }
             )
+        }
+    }
+
+    Optional<String> link(CmsModule module) {
+        def contentType = module.contentType()
+        switch (contentType) {
+            case { it instanceof ProductShowCase }:
+                def request = (contentType as ProductShowCase).request()
+                def filteredByTerm = { UriBuilder b ->
+                    request.filtering().byTerm()
+                            .map { b.queryParam("keyword", it.text()) }
+                            .getOrElse { b }
+                }
+                def filteredByCategory = { UriBuilder b ->
+                    request.filtering().byCategory()
+                            .map { b.queryParam("category", it.id()) }
+                            .getOrElse { b }
+                }
+                def filteredByBrand = { UriBuilder b ->
+                    request.filtering().byBrand()
+                            .map { b.queryParam("brand", it.id()) }
+                            .getOrElse { b }
+                }
+                def filteredByPromotion = { UriBuilder b ->
+                    request.filtering().byPromotion()
+                            .map {
+                                it.tag()
+                                        .map { b.queryParam("tag", it) }
+                                        .getOrElse { b.queryParam("promoted", true) }
+                            }
+                            .getOrElse { b }
+                }
+                def filteredByFavourite = { UriBuilder b ->
+                    request.filtering().byFavourite()
+                            .map { b.queryParam("favourites", true) }
+                            .getOrElse { b }
+                }
+                def sortedByPrice = { UriBuilder b ->
+                    toJava(request.sorting())
+                            .filter { it instanceof ByUnitPrice }
+                            .map {
+                                b
+                                        .queryParam("sort", "PRICE")
+                                        .queryParam("sortDirection", (it as ByUnitPrice).asc() ? "ASC" : "DESC")
+                            }
+                            .orElse(b)
+                }
+                def sortedAlphabetically = { UriBuilder b ->
+                    toJava(request.sorting())
+                            .filter { it instanceof Alphabetically }
+                            .map {
+                                b
+                                        .queryParam("sort", "TITLE")
+                                        .queryParam("sortDirection", (it as Alphabetically).asc() ? "ASC" : "DESC")
+                            }
+                            .orElse(b)
+                }
+                def sortedByRecent = { UriBuilder b ->
+                    toJava(request.sorting())
+                            .filter { it instanceof ByLastAvailabilityUpdate$ }
+                            .map { b.queryParam("sort", "RECENT") }
+                            .orElse(b)
+                }
+                return of(
+                        [
+                                filteredByTerm,
+                                filteredByCategory,
+                                filteredByBrand,
+                                filteredByPromotion,
+                                filteredByFavourite,
+                                sortedByPrice,
+                                sortedAlphabetically,
+                                sortedByRecent
+                        ]
+                                .inject(
+                                        new DefaultUriBuilderFactory(siteRoot + "/site/listing?").builder(),
+                                        { UriBuilder i, c -> c(i) }
+                                )
+                                .build()
+                                .toString()
+                )
+            default: empty()
         }
     }
 
