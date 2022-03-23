@@ -3,7 +3,6 @@ package bff.bridge
 import bff.bridge.data.CustomerBridgeImplTestData
 import bff.bridge.http.CustomerBridgeImpl
 import bff.model.Customer
-import bff.model.UpdateStoreException
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -13,6 +12,7 @@ import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.http.*
 import org.springframework.web.client.RestOperations
+import reactor.core.publisher.Mono
 import wabi2b.sdk.api.DetailedException
 import wabi2b.sdk.api.Wabi2bSdk
 
@@ -49,7 +49,7 @@ class CustomerBridgeImplTest extends CustomerBridgeImplTestData {
         Mockito.verify(http, Mockito.times(1)).exchange(requestEntity, Customer)
     }
 
-    @Test(expected = UpdateStoreException.class)
+    @Test(expected = DetailedException.class)
     void enableStoreShouldThrowUpdateStoreException() {
         def jwt = "jwt"
         def storeId = "1"
@@ -60,5 +60,15 @@ class CustomerBridgeImplTest extends CustomerBridgeImplTestData {
         Mockito.when(wabi2bSdk.enableStore(storeId,jwt)).thenThrow(new DetailedException(mockErrorBody, 401))
 
         customerBridge.enableStore(jwt, storeId)
+    }
+
+    @Test()
+    void enableStoreShouldDoNothing() {
+        def jwt = "jwt"
+        def storeId = "1"
+        Mockito.when(wabi2bSdk.enableStore(storeId,jwt)).thenReturn(Mono.just(Void))
+
+        customerBridge.enableStore(jwt, storeId)
+        Mockito.verify(wabi2bSdk).enableStore(storeId, jwt)
     }
 }

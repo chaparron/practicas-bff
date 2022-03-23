@@ -71,7 +71,7 @@ interface CustomerBridge {
 
     CustomerResponse getChildStores(String accessToken, Long page, Long size)
 
-    def enableStore(String accessToken, String storeId)
+    Void enableStore(String accessToken, String storeId)
 
-    def disableStore(String accessToken, String storeId)
+    Void disableStore(String accessToken, String storeId)
 }

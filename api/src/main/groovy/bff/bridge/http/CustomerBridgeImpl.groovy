@@ -636,21 +636,15 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    def enableStore(String accessToken, String storeId) {
-        try{
-            wabi2bSdk.enableStore(storeId, accessToken).block(Duration.ofMillis(25000))
-        } catch(DetailedException e){
-            UpdateStoreFailureReason.valueOf(e.message).doThrow()
-        }
+    Void enableStore(String accessToken, String storeId) {
+        wabi2bSdk.enableStore(storeId, accessToken).block(Duration.ofMillis(30000))
+        return Void.SUCCESS
     }
 
     @Override
-    def disableStore(String accessToken, String storeId) {
-        try{
-            wabi2bSdk.disableStore(storeId, accessToken).block(Duration.ofMillis(25000))
-        } catch(DetailedException e){
-            UpdateStoreFailureReason.valueOf(e.message).doThrow()
-        }
+    Void disableStore(String accessToken, String storeId) {
+        wabi2bSdk.disableStore(storeId, accessToken).block(Duration.ofMillis(30000))
+        return Void.SUCCESS
     }
 
     private Customer mapCustomer(Customer customer, String accessToken) {

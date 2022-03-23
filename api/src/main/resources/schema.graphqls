@@ -221,9 +221,9 @@ type Mutation {
 
   supplierLead(input: SupplierLeadInput): Boolean!
 
-  enableStore(input: EnableStoreInput!): UpdateStoreResult!
+  enableStore(input: EnableStoreInput!): Void!
 
-  disableStore(input: DisableStoreInput!): UpdateStoreResult!
+  disableStore(input: DisableStoreInput!): Void!
 }
 
 scalar NonEmptyString
