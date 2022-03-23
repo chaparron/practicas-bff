@@ -622,7 +622,7 @@ enum CartSummaryItemType {
     SERVICE_FEE(8, true),
     PAYMENT_PENDING(9, true),
     MAX_AMOUNT_WABIPAY_ALLOWED(10, false),
-    PROMOTION(5, true),
+    PROMOTION(4, true),
     SUBTOTAL(11, false),
     NET_SUBTOTAL(12, false),
     DISCOUNT_USED(13, false),

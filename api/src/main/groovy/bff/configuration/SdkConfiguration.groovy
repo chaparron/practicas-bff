@@ -33,6 +33,8 @@ class SdkConfiguration {
     String creditsEndpoint
     @Value('${regional.config.url:}')
     String regionalConfigUrl
+    @Value('${site.root:}')
+    String siteRoot
     @Value('${api.root}')
     URI wabi2bApiURI
 
@@ -59,7 +61,8 @@ class SdkConfiguration {
     Cms cms() {
         new Cms(
                 sdk: new CmsSdk(client, cmsEndpoint.toURI()),
-                customerBridge: customerBridge
+                customerBridge: customerBridge,
+                siteRoot: siteRoot
         )
     }
 

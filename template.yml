@@ -18,6 +18,7 @@ Mappings:
       NewRelicAppName: 'Wabi2B - BFF - Dev'
       NewRelicLicenseKey: '2277dfa871634a7d0e7707a31781d430b528NRAL'
       ApiRoot: 'https://api-qa.wabi2b.com/'
+      SiteRoot: 'https://qa.wabi2b.com'
       SecurityGroups: '{{resolve:ssm:/foundation/qa/beanstalk/security_groups:1}}'
       ResizerUrl: 'https://resizer-qa.wabi2b.com/'
       GoogleSpreadsheetIdSupplierLead: "1dIhiarfQUmXT3FXts4dm7gUuQDUrNmU6cLdA2Mdyt8Y"
@@ -34,6 +35,7 @@ Mappings:
       NewRelicAppName: "wabi2b-bff-prod"
       NewRelicLicenseKey: "602c96ea128d65e4582bc82ba2214a01be9239eb"
       ApiRoot: 'https://api.wabi2b.com/'
+      SiteRoot: 'https://wabi2b.com'
       SecurityGroups: '{{resolve:ssm:/foundation/prod/beanstalk/security_groups:1}}'
       ResizerUrl: 'https://resizer.wabi2b.com/'
       GoogleSpreadsheetIdSupplierLead: "1WgFgR9BB15dcwlWY0EkINDVxSbe85l30hMSOp6WylMI"
@@ -201,6 +203,10 @@ Resources:
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: API_ROOT
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, ApiRoot ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: SITE_ROOT
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, SiteRoot ]
 
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: SERVICE_DISCOVERY_NAMESPACE
