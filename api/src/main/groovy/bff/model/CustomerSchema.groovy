@@ -468,3 +468,7 @@ class CustomerResponse extends PaginatedResponse<Customer> {
 class GetChildStoresInput extends PaginatedInput {
     String accessToken
 }
+
+class GetStoreInput {
+    String accessToken
+}

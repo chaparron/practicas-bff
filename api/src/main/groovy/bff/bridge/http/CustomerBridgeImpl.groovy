@@ -629,6 +629,22 @@ class CustomerBridgeImpl implements CustomerBridge {
         response
     }
 
+    @Override
+    Customer getStore(String accessToken) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/store")).toUriString()
+        def uri = url.toURI()
+
+        def body = http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION, "Bearer ${accessToken}")
+                        .build()
+                , Customer).body
+
+
+        return mapCustomer(body, accessToken)
+    }
+
     private Customer mapCustomer(Customer customer, String accessToken) {
         customer.customerType.id = customer.customerType.code
         customer.accessToken = accessToken

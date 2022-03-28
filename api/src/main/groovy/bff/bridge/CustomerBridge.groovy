@@ -70,4 +70,6 @@ interface CustomerBridge {
     List<SupplierOrder> findPendingRateSinceLastLogin(String accessToken)
 
     CustomerResponse getChildStores(String accessToken, Long page, Long size)
+
+    Customer getStore(String accessToken)
 }
