@@ -636,6 +636,22 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
+    Customer getStore(String accessToken) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/store")).toUriString()
+        def uri = url.toURI()
+
+        def body = http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION, "Bearer ${accessToken}")
+                        .build()
+                , Customer).body
+
+
+        return mapCustomer(body, accessToken)
+    }
+
+    @Override
     Void enableStore(String accessToken, String storeId) {
         wabi2bSdk.enableStore(storeId, accessToken).block(Duration.ofMillis(30000))
         return Void.SUCCESS
