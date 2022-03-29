@@ -446,7 +446,7 @@ class SuggestedOrderItem {
 }
 
 class SuggestedOrderProduct {
-    Integer id
+    Long id
     String name
     Category category
     Brand brand

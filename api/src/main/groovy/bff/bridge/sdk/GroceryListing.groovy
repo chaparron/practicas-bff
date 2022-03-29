@@ -217,7 +217,7 @@ class GroceryListing {
                                     productIds.head().toString(),
                                     asScala(productIds.tail().collect { it.toString() }).toSeq()
                             )
-                            .fetchingOptions(50, Option.empty())
+                            .fetchingOptions(50, Option.apply(new FetchDeliveryZones(1)))
             def response = sdk.query(request)
             return new ProductQueryResponseMapper(request, accessToken).products(response)
         } catch (Exception ex) {

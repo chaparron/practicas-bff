@@ -371,9 +371,9 @@ type SuggestedOrderItem {
 }
 
 type SuggestedOrderProduct {
-  id: Int!
+  id: Long!
   name: String!
-  category: Category
+  category: Category!
   brand: Brand!
   images: [Image]!
   price: Price!
