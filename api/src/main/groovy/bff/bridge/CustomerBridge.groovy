@@ -71,6 +71,8 @@ interface CustomerBridge {
 
     CustomerResponse getChildStores(String accessToken, Long page, Long size)
 
+    Customer getStore(String accessToken)
+
     Void enableStore(String accessToken, String storeId)
 
     Void disableStore(String accessToken, String storeId)

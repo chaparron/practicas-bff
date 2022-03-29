@@ -395,3 +395,7 @@ input GetChildStoresInput {
     page: Int
     size: Int
 }
+
+input GetStoreInput {
+  accessToken: String
+}

@@ -8,7 +8,7 @@ class I18N {
     String defaultEntry
 
     String getOrDefault(LanguageTag languageTag) {
-        entries.get(languageTag.language, defaultEntry)
+        entries.getOrDefault(languageTag.language, defaultEntry)
     }
 
 }

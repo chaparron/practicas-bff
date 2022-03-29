@@ -340,6 +340,10 @@ class Query implements GraphQLQueryResolver {
     CustomerResponse getChildStores(GetChildStoresInput getChildStoresInput) {
         customerBridge.getChildStores(getChildStoresInput.accessToken, getChildStoresInput.page, getChildStoresInput.size)
     }
+
+    Customer getStore(GetStoreInput getStoreInput) {
+        customerBridge.getStore(getStoreInput.accessToken)
+    }
 }
 
 
