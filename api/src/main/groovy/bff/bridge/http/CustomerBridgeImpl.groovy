@@ -16,7 +16,6 @@ import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
-import wabi2b.sdk.api.DetailedException
 import wabi2b.sdk.api.Wabi2bSdk
 import java.time.Duration
 
@@ -560,13 +559,14 @@ class CustomerBridgeImpl implements CustomerBridge {
     SuggestedOrderResult getSuggestedOrder(GetSuggestedOrderInput input) {
         def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplier/suggestedOrder/${input.supplierId}")).toUriString()
         def uri = url.toURI()
-
-        http.exchange(
+        SuggestedOrderResult result = http.exchange(
                 RequestEntity.method(HttpMethod.GET, uri)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(AUTHORIZATION, "Bearer $input.accessToken")
                         .build()
                 , new ParameterizedTypeReference<SuggestedOrderResult>() {}).body
+        result.accessToken = input.accessToken
+        return result
     }
 
     @Override

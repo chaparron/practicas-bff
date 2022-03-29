@@ -424,13 +424,15 @@ class GetSuggestedOrderInput {
 }
 
 class SuggestedOrderResult {
+    String accessToken
     Long id
     Long customerId
     Long supplierId
     String supplierName
     String readDate
     String lastUpdate
-    List<SuggestedOrderItem> items
+    @Deprecated List<SuggestedOrderItem> items
+    List<SuggestedOrderProduct> products
 }
 
 class SuggestedOrderItem {
@@ -441,6 +443,16 @@ class SuggestedOrderItem {
     Integer quantity
     String productTitle
     String categoryTitle
+}
+
+class SuggestedOrderProduct {
+    Integer id
+    String name
+    Category category
+    Brand brand
+    List<Image> images
+    Price price
+    Integer quantity
 }
 
 class AcceptTcInput{

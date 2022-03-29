@@ -207,6 +207,27 @@ class GroceryListing {
         }
     }
 
+    List<ProductSearch> getProductsByIdsAndSupplierId(String accessToken, List<Long> productIds, Long supplierId) {
+        try {
+            def request =
+                    availableProductsForCustomer(accessToken)
+                            .sized(productIds.size())
+                            .filteredBySupplier(supplierId.toString(), asScala([] as List<String>).toSeq())
+                            .filteredByProduct(
+                                    productIds.head().toString(),
+                                    asScala(productIds.tail().collect { it.toString() }).toSeq()
+                            )
+                            // TODO Ortzi - por qué 50? Es necesario el FetchDeliveryZones?
+                            .fetchingOptions(50, Option.apply(new FetchDeliveryZones(1)))
+            def response = sdk.query(request)
+            return new ProductQueryResponseMapper(request, accessToken).products(response)
+        } catch (Exception ex) {
+            log.error("Error fetching products for token {}, product ids {} and supplier id {}",
+                    accessToken, productIds.toString(), supplierId, ex)
+            throw ex
+        }
+    }
+
     GetHomeBrandsResult getHomeBrands(String accessToken, String country) {
         try {
             def request =
@@ -677,7 +698,7 @@ class GroceryListing {
 
     }
 
-    private abstract class ProductQueryResponseMapper {
+    private class ProductQueryResponseMapper {
 
         ProductQueryRequest request
         Optional<String> accessToken
