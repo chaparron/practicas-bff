@@ -221,8 +221,8 @@ class GroceryListing {
             def response = sdk.query(request)
             return new ProductQueryResponseMapper(request, accessToken).products(response)
         } catch (Exception ex) {
-            log.error("Error fetching products for token {}, product ids {} and supplier id {}",
-                    accessToken, productIds.toString(), supplierId, ex)
+            log.error("Error fetching products for product ids {} and supplier id {}",
+                    productIds.toString(), supplierId, ex)
             throw ex
         }
     }
