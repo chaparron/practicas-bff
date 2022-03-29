@@ -217,9 +217,7 @@ class GroceryListing {
                                     productIds.head().toString(),
                                     asScala(productIds.tail().collect { it.toString() }).toSeq()
                             )
-                            // TODO Ortzi - asegurarse de que no devuelve null
-                            // TODO Ortzi - por qué 50? Es necesario el FetchDeliveryZones?
-                            .fetchingOptions(50, Option.apply(new FetchDeliveryZones(1)))
+                            .fetchingOptions(50, Option.empty())
             def response = sdk.query(request)
             return new ProductQueryResponseMapper(request, accessToken).products(response)
         } catch (Exception ex) {

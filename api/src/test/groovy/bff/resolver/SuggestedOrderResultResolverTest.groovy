@@ -31,7 +31,7 @@ class SuggestedOrderResultResolverTest {
 
         // when
         List<ProductSearch> productSearchList = new ArrayList<>()
-        Mockito.when(groceryListing.getProductsByIdsAndSupplierId(accessToken, new ArrayList<Long>(), supplierId))
+        Mockito.when(groceryListing.getProductsByIdsAndSupplierId(accessToken, new HashSet<Long>(), supplierId))
                 .thenReturn(productSearchList)
         List<SuggestedOrderProduct> result = suggestedOrderResultResolver.products(suggestedOrderResult)
 
@@ -81,11 +81,15 @@ class SuggestedOrderResultResolverTest {
         List<SuggestedOrderProduct> prod2Results = result.findAll { it.id == 2L }
         List<SuggestedOrderProduct> prod3Results = result.findAll { it.id == 3L }
 
-        Assert.assertTrue(prod1Results.size() == 2)
-        Assert.assertTrue(prod2Results.isEmpty())
-        Assert.assertTrue(prod3Results.size() == 1)
+        productId1ResultsAssertions(prod1Results)
+        productId2ResultsAssertions(prod2Results)
+        productId3ResultsAssertions(prod3Results)
+    }
 
-        SuggestedOrderProduct prod1OneUnit = prod1Results.find { it.price.getDisplay().units == 1 }
+    private static void productId1ResultsAssertions(List<SuggestedOrderProduct> prodResults) {
+        Assert.assertTrue(prodResults.size() == 2)
+
+        SuggestedOrderProduct prod1OneUnit = prodResults.find { it.price.getDisplay().units == 1 }
         Assert.assertNotNull(prod1OneUnit)
         Assert.assertTrue(prod1OneUnit.category.id == 1)
         Assert.assertTrue(prod1OneUnit.brand.id == 1)
@@ -93,15 +97,23 @@ class SuggestedOrderResultResolverTest {
         Assert.assertTrue(prod1OneUnit.price.value == 100)
         Assert.assertTrue(prod1OneUnit.quantity == 10)
 
-        SuggestedOrderProduct prod1SixUnits = prod1Results.find { it.price.getDisplay().units == 6 }
+        SuggestedOrderProduct prod1SixUnits = prodResults.find { it.price.getDisplay().units == 6 }
         Assert.assertNull(prod1SixUnits)
 
-        SuggestedOrderProduct prod1TwelveUnits = prod1Results.find { it.price.getDisplay().units == 12 }
+        SuggestedOrderProduct prod1TwelveUnits = prodResults.find { it.price.getDisplay().units == 12 }
         Assert.assertNotNull(prod1TwelveUnits)
         Assert.assertTrue(prod1TwelveUnits.price.value == 600)
         Assert.assertTrue(prod1TwelveUnits.quantity == 5)
+    }
 
-        SuggestedOrderProduct prod3OneUnit = prod3Results.find { it.price.getDisplay().units == 1 }
+    private static void productId2ResultsAssertions(List<SuggestedOrderProduct> prodResults) {
+        Assert.assertTrue(prodResults.isEmpty())
+    }
+
+    private static void productId3ResultsAssertions(List<SuggestedOrderProduct> prodResults) {
+        Assert.assertTrue(prodResults.size() == 1)
+
+        SuggestedOrderProduct prod3OneUnit = prodResults.find { it.price.getDisplay().units == 1 }
         Assert.assertNotNull(prod3OneUnit)
         Assert.assertTrue(prod3OneUnit.category.id == 3)
         Assert.assertTrue(prod3OneUnit.brand.id == 3)
