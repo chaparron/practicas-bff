@@ -101,4 +101,6 @@ class QueryTest {
         verify(supplierBridge, never()).previewHomeSuppliers(input)
     }
 
+    // TODO Ortzi - should be resolved by grocery listing when get suggested orders
+
 }

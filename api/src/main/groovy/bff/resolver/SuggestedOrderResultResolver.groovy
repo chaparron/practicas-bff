@@ -13,26 +13,28 @@ class SuggestedOrderResultResolver implements GraphQLResolver<SuggestedOrderResu
     @Autowired
     GroceryListing groceryListing
 
-    // TODO Ortzi comprobar posibles nullPointer
-    List<SuggestedOrderProduct> products(SuggestedOrderResult item) {
+    List<SuggestedOrderProduct> products(SuggestedOrderResult suggestedOrderResult) {
         List<ProductSearch> productSearchList = groceryListing.getProductsByIdsAndSupplierId(
-                item.accessToken,
-                item.items.collect { it.productId },
-                item.supplierId
+                suggestedOrderResult.accessToken,
+                suggestedOrderResult.items.collect { it.productId }.toSet(),
+                suggestedOrderResult.supplierId
         )
-        Map<Long, Map<Long, Integer>> productUnitsAndQuantityByProductId = getProductUnitsAndQuantityById(item.items)
+        Map<Long, Map<Long, Integer>> productUnitsAndQuantityByProductId =
+                getProductUnitsAndQuantityById(suggestedOrderResult.items)
         return mapToSuggestedOrderProducts(productSearchList, productUnitsAndQuantityByProductId)
     }
 
     private static Map<Long, Map<Long, Integer>> getProductUnitsAndQuantityById(
             List<SuggestedOrderItem> suggestedOrderItems) {
         Map<Long, Map<Long, Integer>> productUnitsAndQuantityById = new HashMap<>()
+
         suggestedOrderItems.forEach {
             Map<Long, Integer> savedQuantityByUnits =
                     productUnitsAndQuantityById.getOrDefault(it.productId, new HashMap<Long, Integer>())
             savedQuantityByUnits.put(it.productUnits, it.quantity)
             productUnitsAndQuantityById.put(it.productId, savedQuantityByUnits)
         }
+
         return productUnitsAndQuantityById
     }
 
