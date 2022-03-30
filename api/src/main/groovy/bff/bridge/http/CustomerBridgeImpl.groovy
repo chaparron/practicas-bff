@@ -565,7 +565,9 @@ class CustomerBridgeImpl implements CustomerBridge {
                         .header(AUTHORIZATION, "Bearer $input.accessToken")
                         .build()
                 , new ParameterizedTypeReference<SuggestedOrderResult>() {}).body
-        result.accessToken = input.accessToken
+        if (result) {
+            result.accessToken = input.accessToken
+        }
         return result
     }
 
