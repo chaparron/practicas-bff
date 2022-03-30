@@ -207,6 +207,26 @@ class GroceryListing {
         }
     }
 
+    List<ProductSearch> getProductsByIdsAndSupplierId(String accessToken, Set<Long> productIds, Long supplierId) {
+        try {
+            def request =
+                    availableProductsForCustomer(accessToken)
+                            .sized(productIds.size())
+                            .filteredBySupplier(supplierId.toString(), asScala([] as List<String>).toSeq())
+                            .filteredByProduct(
+                                    productIds.head().toString(),
+                                    asScala(productIds.tail().collect { it.toString() }).toSeq()
+                            )
+                            .fetchingOptions(50, Option.apply(new FetchDeliveryZones(1)))
+            def response = sdk.query(request)
+            return new ProductQueryResponseMapper(request, accessToken).products(response)
+        } catch (Exception ex) {
+            log.error("Error fetching products for product ids {} and supplier id {}",
+                    productIds.toString(), supplierId, ex)
+            throw ex
+        }
+    }
+
     GetHomeBrandsResult getHomeBrands(String accessToken, String country) {
         try {
             def request =
@@ -677,7 +697,7 @@ class GroceryListing {
 
     }
 
-    private abstract class ProductQueryResponseMapper {
+    private class ProductQueryResponseMapper {
 
         ProductQueryRequest request
         Optional<String> accessToken

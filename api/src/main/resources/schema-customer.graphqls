@@ -356,7 +356,8 @@ type SuggestedOrderResult {
     readDate: String
     lastUpdate: String!
     supplierName: String!
-    items: [SuggestedOrderItem]!
+    @deprecated items: [SuggestedOrderItem]!
+    products: [SuggestedOrderProduct!]!
 }
 
 type SuggestedOrderItem {
@@ -367,6 +368,16 @@ type SuggestedOrderItem {
     quantity: Int!
     productTitle: String!
     categoryTitle: String!
+}
+
+type SuggestedOrderProduct {
+  id: Long!
+  name: String!
+  category: Category!
+  brand: Brand!
+  images: [Image]!
+  price: Price!
+  quantity: Int!
 }
 
 input FavouriteProductInput {

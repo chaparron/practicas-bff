@@ -3,6 +3,8 @@ package bff.bridge
 import bff.bridge.data.CustomerBridgeImplTestData
 import bff.bridge.http.CustomerBridgeImpl
 import bff.model.Customer
+import bff.model.GetSuggestedOrderInput
+import bff.model.SuggestedOrderResult
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -10,6 +12,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.*
 import org.springframework.web.client.RestOperations
 import reactor.core.publisher.Mono
@@ -70,5 +73,47 @@ class CustomerBridgeImplTest extends CustomerBridgeImplTestData {
 
         customerBridge.enableBranchOffice(jwt, branchOfficeId)
         Mockito.verify(wabi2bSdk).enableBranchOffice(branchOfficeId, jwt)
+    }
+
+    @Test
+    void should_return_null_when_getSuggestedOrder_with_null_results() {
+        // given
+        GetSuggestedOrderInput input = new GetSuggestedOrderInput(accessToken: "mockToken", supplierId: 1)
+        URI uri = customerBridge.root.resolve("/customer/me/supplier/suggestedOrder/${input.supplierId}")
+        RequestEntity requestEntity = RequestEntity.method(HttpMethod.GET, uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer ${input.accessToken}")
+                .build()
+        ParameterizedTypeReference<SuggestedOrderResult> ref = new ParameterizedTypeReference<SuggestedOrderResult>() {}
+
+        // when
+        Mockito.when(http.<SuggestedOrderResult> exchange(requestEntity, ref))
+                .thenReturn(new ResponseEntity<SuggestedOrderResult>(null, HttpStatus.OK))
+        def response = customerBridge.getSuggestedOrder(input)
+
+        // then
+        Assert.assertNull(response)
+    }
+
+    @Test
+    void should_return_result_with_access_token_when_getSuggestedOrder_with_results() {
+        // given
+        GetSuggestedOrderInput input = new GetSuggestedOrderInput(accessToken: "mockToken", supplierId: 1)
+        URI uri = customerBridge.root.resolve("/customer/me/supplier/suggestedOrder/${input.supplierId}")
+        RequestEntity requestEntity = RequestEntity.method(HttpMethod.GET, uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer ${input.accessToken}")
+                .build()
+        ParameterizedTypeReference<SuggestedOrderResult> ref = new ParameterizedTypeReference<SuggestedOrderResult>() {}
+
+        // when
+        SuggestedOrderResult responseBody = new SuggestedOrderResult(supplierId: input.supplierId)
+        Mockito.when(http.<SuggestedOrderResult> exchange(requestEntity, ref))
+                .thenReturn(new ResponseEntity<SuggestedOrderResult>(responseBody, HttpStatus.OK))
+        def response = customerBridge.getSuggestedOrder(input)
+
+        // then
+        Assert.assertEquals(input.accessToken, response.accessToken)
+        Assert.assertEquals(input.supplierId, response.supplierId)
     }
 }

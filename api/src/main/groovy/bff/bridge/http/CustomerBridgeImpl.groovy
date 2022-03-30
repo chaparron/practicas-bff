@@ -560,13 +560,16 @@ class CustomerBridgeImpl implements CustomerBridge {
     SuggestedOrderResult getSuggestedOrder(GetSuggestedOrderInput input) {
         def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplier/suggestedOrder/${input.supplierId}")).toUriString()
         def uri = url.toURI()
-
-        http.exchange(
+        SuggestedOrderResult result = http.exchange(
                 RequestEntity.method(HttpMethod.GET, uri)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(AUTHORIZATION, "Bearer $input.accessToken")
                         .build()
                 , new ParameterizedTypeReference<SuggestedOrderResult>() {}).body
+        if (result) {
+            result.accessToken = input.accessToken
+        }
+        return result
     }
 
     @Override
