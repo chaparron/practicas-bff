@@ -337,12 +337,12 @@ class Query implements GraphQLQueryResolver {
         authServerBridge.isCountryCodeAndPhoneValid(input.countryCode, input.phone, input.accessToken)
     }
 
-    CustomerResponse getChildStores(GetChildStoresInput getChildStoresInput) {
-        customerBridge.getChildStores(getChildStoresInput.accessToken, getChildStoresInput.page, getChildStoresInput.size)
+    CustomerResponse getMyBranchOffices(GetMyBranchOfficesInput getMyBranchOfficesInput) {
+        customerBridge.getMyBranchOffices(getMyBranchOfficesInput.accessToken, getMyBranchOfficesInput.page, getMyBranchOfficesInput.size)
     }
 
-    Customer getStore(GetStoreInput getStoreInput) {
-        customerBridge.getStore(getStoreInput.accessToken)
+    Customer getBranchOffice(GetBranchOfficeInput getBranchOfficeInput) {
+        customerBridge.getBranchOffice(getBranchOfficeInput.accessToken, getBranchOfficeInput.branchOfficeId)
     }
 }
 

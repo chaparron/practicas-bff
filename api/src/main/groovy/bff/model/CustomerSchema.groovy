@@ -127,7 +127,7 @@ class CustomerType {
 }
 
 enum StoreType {
-    STORE_OWNER, STORE
+    MAIN_OFFICE, BRANCH_OFFICE
 }
 
 class Customer implements CustomerUpdateResult, PasswordlessSignUpResult {
@@ -466,20 +466,21 @@ class IsValidPhoneInput {
 class CustomerResponse extends PaginatedResponse<Customer> {
 }
 
-class GetChildStoresInput extends PaginatedInput {
+class GetMyBranchOfficesInput extends PaginatedInput {
     String accessToken
 }
 
-class GetStoreInput {
+class GetBranchOfficeInput {
+    String accessToken
+    String branchOfficeId
+}
+
+class EnableBranchOfficeInput {
+    String branchOfficeId
     String accessToken
 }
 
-class EnableStoreInput {
-    String storeId
-    String accessToken
-}
-
-class DisableStoreInput {
-    String storeId
+class DisableBranchOfficeInput {
+    String branchOfficeId
     String accessToken
 }

@@ -69,11 +69,11 @@ interface CustomerBridge {
 
     List<SupplierOrder> findPendingRateSinceLastLogin(String accessToken)
 
-    CustomerResponse getChildStores(String accessToken, Long page, Long size)
+    CustomerResponse getMyBranchOffices(String accessToken, Long page, Long size)
 
-    Customer getStore(String accessToken)
+    Customer getBranchOffice(String accessToken, String branchOfficeId)
 
-    Void enableStore(String accessToken, String storeId)
+    Void enableBranchOffice(String accessToken, String branchOfficeId)
 
-    Void disableStore(String accessToken, String storeId)
+    Void disableBranchOffice(String accessToken, String branchOfficeId)
 }

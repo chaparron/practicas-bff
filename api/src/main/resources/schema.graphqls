@@ -134,9 +134,9 @@ type Query {
 
   isCountryCodeAndPhoneValid(input: IsPhoneValidInput!): Boolean
 
-  getChildStores(input: GetChildStoresInput): CustomerResponse
+  getMyBranchOffices(input: GetMyBranchOfficesInput): CustomerResponse
 
-  getStore(input: GetStoreInput): Customer
+  getBranchOffice(input: GetBranchOfficeInput!): Customer
 }
 
 type Mutation {
@@ -223,9 +223,9 @@ type Mutation {
 
   supplierLead(input: SupplierLeadInput): Boolean!
 
-  enableStore(input: EnableStoreInput!): Void!
+  enableBranchOffice(input: EnableBranchOfficeInput!): Void!
 
-  disableStore(input: DisableStoreInput!): Void!
+  disableBranchOffice(input: DisableBranchOfficeInput!): Void!
 }
 
 scalar NonEmptyString

@@ -172,14 +172,14 @@ input PasswordlessSignUpInput {
   captchaToken: String!
 }
 
-input EnableStoreInput {
+input EnableBranchOfficeInput {
   accessToken: String!
-  storeId: ID!
+  branchOfficeId: ID!
 }
 
-input DisableStoreInput {
+input DisableBranchOfficeInput {
   accessToken: String!
-  storeId: ID!
+  branchOfficeId: ID!
 }
 
 enum AddressFailedReason {
@@ -305,7 +305,7 @@ type Customer {
 }
 
 enum StoreType {
-  STORE_OWNER, STORE
+  MAIN_OFFICE, BRANCH_OFFICE
 }
 
 type WorkingDays {
@@ -379,12 +379,13 @@ type CustomerResponse {
   content: [Customer]!
 }
 
-input GetChildStoresInput {
+input GetMyBranchOfficesInput {
     accessToken: String
     page: Int
     size: Int
 }
 
-input GetStoreInput {
-  accessToken: String
+input GetBranchOfficeInput {
+  accessToken: String!
+  branchOfficeId: ID!
 }

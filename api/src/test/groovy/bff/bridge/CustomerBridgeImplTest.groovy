@@ -50,25 +50,25 @@ class CustomerBridgeImplTest extends CustomerBridgeImplTestData {
     }
 
     @Test(expected = DetailedException.class)
-    void enableStoreShouldThrowUpdateStoreException() {
+    void enableBranchOfficeShouldThrowUpdateBranchOfficeException() {
         def jwt = "jwt"
-        def storeId = "1"
+        def branchOfficeId = "1"
         def mockErrorBody = new HashMap<String, Object>()
         mockErrorBody.put("status", 401)
-        mockErrorBody.put("message", "STORE_DOES_NOT_BELONGS_TO_CUSTOMER")
+        mockErrorBody.put("message", "BRANCH_OFFICE_DOES_NOT_BELONGS_TO_CUSTOMER")
 
-        Mockito.when(wabi2bSdk.enableStore(storeId,jwt)).thenThrow(new DetailedException(mockErrorBody, 401))
+        Mockito.when(wabi2bSdk.enableBranchOffice(branchOfficeId,jwt)).thenThrow(new DetailedException(mockErrorBody, 401))
 
-        customerBridge.enableStore(jwt, storeId)
+        customerBridge.enableBranchOffice(jwt, branchOfficeId)
     }
 
     @Test()
-    void enableStoreShouldDoNothing() {
+    void enableBranchOfficeShouldDoNothing() {
         def jwt = "jwt"
-        def storeId = "1"
-        Mockito.when(wabi2bSdk.enableStore(storeId,jwt)).thenReturn(Mono.just(Void))
+        def branchOfficeId = "1"
+        Mockito.when(wabi2bSdk.enableBranchOffice(branchOfficeId,jwt)).thenReturn(Mono.empty())
 
-        customerBridge.enableStore(jwt, storeId)
-        Mockito.verify(wabi2bSdk).enableStore(storeId, jwt)
+        customerBridge.enableBranchOffice(jwt, branchOfficeId)
+        Mockito.verify(wabi2bSdk).enableBranchOffice(branchOfficeId, jwt)
     }
 }

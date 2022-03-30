@@ -16,8 +16,8 @@ import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
-import wabi2b.sdk.api.DetailedException
 import wabi2b.sdk.api.Wabi2bSdk
+
 import java.time.Duration
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION
@@ -615,8 +615,8 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    CustomerResponse getChildStores(String accessToken, Long page, Long size) {
-        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/store"))
+    CustomerResponse getMyBranchOffices(String accessToken, Long page, Long size) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/branch-office"))
                 .queryParam("page", page)
                 .queryParam("size", size)
                 .toUriString()
@@ -636,8 +636,8 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    Customer getStore(String accessToken) {
-        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/store")).toUriString()
+    Customer getBranchOffice(String accessToken, String branchOfficeId) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/branch-office/${branchOfficeId}")).toUriString()
         def uri = url.toURI()
 
         def body = http.exchange(
@@ -652,14 +652,14 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    Void enableStore(String accessToken, String storeId) {
-        wabi2bSdk.enableStore(storeId, accessToken).block(Duration.ofMillis(30000))
+    Void enableBranchOffice(String accessToken, String branchOfficeId) {
+        wabi2bSdk.enableBranchOffice(branchOfficeId, accessToken).block(Duration.ofMillis(30000))
         return Void.SUCCESS
     }
 
     @Override
-    Void disableStore(String accessToken, String storeId) {
-        wabi2bSdk.disableStore(storeId, accessToken).block(Duration.ofMillis(30000))
+    Void disableBranchOffice(String accessToken, String branchOfficeId) {
+        wabi2bSdk.disableBranchOffice(branchOfficeId, accessToken).block(Duration.ofMillis(30000))
         return Void.SUCCESS
     }
 
