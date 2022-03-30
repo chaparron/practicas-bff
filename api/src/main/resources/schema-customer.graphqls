@@ -305,7 +305,7 @@ type Customer {
 }
 
 enum StoreType {
-  MAIN_OFFICE, BRANCH_OFFICE
+  MAIN_OFFICE, BRANCH_OFFICE, STORE_OWNER, STORE
 }
 
 type WorkingDays {

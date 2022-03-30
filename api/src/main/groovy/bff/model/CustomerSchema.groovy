@@ -127,7 +127,7 @@ class CustomerType {
 }
 
 enum StoreType {
-    MAIN_OFFICE, BRANCH_OFFICE
+    MAIN_OFFICE, BRANCH_OFFICE, STORE_OWNER, STORE
 }
 
 class Customer implements CustomerUpdateResult, PasswordlessSignUpResult {
