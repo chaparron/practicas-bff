@@ -159,7 +159,7 @@ class PreviewSearchInput {
     String commercialPromotion
 }
 
-@ToString
+@ToString(excludes = ["accessToken"])
 class SearchInput {
     String accessToken
     Integer addressId
@@ -180,7 +180,7 @@ class SearchInput {
     String commercialPromotion
 }
 
-@ToString
+@ToString(excludes = ["accessToken"])
 @EqualsAndHashCode
 class SearchScrollInput {
     String accessToken
@@ -193,9 +193,8 @@ class PreviewSearchScrollInput {
     String scroll
 }
 
-@ToString
+@ToString(excludes = ["accessToken"])
 class SuggestInput {
-
     String accessToken
     String keyword
     LanguageTag languageTag

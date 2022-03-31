@@ -21,7 +21,7 @@ class ListingInput {
     Boolean promoted
 }
 
-@ToString
+@ToString(excludes = ["accessToken"])
 class ContextInput {
     String accessToken
     CoordinatesInput coordinates

@@ -2,6 +2,7 @@ package bff.bridge.sdk
 
 import bff.bridge.CustomerBridge
 import bff.model.*
+import groovy.util.logging.Slf4j
 import org.springframework.web.util.DefaultUriBuilderFactory
 import org.springframework.web.util.UriBuilder
 import scala.Option
@@ -23,6 +24,7 @@ import static wabi2b.cms.sdk.BuildModulePiecesQuery.piecesOf
 import static wabi2b.cms.sdk.FindModulesQuery.homeModulesIn
 import static wabi2b.cms.sdk.FindModulesQuery.listingModulesIn
 
+@Slf4j
 class Cms {
 
     private Sdk sdk
@@ -38,8 +40,13 @@ class Cms {
                                     builder(query) as FindHomeModulesQuery
                                 }
                         )
-        def response = sdk.query(request)
-        new FindModulesQueryResponseMapper(siteRoot: siteRoot).map(response)
+        try {
+            def response = sdk.query(request)
+            new FindModulesQueryResponseMapper(siteRoot: siteRoot).map(response)
+        } catch (Exception ex) {
+            log.error("Error finding modules for request {}", request, ex)
+            throw ex
+        }
     }
 
     List<Module> find(ListingInput input) {
@@ -93,8 +100,13 @@ class Cms {
                                     builder(query) as FindListingModulesQuery
                                 }
                         )
-        def response = sdk.query(request)
-        new FindModulesQueryResponseMapper(siteRoot: siteRoot).map(response)
+        try {
+            def response = sdk.query(request)
+            new FindModulesQueryResponseMapper(siteRoot: siteRoot).map(response)
+        } catch (Exception ex) {
+            log.error("Error finding modules for request {}", request, ex)
+            throw ex
+        }
     }
 
     List<Piece> build(Module module, ContextInput context, Optional<Integer> maybeSize) {
@@ -130,8 +142,13 @@ class Cms {
                                 piecesOf(module.id),
                                 { query, builder -> builder(query) }
                         )
-        def response = sdk.query(request)
-        return new BuildModulePiecesQueryResponseMapper(context).map(response)
+        try {
+            def response = sdk.query(request)
+            return new BuildModulePiecesQueryResponseMapper(context).map(response)
+        } catch (Exception ex) {
+            log.error("Error building module pieces for request {}", request, ex)
+            throw ex
+        }
     }
 
     private def getCustomerAndDeliveryAddress(String accessToken) {
