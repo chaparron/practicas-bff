@@ -337,7 +337,7 @@ class Query implements GraphQLQueryResolver {
         authServerBridge.isCountryCodeAndPhoneValid(input.countryCode, input.phone, input.accessToken)
     }
 
-    BranchOffice getMyBranchOffices(GetMyBranchOfficesInput getMyBranchOfficesInput) {
+    BranchOfficesResponse getMyBranchOffices(GetMyBranchOfficesInput getMyBranchOfficesInput) {
         customerBridge.getMyBranchOffices(getMyBranchOfficesInput.accessToken, getMyBranchOfficesInput.page, getMyBranchOfficesInput.size)
     }
 

@@ -7,16 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class BranchOfficeResolver implements GraphQLResolver<BranchOffice> {
+class BranchOfficeResolver implements GraphQLResolver<BranchOfficesResponse> {
 
     @Autowired
     CustomerBridge customerBridge
 
-    Long total(BranchOffice branchOffice) {
-        branchOffice.total(customerBridge.countTotalBranchOffice(branchOffice.content.accessToken))
+    Long total(BranchOfficesResponse branchOfficesResponse) {
+        branchOfficesResponse.total = customerBridge.countTotalBranchOffice(branchOfficesResponse.accessToken)
     }
 
-    Long active(BranchOffice branchOffice) {
-        branchOffice.active(customerBridge.countActiveBranchOffice(branchOffice.content.accessToken))
+    Long active(BranchOfficesResponse branchOfficesResponse) {
+        branchOfficesResponse.active = customerBridge.countActiveBranchOffice(branchOfficesResponse.accessToken)
     }
+
 }

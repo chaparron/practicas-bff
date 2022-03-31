@@ -385,9 +385,11 @@ input FavouriteProductInput {
     productId: ID!,
 }
 
-type CustomerResponse {
+type BranchOfficesResponse {
   headers: Headers!
   content: [Customer]!
+  total: Int!
+  active: Int!
 }
 
 input GetMyBranchOfficesInput {

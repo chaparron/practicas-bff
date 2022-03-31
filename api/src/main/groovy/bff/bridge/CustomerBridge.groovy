@@ -69,7 +69,7 @@ interface CustomerBridge {
 
     List<SupplierOrder> findPendingRateSinceLastLogin(String accessToken)
 
-    BranchOffice getMyBranchOffices(String accessToken, Long page, Long size)
+    BranchOfficesResponse getMyBranchOffices(String accessToken, Long page, Long size)
 
     Customer getBranchOffice(String accessToken, String branchOfficeId)
 

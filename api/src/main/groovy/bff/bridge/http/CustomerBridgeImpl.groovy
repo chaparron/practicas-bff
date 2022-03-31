@@ -618,7 +618,7 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    BranchOffice getMyBranchOffices(String accessToken, Long page, Long size) {
+    BranchOfficesResponse getMyBranchOffices(String accessToken, Long page, Long size) {
         def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/branch-office"))
                 .queryParam("page", page)
                 .queryParam("size", size)
@@ -630,8 +630,9 @@ class CustomerBridgeImpl implements CustomerBridge {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(AUTHORIZATION, "Bearer $accessToken")
                         .build()
-                , new ParameterizedTypeReference<BranchOffice>() {}).body
+                , new ParameterizedTypeReference<BranchOfficesResponse>() {}).body
 
+        response.accessToken = accessToken
         response.content.each {
             it.accessToken = accessToken
         }

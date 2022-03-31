@@ -134,7 +134,7 @@ type Query {
 
   isCountryCodeAndPhoneValid(input: IsPhoneValidInput!): Boolean
 
-  getMyBranchOffices(input: GetMyBranchOfficesInput): CustomerResponse
+  getMyBranchOffices(input: GetMyBranchOfficesInput): BranchOfficesResponse
 
   getBranchOffice(input: GetBranchOfficeInput!): Customer
 }

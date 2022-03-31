@@ -475,7 +475,8 @@ class IsValidPhoneInput {
     String countryCode
 }
 
-class BranchOffice extends PaginatedResponse<Customer> {
+class BranchOfficesResponse extends PaginatedResponse<Customer> {
+    String accessToken
     Long total
     Long active
 }
