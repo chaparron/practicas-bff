@@ -33,4 +33,12 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     Country country(Customer customer) {
         countryBridge.getCountry(customer.country_id)
     }
+
+    Long total(BranchOffice customer) {
+        customer.total(customerBridge.countTotalBranchOffice(customer.content.accessToken))
+    }
+
+    Long active(BranchOffice customer) {
+        customer.active(customerBridge.countActiveBranchOffice(customer.content.accessToken))
+    }
 }

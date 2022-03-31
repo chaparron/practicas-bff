@@ -618,7 +618,7 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    CustomerResponse getMyBranchOffices(String accessToken, Long page, Long size) {
+    BranchOffice getMyBranchOffices(String accessToken, Long page, Long size) {
         def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me/branch-office"))
                 .queryParam("page", page)
                 .queryParam("size", size)
@@ -630,7 +630,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(AUTHORIZATION, "Bearer $accessToken")
                         .build()
-                , new ParameterizedTypeReference<CustomerResponse>() {}).body
+                , new ParameterizedTypeReference<BranchOffice>() {}).body
 
         response.content.each {
             it.accessToken = accessToken
@@ -664,6 +664,34 @@ class CustomerBridgeImpl implements CustomerBridge {
     Void disableBranchOffice(String accessToken, String branchOfficeId) {
         wabi2bSdk.disableBranchOffice(branchOfficeId, accessToken).block(Duration.ofMillis(30000))
         return Void.SUCCESS
+    }
+
+    @Override
+    Long countTotalBranchOffice(String accessToken) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/branch-office/count")).toUriString().toURI()
+
+        def response = http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION, "Bearer $accessToken")
+                        .build()
+                , new ParameterizedTypeReference<Map<String, Long>>() {}).body
+
+        response.get("total")
+    }
+
+    @Override
+    Long countActiveBranchOffice(String accessToken) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/branch-office/count")).toUriString().toURI()
+
+        def response = http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION, "Bearer $accessToken")
+                        .build()
+                , new ParameterizedTypeReference<Map<String, Long>>() {}).body
+
+        response.get("active")
     }
 
     private Customer mapCustomer(Customer customer, String accessToken) {

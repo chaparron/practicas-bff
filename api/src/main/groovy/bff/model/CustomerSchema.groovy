@@ -475,7 +475,9 @@ class IsValidPhoneInput {
     String countryCode
 }
 
-class CustomerResponse extends PaginatedResponse<Customer> {
+class BranchOffice extends PaginatedResponse<Customer> {
+    Long total
+    Long active
 }
 
 class GetMyBranchOfficesInput extends PaginatedInput {
