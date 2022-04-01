@@ -55,10 +55,6 @@ interface CustomerBridge {
 
     Void disableWhatsApp(AccessTokenInput input)
 
-    Void userDevice(UserDeviceInput input)
-
-    Void deleteUserDevice(AccessTokenInput input)
-
     List<SuppliersNameResult> getSuppliersThatHasSuggestedOrders(String accessToken)
 
     SuggestedOrderResult getSuggestedOrder(GetSuggestedOrderInput input)
