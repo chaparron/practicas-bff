@@ -38,18 +38,16 @@ enum ChallengeDemandFailureReason {
 }
 
 enum ChallengeAnswerFailureReason {
-  # When the provided SMS code is incorrect or the challengeId does not exist.
+  # Challenge not resolved
   UNAUTHORIZED
-  # Challenge id do not exist for this user
-  UNKNOWN_CHALLENGE_ID
-  # User already answer this challenge and is verified
-  USER_ALREADY_USES_PASSWORDLESS,
-
-  INCORRECT_CODE,
-  # When the challengeId that has been provided has already expired
+  # The challenge can no longer be solved
   EXPIRED_CHALLENGE
-  # When the limit of failures allowed to validate the SMS code has been reached
-  MAX_ATTEMPTS_REACHED
+  # User already answer this challenge and is verified
+  USER_ALREADY_USES_PASSWORDLESS
+
+  INCORRECT_CODE @deprecated(reason: "Now returns: UNAUTHORIZED")
+  MAX_ATTEMPTS_REACHED @deprecated(reason: "Now returns: EXPIRED_CHALLENGE")
+  UNKNOWN_CHALLENGE_ID @deprecated(reason: "Now returns: EXPIRED_CHALLENGE")
 }
 
 enum RegisterFailureReason {
