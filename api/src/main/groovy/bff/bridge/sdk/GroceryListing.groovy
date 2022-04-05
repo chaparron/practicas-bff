@@ -778,15 +778,15 @@ class GroceryListing {
         }
 
         protected CommercialPromotion commercialPromotion(AvailableOption option,
-                                                          AvailableDiscount discount,
+                                                          AvailableDiscount promotion,
                                                           String countryId) {
             new CommercialPromotion(
-                    id: discount.id(),
-                    description: discount.description(),
-                    expiration: new TimestampOutput(discount.expiration().toString()),
+                    id: promotion.id(),
+                    description: promotion.description(),
+                    expiration: new TimestampOutput(promotion.expiration().toString()),
                     type: new Discount(
-                            progressive: discount.progressive(),
-                            steps: asJava(discount.steps()).collect {
+                            progressive: promotion.progressive(),
+                            steps: asJava(promotion.steps()).collect {
                                 new DiscountStep(
                                         from: it.from(),
                                         to: it.to(),
@@ -800,15 +800,19 @@ class GroceryListing {
             )
         }
 
-        protected CommercialPromotion commercialPromotion(AvailableFreeProduct freeProduct) {
+        protected CommercialPromotion commercialPromotion(AvailableFreeProduct promotion) {
             new CommercialPromotion(
-                    id: freeProduct.id(),
-                    description: freeProduct.description(),
-                    expiration: new TimestampOutput(freeProduct.expiration().toString()),
+                    id: promotion.id(),
+                    description: promotion.description(),
+                    expiration: new TimestampOutput(promotion.expiration().toString()),
                     type: new FreeProduct(
-                            id: freeProduct.product().toInteger(),
+                            id: promotion.product().id().toInteger(),
+                            name: promotion.product().name().defaultEntry(),
+                            images: asJava(promotion.product().images()),
                             display: new Display(
-                                    id: freeProduct.display().toInteger()
+                                    id: promotion.display().id().toInteger(),
+                                    ean: promotion.display().ean(),
+                                    units: promotion.display().units()
                             )
                     )
             )

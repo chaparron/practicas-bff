@@ -22,8 +22,7 @@ type Discount {
 
 type FreeProduct {
   id: ID!
-  title: String!
+  name: String!
   images(size: ProductImageSize!, take: Int): [String!]!
   display: Display!
-  favorite: Boolean!
 }

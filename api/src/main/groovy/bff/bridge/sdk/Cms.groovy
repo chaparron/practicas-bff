@@ -398,15 +398,15 @@ class BuildModulePiecesQueryResponseMapper {
     }
 
     protected static CommercialPromotion commercialPromotion(AvailableOption option,
-                                                             CmsDiscount discount,
+                                                             CmsDiscount promotion,
                                                              String countryId) {
         new CommercialPromotion(
-                id: discount.id(),
-                description: discount.description(),
-                expiration: new TimestampOutput(discount.expiration().toString()),
+                id: promotion.id(),
+                description: promotion.description(),
+                expiration: new TimestampOutput(promotion.expiration().toString()),
                 type: new Discount(
-                        progressive: discount.progressive(),
-                        steps: asJava(discount.steps()).collect {
+                        progressive: promotion.progressive(),
+                        steps: asJava(promotion.steps()).collect {
                             new DiscountStep(
                                     from: it.from(),
                                     to: it.to(),
@@ -420,15 +420,15 @@ class BuildModulePiecesQueryResponseMapper {
         )
     }
 
-    protected static CommercialPromotion commercialPromotion(CmsFreeProduct freeProduct) {
+    protected static CommercialPromotion commercialPromotion(CmsFreeProduct promotion) {
         new CommercialPromotion(
-                id: freeProduct.id(),
-                description: freeProduct.description(),
-                expiration: new TimestampOutput(freeProduct.expiration().toString()),
+                id: promotion.id(),
+                description: promotion.description(),
+                expiration: new TimestampOutput(promotion.expiration().toString()),
                 type: new FreeProduct(
-                        id: freeProduct.product().toInteger(),
+                        id: promotion.product().toInteger(),
                         display: new Display(
-                                id: freeProduct.display().toInteger()
+                                id: promotion.display().toInteger()
                         )
                 )
         )
