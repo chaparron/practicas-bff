@@ -147,7 +147,7 @@ class Cms {
             return new BuildModulePiecesQueryResponseMapper(context).map(response)
         } catch (Exception ex) {
             log.error("Error building module pieces for request {}", request, ex)
-            throw ex
+            return []
         }
     }
 
