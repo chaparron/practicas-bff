@@ -426,9 +426,13 @@ class BuildModulePiecesQueryResponseMapper {
                 description: promotion.description(),
                 expiration: new TimestampOutput(promotion.expiration().toString()),
                 type: new FreeProduct(
-                        id: promotion.product().toInteger(),
+                        id: promotion.product().id().toInteger(),
+                        name: promotion.product().name().defaultEntry(),
+                        images: asJava(promotion.product().images()),
                         display: new Display(
-                                id: promotion.display().toInteger()
+                                id: promotion.display().id().toInteger(),
+                                ean: promotion.display().ean(),
+                                units: promotion.display().units()
                         )
                 )
         )
