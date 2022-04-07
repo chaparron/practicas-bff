@@ -596,6 +596,7 @@ class CustomerBridgeImpl implements CustomerBridge {
         response.accessToken = accessToken
         response.content.each {
             it.accessToken = accessToken
+            it.user.accessToken = accessToken
         }
         response
     }
