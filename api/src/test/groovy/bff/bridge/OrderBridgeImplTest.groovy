@@ -51,6 +51,24 @@ class OrderBridgeImplTest extends OrderBridgeImplTestData {
     }
 
     @Test
+    void testValidateOrderWithFreePromotion() {
+        Mockito.when(
+                http.exchange(
+                        RequestEntity.method(HttpMethod.POST, UriComponentsBuilder.fromUri(orderBridge.root.resolve("/order/cart/validate"))
+                                .toUriString().toURI())
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer $VALIDATE_ORDER_PROMOTION_FREE_INPUT.accessToken")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body([orders: VALIDATE_ORDER_PROMOTION_FREE_INPUT.orders])
+                        , ValidateOrderResponse))
+                .thenReturn(new ResponseEntity<ValidateOrderResponse>(
+                        new JsonSlurper().parseText(VALIDATE_ORDER_RESPONSE_ERROR) as ValidateOrderResponse, HttpStatus.OK)
+                )
+
+        def validateOrder = orderBridge.validateOrder(VALIDATE_ORDER_PROMOTION_FREE_INPUT)
+        Assert.assertEquals(2, validateOrder.errors.size())
+    }
+
+    @Test
     void testValidateOrderEmpty() {
         Mockito.when(
                 http.exchange(
