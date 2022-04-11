@@ -22,6 +22,7 @@ dependencies {
     implementation "wabi2b:regional-config:1157-a17061cc653084ce8a1900f8be8e6107100e2d83"
     implementation "com.wabi2b:phone-notifier-sdk:10144-76744096d3a1c81c01910dfeb44eff235aa2f690"
     implementation "wabi2b.sdk:wabi2b-api-sdk:1924-d7484ee50a70438b643c388ddff606fe1aa71138"
+    implementation "com.wabi2b:customers-sdk:SNAPSHOT-2022-04-11-09_40_56"
 
     implementation "io.ktor:ktor-client-cio:1.6.5"
 

@@ -7,6 +7,7 @@ import bff.configuration.BadRequestErrorException
 import bff.configuration.ConflictErrorException
 import bff.model.*
 import groovy.util.logging.Slf4j
+import io.ktor.client.features.ClientRequestException
 import org.apache.commons.lang3.NotImplementedException
 import org.apache.http.HttpHeaders
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,7 +17,9 @@ import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
+import wabi2b.dtos.customers.shared.CustomerDto
 import wabi2b.sdk.api.Wabi2bSdk
+import wabi2b.sdk.customers.customer.CustomersSdk
 
 import java.time.Duration
 
@@ -28,6 +31,10 @@ class CustomerBridgeImpl implements CustomerBridge {
     RestOperations http
     @Autowired
     Wabi2bSdk wabi2bSdk
+    @Autowired
+    CustomersSdk customersSdk
+    @Autowired
+    CustomerSdkMapper customerSdkMapper
 
     @Override
     Customer myProfile(String accessToken) {
@@ -656,11 +663,63 @@ class CustomerBridgeImpl implements CustomerBridge {
         response.get("active")
     }
 
+    @Override
+    AddBranchOfficeResult addBranchOffice(AddBranchOfficeInput addBranchOfficeInput) {
+        CustomerDto customerDto
+        try {
+            customerDto = customersSdk.createBranchOffice(
+                    customerSdkMapper.toDto(addBranchOfficeInput),
+                    addBranchOfficeInput.accessToken
+            )
+            Customer customer = customerSdkMapper.toCustomer(customerDto)
+            return mapCustomer(customer, addBranchOfficeInput.accessToken)
+        }catch(ClientRequestException ex){
+            def reason = AddBranchOfficeFailedReason.valueFor(ex.message)
+            if (reason != null){
+                return reason.build()
+            }
+            throw ex
+        }
+    }
+
+    @Override
+    Customer updateBranchOfficeProfile(UpdateBranchOfficeProfileInput input) {
+        CustomerDto customerDto = customersSdk.mainOfficeUpdateBranchOfficeProfile(
+                input.branchOfficeId,
+                customerSdkMapper.toDto(input),
+                input.accessToken
+        )
+        Customer customer = customerSdkMapper.toCustomer(customerDto)
+        return mapCustomer(customer, input.accessToken)
+    }
+
+    @Override
+    User getUserById(String accessToken, Long userId) {
+        def url = UriComponentsBuilder.fromUri(root.resolve("/user/${userId}")).toUriString()
+        def uri = url.toURI()
+
+        def user = http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION, prepareAccessToken(accessToken))
+                        .build()
+                , User).body
+        user.accessToken = accessToken
+        return user
+    }
+
+    private static String prepareAccessToken(String token){
+        if (token.startsWith("Bearer ")){return token}
+        return "Bearer ${token}"
+    }
+
     private Customer mapCustomer(Customer customer, String accessToken) {
         customer.customerType.id = customer.customerType.code
         customer.accessToken = accessToken
         customer.user?.accessToken = accessToken
         customer
     }
+
+
 
 }

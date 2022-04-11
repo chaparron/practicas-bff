@@ -25,6 +25,8 @@ interface SignInResult {}
 
 interface PasswordlessSignUpResult {}
 
+interface AddBranchOfficeResult {}
+
 enum CustomerStatus {
     PENDING,
     REJECTED,
@@ -130,7 +132,7 @@ enum StoreType {
     MAIN_OFFICE, BRANCH_OFFICE, STORE_OWNER, STORE
 }
 
-class Customer implements CustomerUpdateResult, PasswordlessSignUpResult {
+class Customer implements CustomerUpdateResult, PasswordlessSignUpResult, AddBranchOfficeResult {
     String accessToken
     String id
     String name
@@ -152,7 +154,7 @@ class Customer implements CustomerUpdateResult, PasswordlessSignUpResult {
     String country_id
     Country country
     StoreType storeType
-    Long storeOwnerId
+    String storeOwnerId
     Boolean permissionOnBranchOffice
 
     DeliveryPreference getDeliveryPreference() {
@@ -256,12 +258,40 @@ enum DeleteAddressFailedReason {
     }
 }
 
+enum AddBranchOfficeFailedReason {
+    INVALID_COUNTRY,
+    PHONE_ALREADY_EXIST,
+    EMAIL_ALREADY_EXIST,
+    INVALID_CUSTOMER_TYPE
+
+    static AddBranchOfficeFailedReason valueFor(String message){
+        if (message.contains(INVALID_COUNTRY.name())){
+            return INVALID_COUNTRY
+        }else if (message.contains(PHONE_ALREADY_EXIST.name())){
+            return PHONE_ALREADY_EXIST
+        }else if (message.contains(EMAIL_ALREADY_EXIST.name())){
+            return EMAIL_ALREADY_EXIST
+        }else if (message.contains("No such customer type")){
+            return INVALID_CUSTOMER_TYPE
+        }
+        return null
+    }
+
+    AddBranchOfficeFailed build() {
+        new AddBranchOfficeFailed(reason: this)
+    }
+}
+
 class AddAddressFailed implements AddAddressResult {
     AddAddressFailedReason reason
 }
 
 class DeleteAddressFailed implements DeleteAddressResult {
     DeleteAddressFailedReason reason
+}
+
+class AddBranchOfficeFailed implements AddBranchOfficeResult {
+    AddBranchOfficeFailedReason reason
 }
 
 class SignInFailed implements SignInResult {
@@ -299,6 +329,15 @@ class CustomerUpdateInputV2 {
     String deliveryComment
     List<VerificationDocument> verificationDocuments
     String accessToken
+    boolean marketingEnabled
+}
+
+class UpdateBranchOfficeProfileInput{
+    String accessToken
+    String branchOfficeId
+    Boolean acceptWhatsApp
+    WorkingDays workingDays
+    List<VerificationDocument> verificationDocuments
     boolean marketingEnabled
 }
 
@@ -498,4 +537,22 @@ class EnableBranchOfficeInput {
 class DisableBranchOfficeInput {
     String branchOfficeId
     String accessToken
+}
+
+class AddBranchOfficeInput{
+    String accessToken
+    String mainOfficeId
+    String name
+    Boolean emailVerification
+    String linePhone
+    String firstName
+    String lastName
+    String countryCode
+    String phone
+    String email
+    AddressInput address
+    WorkingDays workingDays
+    String deliveryComment
+    String customerTypeId
+    List<VerificationDocumentInput> verificationDocuments
 }
