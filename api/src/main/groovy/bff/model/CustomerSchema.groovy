@@ -129,7 +129,7 @@ class CustomerType {
 }
 
 enum StoreType {
-    MAIN_OFFICE, BRANCH_OFFICE, STORE_OWNER, STORE
+    MAIN_OFFICE, BRANCH_OFFICE
 }
 
 class Customer implements CustomerUpdateResult, PasswordlessSignUpResult, AddBranchOfficeResult {
