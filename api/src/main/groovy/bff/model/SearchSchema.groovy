@@ -408,6 +408,28 @@ class Product implements ProductResult {
     Brand brand
     String country_id
     boolean favorite
+
+    Product() {}
+
+    Product(ProductSearch product) {
+        this.accessToken = product.accessToken
+        this.id = product.id
+        this.name = product.name
+        this.enabled = product.enabled
+        this.ean = product.ean
+        this.description = product.description
+        this.created = null
+        this.title = product.title
+        this.prices = product.prices
+        this.displays = product.displays
+        this.priceFrom = product.priceFrom
+        this.minUnitsPrice = product.minUnitsPrice
+        this.highlightedPrice = product.highlightedPrice
+        this.brand = product.brand
+        this.country_id = product.country_id
+        this.favorite = product.favorite
+    }
+
 }
 
 @ToString

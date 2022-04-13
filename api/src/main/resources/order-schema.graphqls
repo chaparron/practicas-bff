@@ -427,6 +427,11 @@ type ProductCart {
   supplierPrices: [SupplierPrice]!
 }
 
+type PromotedProductsCart {
+  commercialPromotion: CommercialPromotion!
+  products: [ProductCart!]!
+}
+
 type SupplierPrice {
   id: Int!
   name: String
@@ -444,6 +449,16 @@ type SupplierPrice {
 input RefreshCartInput {
   accessToken: String!
   products: [Int]
+}
+
+input SyncCartInput {
+  accessToken: String!
+  items: [ProductCartItemInput!]!
+}
+
+type SyncCartResult {
+  promoted: [PromotedProductsCart!]!
+  unpromoted: [ProductCart!]!
 }
 
 enum PlaceOrderFailedReason {
@@ -592,6 +607,13 @@ input CartItemInput {
   productId: Int!
   units: Int
   quantity: Int!
+}
+
+input ProductCartItemInput {
+  productId: Int!
+  units: Int
+  quantity: Int!
+  supplierId: Int!
 }
 
 type OrderSummaryResponse {

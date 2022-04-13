@@ -2,6 +2,7 @@ package bff.bridge.sdk
 
 import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
+import bff.bridge.sdk.GroceryListing.SuggestionQueryRequestBuilder
 import bff.configuration.EntityNotFoundException
 import bff.model.*
 import groovy.util.logging.Slf4j
@@ -173,8 +174,26 @@ class GroceryListing {
         }
     }
 
-    Cart refreshCart(String accessToken, List<Integer> products) {
-        def request = availableProductsForCustomer(accessToken)
+    Cart refreshCart(RefreshCartInput input) {
+        def request = availableProductsForCustomer(input.accessToken)
+                .sized(input.products.size())
+                .filteredByProduct(
+                        input.products.head().toString(),
+                        asScala(input.products.tail().collect { it.toString() }).toSeq()
+                )
+                .fetchingOptions(50, Option.apply(new FetchDeliveryZones(1)))
+        try {
+            def response = sdk.query(request)
+            return new RefreshCartMapper(input, request).map(response)
+        } catch (Exception ex) {
+            log.error("Error refreshing cart for request {}", request, ex)
+            throw ex
+        }
+    }
+
+    SyncCartResult syncCart(SyncCartInput input) {
+        def products = input.items.collect { it.productId }.toSet()
+        def request = availableProductsForCustomer(input.accessToken)
                 .sized(products.size())
                 .filteredByProduct(
                         products.head().toString(),
@@ -183,9 +202,9 @@ class GroceryListing {
                 .fetchingOptions(50, Option.apply(new FetchDeliveryZones(1)))
         try {
             def response = sdk.query(request)
-            return new CartMapper(request, accessToken).map(response)
+            return new SyncCartMapper(input, request).map(response)
         } catch (Exception ex) {
-            log.error("Error refreshing cart for request {}", request, ex)
+            log.error("Error synchronizing cart for request {}", request, ex)
             throw ex
         }
     }
@@ -1328,52 +1347,70 @@ class GroceryListing {
         }
     }
 
-    private class CartMapper extends ProductQueryResponseMapper {
+    private class RefreshCartMapper extends ProductQueryResponseMapper {
 
-        CartMapper(ProductQueryRequest request, String accessToken) {
-            super(request, accessToken)
+        RefreshCartMapper(RefreshCartInput input, ProductQueryRequest request) {
+            super(request, input.accessToken)
         }
 
         Cart map(ProductQueryResponse response) {
             def products = products(response)
             new Cart(
-                    availableProducts: products.collect {
-                        new ProductCart(
-                                product: new Product(
-                                        id: it.id,
-                                        name: it.name,
-                                        brand: it.brand,
-                                        enabled: it.enabled,
-                                        ean: it.ean,
-                                        description: it.description,
-                                        title: it.title,
-                                        prices: it.prices,
-                                        displays: it.displays,
-                                        priceFrom: it.priceFrom,
-                                        minUnitsPrice: it.minUnitsPrice,
-                                        highlightedPrice: it.highlightedPrice,
-                                        country_id: it.country_id,
-                                        favorite: it.favorite,
-                                        accessToken: it.accessToken
-                                ),
-                                supplierPrices: it.prices.collect {
-                                    new SupplierPrice(
-                                            id: it.supplier.id,
-                                            name: it.supplier.name,
-                                            price: it.value,
-                                            display: it.display,
-                                            minUnits: it.minUnits,
-                                            maxUnits: it.maxUnits,
-                                            avatar: it.supplier.avatar,
-                                            deliveryZone: it.supplier.deliveryZones?.head(),
-                                            configuration: it.configuration,
-                                            accessToken: it.supplier.accessToken
-                                    )
-                                }.toSet().toList()
-                        )
-                    },
+                    availableProducts: products.collect { new ProductCart(it) },
                     suppliers: products.collect { it.prices.collect { it.supplier } }
                             .flatten().toSet().toList() as List<Supplier>
+            )
+        }
+
+    }
+
+    private class SyncCartMapper extends ProductQueryResponseMapper {
+
+        SyncCartInput input
+
+        SyncCartMapper(SyncCartInput input, ProductQueryRequest request) {
+            super(request, input.accessToken)
+            this.input = input
+        }
+
+        SyncCartResult map(ProductQueryResponse response) {
+            // we first retain all those products that contain requested items
+            def available =
+                    products(response).collect { product ->
+                        ofNullable(
+                                product.prices.find { price ->
+                                    input.items.find { item ->
+                                        item.productId == product.id &&
+                                                item.supplierId == price.supplier.id.toInteger() &&
+                                                item.units == price.display.units
+                                    }
+                                }
+                        ).map { new Tuple2(new ProductCart(product), ofNullable(it.commercialPromotion)) }
+                    }
+                            .findAll { it.isPresent() }
+                            .collect { it.get() }
+            // then we grouped them by commercial promotion, sorting first one those with free products
+            def promoted =
+                    available
+                            .findAll { it.second.isPresent() }
+                            .groupBy { it.second.get() }
+                            .collect {
+                                new PromotedProductsCart(
+                                        commercialPromotion: it.key as CommercialPromotion,
+                                        products: it.value.collect { it.first as ProductCart }
+                                )
+                            }
+                            .sort {
+                                (it.commercialPromotion.type instanceof FreeProduct) ? -1 : 1
+                            }
+            // then we list those with no commercial promotion at all
+            def unpromoted =
+                    available
+                            .findAll { it.second.isEmpty() }
+                            .collect { it.first as ProductCart }
+            new SyncCartResult(
+                    promoted: promoted,
+                    unpromoted: unpromoted
             )
         }
 
@@ -1387,25 +1424,7 @@ class GroceryListing {
 
         Optional<Product> map(ProductQueryResponse response) {
             def products = products(response)
-            products.isEmpty() ? empty() : of(products.head()).map {
-                new Product(
-                        id: it.id,
-                        name: it.name,
-                        enabled: it.enabled,
-                        ean: it.ean,
-                        description: it.description,
-                        title: it.title,
-                        prices: it.prices,
-                        displays: it.displays,
-                        priceFrom: it.priceFrom,
-                        minUnitsPrice: it.minUnitsPrice,
-                        highlightedPrice: it.highlightedPrice,
-                        brand: it.brand,
-                        country_id: it.country_id,
-                        favorite: it.favorite,
-                        accessToken: it.accessToken
-                )
-            }
+            products.isEmpty() ? empty() : of(products.head()).map { new Product(it) }
         }
 
     }

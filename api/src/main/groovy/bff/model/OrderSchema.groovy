@@ -490,6 +490,12 @@ class ProductCart {
     Product product
     List<SupplierPrice> suppliers //dumb
     List<SupplierPrice> supplierPrices
+
+    ProductCart(ProductSearch product) {
+        this.product = new Product(product)
+        this.supplierPrices = product.prices.collect { new SupplierPrice(it) }.toSet().toList()
+    }
+
 }
 
 class SupplierPrice {
@@ -504,6 +510,23 @@ class SupplierPrice {
     String avatar
     DeliveryZone deliveryZone
     SupplierProductConfiguration configuration
+
+    SupplierPrice() {}
+
+    SupplierPrice(Price price) {
+        this.accessToken = price.accessToken
+        this.id = price.supplier.id.toInteger()
+        this.name = price.supplier.name
+        this.price = price.value
+        this.priceMoney = price.valueMoney
+        this.display = price.display
+        this.minUnits = price.minUnits
+        this.maxUnits = price.maxUnits
+        this.avatar = price.supplier.avatar
+        this.deliveryZone = price.supplier.deliveryZones?.head()
+        this.configuration = price.configuration
+    }
+
 }
 
 class CartFailed implements CartResult {
@@ -513,6 +536,21 @@ class CartFailed implements CartResult {
 class RefreshCartInput {
     String accessToken
     List<Integer> products
+}
+
+class SyncCartInput {
+    String accessToken
+    Set<ProductCartItemInput> items
+}
+
+class SyncCartResult {
+    List<PromotedProductsCart> promoted
+    List<ProductCart> unpromoted
+}
+
+class PromotedProductsCart {
+    CommercialPromotion commercialPromotion
+    List<ProductCart> products
 }
 
 class PlaceOrderFailed implements PlaceOrderResult {
@@ -572,6 +610,10 @@ class CartItemInput {
     Integer quantity
 }
 
+class ProductCartItemInput extends CartItemInput {
+    Integer supplierId
+}
+
 class SummaryFailed implements SummaryResult {
     SummaryFailedReason reason
 }
@@ -598,7 +640,6 @@ class OrderSummary {
     Supplier supplier
     List<Summary> summary
 }
-
 
 
 class Summary {

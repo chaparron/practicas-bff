@@ -57,6 +57,9 @@ type Query {
   # Get new prices and supplier availabities
   refreshCart(input: RefreshCartInput!): CartResult!
 
+  # Synchronize customer products selection with current availability
+  syncCart(input: SyncCartInput!): SyncCartResult!
+
   # Validate username
   validateUsername(input: ValidateUsernameInput!): Boolean!
 

@@ -150,11 +150,15 @@ class Query implements GraphQLQueryResolver {
         customerBridge.getCancelOptions(accessTokenInput.accessToken)
     }
 
-    CartResult refreshCart(RefreshCartInput refreshCartInput) {
-        if (refreshCartInput.products.size() == 0) {
+    CartResult refreshCart(RefreshCartInput input) {
+        if (input.products.size() == 0) {
             log.debug("refresh cart error: EMPTY_PRODUCTS")
             CartFailedReason.valueOf(CartFailedReason.EMPTY_PRODUCTS.name()).build()
-        } else groceryListing.refreshCart(refreshCartInput.accessToken, refreshCartInput.products)
+        } else groceryListing.refreshCart(input)
+    }
+
+    SyncCartResult syncCart(SyncCartInput input) {
+        groceryListing.syncCart(input)
     }
 
     boolean validateUsername(ValidateUsernameInput input) {
