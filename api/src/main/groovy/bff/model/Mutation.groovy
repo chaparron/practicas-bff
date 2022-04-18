@@ -371,6 +371,14 @@ class Mutation implements GraphQLMutationResolver {
         customerBridge.disableBranchOffice(disableBranchOfficeInput.accessToken, disableBranchOfficeInput.branchOfficeId)
     }
 
+    AddBranchOfficeResult addBranchOffice(AddBranchOfficeInput addBranchOfficeInput){
+        customerBridge.addBranchOffice(addBranchOfficeInput)
+    }
+
+    Customer updateBranchOfficeProfile(UpdateBranchOfficeProfileInput input){
+        customerBridge.updateBranchOfficeProfile(input)
+    }
+
     private LoginResult resolveCredentialsResponse(Credentials credentials, Boolean deviceSupportLegacy) {
 
         List<String> authorities = JwtToken.authorities(credentials.accessToken)

@@ -18,6 +18,8 @@ import wabi2b.grocery.listing.sdk.Sdk as GroceryListingSdk
 import wabi2b.sdk.api.HttpWabi2bSdk
 import wabi2b.sdk.api.Wabi2bSdk
 import wabi2b.sdk.credits.HttpSupplierCreditsSdk
+import wabi2b.sdk.customers.customer.CustomersSdk
+import wabi2b.sdk.customers.customer.HttpCustomersSdk
 import wabi2b.sdk.regional.HttpRegionalConfigSdk
 import wabi2b.sdk.regional.RegionalConfigSdk
 
@@ -37,6 +39,8 @@ class SdkConfiguration {
     String siteRoot
     @Value('${api.root}')
     URI wabi2bApiURI
+    @Value('${customers.url}')
+    String customersUrl
 
     @Autowired
     CountryBridge countryBridge
@@ -82,4 +86,10 @@ class SdkConfiguration {
     Wabi2bSdk wabi2bSdk(){
         return new HttpWabi2bSdk.Builder().withBaseURI(wabi2bApiURI).build()
     }
+
+    @Bean
+    CustomersSdk customersSdk(){
+        return new HttpCustomersSdk(customersUrl)
+    }
+
 }

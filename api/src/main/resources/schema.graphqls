@@ -226,6 +226,11 @@ type Mutation {
   enableBranchOffice(input: EnableBranchOfficeInput!): Void!
 
   disableBranchOffice(input: DisableBranchOfficeInput!): Void!
+
+  addBranchOffice(addBranchOfficeInput: AddBranchOfficeInput!): AddBranchOfficeResult!
+
+  updateBranchOfficeProfile(updateBranchOfficeProfileInput: UpdateBranchOfficeProfileInput!): Customer!
+
 }
 
 scalar NonEmptyString
@@ -481,6 +486,17 @@ type AddAddressFailed {
   reason: AddAddressFailedReason!
 }
 
+enum AddBranchOfficeFailedReason {
+  INVALID_COUNTRY,
+  PHONE_ALREADY_EXIST,
+  EMAIL_ALREADY_EXIST,
+  INVALID_CUSTOMER_TYPE
+}
+
+type AddBranchOfficeFailed{
+  reason: AddBranchOfficeFailedReason!
+}
+
 enum DeleteAddressFailedResult {
   NOT_ADDRESS_CUSTOMER
 }
@@ -546,6 +562,8 @@ union SignInResult = SignInFailed | GenericCredentials
 union PasswordlessSignUpResult = PasswordlessSignUpFailed | Customer
 
 union BannerDialogResult = SiteConfigurationFailed | BannerDialog
+
+union AddBranchOfficeResult = AddBranchOfficeFailed | Customer
 
 input MillisecondsPeriodInput {
   from: Long,
