@@ -34,4 +34,11 @@ class CustomerResolver implements GraphQLResolver<Customer> {
         countryBridge.getCountry(customer.country_id)
     }
 
+    User user(Customer customer) {
+        if (customer.user.username == null){
+            return customerBridge.getUserById(customer.accessToken, customer.user.id)
+        }
+        return customer.user
+    }
+
 }

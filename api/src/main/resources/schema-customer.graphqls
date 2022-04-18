@@ -218,6 +218,32 @@ input CustomerUpdateInputV2 {
   marketingEnabled: Boolean
 }
 
+input AddBranchOfficeInput {
+  accessToken: String!
+  name: String!
+  emailVerification: Boolean
+  linePhone: String
+  firstName: String!
+  lastName: String!
+  countryCode: String!
+  phone: String!
+  email: String
+  address: AddressTypeInput!
+  workingDays: WorkingDaysInput!
+  deliveryComment: String
+  customerTypeId: ID!
+  verificationDocs: [VerificationDocumentInput]
+}
+
+input UpdateBranchOfficeProfileInput {
+  accessToken: String!
+  branchOfficeId: String!
+  acceptWhatsApp: Boolean
+  workingDays: WorkingDaysInput
+  verificationDocuments: [VerificationDocumentInput]
+  marketingEnabled: Boolean
+}
+
 input VerifyEmailInput {
     id: ID!
     token: String!
@@ -305,7 +331,7 @@ type Customer {
 }
 
 enum StoreType {
-  MAIN_OFFICE, BRANCH_OFFICE, STORE_OWNER, STORE
+  MAIN_OFFICE, BRANCH_OFFICE
 }
 
 type WorkingDays {

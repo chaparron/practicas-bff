@@ -1,11 +1,6 @@
 package bff.bridge.data
 
-import bff.model.FilterOrderStatus
-import bff.model.FindOrdersInput
-import bff.model.MillisecondsPeriodInput
-import bff.model.OrderInput
-import bff.model.ProductOrderInput
-import bff.model.ValidateOrderInput
+import bff.model.*
 
 abstract class OrderBridgeImplTestData {
 
@@ -22,6 +17,32 @@ abstract class OrderBridgeImplTestData {
                             units: 1,
                             quantity: 1,
                             price: new BigDecimal(10)
+                    )]
+            )]
+    )
+
+    protected static final ValidateOrderInput VALIDATE_ORDER_PROMOTION_FREE_INPUT = new ValidateOrderInput(
+            accessToken: JWT_AR,
+            orders: [new OrderInput(
+                    supplierId: 1,
+                    deliveryZoneId: 1L,
+                    deliveryCost: new BigDecimal(10),
+                    products: [new ProductOrderInput(
+                            productId: 1,
+                            units: 1,
+                            quantity: 1,
+                            price: new BigDecimal(10)
+                    )],
+                    productsFree: [new ProductFreeInput(
+                            triggerCartItems: [new TriggerCartItem(
+                                    productId: 1,
+                                    units: 1
+                            )],
+                            product: new ProductFreeItemInput(
+                                    productId: 2,
+                                    units: 1,
+                                    quantity: 1
+                            )
                     )]
             )]
     )

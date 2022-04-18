@@ -76,4 +76,10 @@ interface CustomerBridge {
     Long countTotalBranchOffice(String accessToken)
 
     Long countActiveBranchOffice(String accessToken)
+
+    AddBranchOfficeResult addBranchOffice(AddBranchOfficeInput addBranchOfficeInput)
+
+    Customer updateBranchOfficeProfile(UpdateBranchOfficeProfileInput input)
+
+    User getUserById(String accessToken, Long userId)
 }

@@ -358,6 +358,11 @@ Resources:
             - "{{resolve:secretsmanager:${secretId}:SecretString:secret}}"
             - secretId: !FindInMap [ Config, !Ref EnvironmentStackName, JwtSigningKeyId ]
 
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: customers_url
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-customers-ApiRootURL"
+
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:

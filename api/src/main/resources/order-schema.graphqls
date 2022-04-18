@@ -475,7 +475,8 @@ enum PlaceOrderFailedReason {
   MAX_AMOUNT_EXCEEDED,
   MAX_ALLOWED_PRODUCT_EXCEEDED,
   PRODUCTS_UNAVAILABLE,
-  INVALID_COUPON
+  INVALID_COUPON,
+  PRODUCT_FREE_NOT_APPLY
 }
 
 union PlaceOrderResult = Void | PlaceOrderFailed
@@ -489,6 +490,23 @@ input OrderInput {
   deliveryCost: Float!
   deliveryZoneId: Int!
   products: [ProductOrderInput]!
+  productsFree: [ProductFreeInput]
+}
+
+input ProductFreeInput {
+  triggerCartItems: [TriggerCartItem]!
+  product: ProductFreeItemInput!
+}
+
+input TriggerCartItem {
+  productId: Int!
+  units: Int!
+}
+
+input ProductFreeItemInput {
+  productId: Int!
+  quantity: Int!
+  units: Int!
 }
 
 input PlaceOrderInput {
@@ -540,7 +558,8 @@ enum OrderErrorType {
   SUPPLIER_UNAVAILABLE,
   DELIVERY_COST_CHANGED,
   INVALID_DELIVERY_ZONE
-  PRODUCT_UNAVAILABLE
+  PRODUCT_UNAVAILABLE,
+  PRODUCT_FREE_NOT_APPLY
 }
 
 input ProductOrderInput {

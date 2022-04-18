@@ -448,7 +448,8 @@ enum PlaceOrderFailedReason {
     MAX_AMOUNT_EXCEEDED,
     MAX_ALLOWED_PRODUCT_EXCEEDED,
     PRODUCTS_UNAVAILABLE,
-    INVALID_COUPON
+    INVALID_COUPON,
+    PRODUCT_FREE_NOT_APPLY
 
     def build() {
         new PlaceOrderFailed(reason: this)
@@ -567,8 +568,24 @@ class OrderInput {
     Long deliveryZoneId
     BigDecimal deliveryCost
     List<ProductOrderInput> products
+    List<ProductFreeInput> productsFree
 }
 
+class ProductFreeInput {
+    List<TriggerCartItem> triggerCartItems
+    ProductFreeItemInput product
+}
+
+class TriggerCartItem {
+    Integer productId
+    Integer units
+}
+
+class ProductFreeItemInput {
+    Integer productId
+    Integer quantity
+    Integer units
+}
 
 class PlaceOrderInput {
     String accessToken
@@ -765,7 +782,8 @@ enum OrderErrorType {
     SUPPLIER_UNAVAILABLE,
     PRODUCT_UNAVAILABLE,
     DELIVERY_COST_CHANGED,
-    INVALID_DELIVERY_ZONE
+    INVALID_DELIVERY_ZONE,
+    PRODUCT_FREE_NOT_APPLY
 
 }
 
