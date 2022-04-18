@@ -59,7 +59,7 @@ class QueryTest {
         )
         def result = new Cart()
 
-        when(groceryListing.refreshCart(input.accessToken, input.products)).thenReturn(result)
+        when(groceryListing.refreshCart(input)).thenReturn(result)
 
         assertEquals(result, query.refreshCart(input))
         verify(productBridge, never()).refreshCart(input.accessToken, input.products)
