@@ -724,41 +724,43 @@ class GroceryListing {
         }
 
         protected List<ProductSearch> products(ProductQueryResponse response) {
-            asJava(response.hits()).collect {
-                def country = it.manufacturer().country()
-                def prices = asJava(it.options()).collect { option -> price(option, country) }
-                def displays = asJava(it.options()).collect { display(it) }.toSet().toList()
-                new ProductSearch(
-                        id: it.id().toLong(),
-                        name: it.name().defaultEntry(),
-                        category: new Category(
-                                id: it.categorization().last().id().toLong(),
-                                parentId: toJava(it.categorization().last().parent())
-                                        .map { it.toLong() }.orElse(null),
-                                name: it.categorization().last().name().defaultEntry(),
-                                enabled: true,
-                                isLeaf: true
-                        ),
-                        brand: new Brand(
-                                id: it.brand().id().toLong(),
-                                name: it.brand().name().defaultEntry()
-                        ),
-                        ean: displays.sort { it.units }?.getAt(0)?.ean,
-                        description: toJava(it.description()).map { it.defaultEntry() }.orElse(null),
-                        images: asJava(it.images()).collect { new Image(id: it) },
-                        displays: displays,
-                        prices: prices,
-                        minUnitsPrice: prices.min { Price a, Price b ->
-                            (a.minUnits == b.minUnits) ? a.unitValue <=> b.unitValue : a.minUnits <=> b.minUnits
-                        },
-                        highlightedPrice: prices.min { it.netUnitValue() },
-                        priceFrom: prices.min { it.netValue() },
-                        title: it.name().defaultEntry(),
-                        country_id: it.manufacturer().country(),
-                        favorite: toJava(it.favourite()).orElse(false),
-                        accessToken: this.accessToken.orElse(null)
-                )
-            }
+            asJava(response.hits()).collect { product(it) }
+        }
+
+        protected ProductSearch product(AvailableProduct product) {
+            def country = product.manufacturer().country()
+            def prices = asJava(product.options()).collect { option -> price(option, country) }
+            def displays = asJava(product.options()).collect { display(it) }.toSet().toList()
+            new ProductSearch(
+                    id: product.id().toLong(),
+                    name: product.name().defaultEntry(),
+                    category: new Category(
+                            id: product.categorization().last().id().toLong(),
+                            parentId: toJava(product.categorization().last().parent())
+                                    .map { it.toLong() }.orElse(null),
+                            name: product.categorization().last().name().defaultEntry(),
+                            enabled: true,
+                            isLeaf: true
+                    ),
+                    brand: new Brand(
+                            id: product.brand().id().toLong(),
+                            name: product.brand().name().defaultEntry()
+                    ),
+                    ean: displays.sort { it.units }?.getAt(0)?.ean,
+                    description: toJava(product.description()).map { it.defaultEntry() }.orElse(null),
+                    images: asJava(product.images()).collect { new Image(id: it) },
+                    displays: displays,
+                    prices: prices,
+                    minUnitsPrice: prices.min { Price a, Price b ->
+                        (a.minUnits == b.minUnits) ? a.unitValue <=> b.unitValue : a.minUnits <=> b.minUnits
+                    },
+                    highlightedPrice: prices.min { it.netUnitValue() },
+                    priceFrom: prices.min { it.netValue() },
+                    title: product.name().defaultEntry(),
+                    country_id: product.manufacturer().country(),
+                    favorite: toJava(product.favourite()).orElse(false),
+                    accessToken: this.accessToken.orElse(null)
+            )
         }
 
         protected Price price(AvailableOption option, String countryId) {
@@ -824,9 +826,8 @@ class GroceryListing {
                     description: promotion.description(),
                     expiration: new TimestampOutput(promotion.expiration().toString()),
                     type: new FreeProduct(
-                            id: promotion.product().id().toInteger(),
-                            name: promotion.product().name().defaultEntry(),
-                            images: asJava(promotion.product().images()),
+                            from: promotion.from(),
+                            product: new Product(product(promotion.product())),
                             display: new Display(
                                     id: promotion.display().id().toInteger(),
                                     ean: promotion.display().ean(),

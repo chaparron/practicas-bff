@@ -420,15 +420,14 @@ class BuildModulePiecesQueryResponseMapper {
         )
     }
 
-    protected static CommercialPromotion commercialPromotion(CmsFreeProduct promotion) {
+    protected CommercialPromotion commercialPromotion(CmsFreeProduct promotion) {
         new CommercialPromotion(
                 id: promotion.id(),
                 description: promotion.description(),
                 expiration: new TimestampOutput(promotion.expiration().toString()),
                 type: new FreeProduct(
-                        id: promotion.product().id().toInteger(),
-                        name: promotion.product().name().defaultEntry(),
-                        images: asJava(promotion.product().images()),
+                        from: promotion.from(),
+                        product: new Product(product(promotion.product())),
                         display: new Display(
                                 id: promotion.display().id().toInteger(),
                                 ean: promotion.display().ean(),

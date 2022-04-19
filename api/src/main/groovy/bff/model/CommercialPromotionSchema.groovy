@@ -28,8 +28,7 @@ class Discount implements CommercialPromotionType {
 }
 
 class FreeProduct implements CommercialPromotionType {
-    Long id
-    String name
-    List<String> images
+    Integer from
+    Product product
     Display display
 }
