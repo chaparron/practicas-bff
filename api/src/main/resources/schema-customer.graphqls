@@ -382,7 +382,7 @@ type SuggestedOrderResult {
     readDate: String
     lastUpdate: String!
     supplierName: String!
-    @deprecated items: [SuggestedOrderItem]!
+    items: [SuggestedOrderItem]! @deprecated
     products: [SuggestedOrderProduct!]!
 }
 
