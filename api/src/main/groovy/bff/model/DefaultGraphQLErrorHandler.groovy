@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.oauth2.client.resource.OAuth2AccessDeniedException
 import org.springframework.stereotype.Component
 
+import java.util.concurrent.CompletionException
+
 @Component
 @Slf4j
 class DefaultGraphQLErrorHandler implements GraphQLErrorHandler {
@@ -39,6 +41,14 @@ class DefaultGraphQLErrorHandler implements GraphQLErrorHandler {
 
     private List<GraphQLError> unwrapGraphQLError(ExceptionWhileDataFetching error) {
         unwrap(error.exception, error)
+    }
+
+    /**
+     * Concurrent exceptions, when dealing with async resolvers for example,
+     * are handled using their nested cause.
+     */
+    private List<GraphQLError> unwrap(CompletionException cause, ExceptionWhileDataFetching error) {
+        unwrap(cause.getCause(), error)
     }
 
     /**

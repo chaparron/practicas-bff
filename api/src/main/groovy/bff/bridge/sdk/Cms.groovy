@@ -127,13 +127,18 @@ class Cms {
                         }
                         .orElse(IDENTITY)
         def inLocation =
-                (ofNullable(context.coordinates) | {
+                (ofNullable(context.coordinates)
+                        .map {
+                            new Tuple2(new Coordinate(it.lat.toDouble(), it.lng.toDouble()), Option.empty())
+                        } | {
                     maybeCustomer
                             .map { it.second as Address }
-                            .map { new CoordinatesInput(lat: it.lat, lng: it.lon) }
+                            .map { new Tuple2(new Coordinate(it.lat, it.lon), Option.apply(it.state.id)) }
                 })
                         .map {
-                            { BuildModulePiecesQuery query -> query.in(it.lat.toDouble(), it.lng.toDouble()) }
+                            { BuildModulePiecesQuery query ->
+                                query.in(it.first as Coordinate, it.second as Option<String>)
+                            }
                         }
                         .orElse(IDENTITY)
         def request =
