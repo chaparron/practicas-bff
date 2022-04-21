@@ -328,6 +328,7 @@ type Customer {
     storeType: StoreType
     storeOwnerId: Long
     permissionOnBranchOffice: Boolean
+    legalAsDelivery: Boolean
 }
 
 enum StoreType {

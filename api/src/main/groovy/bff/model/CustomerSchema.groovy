@@ -156,6 +156,7 @@ class Customer implements CustomerUpdateResult, PasswordlessSignUpResult, AddBra
     StoreType storeType
     String storeOwnerId
     Boolean permissionOnBranchOffice
+    Boolean legalAsDelivery
 
     DeliveryPreference getDeliveryPreference() {
         if (workingDays.hours) {
