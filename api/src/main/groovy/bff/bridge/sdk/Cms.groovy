@@ -3,6 +3,7 @@ package bff.bridge.sdk
 import bff.bridge.CustomerBridge
 import bff.model.*
 import groovy.util.logging.Slf4j
+import org.springframework.context.MessageSource
 import org.springframework.web.util.DefaultUriBuilderFactory
 import org.springframework.web.util.UriBuilder
 import scala.Option
@@ -30,6 +31,7 @@ class Cms {
     private Sdk sdk
     private CustomerBridge customerBridge
     private String siteRoot
+    private MessageSource messageSource
 
     List<Module> find(HomeInput input) {
         def request =
@@ -42,7 +44,7 @@ class Cms {
                         )
         try {
             def response = sdk.query(request)
-            new FindModulesQueryResponseMapper(siteRoot: siteRoot).map(response)
+            new FindModulesQueryResponseMapper().map(response)
         } catch (Exception ex) {
             log.error("Error finding modules for request {}", request, ex)
             throw ex
@@ -102,7 +104,7 @@ class Cms {
                         )
         try {
             def response = sdk.query(request)
-            new FindModulesQueryResponseMapper(siteRoot: siteRoot).map(response)
+            new FindModulesQueryResponseMapper().map(response)
         } catch (Exception ex) {
             log.error("Error finding modules for request {}", request, ex)
             throw ex
@@ -168,319 +170,321 @@ class Cms {
         }
     }
 
-}
+    private class FindModulesQueryResponseMapper {
 
-class FindModulesQueryResponseMapper {
+        List<Module> map(scala.collection.immutable.List<CmsModule> modules) {
+            asJava(modules).collect {
+                new Module(
+                        id: it.id(),
+                        tag: it.tag(),
+                        title: toJava(it.title())
+                                .map { new I18N(entries: asJava(it.entries()), defaultEntry: it.defaultEntry()) },
+                        link: link(it),
+                        expiration: toJava(it.expiresIn())
+                                .map { new TimestampOutput(it.toString()) }
+                )
+            }
+        }
 
-    private String siteRoot
+        Optional<String> link(CmsModule module) {
+            def contentType = module.contentType()
+            switch (contentType) {
+                case { it instanceof ProductShowCase }:
+                    def request = (contentType as ProductShowCase).request()
+                    def filteredByTerm = { UriBuilder b ->
+                        request.filtering().byTerm()
+                                .map { b.queryParam("keyword", it.text()) }
+                                .getOrElse { b }
+                    }
+                    def filteredByCategory = { UriBuilder b ->
+                        request.filtering().byCategory()
+                                .map { b.queryParam("category", it.id()) }
+                                .getOrElse { b }
+                    }
+                    def filteredByBrand = { UriBuilder b ->
+                        request.filtering().byBrand()
+                                .map { b.queryParam("brand", it.id()) }
+                                .getOrElse { b }
+                    }
+                    def filteredByPromotion = { UriBuilder b ->
+                        request.filtering().byPromotion()
+                                .map {
+                                    it.tag()
+                                            .map { b.queryParam("tag", it) }
+                                            .getOrElse { b.queryParam("promoted", true) }
+                                }
+                                .getOrElse { b }
+                    }
+                    def filteredByFavourite = { UriBuilder b ->
+                        request.filtering().byFavourite()
+                                .map { b.queryParam("favourites", true) }
+                                .getOrElse { b }
+                    }
+                    def sortedByPrice = { UriBuilder b ->
+                        toJava(request.sorting())
+                                .filter { it instanceof ByUnitPrice }
+                                .map {
+                                    b
+                                            .queryParam("sort", "PRICE")
+                                            .queryParam("sortDirection", (it as ByUnitPrice).asc() ? "ASC" : "DESC")
+                                }
+                                .orElse(b)
+                    }
+                    def sortedAlphabetically = { UriBuilder b ->
+                        toJava(request.sorting())
+                                .filter { it instanceof Alphabetically }
+                                .map {
+                                    b
+                                            .queryParam("sort", "TITLE")
+                                            .queryParam("sortDirection", (it as Alphabetically).asc() ? "ASC" : "DESC")
+                                }
+                                .orElse(b)
+                    }
+                    def sortedByRecent = { UriBuilder b ->
+                        toJava(request.sorting())
+                                .filter { it instanceof ByLastAvailabilityUpdate$ }
+                                .map { b.queryParam("sort", "RECENT") }
+                                .orElse(b)
+                    }
+                    return of(
+                            [
+                                    filteredByTerm,
+                                    filteredByCategory,
+                                    filteredByBrand,
+                                    filteredByPromotion,
+                                    filteredByFavourite,
+                                    sortedByPrice,
+                                    sortedAlphabetically,
+                                    sortedByRecent
+                            ]
+                                    .inject(
+                                            new DefaultUriBuilderFactory(siteRoot + "/site/listing?").builder(),
+                                            { UriBuilder i, c -> c(i) }
+                                    )
+                                    .build()
+                                    .toString()
+                    )
+                default: empty()
+            }
+        }
 
-    List<Module> map(scala.collection.immutable.List<CmsModule> modules) {
-        asJava(modules).collect {
-            new Module(
-                    id: it.id(),
-                    tag: it.tag(),
-                    title: toJava(it.title())
-                            .map { new I18N(entries: asJava(it.entries()), defaultEntry: it.defaultEntry()) },
-                    link: link(it),
-                    expiration: toJava(it.expiresIn())
-                            .map { new TimestampOutput(it.toString()) }
+    }
+
+    private class BuildModulePiecesQueryResponseMapper {
+
+        Optional<String> accessToken
+
+        BuildModulePiecesQueryResponseMapper(ContextInput context) {
+            accessToken = ofNullable(context.accessToken)
+        }
+
+        def map(scala.collection.immutable.List<CmsPiece> pieces) {
+            asJava(pieces)
+                    .collect { transform(it) }
+                    .findAll { it.isPresent() }
+                    .collect { it.get() }
+        }
+
+        private Optional<Piece> transform(CmsPiece piece) {
+            switch (piece) {
+                case { it instanceof CmsBanner }:
+                    return of(banner(piece as CmsBanner))
+                case { it instanceof CmsProduct }:
+                    return of(
+                            accessToken
+                                    .map { product(piece as CmsProduct) as Piece }
+                                    .orElseGet { previewProduct(piece as CmsProduct) }
+                    )
+                case { it instanceof CmsBrand }:
+                    return of(brand(piece as CmsBrand))
+                case { it instanceof CmsSupplier }:
+                    return of(supplier(piece as CmsSupplier))
+                default: empty()
+            }
+        }
+
+        private static AdBanner banner(CmsBanner banner) {
+            new AdBanner(
+                    id: banner.id(),
+                    name: banner.name(),
+                    desktop: asJava(banner.images()).get("desktop"),
+                    mobile: asJava(banner.images()).get("mobile"),
+                    link: toJava(banner.link())
             )
         }
-    }
 
-    Optional<String> link(CmsModule module) {
-        def contentType = module.contentType()
-        switch (contentType) {
-            case { it instanceof ProductShowCase }:
-                def request = (contentType as ProductShowCase).request()
-                def filteredByTerm = { UriBuilder b ->
-                    request.filtering().byTerm()
-                            .map { b.queryParam("keyword", it.text()) }
-                            .getOrElse { b }
-                }
-                def filteredByCategory = { UriBuilder b ->
-                    request.filtering().byCategory()
-                            .map { b.queryParam("category", it.id()) }
-                            .getOrElse { b }
-                }
-                def filteredByBrand = { UriBuilder b ->
-                    request.filtering().byBrand()
-                            .map { b.queryParam("brand", it.id()) }
-                            .getOrElse { b }
-                }
-                def filteredByPromotion = { UriBuilder b ->
-                    request.filtering().byPromotion()
-                            .map {
-                                it.tag()
-                                        .map { b.queryParam("tag", it) }
-                                        .getOrElse { b.queryParam("promoted", true) }
-                            }
-                            .getOrElse { b }
-                }
-                def filteredByFavourite = { UriBuilder b ->
-                    request.filtering().byFavourite()
-                            .map { b.queryParam("favourites", true) }
-                            .getOrElse { b }
-                }
-                def sortedByPrice = { UriBuilder b ->
-                    toJava(request.sorting())
-                            .filter { it instanceof ByUnitPrice }
-                            .map {
-                                b
-                                        .queryParam("sort", "PRICE")
-                                        .queryParam("sortDirection", (it as ByUnitPrice).asc() ? "ASC" : "DESC")
-                            }
-                            .orElse(b)
-                }
-                def sortedAlphabetically = { UriBuilder b ->
-                    toJava(request.sorting())
-                            .filter { it instanceof Alphabetically }
-                            .map {
-                                b
-                                        .queryParam("sort", "TITLE")
-                                        .queryParam("sortDirection", (it as Alphabetically).asc() ? "ASC" : "DESC")
-                            }
-                            .orElse(b)
-                }
-                def sortedByRecent = { UriBuilder b ->
-                    toJava(request.sorting())
-                            .filter { it instanceof ByLastAvailabilityUpdate$ }
-                            .map { b.queryParam("sort", "RECENT") }
-                            .orElse(b)
-                }
-                return of(
-                        [
-                                filteredByTerm,
-                                filteredByCategory,
-                                filteredByBrand,
-                                filteredByPromotion,
-                                filteredByFavourite,
-                                sortedByPrice,
-                                sortedAlphabetically,
-                                sortedByRecent
-                        ]
-                                .inject(
-                                        new DefaultUriBuilderFactory(siteRoot + "/site/listing?").builder(),
-                                        { UriBuilder i, c -> c(i) }
-                                )
-                                .build()
-                                .toString()
-                )
-            default: empty()
+        private ProductSearch product(CmsProduct product) {
+            def country = product.manufacturer().country()
+            def prices = asJava(product.options()).collect { price(it, country) }
+            def displays = asJava(product.options()).collect { display(it) }.toSet().toList()
+            new ProductSearch(
+                    id: product.id().toLong(),
+                    name: product.name().defaultEntry(),
+                    category: new Category(
+                            id: product.categorization().last().id().toLong(),
+                            parentId: toJava(product.categorization().last().parent())
+                                    .map { it.toLong() }.orElse(null),
+                            name: product.categorization().last().name().defaultEntry(),
+                            enabled: true,
+                            isLeaf: true
+                    ),
+                    brand: brand(product.brand()),
+                    ean: displays.sort { it.units }?.getAt(0)?.ean,
+                    description: toJava(product.description()).map { it.defaultEntry() }.orElse(null),
+                    images: asJava(product.images()).collect { new Image(id: it) },
+                    displays: displays,
+                    prices: prices,
+                    minUnitsPrice: prices.min { Price a, Price b ->
+                        (a.minUnits == b.minUnits) ? a.unitValue <=> b.unitValue : a.minUnits <=> b.minUnits
+                    },
+                    highlightedPrice: prices.min { it.unitValue },
+                    priceFrom: prices.min { it.value },
+                    title: product.name().defaultEntry(),
+                    country_id: product.manufacturer().country(),
+                    favorite: toJava(product.favourite()).orElse(false),
+                    accessToken: accessToken.orElse(null)
+            )
         }
-    }
 
-}
-
-class BuildModulePiecesQueryResponseMapper {
-
-    Optional<String> accessToken
-
-    BuildModulePiecesQueryResponseMapper(ContextInput context) {
-        accessToken = ofNullable(context.accessToken)
-    }
-
-    def map(scala.collection.immutable.List<CmsPiece> pieces) {
-        asJava(pieces)
-                .collect { transform(it) }
-                .findAll { it.isPresent() }
-                .collect { it.get() }
-    }
-
-    private Optional<Piece> transform(CmsPiece piece) {
-        switch (piece) {
-            case { it instanceof CmsBanner }:
-                return of(banner(piece as CmsBanner))
-            case { it instanceof CmsProduct }:
-                return of(
-                        accessToken
-                                .map { product(piece as CmsProduct) as Piece }
-                                .orElseGet { previewProduct(piece as CmsProduct) }
-                )
-            case { it instanceof CmsBrand }:
-                return of(brand(piece as CmsBrand))
-            case { it instanceof CmsSupplier }:
-                return of(supplier(piece as CmsSupplier))
-            default: empty()
+        private PreviewProductSearch previewProduct(CmsProduct product) {
+            new PreviewProductSearch(this.product(product))
         }
-    }
 
-    private static AdBanner banner(CmsBanner banner) {
-        new AdBanner(
-                id: banner.id(),
-                name: banner.name(),
-                desktop: asJava(banner.images()).get("desktop"),
-                mobile: asJava(banner.images()).get("mobile"),
-                link: toJava(banner.link())
-        )
-    }
+        private static Brand brand(CmsBrand brand) {
+            new Brand(
+                    id: brand.id().toLong(),
+                    name: brand.name().defaultEntry(),
+                    logo: toJava(brand.logo()).orElse(null)
+            )
+        }
 
-    private ProductSearch product(CmsProduct product) {
-        def country = product.manufacturer().country()
-        def prices = asJava(product.options()).collect { price(it, country) }
-        def displays = asJava(product.options()).collect { display(it) }.toSet().toList()
-        new ProductSearch(
-                id: product.id().toLong(),
-                name: product.name().defaultEntry(),
-                category: new Category(
-                        id: product.categorization().last().id().toLong(),
-                        parentId: toJava(product.categorization().last().parent())
-                                .map { it.toLong() }.orElse(null),
-                        name: product.categorization().last().name().defaultEntry(),
-                        enabled: true,
-                        isLeaf: true
-                ),
-                brand: brand(product.brand()),
-                ean: displays.sort { it.units }?.getAt(0)?.ean,
-                description: toJava(product.description()).map { it.defaultEntry() }.orElse(null),
-                images: asJava(product.images()).collect { new Image(id: it) },
-                displays: displays,
-                prices: prices,
-                minUnitsPrice: prices.min { Price a, Price b ->
-                    (a.minUnits == b.minUnits) ? a.unitValue <=> b.unitValue : a.minUnits <=> b.minUnits
-                },
-                highlightedPrice: prices.min { it.unitValue },
-                priceFrom: prices.min { it.value },
-                title: product.name().defaultEntry(),
-                country_id: product.manufacturer().country(),
-                favorite: toJava(product.favourite()).orElse(false),
-                accessToken: accessToken.orElse(null)
-        )
-    }
+        private static PreviewSupplier supplier(CmsSupplier supplier) {
+            new PreviewSupplier(
+                    id: supplier.id().toLong(),
+                    name: supplier.name(),
+                    avatar: toJava(supplier.avatar()).orElse(null)
+            )
+        }
 
-    private PreviewProductSearch previewProduct(CmsProduct product) {
-        new PreviewProductSearch(this.product(product))
-    }
-
-    private static Brand brand(CmsBrand brand) {
-        new Brand(
-                id: brand.id().toLong(),
-                name: brand.name().defaultEntry(),
-                logo: toJava(brand.logo()).orElse(null)
-        )
-    }
-
-    private static PreviewSupplier supplier(CmsSupplier supplier) {
-        new PreviewSupplier(
-                id: supplier.id().toLong(),
-                name: supplier.name(),
-                avatar: toJava(supplier.avatar()).orElse(null)
-        )
-    }
-
-    private Price price(AvailableOption option, String countryId) {
-        new Price(
-                id: option.id() as Integer,
-                supplier: supplier(option),
-                value: option.price().toBigDecimal(),
-                unitValue: option.price() / option.display().units(),
-                minUnits: option.requiredPurchaseUnits()._1() as Integer,
-                maxUnits: toJava(option.requiredPurchaseUnits()._2()).map { it as Integer }.orElse(0),
-                display: display(option),
-                configuration: new SupplierProductConfiguration(
-                        disableMinAmountCount: option.minPurchaseAmountCountDisabled()
-                ),
-                commercialPromotion: toJava(option.commercialPromotion())
-                        .flatMap { promo ->
-                            switch (promo) {
-                                case { it instanceof CmsDiscount }:
-                                    return of(
-                                            commercialPromotion(
-                                                    option,
-                                                    promo as CmsDiscount,
-                                                    countryId
-                                            )
-                                    )
-                                case { it instanceof CmsFreeProduct }:
-                                    return of(commercialPromotion(promo as CmsFreeProduct))
-                                default: empty() as Optional<CommercialPromotion>
+        private Price price(AvailableOption option, String countryId) {
+            new Price(
+                    id: option.id() as Integer,
+                    supplier: supplier(option),
+                    value: option.price().toBigDecimal(),
+                    unitValue: option.price() / option.display().units(),
+                    minUnits: option.requiredPurchaseUnits()._1() as Integer,
+                    maxUnits: toJava(option.requiredPurchaseUnits()._2()).map { it as Integer }.orElse(0),
+                    display: display(option),
+                    configuration: new SupplierProductConfiguration(
+                            disableMinAmountCount: option.minPurchaseAmountCountDisabled()
+                    ),
+                    commercialPromotion: toJava(option.commercialPromotion())
+                            .flatMap { promo ->
+                                switch (promo) {
+                                    case { it instanceof CmsDiscount }:
+                                        return of(
+                                                commercialPromotion(
+                                                        option,
+                                                        promo as CmsDiscount,
+                                                        countryId
+                                                )
+                                        )
+                                    case { it instanceof CmsFreeProduct }:
+                                        return of(commercialPromotion(promo as CmsFreeProduct))
+                                    default: empty() as Optional<CommercialPromotion>
+                                }
                             }
-                        }
-                        .orElse(null),
-                accessToken: this.accessToken.orElse(null),
-                countryId: countryId
-        )
-    }
+                            .orElse(null),
+                    accessToken: this.accessToken.orElse(null),
+                    countryId: countryId
+            )
+        }
 
-    protected static CommercialPromotion commercialPromotion(AvailableOption option,
-                                                             CmsDiscount promotion,
-                                                             String countryId) {
-        new CommercialPromotion(
-                id: promotion.id(),
-                description: promotion.description(),
-                expiration: new TimestampOutput(promotion.expiration().toString()),
-                type: new Discount(
-                        progressive: promotion.progressive(),
-                        steps: asJava(promotion.steps()).collect {
-                            new DiscountStep(
-                                    from: it.from(),
-                                    to: it.to(),
-                                    value: option.price().toBigDecimal() - it.amount().toBigDecimal(),
-                                    unitValue: option.price() / option.display().units() - it.amount() / option.display().units(),
-                                    percentage: it.percentage().toBigDecimal(),
-                                    countryId: countryId
-                            )
-                        }
-                )
-        )
-    }
-
-    protected CommercialPromotion commercialPromotion(CmsFreeProduct promotion) {
-        new CommercialPromotion(
-                id: promotion.id(),
-                description: promotion.description(),
-                expiration: new TimestampOutput(promotion.expiration().toString()),
-                type: new FreeProduct(
-                        from: promotion.from(),
-                        product: new Product(product(promotion.product())),
-                        display: new Display(
-                                id: promotion.display().id().toInteger(),
-                                ean: promotion.display().ean(),
-                                units: promotion.display().units()
+        protected CommercialPromotion commercialPromotion(AvailableOption option,
+                                                          CmsDiscount promotion,
+                                                          String countryId) {
+            def discount = new Discount(
+                    progressive: promotion.progressive(),
+                    steps: asJava(promotion.steps()).collect {
+                        new DiscountStep(
+                                from: it.from(),
+                                to: it.to(),
+                                value: option.price().toBigDecimal() - it.amount().toBigDecimal(),
+                                unitValue: option.price() / option.display().units() - it.amount() / option.display().units(),
+                                percentage: it.percentage().toBigDecimal(),
+                                countryId: countryId
                         )
-                )
-        )
-    }
+                    }
+            )
+            new CommercialPromotion(
+                    id: promotion.id(),
+                    description: promotion.description(),
+                    expiration: new TimestampOutput(promotion.expiration().toString()),
+                    type: discount,
+                    label: new CommercialPromotionLabel(messageSource).apply(discount)
+            )
+        }
 
-    private Supplier supplier(AvailableOption option) {
-        new Supplier(
-                id: option.supplier().id().toInteger(),
-                name: option.supplier().name(),
-                legalName: null,
-                avatar: toJava(option.supplier().avatar()).orElse(null),
-                deliveryZones: toJava(option.supplier().deliveryZones())
-                        .map { asJava(it.toList()) }
-                        .orElse([])
-                        .collect {
-                            new DeliveryZone(
-                                    accessToken: this.accessToken.orElse(null),
-                                    id: it.id().toInteger(),
-                                    minAmount: it.requiredPurchaseAmount()._1().toBigDecimal(),
-                                    maxAmount: toJava(it.requiredPurchaseAmount()._2()
-                                            .map { it.toBigDecimal() })
-                                            .orElse(null),
-                                    deliveryCost: toJava(it.cost()
-                                            .map { it.toBigDecimal() })
-                                            .orElse(null)
-                            )
-                        },
-                rating: toJava(option.supplier().rating()).map {
-                    new RatingScore(
-                            count: it.count().toInteger(),
-                            average: it.average().toDouble(),
-                            percentage: it.percentage().toDouble()
+        protected CommercialPromotion commercialPromotion(CmsFreeProduct promotion) {
+            def freeProduct = new FreeProduct(
+                    from: promotion.from(),
+                    product: new Product(product(promotion.product())),
+                    display: new Display(
+                            id: promotion.display().id().toInteger(),
+                            ean: promotion.display().ean(),
+                            units: promotion.display().units()
                     )
-                }.orElse(null),
-                accessToken: accessToken.orElse(null)
-        )
-    }
+            )
+            new CommercialPromotion(
+                    id: promotion.id(),
+                    description: promotion.description(),
+                    expiration: new TimestampOutput(promotion.expiration().toString()),
+                    type: freeProduct,
+                    label: new CommercialPromotionLabel(messageSource).apply(freeProduct)
+            )
+        }
 
-    private static display(AvailableOption option) {
-        new Display(
-                id: option.display().id().toInteger(),
-                ean: option.display().ean(),
-                units: option.display().units()
-        )
+        private Supplier supplier(AvailableOption option) {
+            new Supplier(
+                    id: option.supplier().id().toInteger(),
+                    name: option.supplier().name(),
+                    legalName: null,
+                    avatar: toJava(option.supplier().avatar()).orElse(null),
+                    deliveryZones: toJava(option.supplier().deliveryZones())
+                            .map { asJava(it.toList()) }
+                            .orElse([])
+                            .collect {
+                                new DeliveryZone(
+                                        accessToken: this.accessToken.orElse(null),
+                                        id: it.id().toInteger(),
+                                        minAmount: it.requiredPurchaseAmount()._1().toBigDecimal(),
+                                        maxAmount: toJava(it.requiredPurchaseAmount()._2()
+                                                .map { it.toBigDecimal() })
+                                                .orElse(null),
+                                        deliveryCost: toJava(it.cost()
+                                                .map { it.toBigDecimal() })
+                                                .orElse(null)
+                                )
+                            },
+                    rating: toJava(option.supplier().rating()).map {
+                        new RatingScore(
+                                count: it.count().toInteger(),
+                                average: it.average().toDouble(),
+                                percentage: it.percentage().toDouble()
+                        )
+                    }.orElse(null),
+                    accessToken: accessToken.orElse(null)
+            )
+        }
+
+        private static display(AvailableOption option) {
+            new Display(
+                    id: option.display().id().toInteger(),
+                    ean: option.display().ean(),
+                    units: option.display().units()
+            )
+        }
+
     }
 
 }

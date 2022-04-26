@@ -2,6 +2,8 @@ package bff.model
 
 import groovy.transform.InheritConstructors
 
+import static java.util.Optional.of
+
 interface PlaceOrderResult {}
 
 interface CartResult {}
@@ -489,11 +491,15 @@ class Cart implements CartResult {
 
 class ProductCart {
     Product product
+    Price price
+    Integer quantity
     List<SupplierPrice> suppliers //dumb
     List<SupplierPrice> supplierPrices
 
-    ProductCart(ProductSearch product) {
+    ProductCart(ProductSearch product, Price price, Integer quantity) {
         this.product = new Product(product)
+        this.price = price
+        this.quantity = quantity
         this.supplierPrices = product.prices.collect { new SupplierPrice(it) }.toSet().toList()
     }
 
@@ -552,6 +558,17 @@ class SyncCartResult {
 class PromotedProductsCart {
     CommercialPromotion commercialPromotion
     List<ProductCart> products
+
+    static Optional<PromotedProductsCart> apply(CommercialPromotion promotion,
+                                                List<ProductCart> selection) {
+        of(
+                new PromotedProductsCart(
+                        commercialPromotion: promotion,
+                        products: selection
+                )
+        ).filter { promotion.satisfy(selection) }
+
+    }
 }
 
 class PlaceOrderFailed implements PlaceOrderResult {

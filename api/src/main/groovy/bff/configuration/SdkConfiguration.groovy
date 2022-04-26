@@ -66,7 +66,8 @@ class SdkConfiguration {
         new Cms(
                 sdk: new CmsSdk(client, cmsEndpoint.toURI()),
                 customerBridge: customerBridge,
-                siteRoot: siteRoot
+                siteRoot: siteRoot,
+                messageSource: messageSource
         )
     }
 

@@ -5,6 +5,7 @@ type CommercialPromotion {
   description: String!
   expiration: TimestampOutput!
   type: CommercialPromotionType!
+  label(languageTag: LanguageTag!): String!
 }
 
 type DiscountStep {

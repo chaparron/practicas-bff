@@ -800,40 +800,44 @@ class GroceryListing {
         protected CommercialPromotion commercialPromotion(AvailableOption option,
                                                           AvailableDiscount promotion,
                                                           String countryId) {
+            def discount = new Discount(
+                    progressive: promotion.progressive(),
+                    steps: asJava(promotion.steps()).collect {
+                        new DiscountStep(
+                                from: it.from(),
+                                to: it.to(),
+                                value: option.price().toBigDecimal() - it.amount().toBigDecimal(),
+                                unitValue: option.price() / option.display().units() - it.amount() / option.display().units(),
+                                percentage: it.percentage().toBigDecimal(),
+                                countryId: countryId
+                        )
+                    }
+            )
             new CommercialPromotion(
                     id: promotion.id(),
                     description: promotion.description(),
                     expiration: new TimestampOutput(promotion.expiration().toString()),
-                    type: new Discount(
-                            progressive: promotion.progressive(),
-                            steps: asJava(promotion.steps()).collect {
-                                new DiscountStep(
-                                        from: it.from(),
-                                        to: it.to(),
-                                        value: option.price().toBigDecimal() - it.amount().toBigDecimal(),
-                                        unitValue: option.price() / option.display().units() - it.amount() / option.display().units(),
-                                        percentage: it.percentage().toBigDecimal(),
-                                        countryId: countryId
-                                )
-                            }
-                    )
+                    type: discount,
+                    label: new CommercialPromotionLabel(messageSource).apply(discount)
             )
         }
 
         protected CommercialPromotion commercialPromotion(AvailableFreeProduct promotion) {
+            def freeProduct = new FreeProduct(
+                    from: promotion.from(),
+                    product: new Product(product(promotion.product())),
+                    display: new Display(
+                            id: promotion.display().id().toInteger(),
+                            ean: promotion.display().ean(),
+                            units: promotion.display().units()
+                    )
+            )
             new CommercialPromotion(
                     id: promotion.id(),
                     description: promotion.description(),
                     expiration: new TimestampOutput(promotion.expiration().toString()),
-                    type: new FreeProduct(
-                            from: promotion.from(),
-                            product: new Product(product(promotion.product())),
-                            display: new Display(
-                                    id: promotion.display().id().toInteger(),
-                                    ean: promotion.display().ean(),
-                                    units: promotion.display().units()
-                            )
-                    )
+                    type: freeProduct,
+                    label: new CommercialPromotionLabel(messageSource).apply(freeProduct)
             )
         }
 
@@ -1356,7 +1360,7 @@ class GroceryListing {
         Cart map(ProductQueryResponse response) {
             def products = products(response)
             new Cart(
-                    availableProducts: products.collect { new ProductCart(it) },
+                    availableProducts: products.collect { new ProductCart(it, null, null) },
                     suppliers: products.collect { it.prices.collect { it.supplier } }
                             .flatten().toSet().toList() as List<Supplier>
             )
@@ -1376,29 +1380,30 @@ class GroceryListing {
         SyncCartResult map(ProductQueryResponse response) {
             // we first retain all those products that contain requested items
             def available =
-                    products(response).collect { product ->
-                        ofNullable(
-                                product.prices.find { price ->
-                                    input.items.find { item ->
-                                        item.productId == product.id &&
-                                                item.supplierId == price.supplier.id.toInteger() &&
-                                                item.units == price.display.units
-                                    }
-                                }
-                        ).map { new Tuple2(new ProductCart(product), ofNullable(it.commercialPromotion)) }
+                    input.items.findResults { item ->
+                        products(response).findResult { product ->
+                            product.prices.findResult { price ->
+                                if (item.productId == product.id &&
+                                        item.supplierId == price.supplier.id.toInteger() &&
+                                        item.units == price.display.units)
+                                    new Tuple2(
+                                            new ProductCart(product, price, item.quantity),
+                                            ofNullable(price.commercialPromotion)
+                                    )
+                                else null
+                            }
+                        }
                     }
-                            .findAll { it.isPresent() }
-                            .collect { it.get() }
             // then we grouped them by commercial promotion, sorting first one those with free products
             def promoted =
                     available
                             .findAll { it.second.isPresent() }
                             .groupBy { it.second.get() }
-                            .collect {
-                                new PromotedProductsCart(
-                                        commercialPromotion: it.key as CommercialPromotion,
-                                        products: it.value.collect { it.first as ProductCart }
-                                )
+                            .findResults {
+                                PromotedProductsCart.apply(
+                                        it.key as CommercialPromotion,
+                                        it.value.collect { it.first as ProductCart }
+                                ).orElse(null)
                             }
                             .sort {
                                 (it.commercialPromotion.type instanceof FreeProduct) ? -1 : 1
@@ -1406,7 +1411,14 @@ class GroceryListing {
             // then we list those with no commercial promotion at all
             def unpromoted =
                     available
-                            .findAll { it.second.isEmpty() }
+                            .findAll {
+                                (it.second as Optional<CommercialPromotion>)
+                                        .filter {
+                                            promoted.collect { it.commercialPromotion }
+                                                    .contains(it)
+                                        }
+                                        .isEmpty()
+                            }
                             .collect { it.first as ProductCart }
             new SyncCartResult(
                     promoted: promoted,
