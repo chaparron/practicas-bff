@@ -2,6 +2,7 @@ package bff.bridge.sdk
 
 import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
+import bff.bridge.sdk.GroceryListing.SuggestionQueryRequestBuilder
 import bff.configuration.EntityNotFoundException
 import bff.model.*
 import groovy.util.logging.Slf4j
@@ -818,7 +819,7 @@ class GroceryListing {
                     description: promotion.description(),
                     expiration: new TimestampOutput(promotion.expiration().toString()),
                     type: discount,
-                    label: new CommercialPromotionLabel(messageSource).apply(discount)
+                    label: new CommercialPromotionLabel(messageSource).build(discount)
             )
         }
 
@@ -837,7 +838,7 @@ class GroceryListing {
                     description: promotion.description(),
                     expiration: new TimestampOutput(promotion.expiration().toString()),
                     type: freeProduct,
-                    label: new CommercialPromotionLabel(messageSource).apply(freeProduct)
+                    label: new CommercialPromotionLabel(messageSource).build(freeProduct)
             )
         }
 
@@ -1400,14 +1401,17 @@ class GroceryListing {
                             .findAll { it.second.isPresent() }
                             .groupBy { it.second.get() }
                             .findResults {
+                                def promotion = (it.key as CommercialPromotion)
+                                def selection = it.value.collect { it.first as ProductCart }
                                 PromotedProductsCart.apply(
-                                        it.key as CommercialPromotion,
-                                        it.value.collect { it.first as ProductCart }
+                                        promotion.labeled(
+                                                new CommercialPromotionLabel(messageSource)
+                                                        .build(promotion.type, selection)
+                                        ),
+                                        selection
                                 ).orElse(null)
                             }
-                            .sort {
-                                (it.commercialPromotion.type instanceof FreeProduct) ? -1 : 1
-                            }
+                            .sort { (it.commercialPromotion.type instanceof FreeProduct) ? -1 : 1 }
             // then we list those with no commercial promotion at all
             def unpromoted =
                     available

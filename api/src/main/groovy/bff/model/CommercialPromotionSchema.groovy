@@ -23,6 +23,16 @@ class CommercialPromotion {
         type.satisfy(selection)
     }
 
+    CommercialPromotion labeled(Closure<String> label) {
+        new CommercialPromotion(
+                id: this.id,
+                description: this.description,
+                expiration: this.expiration,
+                type: this.type,
+                label: label
+        )
+    }
+
 }
 
 class CommercialPromotionLabel {
@@ -33,31 +43,38 @@ class CommercialPromotionLabel {
         this.messageSource = messageSource
     }
 
-    Closure<String> apply(CommercialPromotionType type) {
-        def defaultLanguage = "en"
-        switch (type) {
-            case { type instanceof Discount }:
-                { LanguageTag languageTag ->
-                    def steps = (type as Discount).steps
+    Closure<String> build(CommercialPromotionType type) {
+        build(type, [])
+    }
+
+    Closure<String> build(CommercialPromotionType type, List<ProductCart> selection) {
+        { LanguageTag languageTag ->
+            def locale = forLanguageTag(ofNullable(languageTag.toString()).orElse("en"))
+            switch (type) {
+                case { type instanceof Discount }:
+                    def percentages =
+                            ofNullable(
+                                    selection.collect {
+                                        (it.price.commercialPromotion.type as Discount).steps
+                                    }.flatten() as List<DiscountStep>
+                            )
+                                    .filter { !it.empty }
+                                    .orElse((type as Discount).steps)
+                                    .collect { it.percentage }
+                                    .unique()
                     messageSource.getMessage(
-                            (steps.size() == 1) ?
+                            (percentages.size() == 1) ?
                                     "commercialPromotion.label.FIXED_PERCENTAGE" :
                                     "commercialPromotion.label.UP_TO_PERCENTAGE",
-                            [steps.collect { it.percentage }.max()].toArray(),
-                            forLanguageTag(ofNullable(languageTag.toString()).orElse(defaultLanguage))
+                            [percentages.max()].toArray(),
+                            locale
                     )
-                }
-                break
-            case { type instanceof FreeProduct }:
-                { LanguageTag languageTag ->
-                    messageSource.getMessage(
-                            "commercialPromotion.label.FREE_PRODUCT",
-                            [].toArray(),
-                            forLanguageTag(ofNullable(languageTag.toString()).orElse(defaultLanguage))
-                    )
-                }
-                break
-            default: { LanguageTag languageTag -> "" }
+                    break
+                case { type instanceof FreeProduct }:
+                    messageSource.getMessage("commercialPromotion.label.FREE_PRODUCT", [].toArray(), locale)
+                    break
+                default: ""
+            }
         }
     }
 

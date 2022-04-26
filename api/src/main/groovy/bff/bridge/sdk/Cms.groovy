@@ -421,7 +421,7 @@ class Cms {
                     description: promotion.description(),
                     expiration: new TimestampOutput(promotion.expiration().toString()),
                     type: discount,
-                    label: new CommercialPromotionLabel(messageSource).apply(discount)
+                    label: new CommercialPromotionLabel(messageSource).build(discount)
             )
         }
 
@@ -440,7 +440,7 @@ class Cms {
                     description: promotion.description(),
                     expiration: new TimestampOutput(promotion.expiration().toString()),
                     type: freeProduct,
-                    label: new CommercialPromotionLabel(messageSource).apply(freeProduct)
+                    label: new CommercialPromotionLabel(messageSource).build(freeProduct)
             )
         }
 
