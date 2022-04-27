@@ -4,6 +4,7 @@ import groovy.transform.EqualsAndHashCode
 import org.springframework.context.MessageSource
 import sun.util.locale.LanguageTag
 
+import static java.text.NumberFormat.getNumberInstance
 import static java.util.Locale.forLanguageTag
 import static java.util.Optional.ofNullable
 
@@ -76,7 +77,7 @@ class CommercialPromotionLabelBuilder {
                             (percentages.size() == 1) ?
                                     "commercialPromotion.label.FIXED_PERCENTAGE" :
                                     "commercialPromotion.label.UP_TO_PERCENTAGE",
-                            [percentages.max()].toArray(),
+                            [getNumberInstance(locale).format(percentages.max())].toArray(),
                             locale
                     )
                     break
