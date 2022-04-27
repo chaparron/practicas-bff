@@ -8,7 +8,7 @@ import static java.util.Locale.forLanguageTag
 import static java.util.Optional.ofNullable
 
 interface CommercialPromotionType {
-    boolean satisfy(List<ProductCart> selection)
+    boolean appliesTo(Integer quantity)
 }
 
 @EqualsAndHashCode(includes = ["id"])
@@ -19,8 +19,12 @@ class CommercialPromotion {
     CommercialPromotionType type
     Closure<String> label
 
-    boolean satisfy(List<ProductCart> selection) {
-        type.satisfy(selection)
+    boolean appliesTo(List<ProductCart> selection) {
+        type.appliesTo(
+                selection
+                        .findResults { it.price.commercialPromotion == this ? it.quantity : null }
+                        .sum() as Integer
+        )
     }
 
     CommercialPromotion labeled(Closure<String> label) {
@@ -104,8 +108,7 @@ class Discount implements CommercialPromotionType {
     def minUnitValue() { steps.min { it.unitValue }.unitValue }
 
     @Override
-    boolean satisfy(List<ProductCart> selection) {
-        def quantity = selection.collect { it.quantity }.sum()
+    boolean appliesTo(Integer quantity) {
         ofNullable(
                 progressive ?
                         steps.find { quantity >= it.from && quantity <= it?.to } :
@@ -121,8 +124,8 @@ class FreeProduct implements CommercialPromotionType {
     Display display
 
     @Override
-    boolean satisfy(List<ProductCart> selection) {
-        selection.collect { it.quantity }.sum() >= from
+    boolean appliesTo(Integer quantity) {
+        quantity >= from
     }
 
 }

@@ -566,7 +566,7 @@ class PromotedProductsCart {
                         commercialPromotion: promotion,
                         products: selection
                 )
-        ).filter { promotion.satisfy(selection) }
+        ).filter { promotion.appliesTo(selection) }
 
     }
 }
