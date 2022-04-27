@@ -35,23 +35,29 @@ class CommercialPromotion {
 
 }
 
-class CommercialPromotionLabel {
+class CommercialPromotionLabelBuilder {
 
     private MessageSource messageSource
 
-    CommercialPromotionLabel(MessageSource messageSource) {
+    CommercialPromotionLabelBuilder(MessageSource messageSource) {
         this.messageSource = messageSource
     }
 
-    Closure<String> build(CommercialPromotionType type) {
-        build(type, [])
+    Closure<String> apply(CommercialPromotionType type) {
+        apply(type, [])
     }
 
-    Closure<String> build(CommercialPromotionType type, List<ProductCart> selection) {
+    Closure<String> apply(CommercialPromotionType type, List<ProductCart> selection) {
         { LanguageTag languageTag ->
             def locale = forLanguageTag(ofNullable(languageTag.toString()).orElse("en"))
             switch (type) {
                 case { type instanceof Discount }:
+                    // when grouped discount, we have to inspect all selected products under
+                    // the given promotion in order to consider all step percentages;
+                    // otherwise, if no selection, we only consider the discount steps.
+                    // then, for all considered steps, we take the unique set of them, and:
+                    // 1) if one single percentage for all, then we label as "fixed percentage"
+                    // 2) if more than one percentage available, we took the max an label as "up to percentage"
                     def percentages =
                             ofNullable(
                                     selection.collect {

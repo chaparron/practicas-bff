@@ -2,7 +2,6 @@ package bff.bridge.sdk
 
 import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
-import bff.bridge.sdk.GroceryListing.SuggestionQueryRequestBuilder
 import bff.configuration.EntityNotFoundException
 import bff.model.*
 import groovy.util.logging.Slf4j
@@ -718,6 +717,7 @@ class GroceryListing {
 
         ProductQueryRequest request
         Optional<String> accessToken
+        CommercialPromotionLabelBuilder labelBuilder = new CommercialPromotionLabelBuilder(messageSource)
 
         ProductQueryResponseMapper(ProductQueryRequest request, String accessToken = null) {
             this.request = request
@@ -819,7 +819,7 @@ class GroceryListing {
                     description: promotion.description(),
                     expiration: new TimestampOutput(promotion.expiration().toString()),
                     type: discount,
-                    label: new CommercialPromotionLabel(messageSource).build(discount)
+                    label: labelBuilder.apply(discount)
             )
         }
 
@@ -838,7 +838,7 @@ class GroceryListing {
                     description: promotion.description(),
                     expiration: new TimestampOutput(promotion.expiration().toString()),
                     type: freeProduct,
-                    label: new CommercialPromotionLabel(messageSource).build(freeProduct)
+                    label: labelBuilder.apply(freeProduct)
             )
         }
 
@@ -1404,10 +1404,8 @@ class GroceryListing {
                                 def promotion = (it.key as CommercialPromotion)
                                 def selection = it.value.collect { it.first as ProductCart }
                                 PromotedProductsCart.apply(
-                                        promotion.labeled(
-                                                new CommercialPromotionLabel(messageSource)
-                                                        .build(promotion.type, selection)
-                                        ),
+                                        // when grouped, promotion label must be rebuilt
+                                        promotion.labeled(labelBuilder.apply(promotion.type, selection)),
                                         selection
                                 ).orElse(null)
                             }

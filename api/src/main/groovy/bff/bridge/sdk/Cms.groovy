@@ -273,6 +273,7 @@ class Cms {
     private class BuildModulePiecesQueryResponseMapper {
 
         Optional<String> accessToken
+        CommercialPromotionLabelBuilder labelBuilder = new CommercialPromotionLabelBuilder(messageSource)
 
         BuildModulePiecesQueryResponseMapper(ContextInput context) {
             accessToken = ofNullable(context.accessToken)
@@ -421,7 +422,7 @@ class Cms {
                     description: promotion.description(),
                     expiration: new TimestampOutput(promotion.expiration().toString()),
                     type: discount,
-                    label: new CommercialPromotionLabel(messageSource).build(discount)
+                    label: labelBuilder.apply(discount)
             )
         }
 
@@ -440,7 +441,7 @@ class Cms {
                     description: promotion.description(),
                     expiration: new TimestampOutput(promotion.expiration().toString()),
                     type: freeProduct,
-                    label: new CommercialPromotionLabel(messageSource).build(freeProduct)
+                    label: labelBuilder.apply(freeProduct)
             )
         }
 
