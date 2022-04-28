@@ -592,7 +592,7 @@ class GroceryListing {
                 case "DEFAULT":
                     if (maybeKeyword || maybeSimilarTo) sortedByRelevance(request)
                     else if (maybePromoted) sortedByLastAvailabilityUpdate(request)
-                    else sortedAlphabetically(request)
+                    else sortedByTotalSales(request)
                     break
                 case "TITLE":
                     sortedAlphabetically(request)
@@ -646,6 +646,10 @@ class GroceryListing {
                     }.orElse(true),
                     Option.empty()
             )
+        }
+
+        private static ProductQueryRequest sortedByTotalSales(ProductQueryRequest request) {
+            request.sortedByTotalSales()
         }
 
     }
