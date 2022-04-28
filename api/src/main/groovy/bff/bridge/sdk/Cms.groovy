@@ -135,7 +135,12 @@ class Cms {
                         } | {
                     maybeCustomer
                             .map { it.second as Address }
-                            .map { new Tuple2(new Coordinate(it.lat, it.lon), Option.apply(it.state.id)) }
+                            .map {
+                                new Tuple2(
+                                        new Coordinate(it.lat, it.lon),
+                                        Option.apply(it.state).map { it.id }
+                                )
+                            }
                 })
                         .map {
                             { BuildModulePiecesQuery query ->
