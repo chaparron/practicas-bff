@@ -5,7 +5,7 @@
 build
 /out
 api/out
-
+lib
 devops/.terraform
 bin
 .project

@@ -252,7 +252,8 @@ enum AddAddressFailedReason {
 }
 
 enum DeleteAddressFailedReason {
-    NOT_ADDRESS_CUSTOMER
+    NOT_ADDRESS_CUSTOMER,
+    INVALID_DELIVERY_ADDRESS_COUNT
 
     def build() {
         new DeleteAddressFailed(reason: this)
