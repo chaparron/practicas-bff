@@ -6,6 +6,7 @@ import bff.configuration.CacheConfigurationProperties
 import bff.mapper.CountryMapper
 import bff.model.Country
 import bff.model.CountryConfigurationEntry
+import bff.model.CountryNotFoundException
 import com.github.benmanes.caffeine.cache.CacheLoader
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
@@ -14,6 +15,8 @@ import wabi2b.sdk.regional.RegionalConfigSdk
 
 import javax.annotation.PostConstruct
 import java.util.concurrent.TimeUnit
+
+import static java.util.Optional.ofNullable
 
 class CountryGatewayBridgeImpl implements CountryBridge {
 
@@ -98,7 +101,9 @@ class CountryGatewayBridgeImpl implements CountryBridge {
     }
 
     def getUnCachedCountry(String countryId) {
-        return countryMapper.buildCountry(regionalConfigSdk.findCountry(countryId).block())
+        ofNullable(regionalConfigSdk.findCountry(countryId).block())
+                .map { countryMapper.buildCountry(it) }
+                .orElseThrow { new CountryNotFoundException() }
     }
 
     private def getUnCachedHomeCountries(String locale) {

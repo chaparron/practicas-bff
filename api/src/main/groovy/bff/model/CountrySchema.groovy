@@ -2,6 +2,15 @@ package bff.model
 
 import bff.service.ImageSizeEnum
 
+class CountryNotFoundException extends RuntimeException {
+
+    @Override
+    String getMessage() {
+        return "Country not found"
+    }
+
+}
+
 class Country {
     String id
     String name
@@ -21,7 +30,7 @@ class Detail {
     String timezone
 }
 
-class Language{
+class Language {
     String language
     String locale
     String direction
@@ -51,19 +60,19 @@ class WabiPay {
     Boolean wcToMoneyWhenReleasingEnabled
 }
 
-class Fee{
+class Fee {
     String serviceFeeType
     BigDecimal serviceFee
     Boolean displayFeeOnSupplierAdm
 }
 
-class LegalDocumentInformation{
+class LegalDocumentInformation {
     String id
     String mask
     String maskRegex
 }
 
-class LegalUrl{
+class LegalUrl {
     LegalUrlType type
     String value
     String label

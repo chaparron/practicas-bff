@@ -2,6 +2,7 @@ package bff.bridge.sdk
 
 import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
+import bff.bridge.sdk.GroceryListing.SuggestionQueryRequestBuilder
 import bff.configuration.EntityNotFoundException
 import bff.model.*
 import groovy.util.logging.Slf4j
@@ -34,7 +35,13 @@ class GroceryListing {
 
     Optional<Country> find(CoordinatesInput input) {
         toJava(sdk.find(new Coordinate(input.lat.toDouble(), input.lng.toDouble())))
-                .flatMap { ofNullable(countryBridge.getCountry(it)) }
+                .flatMap { id ->
+                    try {
+                        ofNullable(countryBridge.getCountry(id))
+                    } catch (CountryNotFoundException ignored) {
+                        empty() as Optional<Country>
+                    }
+                }
     }
 
     SearchResult search(SearchInput input) {

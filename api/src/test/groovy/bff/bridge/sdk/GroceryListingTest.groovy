@@ -4,6 +4,7 @@ import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
 import bff.model.CoordinatesInput
 import bff.model.Country
+import bff.model.CountryNotFoundException
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
@@ -56,7 +57,7 @@ class GroceryListingTest {
         def input = new CoordinatesInput("lat": -34.55742952421648, "lng": -58.447321788788805)
 
         when(sdk.find(new Coordinate(input.lat.toDouble(), input.lng.toDouble()))).thenReturn(Option.apply("ar"))
-        when(countryBridge.getCountry("ar")).thenReturn(null)
+        when(countryBridge.getCountry("ar")).thenThrow(new CountryNotFoundException())
 
         assertTrue(groceryListing.find(input).isEmpty())
     }
