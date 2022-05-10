@@ -230,9 +230,9 @@ type Mutation {
 
   disableBranchOffice(input: DisableBranchOfficeInput!): Void!
 
-  addBranchOffice(addBranchOfficeInput: AddBranchOfficeInput!): AddBranchOfficeResult!
+  addBranchOffice(input: AddBranchOfficeInput!): AddBranchOfficeResult!
 
-  updateBranchOfficeProfile(updateBranchOfficeProfileInput: UpdateBranchOfficeProfileInput!): Customer!
+  updateBranchOfficeProfile(input: UpdateBranchOfficeProfileInput!): Customer!
 
 }
 
