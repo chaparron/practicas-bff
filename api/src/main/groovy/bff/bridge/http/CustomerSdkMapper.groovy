@@ -41,7 +41,7 @@ class CustomerSdkMapper {
                 addBranchOfficeInput.name,
                 addBranchOfficeInput.linePhone,
                 addBranchOfficeInput.emailVerification?: false,
-                addBranchOfficeInput.customerTypeId,
+                null,
                 toDto(addBranchOfficeInput.address),
                 fromDocInputToDtoDocs(addBranchOfficeInput.verificationDocuments),
                 toDto(addBranchOfficeInput.workingDays),

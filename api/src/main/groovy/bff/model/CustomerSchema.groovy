@@ -555,6 +555,5 @@ class AddBranchOfficeInput{
     AddressInput address
     WorkingDays workingDays
     String deliveryComment
-    String customerTypeId
     List<VerificationDocumentInput> verificationDocuments
 }

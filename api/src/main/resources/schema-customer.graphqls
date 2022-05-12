@@ -231,7 +231,6 @@ input AddBranchOfficeInput {
   address: AddressTypeInput!
   workingDays: WorkingDaysInput!
   deliveryComment: String
-  customerTypeId: ID!
   verificationDocs: [VerificationDocumentInput]
 }
 
