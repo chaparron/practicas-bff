@@ -2,7 +2,6 @@ package bff.bridge.sdk
 
 import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
-import bff.bridge.sdk.GroceryListing.SuggestionQueryRequestBuilder
 import bff.configuration.EntityNotFoundException
 import bff.model.*
 import groovy.util.logging.Slf4j
@@ -599,7 +598,7 @@ class GroceryListing {
                 case "DEFAULT":
                     if (maybeKeyword || maybeSimilarTo) sortedByRelevance(request)
                     else if (maybePromoted) sortedByLastAvailabilityUpdate(request)
-                    else sortedByTotalSales(request)
+                    else sortedByTotalSalesInLast15Days(request)
                     break
                 case "TITLE":
                     sortedAlphabetically(request)
@@ -655,8 +654,8 @@ class GroceryListing {
             )
         }
 
-        private static ProductQueryRequest sortedByTotalSales(ProductQueryRequest request) {
-            request.sortedByTotalSales()
+        private static ProductQueryRequest sortedByTotalSalesInLast15Days(ProductQueryRequest request) {
+            request.sortedByTotalSalesInLast15Days()
         }
 
     }
