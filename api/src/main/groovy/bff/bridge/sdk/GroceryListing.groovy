@@ -1405,7 +1405,7 @@ class GroceryListing {
                             }
                         }
                     }
-            // then we grouped them by commercial promotion, sorting first one those with free products
+            // then we grouped them by applied commercial promotion, sorting first those with free products
             def promoted =
                     available
                             .findAll { it.second.isPresent() }
@@ -1420,7 +1420,8 @@ class GroceryListing {
                                 ).orElse(null)
                             }
                             .sort { (it.commercialPromotion.type instanceof FreeProduct) ? -1 : 1 }
-            // then we list those with no commercial promotion at all
+            // then we list those with no applied commercial promotion at all
+            // sorting first those with available commercial promotion
             def unpromoted =
                     available
                             .findAll {
@@ -1432,6 +1433,7 @@ class GroceryListing {
                                         .isEmpty()
                             }
                             .collect { it.first as ProductCart }
+                            .sort { it.product.prices.findResult { it.commercialPromotion } ? -1 : 1 }
             new SyncCartResult(
                     promoted: promoted,
                     unpromoted: unpromoted
