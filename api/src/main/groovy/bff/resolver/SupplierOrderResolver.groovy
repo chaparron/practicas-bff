@@ -44,6 +44,10 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
         supplierOrderBridge.getOrderBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
     }
 
+    List<AppliedPromotionResponse> appliedPromotions(SupplierOrder supplierOrder) {
+        supplierOrderBridge.getPromotionsBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
+    }
+
     Money deliveryCostMoney(SupplierOrder supplierOrder) {
         moneyService.getMoney(supplierOrder.accessToken, supplierOrder.deliveryCost)
     }

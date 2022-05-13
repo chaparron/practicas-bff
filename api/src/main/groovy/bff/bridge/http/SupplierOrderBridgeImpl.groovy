@@ -128,5 +128,16 @@ class SupplierOrderBridgeImpl implements SupplierOrderBridge {
         partialSummaries
     }
 
+    @Override
+    List<AppliedPromotionResponse> getPromotionsBySupplierOrderId(String accessToken, Long supplierOrderId) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplierOrder/${supplierOrderId}/promotions"))
+                .toUriString().toURI()
 
+        return http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , new ParameterizedTypeReference<List<AppliedPromotionResponse>>() {}).body
+    }
 }

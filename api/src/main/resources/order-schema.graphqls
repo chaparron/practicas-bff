@@ -221,6 +221,7 @@ type SupplierOrder {
   availabilityDifference: Boolean!
   cancelRequested: Boolean
   summary: [Summary!]
+  appliedPromotions: [AppliedPromotionResponse!]!
 }
 
 
@@ -267,6 +268,7 @@ type SupplierOrderResult {
   cancelRequested: Boolean
   availabilityDifference: Boolean!
   summary: [Summary]
+  appliedPromotions: [AppliedPromotionResponse!]!
 }
 
 type SupplierOrderAndOrderCancellations {
@@ -313,6 +315,7 @@ type SupplierOrderAndOrderCancellations {
   cancelRequested: Boolean
   summary: [Summary]
   orderedSummary: [Summary]
+  appliedPromotions: [AppliedPromotionResponse!]!
 }
 
 enum RatingOwner {

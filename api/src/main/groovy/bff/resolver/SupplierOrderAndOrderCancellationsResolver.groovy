@@ -1,5 +1,7 @@
 package bff.resolver
 
+import bff.bridge.SupplierOrderBridge
+import bff.model.AppliedPromotionResponse
 import bff.model.Money
 import bff.model.SupplierOrderAndOrderCancellations
 import bff.service.MoneyService
@@ -12,6 +14,9 @@ class SupplierOrderAndOrderCancellationsResolver implements GraphQLResolver<Supp
 
     @Autowired
     MoneyService moneyService
+
+    @Autowired
+    SupplierOrderBridge supplierOrderBridge
 
     Money deliveryCostMoney(SupplierOrderAndOrderCancellations supplierOrderAndOrderCancellations) {
         moneyService.getMoney(supplierOrderAndOrderCancellations.accessToken, supplierOrderAndOrderCancellations.deliveryCost)
@@ -59,5 +64,9 @@ class SupplierOrderAndOrderCancellationsResolver implements GraphQLResolver<Supp
 
     Money amountMoney(SupplierOrderAndOrderCancellations supplierOrderAndOrderCancellations) {
         moneyService.getMoney(supplierOrderAndOrderCancellations.accessToken, supplierOrderAndOrderCancellations.amount)
+    }
+
+    List<AppliedPromotionResponse> appliedPromotions(SupplierOrderAndOrderCancellations supplierOrderAndOrderCancellations) {
+        supplierOrderBridge.getPromotionsBySupplierOrderId(supplierOrderAndOrderCancellations.accessToken, supplierOrderAndOrderCancellations.id)
     }
 }

@@ -16,4 +16,6 @@ interface SupplierOrderBridge {
 
     PartialSummary getPartialSummaryByOrderItem(String accessToken, Long orderItemId)
 
+    List<AppliedPromotionResponse> getPromotionsBySupplierOrderId(String accessToken, Long supplierOrderId)
+
 }

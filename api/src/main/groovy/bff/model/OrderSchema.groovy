@@ -287,6 +287,7 @@ class SupplierOrder implements SupplierOrderResponse {
     HashMap<RatingOwner, Rating> ratings
     Map metadata
     List<Summary> summary
+    List<AppliedPromotionResponse> appliedPromotions
 }
 
 class SupplierOrderResult {
@@ -335,6 +336,7 @@ class SupplierOrderResult {
     HashMap<RatingOwner, Rating> ratings
     Map metadata
     List<Summary> summary
+    List<AppliedPromotionResponse> appliedPromotions
 }
 
 
@@ -387,6 +389,7 @@ class SupplierOrderAndOrderCancellations {
     Map metadata
     List<Summary> summary
     List<Summary> orderedSummary
+    List<AppliedPromotionResponse> appliedPromotions
 
     OrderCancellation getOrderCancellation() {
         orderCancellation ?: cancellationDetails

@@ -1,0 +1,23 @@
+type AppliedPromotionResponse {
+  promotion: AppliedPromotionDetailResponse!
+  involvedCartItems: [String!]!
+}
+
+type AppliedPromotionDetailResponse {
+  id: String!
+  description: String!
+  code: String
+  type: PromotionType!
+  freeDetail: FreePromotionDetailResponse
+}
+
+type FreePromotionDetailResponse {
+  ean: String!
+  units: Int!
+  quantity: Long!
+  image: String!
+}
+
+enum PromotionType {
+  DISCOUNT, FREE
+}

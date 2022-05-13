@@ -1,9 +1,11 @@
 package bff.resolver
 
 import bff.bridge.SupplierOrderBridge
+import bff.model.AppliedPromotionResponse
 import bff.model.Money
 import bff.model.RatingEntry
 import bff.model.RatingOwner
+import bff.model.SupplierOrderAndOrderCancellations
 import bff.model.SupplierOrderResult
 import bff.service.MoneyService
 import com.coxautodev.graphql.tools.GraphQLResolver
@@ -81,6 +83,10 @@ class SupplierOrderResultResolver implements GraphQLResolver<SupplierOrderResult
 
     Money amountMoney(SupplierOrderResult supplierOrderRes) {
         moneyService.getMoney(supplierOrderRes.accessToken, supplierOrderRes.amount)
+    }
+
+    List<AppliedPromotionResponse> appliedPromotions(SupplierOrderResult supplierOrderRes) {
+        supplierOrderBridge.getPromotionsBySupplierOrderId(supplierOrderRes.accessToken, supplierOrderRes.id)
     }
 
 }
