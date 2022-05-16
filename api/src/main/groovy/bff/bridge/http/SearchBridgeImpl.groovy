@@ -131,7 +131,7 @@ class SearchBridgeImpl implements SearchBridge {
             if (it.value instanceof Map) {
                 return new Filter(key: it.key, values: [new FilterItem(id: it.value.id, name: it.value.name)])
             }
-            return new Filter(key: it.key, value: it.value)
+            return new Filter(key: it.key, value: { languageTag -> it.value })
         }
     }
 }

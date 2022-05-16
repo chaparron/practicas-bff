@@ -184,6 +184,7 @@ class Cms {
                         tag: it.tag(),
                         title: toJava(it.title())
                                 .map { new I18N(entries: asJava(it.entries()), defaultEntry: it.defaultEntry()) },
+                        titleIcon: toJava(it.titleIcon()),
                         link: link(it),
                         expiration: toJava(it.expiresIn())
                                 .map { new TimestampOutput(it.toString()) }
@@ -225,6 +226,11 @@ class Cms {
                                 .map { b.queryParam("favourites", true) }
                                 .getOrElse { b }
                     }
+                    def filteredByPurchased = { UriBuilder b ->
+                        request.filtering().byPurchased()
+                                .map { b.queryParam("purchased", true) }
+                                .getOrElse { b }
+                    }
                     def sortedByPrice = { UriBuilder b ->
                         toJava(request.sorting())
                                 .filter { it instanceof ByUnitPrice }
@@ -258,6 +264,7 @@ class Cms {
                                     filteredByBrand,
                                     filteredByPromotion,
                                     filteredByFavourite,
+                                    filteredByPurchased,
                                     sortedByPrice,
                                     sortedAlphabetically,
                                     sortedByRecent

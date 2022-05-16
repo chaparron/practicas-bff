@@ -178,6 +178,7 @@ class SearchInput {
     Boolean promoted
     Integer discount
     String commercialPromotion
+    Boolean purchased
 }
 
 @ToString(excludes = ["accessToken"])

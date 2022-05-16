@@ -34,10 +34,15 @@ type AdBanner {
   link: String
 }
 
+enum TitleIconSize {
+  SIZE_24x24
+}
+
 type Module {
   id: String!
   tag: String!
   title(languageTag: LanguageTag!): String
+  titleIcon(size: TitleIconSize!): String
   link: String
   expiration: TimestampOutput
   pieces(context: ContextInput!, size: Int): [Piece!]!

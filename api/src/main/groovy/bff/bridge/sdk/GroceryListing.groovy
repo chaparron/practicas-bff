@@ -382,6 +382,7 @@ class GroceryListing {
         Optional<Boolean> maybePromoted
         Optional<Integer> maybeDiscount
         Optional<String> maybeCommercialPromotion
+        Optional<Boolean> maybePurchased
 
         ProductQueryRequestFilteringBuilder(SearchInput input) {
             this(
@@ -394,7 +395,8 @@ class GroceryListing {
                     input.favourites,
                     input.promoted,
                     input.discount,
-                    input.commercialPromotion
+                    input.commercialPromotion,
+                    input.purchased
             )
         }
 
@@ -409,7 +411,8 @@ class GroceryListing {
                     null,
                     input.promoted,
                     input.discount,
-                    input.commercialPromotion
+                    input.commercialPromotion,
+                    null
             )
         }
 
@@ -422,7 +425,8 @@ class GroceryListing {
                                                     Boolean favourites,
                                                     Boolean promoted,
                                                     Integer discount,
-                                                    String commercialPromotion) {
+                                                    String commercialPromotion,
+                                                    Boolean purchased) {
             this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }
             this.maybeCategory = ofNullable(category)
             this.maybeBrand = ofNullable(brand)
@@ -433,6 +437,7 @@ class GroceryListing {
             this.maybePromoted = ofNullable(promoted)
             this.maybeDiscount = ofNullable(discount)
             this.maybeCommercialPromotion = ofNullable(commercialPromotion)
+            this.maybePurchased = ofNullable(purchased)
         }
 
         ProductQueryRequest apply(ProductQueryRequest request) {
@@ -445,7 +450,8 @@ class GroceryListing {
                             promotionFiltering(),
                             favouritesFiltering(),
                             discountFiltering(),
-                            commercialPromotionFiltering()
+                            commercialPromotionFiltering(),
+                            purchasedFiltering()
                     ] + featuresFiltering()
             )
                     .inject(request, { acc, filter -> filter(acc) })
@@ -558,6 +564,17 @@ class GroceryListing {
                     .map { promotion ->
                         { ProductQueryRequest r ->
                             r.filteredByCommercialPromotion(promotion) as ProductQueryRequest
+                        }
+                    }
+                    .orElse(identity)
+        }
+
+        private Closure<ProductQueryRequest> purchasedFiltering() {
+            maybePurchased
+                    .filter { it }
+                    .map {
+                        { ProductQueryRequest r ->
+                            r.filteredByPurchased() as ProductQueryRequest
                         }
                     }
                     .orElse(identity)
@@ -899,7 +916,8 @@ class GroceryListing {
                     brandFilter(response) +
                     discountFilter() +
                     supplierFilter(response) +
-                    featuresFilter(response)
+                    featuresFilter(response) +
+                    purchasedFilter()
         }
 
         protected List<Filter> termFilter() {
@@ -908,7 +926,7 @@ class GroceryListing {
                         [
                                 new Filter(
                                         key: "keyword",
-                                        value: it.text()
+                                        value: { languageTag -> it.text() }
                                 )
                         ]
                     }
@@ -1045,6 +1063,28 @@ class GroceryListing {
                                     }
                                     .orElse([])
                         }.flatten() as List<Filter>
+                    }
+                    .orElse([])
+        }
+
+        protected List<Filter> purchasedFilter() {
+            toJava(request.filtering().byPurchased())
+                    .map {
+                        [
+                                new Filter(
+                                        key: "purchased",
+                                        value: { LanguageTag languageTag ->
+                                            messageSource.getMessage(
+                                                    "search.PURCHASED_FILTER",
+                                                    [].toArray(),
+                                                    forLanguageTag(
+                                                            ofNullable(languageTag.toString()).
+                                                                    orElse("en")
+                                                    )
+                                            )
+                                        }
+                                )
+                        ]
                     }
                     .orElse([])
         }

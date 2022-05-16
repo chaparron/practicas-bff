@@ -27,11 +27,22 @@ class ContextInput {
     CoordinatesInput coordinates
 }
 
+enum TitleIconSize implements ImageSizeEnum {
+    SIZE_24x24
+
+    @Override
+    String value() {
+        name().substring("SIZE_".length())
+    }
+
+}
+
 @ToString
 class Module {
     String id
     String tag
     Optional<I18N> title
+    Optional<String> titleIcon
     Optional<String> link
     Optional<TimestampOutput> expiration
 }

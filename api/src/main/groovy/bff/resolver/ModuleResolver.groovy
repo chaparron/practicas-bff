@@ -1,11 +1,8 @@
 package bff.resolver
 
-
 import bff.bridge.sdk.Cms
-import bff.model.ContextInput
-import bff.model.Module
-import bff.model.Piece
-import bff.model.TimestampOutput
+import bff.model.*
+import bff.service.ImageService
 import bff.support.ExecutorService
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,9 +20,15 @@ class ModuleResolver implements GraphQLResolver<Module> {
     Cms cms
     @Autowired
     ExecutorService executor
+    @Autowired
+    ImageService imageService
 
     String title(Module module, LanguageTag languageTag) {
         module.title.map { it.getOrDefault(languageTag) }.orElse(null)
+    }
+
+    String titleIcon(Module module, TitleIconSize size) {
+        module.titleIcon.map { imageService.url(it, size) }.orElse(null)
     }
 
     String link(Module module) {
