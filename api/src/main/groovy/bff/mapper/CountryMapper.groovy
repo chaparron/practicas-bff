@@ -40,7 +40,8 @@ class CountryMapper {
                 currency: buildCurrency(country.currencyInformation),
                 fee: buildFee(country.feeConfiguration),
                 wabiPay: buildWabiPay(country.wabipayConfiguration),
-                legalDocumentInformation: buildLegalDocumentInformation(country.legalDocumentInformation)
+                legalDocumentInformation: buildLegalDocumentInformation(country.legalDocumentInformation),
+                geolocation: buildGeolocation(country.geolocation)
         )
     }
 
@@ -60,7 +61,8 @@ class CountryMapper {
                 currency: buildCurrency(country.currencyInformation),
                 fee: buildFee(country.feeConfiguration),
                 wabiPay: buildWabiPay(country.wabipayConfiguration),
-                legalDocumentInformation: buildLegalDocumentInformation(country.legalDocumentInformation)
+                legalDocumentInformation: buildLegalDocumentInformation(country.legalDocumentInformation),
+                geolocation: buildGeolocation(country.geolocation)
         )
     }
 
@@ -107,6 +109,10 @@ class CountryMapper {
                 direction: language.direction,
                 translations: translations
         )
+    }
+
+    private static Geolocation buildGeolocation(wabi2b.sdk.regional.Geolocation geoLocation){
+        return new Geolocation(lat: geoLocation.lat, lng: geoLocation.lng)
     }
 
     private static Detail buildDetail(wabi2b.sdk.regional.Country country) {
