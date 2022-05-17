@@ -1,0 +1,20 @@
+
+input ExternalPaymentsInput {
+  accessToken: String!
+  scrollInput:ScrollInput!
+}
+input ScrollInput{
+  scroll: String
+  size: Int!
+}
+
+type ExternalPaymentInformation{
+  receiver: String!
+  amount: Money!
+  created: TimestampOutput!
+}
+
+type ExternalPaymentsResult {
+  scroll: String
+  externalPayments: [ExternalPaymentInformation!]
+}
