@@ -883,11 +883,11 @@ class GroceryListing {
                                         accessToken: this.accessToken.orElse(null),
                                         id: it.id().toInteger(),
                                         minAmount: it.requiredPurchaseAmount()._1().toBigDecimal(),
-                                        maxAmount: toJava(it.requiredPurchaseAmount()._2()
-                                                .map { it.toBigDecimal() })
+                                        maxAmount: toJava(it.requiredPurchaseAmount()._2())
+                                                .map { it.toBigDecimal() }
                                                 .orElse(null),
-                                        deliveryCost: toJava(it.cost()
-                                                .map { it.toBigDecimal() })
+                                        deliveryCost: toJava(it.cost())
+                                                .map { it.toBigDecimal() }
                                                 .orElse(null)
                                 )
                             },
@@ -898,6 +898,8 @@ class GroceryListing {
                                 percentage: it.percentage().toDouble()
                         )
                     }.orElse(null),
+                    averageDeliveryDay: toJava(option.supplier().averageDeliveryTime())
+                            .map { it.toDays().toString() }.orElse(null),
                     accessToken: this.accessToken.orElse(null)
             )
         }
