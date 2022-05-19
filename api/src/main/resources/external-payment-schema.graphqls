@@ -2,6 +2,7 @@ input ExternalPaymentsInput {
   accessToken: String!
   scrollInput:ScrollInput!
 }
+
 input ScrollInput{
   scroll: String
   size: Int!

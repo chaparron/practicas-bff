@@ -5,6 +5,7 @@ import wabi2b.sdk.regional.Country
 import wabi2b.sdk.regional.CountryServiceResponse
 import wabi2b.sdk.regional.CurrencyInformation
 import wabi2b.sdk.regional.FeeConfiguration
+import wabi2b.sdk.regional.Geolocation
 import wabi2b.sdk.regional.KeyValueResponse
 import wabi2b.sdk.regional.Language
 import wabi2b.sdk.regional.LegalDocumentInformation
@@ -46,7 +47,8 @@ abstract class CountryGatewayBridgeImplTestData {
                             "ltr",
                             [new Translation("en", "Spain")]
                     ),
-                    new WabipayConfiguration(true, true, true)
+                    new WabipayConfiguration(true, true, true),
+                    new Geolocation(new Double(-38.416097), new Double(-63.616672))
             )
 
     protected static Country regionalCountryAr =
@@ -72,7 +74,8 @@ abstract class CountryGatewayBridgeImplTestData {
                             "ltr",
                             [new Translation("en", "Argentina")]
                     ),
-                    new WabipayConfiguration(true, true, true)
+                    new WabipayConfiguration(true, true, true),
+                    new Geolocation(new Double(-38.416097), new Double(-63.616672))
             )
 
     protected static List<Country> homeCountriesResponse =
@@ -103,7 +106,8 @@ abstract class CountryGatewayBridgeImplTestData {
                                             new Translation("es", "Egipto")
                                     ]
                             ),
-                            new WabipayConfiguration(true, true, true)
+                            new WabipayConfiguration(true, true, true),
+                            new Geolocation(new Double(-38.416097), new Double(-63.616672))
                     ),
                     new Country(
                             "ph",
@@ -123,7 +127,8 @@ abstract class CountryGatewayBridgeImplTestData {
                                             new Translation("es", "Filipinas")
                                     ]
                             ),
-                            new WabipayConfiguration(true, true, true)
+                            new WabipayConfiguration(true, true, true),
+                            new Geolocation(new Double(-38.416097), new Double(-63.616672))
                     ),
                     new Country(
                             "ma",
@@ -143,7 +148,8 @@ abstract class CountryGatewayBridgeImplTestData {
                                             new Translation("es", "Marruecos")
                                     ]
                             ),
-                            new WabipayConfiguration(true, true, true)
+                            new WabipayConfiguration(true, true, true),
+                            new Geolocation(new Double(-38.416097), new Double(-63.616672))
                     )
             ]
 
@@ -171,6 +177,7 @@ abstract class CountryGatewayBridgeImplTestData {
                                     new Translation("l8", "xxx"),
                             ]
                     ),
-                    new WabipayConfiguration(true, true, true)
+                    new WabipayConfiguration(true, true, true),
+                    new Geolocation(new Double(-38.416097), new Double(-63.616672))
             )
 }

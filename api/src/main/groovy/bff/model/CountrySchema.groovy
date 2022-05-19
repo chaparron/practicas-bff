@@ -23,6 +23,7 @@ class Country {
     Fee fee
     WabiPay wabiPay
     LegalDocumentInformation legalDocumentInformation
+    Geolocation geolocation
 }
 
 class Detail {
@@ -85,6 +86,11 @@ class CountryConfigurationEntry {
 
 class CountryHomeInput {
     String locale
+}
+
+class Geolocation{
+    Double lat
+    Double lng
 }
 
 enum LegalUrlType {

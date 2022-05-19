@@ -32,6 +32,7 @@ class RequestForExternalPaymentFailed implements RequestForExternalPaymentResult
     CreateExternalPaymentFailureReason reason
 }
 
+
 class ExternalPaymentInformation {
     Money amount
     TimestampOutput created
@@ -46,3 +47,4 @@ class ExternalPaymentsResult {
 enum CreateExternalPaymentFailureReason {
     TARGET_WALLET_NOT_FOUND
 }
+

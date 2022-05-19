@@ -19,6 +19,7 @@ type Country {
   fee:Fee!
   wabiPay:WabiPay!
   legalDocumentInformation:LegalDocumentInformation!
+  geolocation: Geolocation!
 }
 
 type Detail {
@@ -74,6 +75,11 @@ type LegalDocumentInformation{
   id:String!
   mask:String!
   maskRegex:String!
+}
+
+type Geolocation{
+  lat: Float!
+  lng: Float!
 }
 
 enum LegalUrlType {

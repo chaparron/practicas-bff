@@ -33,7 +33,7 @@ class ExternalPayments {
     }
 
     RequestForExternalPaymentResult generateExternalPaymentUrl(RequestForExternalPaymentInput input) {
-        if(!isFromAllowedCountry(input.accessToken))throw new UnsupportedOperationException("User country is not allowed")
+        if (!isFromAllowedCountry(input.accessToken)) throw new UnsupportedOperationException("User country is not allowed")
         if (sdk.existsUser(input.target, input.accessToken).block()) {
             def myWallet = sdk.getMyWallet(input.accessToken).block()
             def encoded = Base64.getEncoder().encodeToString(
@@ -43,7 +43,7 @@ class ExternalPayments {
         return new RequestForExternalPaymentFailed(reason: CreateExternalPaymentFailureReason.TARGET_WALLET_NOT_FOUND)
     }
 
-    private Boolean isFromAllowedCountry(String accessToken){
+    private static Boolean isFromAllowedCountry(String accessToken) {
         JwtToken.countryFromString(accessToken) == "my"
     }
 

@@ -16,14 +16,15 @@ dependencies {
     implementation(platform("org.springframework.cloud:spring-cloud-sleuth:2.0.4.RELEASE"))
 
     implementation "com.github.ben-manes.caffeine:caffeine:2.9.2"
-    implementation "wabi2b.sdk:grocery-listing:1167-ee2007de61e1850c3eb74c5f35cc88e0ea7252bd"
+    implementation "wabi2b.sdk:grocery-listing:1168-0f4595f6f4a5200298fe3024b5455ab07b215045"
     implementation "wabi2b.sdk:supplier-credits:10013-5b3ebcb2efd390ddb0fffcc003762f30b7f16055"
-    implementation "wabi2b.sdk:cms:1102-c18ea03bae4d07549426f839d554c63015320c29"
-    implementation "wabi2b:regional-config:1157-a17061cc653084ce8a1900f8be8e6107100e2d83"
+    implementation "wabi2b.sdk:cms:1107-994ca86d3ef1edad3cc013a5efd11c8b43b2437b"
+    implementation "wabi2b:regional-config:1020-7484f5b6b7ff3fbbf5e4477ee516e846314fa7cb"
     implementation "com.wabi2b:phone-notifier-sdk:10144-76744096d3a1c81c01910dfeb44eff235aa2f690"
     implementation "wabi2b.sdk:wabi2b-api-sdk:1959-e12cbc005dc532f26157749159e9835369511a45"
     implementation "com.wabi2b:customers-sdk:10089-cabc0914ce4cd1374abf9e7553f56c64674688a8"
     implementation "wabi2b:payments-sdk:10249-4a858826c3d5b34bc365ed52cc8c02e15ac21f9e"
+
     implementation "io.ktor:ktor-client-cio:1.6.5"
 
     def graphQL = '5.9.0'
