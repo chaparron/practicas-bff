@@ -3,6 +3,7 @@ package bff.configuration
 import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.sdk.Cms
+import bff.bridge.sdk.ExternalPayments
 import bff.bridge.sdk.GroceryListing
 import bff.bridge.sdk.credits.HttpCreditService
 import groovy.util.logging.Slf4j
@@ -15,6 +16,7 @@ import org.springframework.web.client.RestOperations
 import org.springframework.web.reactive.function.client.WebClient
 import wabi2b.cms.sdk.Sdk as CmsSdk
 import wabi2b.grocery.listing.sdk.Sdk as GroceryListingSdk
+import wabi2b.payments.sdk.client.impl.WabiPaymentSdk
 import wabi2b.sdk.api.HttpWabi2bSdk
 import wabi2b.sdk.api.Wabi2bSdk
 import wabi2b.sdk.credits.HttpSupplierCreditsSdk
@@ -41,6 +43,8 @@ class SdkConfiguration {
     URI wabi2bApiURI
     @Value('${customers.url}')
     String customersUrl
+    @Value('${payments.url:}')
+    String paymentsUrl
 
     @Autowired
     CountryBridge countryBridge
@@ -72,6 +76,11 @@ class SdkConfiguration {
     }
 
     @Bean
+    ExternalPayments payments() {
+        new ExternalPayments(sdk: new WabiPaymentSdk(paymentsUrl))
+    }
+
+    @Bean
     HttpCreditService creditService() {
         new HttpCreditService(
                 creditsSdk: new HttpSupplierCreditsSdk.Builder().withBaseURI(creditsEndpoint.toURI()).build()
@@ -84,12 +93,12 @@ class SdkConfiguration {
     }
 
     @Bean
-    Wabi2bSdk wabi2bSdk(){
+    Wabi2bSdk wabi2bSdk() {
         return new HttpWabi2bSdk.Builder().withBaseURI(wabi2bApiURI).build()
     }
 
     @Bean
-    CustomersSdk customersSdk(){
+    CustomersSdk customersSdk() {
         return new HttpCustomersSdk(customersUrl)
     }
 

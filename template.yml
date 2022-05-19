@@ -363,6 +363,11 @@ Resources:
           Value:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-customers-ApiRootURL"
 
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: payments_url
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-payments-ApiRootURL"
+
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
