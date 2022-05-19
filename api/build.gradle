@@ -23,7 +23,7 @@ dependencies {
     implementation "com.wabi2b:phone-notifier-sdk:10144-76744096d3a1c81c01910dfeb44eff235aa2f690"
     implementation "wabi2b.sdk:wabi2b-api-sdk:1959-e12cbc005dc532f26157749159e9835369511a45"
     implementation "com.wabi2b:customers-sdk:10089-cabc0914ce4cd1374abf9e7553f56c64674688a8"
-    implementation "wabi2b:payments-sdk:10242-ef098f510392df63d9a0f3fda28a4a690cdffcd3"
+    implementation "wabi2b:payments-sdk:10249-4a858826c3d5b34bc365ed52cc8c02e15ac21f9e"
     implementation "io.ktor:ktor-client-cio:1.6.5"
 
     def graphQL = '5.9.0'

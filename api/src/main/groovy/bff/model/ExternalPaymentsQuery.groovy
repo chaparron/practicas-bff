@@ -17,6 +17,10 @@ class ExternalPaymentsQuery implements GraphQLQueryResolver {
     ExternalPaymentsResult findMyExternalPayments(ExternalPaymentsInput input) {
         ep.getMyExternalPayments(input)
     }
+
+    RequestForExternalPaymentResult requestForExternalPayment(RequestForExternalPaymentInput input) {
+        ep.generateExternalPaymentUrl(input)
+    }
 }
 
 

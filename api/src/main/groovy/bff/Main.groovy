@@ -90,6 +90,8 @@ class Main {
                 .add(FreeProduct.class)
                 .add(PhoneStatus.class)
                 .add(AddBranchOfficeFailed.class)
+                .add(RequestForExternalPayment.class)
+                .add(RequestForExternalPaymentFailed.class)
     }
 
     /**

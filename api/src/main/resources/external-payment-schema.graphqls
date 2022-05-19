@@ -1,4 +1,3 @@
-
 input ExternalPaymentsInput {
   accessToken: String!
   scrollInput:ScrollInput!
@@ -6,6 +5,16 @@ input ExternalPaymentsInput {
 input ScrollInput{
   scroll: String
   size: Int!
+}
+input RequestForExternalPaymentInput{
+  accessToken: String!
+  target: String!
+  amount: MoneyInput!
+}
+
+input MoneyInput{
+  currency: String!
+  amount: Float!
 }
 
 type ExternalPaymentInformation{
@@ -18,3 +27,16 @@ type ExternalPaymentsResult {
   scroll: String
   externalPayments: [ExternalPaymentInformation!]
 }
+
+type RequestForExternalPayment {
+  url: String!
+}
+type RequestForExternalPaymentFailed{
+  reason: CreateExternalPaymentFailureReason!
+}
+enum CreateExternalPaymentFailureReason {
+  TARGET_WALLET_NOT_FOUND
+}
+
+union RequestForExternalPaymentResult = RequestForExternalPayment | RequestForExternalPaymentFailed
+
