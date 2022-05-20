@@ -30,6 +30,7 @@ class RequestForExternalPayment implements RequestForExternalPaymentResult {
 
 class RequestForExternalPaymentFailed implements RequestForExternalPaymentResult {
     CreateExternalPaymentFailureReason reason
+    String text
 }
 
 

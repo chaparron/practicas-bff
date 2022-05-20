@@ -34,6 +34,7 @@ type RequestForExternalPayment {
 }
 type RequestForExternalPaymentFailed{
   reason: CreateExternalPaymentFailureReason!
+  text(languageTag: String!): String!
 }
 enum CreateExternalPaymentFailureReason {
   TARGET_WALLET_NOT_FOUND
