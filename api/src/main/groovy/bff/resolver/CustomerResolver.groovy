@@ -16,11 +16,25 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     CountryBridge countryBridge
 
     List<VerificationDocument> verificationDocuments(Customer customer) {
-        customer.verificationDocuments?:customerBridge.findVerificationDocs(customer.accessToken)
+        customer.verificationDocuments ?: customerBridge.findVerificationDocs(customer.accessToken)
     }
 
     List<Address> addresses(Customer customer) {
-        customer.addresses?:customerBridge.findAddressesByCustomerAccessToken(customer.accessToken)
+        customer.addresses ?: customerBridge.findAddressesByCustomerAccessToken(customer.accessToken)
+    }
+
+    List<ProfileSection> profileSections(Customer customer) {
+        if (!customer.country_id) return []
+        List<ProfileSection> ps = new ArrayList<ProfileSection>()
+        ps.push(new ProfileSection(id: "ORDERS"))
+        ps.push(new ProfileSection(id: "SUGGESTED_ORDER"))
+        ps.push(new ProfileSection(id: "STORE_INFORMATION"))
+        ps.push(new ProfileSection(id: "PERSONAL_INFORMATION"))
+        ps.push(new ProfileSection(id: "DOCUMENTS"))
+        ps.push(new ProfileSection(id: "BRANCH_OFFICE"))
+        if (customer.country_id == 'my')
+            ps.push(new ProfileSection(id: "QR_PAYMENTS"))
+        ps
     }
 
     Boolean hasOrders(Customer customer) {
@@ -35,7 +49,7 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     }
 
     User user(Customer customer) {
-        if (customer.user.username == null){
+        if (customer.user.username == null) {
             return customerBridge.getUserById(customer.accessToken, customer.user.id)
         }
         return customer.user

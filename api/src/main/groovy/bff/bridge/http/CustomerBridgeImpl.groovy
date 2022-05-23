@@ -36,6 +36,7 @@ class CustomerBridgeImpl implements CustomerBridge {
     @Autowired
     CustomerSdkMapper customerSdkMapper
 
+
     @Override
     Customer myProfile(String accessToken) {
         def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me")).toUriString()
@@ -118,7 +119,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                 RequestEntity.method(HttpMethod.POST, root.resolve('/customer'))
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Address-Received-In-Bff", remoteAddress)
-                        .header("Recaptcha-Token",  passwordlessSignUpInput.captchaToken)
+                        .header("Recaptcha-Token", passwordlessSignUpInput.captchaToken)
                         .body(passwordlessSignUpInput)
                 , Customer).body
 
@@ -674,9 +675,9 @@ class CustomerBridgeImpl implements CustomerBridge {
             )
             Customer customer = customerSdkMapper.toCustomer(customerDto)
             return mapCustomer(customer, addBranchOfficeInput.accessToken)
-        }catch(ClientRequestException ex){
+        } catch (ClientRequestException ex) {
             def reason = AddBranchOfficeFailedReason.valueFor(ex.message)
-            if (reason != null){
+            if (reason != null) {
                 return reason.build()
             }
             throw ex
@@ -709,8 +710,10 @@ class CustomerBridgeImpl implements CustomerBridge {
         return user
     }
 
-    private static String prepareAccessToken(String token){
-        if (token.startsWith("Bearer ")){return token}
+    private static String prepareAccessToken(String token) {
+        if (token.startsWith("Bearer ")) {
+            return token
+        }
         return "Bearer ${token}"
     }
 
@@ -720,6 +723,7 @@ class CustomerBridgeImpl implements CustomerBridge {
         customer.user?.accessToken = accessToken
         customer
     }
+
 
 
 

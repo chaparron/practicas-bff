@@ -1,31 +1,31 @@
 enum CustomerStatus {
-    PENDING,
-    REJECTED,
-    APPROVED
+  PENDING,
+  REJECTED,
+  APPROVED
 }
 
 enum AddressMode {
-    LEGAL,
-    DELIVERY
+  LEGAL,
+  DELIVERY
 }
 
 enum VerificationDocumentType {
-    IB,
-    AFIP,
-    ID_FRONT,
-    ID_BACK
+  IB,
+  AFIP,
+  ID_FRONT,
+  ID_BACK
 }
 
 enum CustomerErrorReason {
-    PHONE_ALREADY_EXIST
-    TOKEN_EXPIRED
-    NO_VERIFICATION_EMAIL_PENDING
-    NO_VERIFICATION_SMS_PENDING
-    NOT_ADDRESS_CUSTOMER
-    CANNOT_SET_LEGAL_ADDRESS_AS_PREFERRED
-    INVALID_DELIVERY_ADDRESS_COUNT
-    INVALID_ADDRESSES,
-    INVALID_STATE
+  PHONE_ALREADY_EXIST
+  TOKEN_EXPIRED
+  NO_VERIFICATION_EMAIL_PENDING
+  NO_VERIFICATION_SMS_PENDING
+  NOT_ADDRESS_CUSTOMER
+  CANNOT_SET_LEGAL_ADDRESS_AS_PREFERRED
+  INVALID_DELIVERY_ADDRESS_COUNT
+  INVALID_ADDRESSES,
+  INVALID_STATE
 }
 
 enum SignInFailedReason{
@@ -56,68 +56,68 @@ enum PasswordlessSignUpFailedReason{
 }
 
 enum DeliveryPreference {
-    MORNING,
-    AFTERNOON,
-    NO_PREFERENCE
+  MORNING,
+  AFTERNOON,
+  NO_PREFERENCE
 }
 
 input CustomerInput {
-    accessToken: String!
+  accessToken: String!
 }
 
 input VerificationDocumentInput {
-    id: ID
-    type: VerificationDocumentType
+  id: ID
+  type: VerificationDocumentType
 }
 
 input WorkingDaysInput {
-    days: [DayInput]!
-    hours: [HourRangeInput]!
+  days: [DayInput]!
+  hours: [HourRangeInput]!
 }
 
 
 input DayInput {
-    dayIndex: Int!
-    selected: Boolean!
+  dayIndex: Int!
+  selected: Boolean!
 }
 
 input HourRangeInput {
-    from: String!
-    to: String!
+  from: String!
+  to: String!
 }
 
 
 input StateInput {
-    id: ID!
-    name: String!
+  id: ID!
+  name: String!
 }
 
 
 input AddressTypeInput {
-    id: ID
-    formatted: String!
-    state: StateInput
-    lat: Float!
-    lon: Float!
-    postalCode: String!
-    additionalInfo: String
-    addressType: AddressMode!
+  id: ID
+  formatted: String!
+  state: StateInput
+  lat: Float!
+  lon: Float!
+  postalCode: String!
+  additionalInfo: String
+  addressType: AddressMode!
 }
 
 input AddressTypeUpsertInput {
-    id: ID
-    formatted: String!
-    state: StateInput
-    lat: Float!
-    lon: Float!
-    postalCode: String
-    additionalInfo: String
-    addressType: AddressMode!
-    accessToken: String!
+  id: ID
+  formatted: String!
+  state: StateInput
+  lat: Float!
+  lon: Float!
+  postalCode: String
+  additionalInfo: String
+  addressType: AddressMode!
+  accessToken: String!
 }
 
 input UserCredentialsPasswordlessSignUpInput {
-    enabled: Boolean
+  enabled: Boolean
 }
 input UserCredentialsSignInInput {
   password: String!
@@ -183,30 +183,30 @@ input DisableBranchOfficeInput {
 }
 
 enum AddressFailedReason {
-    ADDRESS_NOT_FOUND
+  ADDRESS_NOT_FOUND
 }
 
 type AddressFailed {
-    reason: AddressFailedReason!
+  reason: AddressFailedReason!
 }
 
 union AddressResponse = AddressType | AddressFailed
 
 
 input AddressIdInput {
-    address_id : ID!
-    accessToken: String!
+  address_id : ID!
+  accessToken: String!
 }
 
 input CustomerUpdateInput {
-    phone: String
-    username: String
-    acceptWhatsApp: Boolean
-    workingDays: WorkingDaysInput
-    deliveryComment: String
-    verificationDocuments: [VerificationDocumentInput]
-    accessToken: String!
-    marketingEnabled: Boolean
+  phone: String
+  username: String
+  acceptWhatsApp: Boolean
+  workingDays: WorkingDaysInput
+  deliveryComment: String
+  verificationDocuments: [VerificationDocumentInput]
+  accessToken: String!
+  marketingEnabled: Boolean
 }
 input CustomerUpdateInputV2 {
   username: String
@@ -244,8 +244,8 @@ input UpdateBranchOfficeProfileInput {
 }
 
 input VerifyEmailInput {
-    id: ID!
-    token: String!
+  id: ID!
+  token: String!
 }
 
 input IsValidPhoneInput {
@@ -254,80 +254,81 @@ input IsValidPhoneInput {
 }
 
 input PreferredAddressInput {
-    addressId: ID!
-    accessToken: String!
+  addressId: ID!
+  accessToken: String!
 
 }
 
 input AcceptTcInput {
-    marketingEnabled: Boolean
-    accessToken: String
+  marketingEnabled: Boolean
+  accessToken: String
 }
 
 type State {
-    id: ID!
-    name: String!
+  id: ID!
+  name: String!
 }
 
 type AddressType {
-    id: ID!
-    formatted: String!
-    lat: Float!
-    lon: Float!
-    additionalInfo: String
-    preferred: Boolean
-    addressType: AddressMode
-    enabled: Boolean!
-    state: State
-    postalCode: String
+  id: ID!
+  formatted: String!
+  lat: Float!
+  lon: Float!
+  additionalInfo: String
+  preferred: Boolean
+  addressType: AddressMode
+  enabled: Boolean!
+  state: State
+  postalCode: String
 }
 
 type VerificationDocument {
-    id: ID!
-    type: VerificationDocumentType!
+  id: ID!
+  type: VerificationDocumentType!
 }
 
 type RatingScore {
-    average: Float!
-    count: Int!
-    percentage: Float
+  average: Float!
+  count: Int!
+  percentage: Float
 }
 
 
 type CustomerType {
-    id: String!
-    @deprecated(reason: "Use code instead")
-    code: String!
-    name: String!
+  id: String!
+  @deprecated(reason: "Use code instead")
+  code: String!
+  name: String!
 }
 
 type Customer {
-    id: ID
-    name: String!
-    enabled: Boolean!
-    legalId: String!
-    linePhone: String
-    customerStatus: CustomerStatus!
-    user: User!
-    smsVerification: Boolean!
-    emailVerification: Boolean!
-    addresses: [AddressType]
-    verificationDocuments: [VerificationDocument]
-    deliveryPreference: DeliveryPreference
-    workingDays: WorkingDays!
-    rating: RatingScore
-    level: Int
-    missingDocuments: [String]
-    # Needed for temporal retrocompatibility:
-    @deprecated country_id: String!
-    country: Country!
-    customerType: CustomerType!
-    hasOrders: Boolean
-    marketingEnabled: Boolean!
-    storeType: StoreType!
-    storeOwnerId: Long
-    permissionOnBranchOffice: Boolean
-    legalAsDelivery: Boolean
+  id: ID
+  name: String!
+  enabled: Boolean!
+  legalId: String!
+  linePhone: String
+  customerStatus: CustomerStatus!
+  user: User!
+  smsVerification: Boolean!
+  emailVerification: Boolean!
+  addresses: [AddressType]
+  verificationDocuments: [VerificationDocument]
+  deliveryPreference: DeliveryPreference
+  workingDays: WorkingDays!
+  rating: RatingScore
+  level: Int
+  missingDocuments: [String]
+  # Needed for temporal retrocompatibility:
+  @deprecated country_id: String!
+  country: Country!
+  customerType: CustomerType!
+  hasOrders: Boolean
+  marketingEnabled: Boolean!
+  storeType: StoreType!
+  storeOwnerId: Long
+  permissionOnBranchOffice: Boolean
+  legalAsDelivery: Boolean
+  profileSections: [ProfileSection!]
 }
 
 enum StoreType {
@@ -335,22 +336,22 @@ enum StoreType {
 }
 
 type WorkingDays {
-    days: [Day]!
-    hours: [HourRange]!
+  days: [Day]!
+  hours: [HourRange]!
 }
 
 type Day {
-    dayIndex: Int!
-    selected: Boolean!
+  dayIndex: Int!
+  selected: Boolean!
 }
 
 type HourRange {
-    from: String!
-    to: String!
+  from: String!
+  to: String!
 }
 
 type CustomerErrorFailed {
-    customerErrorReason : CustomerErrorReason!
+  customerErrorReason : CustomerErrorReason!
 }
 
 type SignInFailed {
@@ -361,39 +362,39 @@ type PasswordlessSignUpFailed {
 }
 
 type SuppliersNameResult {
-    id: Int!
-    supplierId: Int!
-    supplierName: String!
-    supplierAvatar: String
-    productsQuantity: Int!
-    readDate: String
-    lastUpdate: String!
+  id: Int!
+  supplierId: Int!
+  supplierName: String!
+  supplierAvatar: String
+  productsQuantity: Int!
+  readDate: String
+  lastUpdate: String!
 }
 
 input GetSuggestedOrderInput {
-    accessToken: String!
-    supplierId: Int!
+  accessToken: String!
+  supplierId: Int!
 }
 
 type SuggestedOrderResult {
-    id: Int!
-    customerId: Int!
-    supplierId: Int!
-    readDate: String
-    lastUpdate: String!
-    supplierName: String!
-    items: [SuggestedOrderItem]! @deprecated(reason: "will be replaced with 'products'")
-    products: [SuggestedOrderProduct!]!
+  id: Int!
+  customerId: Int!
+  supplierId: Int!
+  readDate: String
+  lastUpdate: String!
+  supplierName: String!
+  items: [SuggestedOrderItem]! @deprecated(reason: "will be replaced with 'products'")
+  products: [SuggestedOrderProduct!]!
 }
 
 type SuggestedOrderItem {
-    productId: Int!
-    productEan: String!
-    productUnits: Int!
-    productImageId: String
-    quantity: Int!
-    productTitle: String!
-    categoryTitle: String!
+  productId: Int!
+  productEan: String!
+  productUnits: Int!
+  productImageId: String
+  quantity: Int!
+  productTitle: String!
+  categoryTitle: String!
 }
 
 type SuggestedOrderProduct {
@@ -407,8 +408,8 @@ type SuggestedOrderProduct {
 }
 
 input FavouriteProductInput {
-    accessToken: String!
-    productId: ID!,
+  accessToken: String!
+  productId: ID!,
 }
 
 type BranchOfficesResponse {
@@ -419,12 +420,16 @@ type BranchOfficesResponse {
 }
 
 input GetMyBranchOfficesInput {
-    accessToken: String
-    page: Int
-    size: Int
+  accessToken: String
+  page: Int
+  size: Int
 }
 
 input GetBranchOfficeInput {
   accessToken: String!
   branchOfficeId: ID!
+}
+
+type ProfileSection{
+  id: ID!
 }
