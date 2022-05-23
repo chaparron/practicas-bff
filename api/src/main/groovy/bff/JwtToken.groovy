@@ -26,6 +26,14 @@ class JwtToken {
         }
     }
 
+    static String userIdFromToken(String token) {
+        try {
+            getTokenMapFromRawToken(token)["user"]["id"].toString()
+        } catch (IllegalArgumentException | JsonException e) {
+            throw new InvalidToken('Invalid token', e)
+        }
+    }
+
     static List<String> authorities(String token) {
         try {
             getTokenMapFromRawToken(token)["authorities"] as List<String>

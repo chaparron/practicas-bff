@@ -140,6 +140,11 @@ type Query {
   getMyBranchOffices(input: GetMyBranchOfficesInput): BranchOfficesResponse
 
   getBranchOffice(input: GetBranchOfficeInput!): Customer
+
+  findMyExternalPayments(input: ExternalPaymentsInput!): ExternalPaymentsResult
+
+  requestForExternalPayment(input: RequestForExternalPaymentInput!): RequestForExternalPaymentResult
+
 }
 
 type Mutation {

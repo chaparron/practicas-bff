@@ -24,6 +24,7 @@ Mappings:
       GoogleSpreadsheetIdSupplierLead: "1dIhiarfQUmXT3FXts4dm7gUuQDUrNmU6cLdA2Mdyt8Y"
       GoogleSpreadsheetIdPreSignUp: "1HfV1TseKMNKtSbT78K1HSXnKgmzYwqbFvlHcPs8C0u8"
       JwtSigningKeyId: "qa/jwt-signingKey"
+      WabipayUrl: 'https://www-qa.wabipay.com/'
     prod:
       MinPoolSize: '2'
       MaxPoolSize: '4'
@@ -41,8 +42,9 @@ Mappings:
       GoogleSpreadsheetIdSupplierLead: "1WgFgR9BB15dcwlWY0EkINDVxSbe85l30hMSOp6WylMI"
       GoogleSpreadsheetIdPreSignUp: "1s9HK51X1WiRnJCy6-DjvWtJQQHt0r--zc77Z2S6istQ"
       JwtSigningKeyId: "prod/jwt-signingKey"
-Resources:
+      WabipayUrl: 'https://www.wabipay.com/'
 
+Resources:
   Wabi2bCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
@@ -330,6 +332,10 @@ Resources:
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, ResizerUrl ]
 
         - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: wabipay_url
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, WabipayUrl ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: GROCERY_LISTING_ENDPOINT
           Value:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-wabi2b-grocery-listing-ApiGatewayEndpoint"
@@ -362,6 +368,11 @@ Resources:
           OptionName: customers_url
           Value:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-customers-ApiRootURL"
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: payments_url
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-payments-ApiRootURL"
 
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
