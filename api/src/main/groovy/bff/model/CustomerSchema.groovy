@@ -263,12 +263,15 @@ enum DeleteAddressFailedReason {
 enum AddBranchOfficeFailedReason {
     PHONE_ALREADY_EXIST,
     EMAIL_ALREADY_EXIST,
+    INVALID_COUNTRY_CODE,
 
     static AddBranchOfficeFailedReason valueFor(String message){
        if (message.contains(PHONE_ALREADY_EXIST.name())){
             return PHONE_ALREADY_EXIST
         }else if (message.contains(EMAIL_ALREADY_EXIST.name())){
             return EMAIL_ALREADY_EXIST
+        }else if (message.contains(INVALID_COUNTRY_CODE.name())){
+            return INVALID_COUNTRY_CODE
         }
         return null
     }
@@ -543,6 +546,7 @@ class AddBranchOfficeInput{
     String linePhone
     String firstName
     String lastName
+    String countryCode
     String phone
     String email
     AddressInput address

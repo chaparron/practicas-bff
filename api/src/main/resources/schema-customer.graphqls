@@ -225,6 +225,7 @@ input AddBranchOfficeInput {
   linePhone: String
   firstName: String!
   lastName: String!
+  countryCode: String!
   phone: String!
   email: String
   address: AddressTypeInput!
