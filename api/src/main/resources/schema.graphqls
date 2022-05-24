@@ -495,10 +495,8 @@ type AddAddressFailed {
 }
 
 enum AddBranchOfficeFailedReason {
-  INVALID_COUNTRY,
   PHONE_ALREADY_EXIST,
-  EMAIL_ALREADY_EXIST,
-  INVALID_CUSTOMER_TYPE
+  EMAIL_ALREADY_EXIST
 }
 
 type AddBranchOfficeFailed{

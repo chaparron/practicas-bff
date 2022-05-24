@@ -8,7 +8,6 @@ import graphql.schema.DataFetchingEnvironment
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-import static bff.model.utils.DfeUtils.isOperation
 import static java.util.Optional.ofNullable
 
 @Component
@@ -28,12 +27,10 @@ class SupplierResolver implements GraphQLResolver<Supplier> {
                 .orElse(null)
     }
 
-    String averageDeliveryDay(Supplier supplier, DataFetchingEnvironment dfe) {
-        String accessToken = supplier.accessToken
-        return supplier.averageDeliveryDay ||
-                !(isOperation(dfe, REFRESH_CART_QRY) || isOperation(dfe, SYNC_CART_QRY)) ?
-                supplier.averageDeliveryDay
-                : supplierBridge.getAverageDeliveryDays(accessToken, supplier.id)
+    String averageDeliveryDay(Supplier supplier) {
+        return supplier.averageDeliveryDay ?
+                supplier.averageDeliveryDay :
+                supplierBridge.getAverageDeliveryDays(supplier.accessToken, supplier.id)
     }
 
 
