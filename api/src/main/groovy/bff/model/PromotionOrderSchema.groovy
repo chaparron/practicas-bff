@@ -2,7 +2,7 @@ package bff.model
 
 class AppliedPromotionResponse {
     AppliedPromotionDetailResponse promotion
-    List<String> involvedCartItems
+    List<Long> involvedCartItems
 }
 
 class AppliedPromotionDetailResponse {

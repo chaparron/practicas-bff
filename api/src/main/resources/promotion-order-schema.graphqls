@@ -1,6 +1,6 @@
 type AppliedPromotionResponse {
   promotion: AppliedPromotionDetailResponse!
-  involvedCartItems: [String!]!
+  involvedCartItems: [Int!]!
 }
 
 type AppliedPromotionDetailResponse {
@@ -14,7 +14,7 @@ type AppliedPromotionDetailResponse {
 type FreePromotionDetailResponse {
   ean: String!
   units: Int!
-  quantity: Long!
+  quantity: Int!
   image: String!
 }
 
