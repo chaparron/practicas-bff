@@ -232,14 +232,14 @@ input AddBranchOfficeInput {
   workingDays: WorkingDaysInput!
   deliveryComment: String
   verificationDocs: [VerificationDocumentInput]
+  acceptWhatsApp: Boolean
+  marketingEnabled: Boolean
 }
 
 input UpdateBranchOfficeProfileInput {
   accessToken: String!
   branchOfficeId: String!
   acceptWhatsApp: Boolean
-  workingDays: WorkingDaysInput
-  verificationDocuments: [VerificationDocumentInput]
   marketingEnabled: Boolean
 }
 

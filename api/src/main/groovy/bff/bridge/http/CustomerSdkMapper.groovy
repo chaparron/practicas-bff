@@ -221,12 +221,7 @@ class CustomerSdkMapper {
     }
 
     UpdateCustomerProfileRequestDto toDto(UpdateBranchOfficeProfileInput updateInput){
-        return new UpdateCustomerProfileRequestDto(
-                updateInput.acceptWhatsApp,
-                toDto(updateInput.workingDays),
-                fromDocToDtoDocs(updateInput.verificationDocuments),
-                updateInput.marketingEnabled
-        )
+        return new UpdateCustomerProfileRequestDto(updateInput.acceptWhatsApp, updateInput.marketingEnabled)
     }
 
 }

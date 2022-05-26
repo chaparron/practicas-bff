@@ -334,10 +334,8 @@ class CustomerUpdateInputV2 {
 class UpdateBranchOfficeProfileInput{
     String accessToken
     String branchOfficeId
-    Boolean acceptWhatsApp
-    WorkingDays workingDays
-    List<VerificationDocument> verificationDocuments
     boolean marketingEnabled
+    boolean acceptWhatsApp
 }
 
 class WorkingDays {
@@ -553,4 +551,6 @@ class AddBranchOfficeInput{
     WorkingDays workingDays
     String deliveryComment
     List<VerificationDocumentInput> verificationDocuments
+    boolean marketingEnabled
+    boolean acceptWhatsApp
 }
