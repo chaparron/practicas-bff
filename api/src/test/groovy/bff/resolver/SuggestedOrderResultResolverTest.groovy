@@ -55,7 +55,11 @@ class SuggestedOrderResultResolverTest {
 
         // when
         List<ProductSearch> productSearchList = ArrayList.of(
-                new ProductSearch(id: 1, name: 'prod1', category: new Category(id: 1), brand: new Brand(id: 1),
+                new ProductSearch(
+                        id: 1,
+                        name: 'prod1',
+                        category: new Category(id: 1),
+                        brand: new Brand(id: 1),
                         images: ArrayList.of(new Image(id: "img1")),
                         prices: ArrayList.of(
                                 new Price(display: new Display(units: 1), value: new BigDecimal(100)),
@@ -63,11 +67,19 @@ class SuggestedOrderResultResolverTest {
                                 new Price(display: new Display(units: 12), value: new BigDecimal(600))
                         )
                 ),
-                new ProductSearch(id: 2, name: 'prod2', category: new Category(id: 2), brand: new Brand(id: 2),
+                new ProductSearch(
+                        id: 2,
+                        name: 'prod2',
+                        category: new Category(id: 2),
+                        brand: new Brand(id: 2),
                         images: ArrayList.of(new Image(id: "img2")),
                         prices: ArrayList.of(new Price(display: new Display(units: 1), value: new BigDecimal(1000)))
                 ),
-                new ProductSearch(id: 3, name: 'prod3', category: new Category(id: 3), brand: new Brand(id: 3),
+                new ProductSearch(
+                        id: 3,
+                        name: 'prod3',
+                        category: new Category(id: 3),
+                        brand: new Brand(id: 3),
                         images: ArrayList.of(new Image(id: "img3")),
                         prices: ArrayList.of(new Price(display: new Display(units: 1), value: new BigDecimal(500)))
                 )

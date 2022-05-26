@@ -328,12 +328,15 @@ class Cms {
 
         private ProductSearch product(CmsProduct product) {
             def country = product.manufacturer().country()
-            def prices = asJava(product.options()).collect { price(it, country) }
             def displays = asJava(product.options()).collect { display(it) }.toSet().toList()
+            def prices = asJava(product.options()).collect { price(it, country) }
             new ProductSearch(
-                    id: product.id().toLong(),
-                    name: product.name().defaultEntry(),
-                    category: new Category(
+                    product.id().toLong(),
+                    product.name().defaultEntry(),
+                    displays.sort { it.units }?.getAt(0)?.ean,
+                    toJava(product.description()).map { it.defaultEntry() }.orElse(null),
+                    country,
+                    new Category(
                             id: product.categorization().last().id().toLong(),
                             parentId: toJava(product.categorization().last().parent())
                                     .map { it.toLong() }.orElse(null),
@@ -341,21 +344,13 @@ class Cms {
                             enabled: true,
                             isLeaf: true
                     ),
-                    brand: brand(product.brand()),
-                    ean: displays.sort { it.units }?.getAt(0)?.ean,
-                    description: toJava(product.description()).map { it.defaultEntry() }.orElse(null),
-                    images: asJava(product.images()).collect { new Image(id: it) },
-                    displays: displays,
-                    prices: prices,
-                    minUnitsPrice: prices.min { Price a, Price b ->
-                        (a.minUnits == b.minUnits) ? a.unitValue <=> b.unitValue : a.minUnits <=> b.minUnits
-                    },
-                    highlightedPrice: prices.min { it.unitValue },
-                    priceFrom: prices.min { it.value },
-                    title: product.name().defaultEntry(),
-                    country_id: product.manufacturer().country(),
-                    favorite: toJava(product.favourite()).orElse(false),
-                    accessToken: accessToken.orElse(null)
+                    brand(product.brand()),
+                    asJava(product.images()).collect { new Image(id: it) },
+                    displays,
+                    prices,
+                    true,
+                    toJava(product.favourite()).orElse(false) as boolean,
+                    accessToken.orElse(null)
             )
         }
 
