@@ -431,7 +431,9 @@ class ProductSearch implements ProductResult, Piece {
         this.minUnitsPrice = prices.min { Price a, Price b ->
             (a.minUnits == b.minUnits) ? a.unitValue <=> b.unitValue : a.minUnits <=> b.minUnits
         }
-        this.highlightedPrice = prices.min { it.netUnitValue() }
+        this.highlightedPrice =
+                ofNullable(prices.find { it.commercialPromotion?.type instanceof FreeProduct })
+                        .orElse(prices.min { it.netUnitValue() })
     }
 }
 
