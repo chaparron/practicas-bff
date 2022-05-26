@@ -699,14 +699,15 @@ class GroceryListing {
             this(
                     input.maybeProducts,
                     input.maybeBrands,
-                    input.maybeCategories
+                    input.maybeCategories,
+                    input.maybeSuppliers
             )
         }
 
         private SuggestionQueryRequestBuilder(Optional<Integer> maybeProducts,
                                               Optional<Integer> maybeBrands,
                                               Optional<Integer> maybeCategories,
-                                              Optional<Integer> maybeSuppliers = empty(),
+                                              Optional<Integer> maybeSuppliers,
                                               Optional<Boolean> maybeFavourites = empty()) {
             this.maybeProducts = maybeProducts
             this.maybeBrands = maybeBrands
@@ -757,12 +758,15 @@ class GroceryListing {
 
         protected ProductSearch product(AvailableProduct product) {
             def country = product.manufacturer().country()
-            def prices = asJava(product.options()).collect { option -> price(option, country) }
             def displays = asJava(product.options()).collect { display(it) }.toSet().toList()
+            def prices = asJava(product.options()).collect { option -> price(option, country) }
             new ProductSearch(
-                    id: product.id().toLong(),
-                    name: product.name().defaultEntry(),
-                    category: new Category(
+                    product.id().toLong(),
+                    product.name().defaultEntry(),
+                    displays.sort { it.units }?.getAt(0)?.ean,
+                    toJava(product.description()).map { it.defaultEntry() }.orElse(null),
+                    country,
+                    new Category(
                             id: product.categorization().last().id().toLong(),
                             parentId: toJava(product.categorization().last().parent())
                                     .map { it.toLong() }.orElse(null),
@@ -770,24 +774,16 @@ class GroceryListing {
                             enabled: true,
                             isLeaf: true
                     ),
-                    brand: new Brand(
+                    new Brand(
                             id: product.brand().id().toLong(),
                             name: product.brand().name().defaultEntry()
                     ),
-                    ean: displays.sort { it.units }?.getAt(0)?.ean,
-                    description: toJava(product.description()).map { it.defaultEntry() }.orElse(null),
-                    images: asJava(product.images()).collect { new Image(id: it) },
-                    displays: displays,
-                    prices: prices,
-                    minUnitsPrice: prices.min { Price a, Price b ->
-                        (a.minUnits == b.minUnits) ? a.unitValue <=> b.unitValue : a.minUnits <=> b.minUnits
-                    },
-                    highlightedPrice: prices.min { it.netUnitValue() },
-                    priceFrom: prices.min { it.netValue() },
-                    title: product.name().defaultEntry(),
-                    country_id: product.manufacturer().country(),
-                    favorite: toJava(product.favourite()).orElse(false),
-                    accessToken: this.accessToken.orElse(null)
+                    asJava(product.images()).collect { new Image(id: it) },
+                    displays,
+                    prices,
+                    true,
+                    toJava(product.favourite()).orElse(false) as boolean,
+                    this.accessToken.orElse(null)
             )
         }
 

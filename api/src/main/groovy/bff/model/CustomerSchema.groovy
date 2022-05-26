@@ -157,6 +157,7 @@ class Customer implements CustomerUpdateResult, PasswordlessSignUpResult, AddBra
     String storeOwnerId
     Boolean permissionOnBranchOffice
     Boolean legalAsDelivery
+    List<ProfileSection> profileSections
 
     DeliveryPreference getDeliveryPreference() {
         if (workingDays.hours) {
@@ -194,7 +195,9 @@ class Customer implements CustomerUpdateResult, PasswordlessSignUpResult, AddBra
     }
 
 }
-
+class ProfileSection{
+    String id
+}
 class State {
     String id
     String name

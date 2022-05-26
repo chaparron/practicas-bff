@@ -238,6 +238,7 @@ class PreviewSuggestInput {
     Optional<Integer> maybeProducts = empty()
     Optional<Integer> maybeBrands = empty()
     Optional<Integer> maybeCategories = empty()
+    Optional<Integer> maybeSuppliers = empty()
 
     def forProducts(Integer size) {
         this.maybeProducts = of(size)
@@ -251,6 +252,11 @@ class PreviewSuggestInput {
 
     def forCategories(Integer size) {
         this.maybeCategories = of(size)
+        return this
+    }
+
+    def forSuppliers(Integer size) {
+        this.maybeSuppliers = of(size)
         return this
     }
 
@@ -382,13 +388,53 @@ class ProductSearch implements ProductResult, Piece {
     List<Image> images
     List<Display> displays
     Manufacturer manufacturer
+    String title
+    boolean favorite
+    String country_id
     List<Price> prices
     Price priceFrom
     Price minUnitsPrice
     Price highlightedPrice
-    String title
-    boolean favorite
-    String country_id
+
+    ProductSearch() {}
+
+    ProductSearch(
+            Long id,
+            String name,
+            String ean,
+            String description,
+            String country_id,
+            Category category,
+            Brand brand,
+            List<Image> images,
+            List<Display> displays,
+            List<Price> prices,
+            Boolean enabled,
+            boolean favorite,
+            String accessToken
+    ) {
+        this.id = id
+        this.name = name
+        this.title = name
+        this.ean = ean
+        this.description = description
+        this.country_id = country_id
+        this.category = category
+        this.brand = brand
+        this.images = images
+        this.displays = displays
+        this.prices = prices
+        this.enabled = enabled
+        this.favorite = favorite
+        this.accessToken = accessToken
+        this.priceFrom = prices.min { it.netValue() }
+        this.minUnitsPrice = prices.min { Price a, Price b ->
+            (a.minUnits == b.minUnits) ? a.unitValue <=> b.unitValue : a.minUnits <=> b.minUnits
+        }
+        this.highlightedPrice =
+                ofNullable(prices.find { it.commercialPromotion?.type instanceof FreeProduct })
+                        .orElse(prices.min { it.netUnitValue() })
+    }
 }
 
 

@@ -61,7 +61,8 @@ class SearchQuery implements GraphQLQueryResolver {
                 [
                         "products"  : { Integer size -> { PreviewSuggestInput i -> i.forProducts(size) } },
                         "brands"    : { Integer size -> { PreviewSuggestInput i -> i.forBrands(size) } },
-                        "categories": { Integer size -> { PreviewSuggestInput i -> i.forCategories(size) } }
+                        "categories": { Integer size -> { PreviewSuggestInput i -> i.forCategories(size) } },
+                        "suppliers" : { Integer size -> { PreviewSuggestInput i -> i.forSuppliers(size) } }
                 ]
                         .collect { entry ->
                             numberOfSuggestionsFor(entry.key, dfe)
