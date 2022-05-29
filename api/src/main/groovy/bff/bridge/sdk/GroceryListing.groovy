@@ -405,7 +405,7 @@ class GroceryListing {
                     input.keyword,
                     input.category,
                     input.brand,
-                    null,
+                    input.supplier,
                     input.tag,
                     input.features,
                     null,

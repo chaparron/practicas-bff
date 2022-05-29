@@ -149,6 +149,7 @@ class PreviewSearchInput {
     Integer page
     Integer size
     Integer brand
+    Integer supplier
     String tag
     List<FeatureInput> features
     BigDecimal lat

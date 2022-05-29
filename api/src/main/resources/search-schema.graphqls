@@ -32,6 +32,7 @@ input PreviewSearchInput {
   page: Int,
   size: Int,
   brand: Int,
+  supplier: Int,
   tag: String,
   features: [FeatureInput]
   lat: Float!,
