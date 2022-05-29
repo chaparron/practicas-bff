@@ -436,6 +436,7 @@ class Cms {
         protected CommercialPromotion commercialPromotion(CmsFreeProduct promotion) {
             def freeProduct = new FreeProduct(
                     from: promotion.from(),
+                    quantity: promotion.quantity(),
                     product: new Product(product(promotion.product())),
                     display: new Display(
                             id: promotion.display().id().toInteger(),

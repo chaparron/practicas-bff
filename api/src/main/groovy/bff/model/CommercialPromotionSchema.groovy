@@ -121,6 +121,7 @@ class Discount implements CommercialPromotionType {
 
 class FreeProduct implements CommercialPromotionType {
     Integer from
+    Integer quantity
     Product product
     Display display
 

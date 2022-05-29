@@ -23,6 +23,7 @@ type Discount {
 
 type FreeProduct {
   from: Int!
+  quantity: Int!
   product: Product!
   display: Display!
 }

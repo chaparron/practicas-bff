@@ -849,6 +849,7 @@ class GroceryListing {
         protected CommercialPromotion commercialPromotion(AvailableFreeProduct promotion) {
             def freeProduct = new FreeProduct(
                     from: promotion.from(),
+                    quantity: promotion.quantity(),
                     product: new Product(product(promotion.product())),
                     display: new Display(
                             id: promotion.display().id().toInteger(),
