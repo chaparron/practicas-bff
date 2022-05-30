@@ -498,6 +498,21 @@ input OrderInput {
   productsFree: [ProductFreeInput]
 }
 
+input OrderInputV1 {
+  supplierId: Int!
+  deliveryCost: Float!
+  deliveryZoneId: Int!
+  products: [ProductOrderInput]!
+  appliedPromotions: [AppliedPromotionInput]
+}
+
+input AppliedPromotionInput {
+  type: PromotionType!
+  triggerCartItems: [TriggerCartItem]
+  product: ProductFreeItemInput
+  promotionId: String
+}
+
 input ProductFreeInput {
   triggerCartItems: [TriggerCartItem]!
   product: ProductFreeItemInput!
@@ -526,8 +541,14 @@ input ValidateOrderInput {
   orders: [OrderInput]!
 }
 
+input ValidateOrderInputV1 {
+  accessToken: String!
+  orders: [OrderInputV1]!
+}
+
 union ValidateOrderResult = ValidateOrderResponse | ValidateOrderFailed
 
+union ValidateOrderResultV1 = ValidateOrderResponseV1 | ValidateOrderFailed
 
 type ValidateOrderFailed {
   reason: ValidateOrderFailedReason
@@ -542,6 +563,10 @@ type ValidateOrderResponse {
   errors: [OrderError]
 }
 
+type ValidateOrderResponseV1 {
+  errors: [OrderErrorV1]
+}
+
 type OrderError {
   error: OrderErrorType!
   supplierId: Int!
@@ -551,6 +576,23 @@ type OrderError {
   prevValueMoney: Money
   actualValue: Float
   actualValueMoney: Money
+}
+
+type OrderErrorV1 {
+  error: OrderErrorType!
+  supplierId: Int!
+  productId: Int!
+  units: Int
+  prevValue: Float
+  prevValueMoney: Money
+  actualValue: Float
+  actualValueMoney: Money
+  priority: OrderErrorPriorityType!
+}
+
+enum OrderErrorPriorityType {
+  BLOCKER,
+  WARNING
 }
 
 enum OrderErrorType {

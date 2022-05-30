@@ -591,6 +591,14 @@ class OrderInput {
     List<ProductFreeInput> productsFree
 }
 
+class OrderInputV1 {
+    Integer supplierId
+    Long deliveryZoneId
+    BigDecimal deliveryCost
+    List<ProductOrderInput> products
+    List<AppliedPromotionInput> appliedPromotions
+}
+
 class ProductFreeInput {
     List<TriggerCartItem> triggerCartItems
     ProductFreeItemInput product
@@ -779,6 +787,7 @@ class GetSupplierOrderInput {
     Long supplierOrderId
 }
 
+@Deprecated
 class OrderError {
     String accessToken
     OrderErrorType error
@@ -791,6 +800,23 @@ class OrderError {
     Money actualValueMoney
 }
 
+class OrderErrorV1 {
+    String accessToken
+    OrderErrorType error
+    Long supplierId
+    Long productId
+    Integer units
+    BigDecimal prevValue
+    Money prevValueMoney
+    BigDecimal actualValue
+    Money actualValueMoney
+    OrderErrorPriorityType priority
+}
+
+enum OrderErrorPriorityType {
+    BLOCKER,
+    WARNING
+}
 
 enum OrderErrorType {
     PRODUCT_PRICES_HAS_CHANGED,
@@ -807,14 +833,22 @@ enum OrderErrorType {
 
 }
 
+@Deprecated
 interface ValidateOrderResult {}
 
+interface ValidateOrderResultV1 {}
+
+@Deprecated
 class ValidateOrderResponse implements ValidateOrderResult {
     List<OrderError> errors
 }
 
-class ValidateOrderFailed implements ValidateOrderResult {
+class ValidateOrderFailed implements ValidateOrderResult, ValidateOrderResultV1 {
     ValidateOrderFailedReason reason
+}
+
+class ValidateOrderResponseV1 implements ValidateOrderResultV1 {
+    List<OrderErrorV1> errors
 }
 
 enum ValidateOrderFailedReason {
@@ -826,10 +860,15 @@ enum ValidateOrderFailedReason {
     }
 }
 
+@Deprecated
 class ValidateOrderInput {
     String accessToken
     List<OrderInput> orders
+}
 
+class ValidateOrderInputV1 {
+    String accessToken
+    List<OrderInputV1> orders
 }
 
 class MarkSuggestionInput {

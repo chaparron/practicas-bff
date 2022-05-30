@@ -77,6 +77,7 @@ class Main {
                 .add(RootCategoriesFailed.class)
                 .add(PromotionFailed.class)
                 .add(ValidateOrderResponse.class)
+                .add(ValidateOrderResponseV1.class)
                 .add(ValidateOrderFailed.class)
                 .add(PreviewHomeSupplierResponse.class)
                 .add(PreviewHomeSupplierFailed.class)

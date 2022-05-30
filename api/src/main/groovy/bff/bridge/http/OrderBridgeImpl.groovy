@@ -357,9 +357,34 @@ class OrderBridgeImpl implements OrderBridge {
             )
 
         }
-
         validateOrderResponse
+    }
 
+    @Override
+    ValidateOrderResponseV1 validateOrder(ValidateOrderInputV1 validateOrderInput) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/order/v1/cart/validate"))
+                .toUriString().toURI()
+
+        def validateOrderResponse = http.exchange(
+                RequestEntity.method(HttpMethod.POST, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $validateOrderInput.accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body([orders: validateOrderInput.orders])
+                , ValidateOrderResponseV1).body
+
+        validateOrderResponse.errors = validateOrderResponse.errors?.collect { error ->
+            new OrderErrorV1(
+                    accessToken: validateOrderInput.accessToken,
+                    error: error.error,
+                    supplierId: error.supplierId,
+                    productId: error.productId,
+                    units: error.units,
+                    prevValue: error.prevValue,
+                    actualValue: error.actualValue,
+                    priority: error.priority
+            )
+        }
+        validateOrderResponse
     }
 }
 

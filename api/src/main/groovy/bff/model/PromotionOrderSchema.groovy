@@ -20,6 +20,13 @@ class FreePromotionDetailResponse {
     String image
 }
 
+class AppliedPromotionInput {
+    PromotionType type
+    List<TriggerCartItem> triggerCartItems
+    ProductFreeItemInput product
+    String promotionId
+}
+
 enum PromotionType {
     DISCOUNT, FREE
 }

@@ -304,7 +304,17 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
+    @Deprecated
     ValidateOrderResult validateOrder(ValidateOrderInput validateOrderInput) {
+        try {
+            orderBridge.validateOrder(validateOrderInput)
+        }
+        catch (BadRequestErrorException ex) {
+            ValidateOrderFailedReason.valueOf((String) ex.innerResponse).build()
+        }
+    }
+
+    ValidateOrderResultV1 validateOrderV1(ValidateOrderInputV1 validateOrderInput) {
         try {
             orderBridge.validateOrder(validateOrderInput)
         }

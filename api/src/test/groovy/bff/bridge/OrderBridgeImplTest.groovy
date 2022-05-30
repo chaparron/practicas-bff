@@ -5,6 +5,7 @@ import bff.bridge.http.OrderBridgeImpl
 import bff.model.CustomerOrdersResponse
 import bff.model.FilterOrderStatus
 import bff.model.ValidateOrderResponse
+import bff.model.ValidateOrderResponseV1
 import groovy.json.JsonSlurper
 import org.junit.Assert
 import org.junit.Before
@@ -32,6 +33,7 @@ class OrderBridgeImplTest extends OrderBridgeImplTestData {
         orderBridge.root = new URI("http://localhost:3000/")
     }
 
+    @Deprecated
     @Test
     void testValidateOrder() {
         Mockito.when(
@@ -47,6 +49,28 @@ class OrderBridgeImplTest extends OrderBridgeImplTestData {
                 )
 
         def validateOrder = orderBridge.validateOrder(VALIDATE_ORDER_INPUT)
+        Assert.assertEquals(2, validateOrder.errors.size())
+    }
+
+    @Test
+    void testValidateOrderV1() {
+        // given
+        Mockito.when(
+                http.exchange(
+                        RequestEntity.method(HttpMethod.POST, UriComponentsBuilder.fromUri(orderBridge.root.resolve("/order/v1/cart/validate"))
+                                .toUriString().toURI())
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer $VALIDATE_ORDER_INPUT_V1.accessToken")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body([orders: VALIDATE_ORDER_INPUT_V1.orders])
+                        , ValidateOrderResponseV1))
+                .thenReturn(new ResponseEntity<ValidateOrderResponseV1>(
+                        new JsonSlurper().parseText(VALIDATE_ORDER_RESPONSE_ERROR) as ValidateOrderResponseV1, HttpStatus.OK)
+                )
+
+        // when
+        def validateOrder = orderBridge.validateOrder(VALIDATE_ORDER_INPUT_V1)
+
+        // then
         Assert.assertEquals(2, validateOrder.errors.size())
     }
 
@@ -69,6 +93,28 @@ class OrderBridgeImplTest extends OrderBridgeImplTestData {
     }
 
     @Test
+    void testValidateOrderWithFreePromotionV1() {
+        // given
+        Mockito.when(
+                http.exchange(
+                        RequestEntity.method(HttpMethod.POST, UriComponentsBuilder.fromUri(orderBridge.root.resolve("/order/v1/cart/validate"))
+                                .toUriString().toURI())
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer $VALIDATE_ORDER_PROMOTION_FREE_INPUT_V1.accessToken")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body([orders: VALIDATE_ORDER_PROMOTION_FREE_INPUT_V1.orders])
+                        , ValidateOrderResponseV1))
+                .thenReturn(new ResponseEntity<ValidateOrderResponseV1>(
+                        new JsonSlurper().parseText(VALIDATE_ORDER_RESPONSE_ERROR) as ValidateOrderResponseV1, HttpStatus.OK)
+                )
+
+        // when
+        def validateOrder = orderBridge.validateOrder(VALIDATE_ORDER_PROMOTION_FREE_INPUT_V1)
+
+        // then
+        Assert.assertEquals(2, validateOrder.errors.size())
+    }
+
+    @Test
     void testValidateOrderEmpty() {
         Mockito.when(
                 http.exchange(
@@ -83,6 +129,28 @@ class OrderBridgeImplTest extends OrderBridgeImplTestData {
                 )
 
         def validateOrder = orderBridge.validateOrder(VALIDATE_ORDER_INPUT)
+        Assert.assertNull(validateOrder.errors)
+    }
+
+    @Test
+    void testValidateOrderEmptyV1() {
+        // given
+        Mockito.when(
+                http.exchange(
+                        RequestEntity.method(HttpMethod.POST, UriComponentsBuilder.fromUri(orderBridge.root.resolve("/order/v1/cart/validate"))
+                                .toUriString().toURI())
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer $VALIDATE_ORDER_INPUT_V1.accessToken")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body([orders: VALIDATE_ORDER_INPUT_V1.orders])
+                        , ValidateOrderResponseV1))
+                .thenReturn(new ResponseEntity<ValidateOrderResponseV1>(
+                        new JsonSlurper().parseText(VALIDATE_ORDER_RESPONSE_EMPTY) as ValidateOrderResponseV1, HttpStatus.OK)
+                )
+
+        // when
+        def validateOrder = orderBridge.validateOrder(VALIDATE_ORDER_INPUT_V1)
+
+        // then
         Assert.assertNull(validateOrder.errors)
     }
 
