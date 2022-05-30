@@ -22,7 +22,7 @@ import bff.model.VerificationDocumentType
 import bff.model.WorkingDays
 import org.springframework.stereotype.Component
 import wabi2b.dtos.customers.branchoffice.CreateBranchOfficeAddressDto
-import wabi2b.dtos.customers.branchoffice.CreateBranchOfficeRequestDto
+import wabi2b.dtos.customers.branchoffice.CreateBranchOfficeOrganicRequestDto
 import wabi2b.dtos.customers.branchoffice.CreateBranchOfficeUserDto
 import wabi2b.dtos.customers.shared.AddressDto
 import wabi2b.dtos.customers.shared.CustomerDto
@@ -36,8 +36,8 @@ import wabi2b.dtos.customers.shared.WorkingDaysDto
 @Component
 class CustomerSdkMapper {
 
-    CreateBranchOfficeRequestDto toDto(AddBranchOfficeInput addBranchOfficeInput){
-        return new CreateBranchOfficeRequestDto(
+    CreateBranchOfficeOrganicRequestDto toDto(AddBranchOfficeInput addBranchOfficeInput){
+        return new CreateBranchOfficeOrganicRequestDto(
                 addBranchOfficeInput.name,
                 addBranchOfficeInput.linePhone,
                 addBranchOfficeInput.emailVerification?: false,
@@ -46,7 +46,9 @@ class CustomerSdkMapper {
                 fromDocInputToDtoDocs(addBranchOfficeInput.verificationDocuments),
                 toDto(addBranchOfficeInput.workingDays),
                 addBranchOfficeInput.deliveryComment,
-                toDtoUser(addBranchOfficeInput)
+                toDtoUser(addBranchOfficeInput),
+                addBranchOfficeInput.acceptWhatsApp,
+                addBranchOfficeInput.marketingEnabled
         )
     }
 
