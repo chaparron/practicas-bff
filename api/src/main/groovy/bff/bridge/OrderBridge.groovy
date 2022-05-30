@@ -28,5 +28,8 @@ interface OrderBridge {
 
     List<OrderCancellation> getOrdersCancellation(String accessToken, Long orderId)
 
+    @Deprecated
     ValidateOrderResponse validateOrder(ValidateOrderInput validateOrderInput)
+
+    ValidateOrderResponseV1 validateOrder(ValidateOrderInputV1 validateOrderInput)
 }
