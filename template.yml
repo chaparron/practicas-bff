@@ -328,6 +328,11 @@ Resources:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-marketing-bridge-ApiRootURL"
 
         - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: third_party_url
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-third-party-integration-ApiRootURL"
+
+        - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: resizer_url
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, ResizerUrl ]
 

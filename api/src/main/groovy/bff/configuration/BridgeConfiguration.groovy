@@ -170,4 +170,10 @@ class BridgeConfiguration {
     static DataRegisterBridge dataRegisterBridge() {
         new DataRegisterBridgeImpl()
     }
+
+    @Bean
+    ThirdPartyBridge thirdPartyBridge() {
+        new ThirdPartyBridgeImpl()
+    }
+
 }

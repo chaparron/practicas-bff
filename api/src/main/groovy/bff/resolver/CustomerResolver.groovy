@@ -2,6 +2,7 @@ package bff.resolver
 
 import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
+import bff.bridge.ThirdPartyBridge
 import bff.model.*
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,6 +15,9 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     CustomerBridge customerBridge
     @Autowired
     CountryBridge countryBridge
+    @Autowired
+    ThirdPartyBridge thirdPartyBridge
+
 
     List<VerificationDocument> verificationDocuments(Customer customer) {
         customer.verificationDocuments ?: customerBridge.findVerificationDocs(customer.accessToken)
@@ -54,6 +58,10 @@ class CustomerResolver implements GraphQLResolver<Customer> {
             return customerBridge.getUserById(customer.accessToken, customer.user.id)
         }
         return customer.user
+    }
+
+    boolean marketingEnabled(Customer customer){
+        thirdPartyBridge.findCustomerConsent(customer.id.toLong(), customer.accessToken)
     }
 
 }
