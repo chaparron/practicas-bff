@@ -15,6 +15,7 @@ type FreePromotionDetailResponse {
   ean: String!
   units: Int!
   quantity: Int!
+  title: String!
   image: String!
 }
 

@@ -3,6 +3,7 @@ package bff.bridge
 import bff.bridge.data.SupplierOrderBridgeTestData
 import bff.bridge.http.SupplierOrderBridgeImpl
 import bff.model.AppliedPromotionResponse
+import bff.model.PromotionType
 import groovy.json.JsonSlurper
 import org.junit.Assert
 import org.junit.Before
@@ -33,14 +34,14 @@ class SupplierOrderBridgeTest extends SupplierOrderBridgeTestData {
     }
 
     @Test
-    void 'should return applied promotions'() {
+    void 'should return applied promotions with type discount'() {
         // given
         Mockito.when(
                 http.<List<AppliedPromotionResponse>> exchange(
                         (RequestEntity) Mockito.any(RequestEntity.class),
                         (ParameterizedTypeReference) Mockito.any(ParameterizedTypeReference.class)))
                 .thenReturn(new ResponseEntity<List<AppliedPromotionResponse>>(
-                        new JsonSlurper().parseText(APPLIED_PROMOTIONS_RESPONSE) as List<AppliedPromotionResponse>, HttpStatus.OK)
+                        new JsonSlurper().parseText(APPLIED_DISCOUNT_PROMOTIONS_RESPONSE) as List<AppliedPromotionResponse>, HttpStatus.OK)
                 )
 
         // when
@@ -52,7 +53,31 @@ class SupplierOrderBridgeTest extends SupplierOrderBridgeTestData {
         // then
         Assert.assertNotNull(appliedPromotions)
         Assert.assertFalse(appliedPromotions.empty)
-        Assert.assertNotNull(appliedPromotions.first().promotion.type)
+        Assert.assertEquals(PromotionType.DISCOUNT.name(), appliedPromotions.first().promotion.type)
+    }
+
+    @Test
+    void 'should return applied promotions with type free'() {
+        // given
+        Mockito.when(
+                http.<List<AppliedPromotionResponse>> exchange(
+                        (RequestEntity) Mockito.any(RequestEntity.class),
+                        (ParameterizedTypeReference) Mockito.any(ParameterizedTypeReference.class)))
+                .thenReturn(new ResponseEntity<List<AppliedPromotionResponse>>(
+                        new JsonSlurper().parseText(APPLIED_FREE_PROMOTIONS_RESPONSE) as List<AppliedPromotionResponse>, HttpStatus.OK)
+                )
+
+        // when
+        List<AppliedPromotionResponse> appliedPromotions = supplierOrderBridge.getPromotionsBySupplierOrderId(
+                JWT_AR,
+                1
+        )
+
+        // then
+        Assert.assertNotNull(appliedPromotions)
+        Assert.assertFalse(appliedPromotions.empty)
+        Assert.assertEquals(PromotionType.FREE.name(), appliedPromotions.first().promotion.type)
+        Assert.assertNotNull(appliedPromotions.first().promotion.freeDetail)
     }
 
     @Test

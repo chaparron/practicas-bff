@@ -17,6 +17,7 @@ class FreePromotionDetailResponse {
     String ean
     Integer units
     Long quantity
+    String title
     String image
 }
 
