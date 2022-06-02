@@ -35,8 +35,12 @@ class CustomerResolver implements GraphQLResolver<Customer> {
         ps.push(new ProfileSection(id: "STORE_INFORMATION"))
         ps.push(new ProfileSection(id: "PERSONAL_INFORMATION"))
         ps.push(new ProfileSection(id: "DOCUMENTS"))
+        if(customer.country_id == "ru"){
         if (customer.storeType == StoreType.MAIN_OFFICE)
             ps.push(new ProfileSection(id: "BRANCH_OFFICE"))
+        }else{
+            ps.push(new ProfileSection(id: "MY_ADDRESSES"))
+        }
         if (customer.country_id == 'my')
             ps.push(new ProfileSection(id: "QR_PAYMENTS"))
             ps.push(new ProfileSection(id: "PAY_WITH_QR"))
