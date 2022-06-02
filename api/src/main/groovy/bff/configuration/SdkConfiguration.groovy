@@ -22,6 +22,8 @@ import wabi2b.sdk.api.Wabi2bSdk
 import wabi2b.sdk.credits.HttpSupplierCreditsSdk
 import wabi2b.sdk.customers.customer.CustomersSdk
 import wabi2b.sdk.customers.customer.HttpCustomersSdk
+import wabi2b.sdk.integration.HttpMarketingConsentSdk
+import wabi2b.sdk.integration.MarketingConsentSdk
 import wabi2b.sdk.regional.HttpRegionalConfigSdk
 import wabi2b.sdk.regional.RegionalConfigSdk
 
@@ -45,6 +47,8 @@ class SdkConfiguration {
     String customersUrl
     @Value('${payments.url:}')
     String paymentsUrl
+    @Value('${third.party.url:}')
+    URI thirdPartyUrl
 
     @Autowired
     CountryBridge countryBridge
@@ -102,4 +106,8 @@ class SdkConfiguration {
         return new HttpCustomersSdk(customersUrl)
     }
 
+    @Bean
+    MarketingConsentSdk marketingConsentSdk(){
+        return new HttpMarketingConsentSdk.Builder().withBaseURI(thirdPartyUrl).build()
+    }
 }
