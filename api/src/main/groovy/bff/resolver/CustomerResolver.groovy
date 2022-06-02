@@ -62,6 +62,9 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     }
 
     boolean marketingEnabled(Customer customer){
+        if (customer.marketingEnabledForcedInResponse != null){
+            return customer.marketingEnabledForcedInResponse
+        }
         thirdPartyBridge.findCustomerConsent(customer.id.toLong(), customer.accessToken)
     }
 

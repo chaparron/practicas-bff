@@ -674,7 +674,9 @@ class CustomerBridgeImpl implements CustomerBridge {
                     addBranchOfficeInput.accessToken
             )
             Customer customer = customerSdkMapper.toCustomer(customerDto)
-            return mapCustomer(customer, addBranchOfficeInput.accessToken)
+            customer = mapCustomer(customer, addBranchOfficeInput.accessToken)
+            customer.marketingEnabledForcedInResponse = addBranchOfficeInput.marketingEnabled
+            return customer
         } catch (ClientRequestException ex) {
             def reason = AddBranchOfficeFailedReason.valueFor(ex.message)
             if (reason != null) {
@@ -692,7 +694,9 @@ class CustomerBridgeImpl implements CustomerBridge {
                 input.accessToken
         )
         Customer customer = customerSdkMapper.toCustomer(customerDto)
-        return mapCustomer(customer, input.accessToken)
+        customer = mapCustomer(customer, input.accessToken)
+        customer.marketingEnabledForcedInResponse = input.marketingEnabled
+        return customer
     }
 
     @Override

@@ -145,6 +145,7 @@ class Customer implements CustomerUpdateResult, PasswordlessSignUpResult, AddBra
     Boolean emailVerification
     CustomerType customerType
     List<Address> addresses
+    Boolean marketingEnabledForcedInResponse
     boolean marketingEnabled
     WorkingDays workingDays
     RatingScore rating
