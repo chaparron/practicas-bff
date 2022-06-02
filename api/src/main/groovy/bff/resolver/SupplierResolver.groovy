@@ -28,7 +28,7 @@ class SupplierResolver implements GraphQLResolver<Supplier> {
     }
 
     String averageDeliveryDay(Supplier supplier) {
-        return supplier.averageDeliveryDay ?
+        return supplier.averageDeliveryDay != null ?
                 supplier.averageDeliveryDay :
                 supplierBridge.getAverageDeliveryDays(supplier.accessToken, supplier.id)
     }
