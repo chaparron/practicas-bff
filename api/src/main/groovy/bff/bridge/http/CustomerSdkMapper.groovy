@@ -47,8 +47,8 @@ class CustomerSdkMapper {
                 toDto(addBranchOfficeInput.workingDays),
                 addBranchOfficeInput.deliveryComment,
                 toDtoUser(addBranchOfficeInput),
-                addBranchOfficeInput.acceptWhatsApp,
-                addBranchOfficeInput.marketingEnabled
+                addBranchOfficeInput.marketingEnabled,
+                addBranchOfficeInput.acceptWhatsApp
         )
     }
 
