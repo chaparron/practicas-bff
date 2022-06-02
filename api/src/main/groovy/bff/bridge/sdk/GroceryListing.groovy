@@ -842,7 +842,8 @@ class GroceryListing {
                     description: promotion.description(),
                     expiration: new TimestampOutput(promotion.expiration().toString()),
                     type: discount,
-                    label: labelBuilder.apply(discount)
+                    label: labelBuilder.apply(discount),
+                    remainingUses: promotion.remainingUses()
             )
         }
 
@@ -862,7 +863,8 @@ class GroceryListing {
                     description: promotion.description(),
                     expiration: new TimestampOutput(promotion.expiration().toString()),
                     type: freeProduct,
-                    label: labelBuilder.apply(freeProduct)
+                    label: labelBuilder.apply(freeProduct),
+                    remainingUses: promotion.remainingUses()
             )
         }
 

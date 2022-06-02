@@ -19,6 +19,7 @@ class CommercialPromotion {
     TimestampOutput expiration
     CommercialPromotionType type
     Closure<String> label
+    Integer remainingUses
 
     boolean appliesTo(List<ProductCart> selection) {
         type.appliesTo(
