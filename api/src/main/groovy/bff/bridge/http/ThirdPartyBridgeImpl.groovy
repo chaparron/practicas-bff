@@ -14,6 +14,6 @@ class ThirdPartyBridgeImpl implements ThirdPartyBridge{
 
     @Override
     Boolean findCustomerConsent(Long customerId, String accessToken) {
-        return thirdPartySdk.findCustomerConsent(customerId, accessToken)
+        return thirdPartySdk.findCustomerConsent(customerId, accessToken.replace("Bearer ", ""))
     }
 }
