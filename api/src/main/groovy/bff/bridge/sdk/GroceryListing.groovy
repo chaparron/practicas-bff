@@ -898,7 +898,7 @@ class GroceryListing {
                         )
                     }.orElse(null),
                     averageDeliveryDay: toJava(option.supplier().averageDeliveryTime())
-                            .map { it.toDays().toString() }.orElse(null),
+                            .map { it.toDays().toString() },
                     accessToken: this.accessToken.orElse(null)
             )
         }

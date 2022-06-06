@@ -589,7 +589,7 @@ class Supplier implements SupplierResponse {
     List<DeliveryZone> deliveryZones
     RatingScore rating
     String country_id
-    String averageDeliveryDay
+    Optional<String> averageDeliveryDay
     Integer orderPercentageCap
     WabipayConfiguration wabipayConfiguration
 }
