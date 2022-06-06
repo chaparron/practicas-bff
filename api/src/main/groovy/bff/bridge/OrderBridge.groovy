@@ -20,7 +20,7 @@ interface OrderBridge {
 
     Customer getCustomerOrder(String accessToken, Long orderId)
 
-    void placeOrder(String accessToken, List<OrderInput> orders, String wabiPayAccessToken, List<String> coupons)
+    def placeOrder(String accessToken, List<OrderInput> orders, String wabiPayAccessToken, List<String> coupons)
 
     SupplierOrder getSupplierOrder(String accessToken, Long supplierOrderId)
 

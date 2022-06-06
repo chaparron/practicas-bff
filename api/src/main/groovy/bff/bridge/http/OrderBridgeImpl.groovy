@@ -235,7 +235,7 @@ class OrderBridgeImpl implements OrderBridge {
     }
 
     @Override
-    void placeOrder(String accessToken, List<OrderInput> orders, String wabiPayAccessToken, List<String> coupons) {
+    def placeOrder(String accessToken, List<OrderInput> orders, String wabiPayAccessToken, List<String> coupons) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/order"))
                 .toUriString().toURI()
 
@@ -248,7 +248,7 @@ class OrderBridgeImpl implements OrderBridge {
                                wabipay_order_details: [customer_wabipay_token: wabiPayAccessToken, use_wabipay: wabiPayAccessToken != null,
                                                        use_wabipay_credits   : wabiPayAccessToken != null,
                                                        use_wabipay_money     : wabiPayAccessToken != null]])
-                , Map)
+                , Map).body
 
     }
 

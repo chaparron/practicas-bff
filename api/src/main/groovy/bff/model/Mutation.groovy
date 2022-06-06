@@ -53,13 +53,13 @@ class Mutation implements GraphQLMutationResolver {
     PreSignUpResult preSignUp(PreSignUpInput input) {
         try {
             def response = validationsBridge.validatePreSignUp(input)
-            if(response.userPhoneExist) {
+            if (response.userPhoneExist) {
                 return new PreSignUpFailed(reason: PreSignUpFailedReason.PHONE_ALREADY_EXIST)
             }
-            if(response.emailExist) {
+            if (response.emailExist) {
                 return new PreSignUpFailed(reason: PreSignUpFailedReason.EMAIL_ALREADY_EXIST)
             }
-        }catch(Exception ex) {
+        } catch (Exception ex) {
             log.error("preSignUp error:", ex)
             return new PreSignUpFailed(reason: PreSignUpFailedReason.INVALID_CAPTCHA)
         }
@@ -319,8 +319,8 @@ class Mutation implements GraphQLMutationResolver {
 
     PlaceOrderResult placeOrder(PlaceOrderInput placeOrderInput) {
         try {
-            orderBridge.placeOrder(placeOrderInput.accessToken, placeOrderInput.orders, placeOrderInput.wabiPayAccessToken, placeOrderInput.coupons)
-            Void.SUCCESS
+            def order = orderBridge.placeOrder(placeOrderInput.accessToken, placeOrderInput.orders, placeOrderInput.wabiPayAccessToken, placeOrderInput.coupons)
+            return new Void(id: order.id, voidReason: VoidReason.SUCCESS)
         }
         catch (BadRequestErrorException ex) {
             PlaceOrderFailedReason.valueOf((String) ex.innerResponse).build()
@@ -363,19 +363,19 @@ class Mutation implements GraphQLMutationResolver {
         recommendedOrderBridge.unsetFavouriteProduct(favouriteProductInput)
     }
 
-    Void enableBranchOffice(EnableBranchOfficeInput enableBranchOfficeInput){
+    Void enableBranchOffice(EnableBranchOfficeInput enableBranchOfficeInput) {
         customerBridge.enableBranchOffice(enableBranchOfficeInput.accessToken, enableBranchOfficeInput.branchOfficeId)
     }
 
-    Void disableBranchOffice(DisableBranchOfficeInput disableBranchOfficeInput){
+    Void disableBranchOffice(DisableBranchOfficeInput disableBranchOfficeInput) {
         customerBridge.disableBranchOffice(disableBranchOfficeInput.accessToken, disableBranchOfficeInput.branchOfficeId)
     }
 
-    AddBranchOfficeResult addBranchOffice(AddBranchOfficeInput addBranchOfficeInput){
+    AddBranchOfficeResult addBranchOffice(AddBranchOfficeInput addBranchOfficeInput) {
         customerBridge.addBranchOffice(addBranchOfficeInput)
     }
 
-    Customer updateBranchOfficeProfile(UpdateBranchOfficeProfileInput input){
+    Customer updateBranchOfficeProfile(UpdateBranchOfficeProfileInput input) {
         customerBridge.updateBranchOfficeProfile(input)
     }
 
