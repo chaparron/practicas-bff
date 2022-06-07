@@ -7,6 +7,7 @@ import bff.model.*
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import wabi2b.sdk.featureflags.FeatureFlagsSdk
 
 @Component
 class CustomerResolver implements GraphQLResolver<Customer> {
@@ -17,6 +18,8 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     CountryBridge countryBridge
     @Autowired
     ThirdPartyBridge thirdPartyBridge
+    @Autowired
+    FeatureFlagsSdk featureFlagsSdk
 
 
     List<VerificationDocument> verificationDocuments(Customer customer) {
@@ -72,4 +75,7 @@ class CustomerResolver implements GraphQLResolver<Customer> {
         thirdPartyBridge.findCustomerConsent(customer.id.toLong(), customer.accessToken)
     }
 
+    boolean branchesEnabled(Customer customer){
+        return featureFlagsSdk.isActiveForCountry("BRANCHES_FUNCTION", customer.country_id)
+    }
 }

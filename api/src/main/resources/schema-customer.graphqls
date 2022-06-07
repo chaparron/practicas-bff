@@ -329,6 +329,7 @@ type Customer {
   permissionOnBranchOffice: Boolean
   legalAsDelivery: Boolean
   profileSections: [ProfileSection!]
+  branchesEnabled: Boolean
 }
 
 enum StoreType {

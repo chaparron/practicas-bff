@@ -379,6 +379,11 @@ Resources:
           Value:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-payments-ApiRootURL"
 
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: feature_flags_url
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-feature-flags-ApiRootURL"
+
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:

@@ -22,6 +22,8 @@ import wabi2b.sdk.api.Wabi2bSdk
 import wabi2b.sdk.credits.HttpSupplierCreditsSdk
 import wabi2b.sdk.customers.customer.CustomersSdk
 import wabi2b.sdk.customers.customer.HttpCustomersSdk
+import wabi2b.sdk.featureflags.FeatureFlagsSdk
+import wabi2b.sdk.featureflags.HttpFeatureFlagSdk
 import wabi2b.sdk.integration.HttpMarketingConsentSdk
 import wabi2b.sdk.integration.MarketingConsentSdk
 import wabi2b.sdk.regional.HttpRegionalConfigSdk
@@ -47,6 +49,8 @@ class SdkConfiguration {
     String customersUrl
     @Value('${payments.url:}')
     String paymentsUrl
+    @Value('${feature.flags.url}')
+    String featureFlagsUrl
     @Value('${third.party.url:}')
     URI thirdPartyUrl
 
@@ -109,5 +113,10 @@ class SdkConfiguration {
     @Bean
     MarketingConsentSdk marketingConsentSdk(){
         return new HttpMarketingConsentSdk.Builder().withBaseURI(thirdPartyUrl).build()
+    }
+
+    @Bean
+    FeatureFlagsSdk featureFlagClient() {
+        return (new HttpFeatureFlagSdk.Builder()).withBaseURI(URI.create(featureFlagsUrl)).build()
     }
 }

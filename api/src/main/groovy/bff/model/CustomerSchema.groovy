@@ -147,6 +147,7 @@ class Customer implements CustomerUpdateResult, PasswordlessSignUpResult, AddBra
     List<Address> addresses
     Boolean marketingEnabledForcedInResponse
     boolean marketingEnabled
+    boolean branchesEnabled
     WorkingDays workingDays
     RatingScore rating
     int level
