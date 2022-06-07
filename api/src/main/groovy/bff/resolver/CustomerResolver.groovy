@@ -38,8 +38,8 @@ class CustomerResolver implements GraphQLResolver<Customer> {
         ps.push(new ProfileSection(id: "STORE_INFORMATION"))
         ps.push(new ProfileSection(id: "PERSONAL_INFORMATION"))
         ps.push(new ProfileSection(id: "DOCUMENTS"))
-        if(customer.country_id == "ru"){
-        if (customer.storeType == StoreType.MAIN_OFFICE)
+        if(featureFlagsSdk.isActiveForCountry("BRANCHES_FUNCTION", customer.country_id)
+                && customer.storeType == StoreType.MAIN_OFFICE){
             ps.push(new ProfileSection(id: "BRANCH_OFFICE"))
         }else{
             ps.push(new ProfileSection(id: "MY_ADDRESSES"))
@@ -75,7 +75,4 @@ class CustomerResolver implements GraphQLResolver<Customer> {
         thirdPartyBridge.findCustomerConsent(customer.id.toLong(), customer.accessToken)
     }
 
-    boolean branchesEnabled(Customer customer){
-        return featureFlagsSdk.isActiveForCountry("BRANCHES_FUNCTION", customer.country_id)
-    }
 }
