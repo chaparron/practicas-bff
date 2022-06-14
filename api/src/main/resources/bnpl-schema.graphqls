@@ -1,0 +1,30 @@
+input CreditLinesRequestInput{
+  accessToken: String!
+  scrollInput: ScrollInput!
+}
+
+type CreditLines{
+  credits: [CreditLine]!
+  providerLabel(languageTag:String!): String!
+  action: CreditLinesAction
+  scroll: String
+}
+
+union CreditLinesAction = ButtonWithUrlCreditLinesAction
+
+type ButtonWithUrlCreditLinesAction{
+  text(languageTag: String!): String!
+  redirectUrl: String!
+}
+
+interface CreditLine{
+  approvedLimit: Money!
+}
+
+type SuperMoneyCreditLine implements CreditLine {
+  approvedLimit: Money!
+  toRepay: Money!
+  remaining: Money!
+}
+
+union CreditLinesResult = CreditLines

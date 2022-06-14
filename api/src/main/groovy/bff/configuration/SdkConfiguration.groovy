@@ -6,6 +6,8 @@ import bff.bridge.sdk.Cms
 import bff.bridge.sdk.ExternalPayments
 import bff.bridge.sdk.GroceryListing
 import bff.bridge.sdk.credits.HttpCreditService
+import bnpl.sdk.BnPlSdk
+import bnpl.sdk.HttpBnPlSdk
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -53,6 +55,8 @@ class SdkConfiguration {
     String featureFlagsUrl
     @Value('${third.party.url:}')
     URI thirdPartyUrl
+    @Value('${bnpl.credits.url:}')
+    URI wabi2bBnplCreditsURI
 
     @Autowired
     CountryBridge countryBridge
@@ -118,5 +122,10 @@ class SdkConfiguration {
     @Bean
     FeatureFlagsSdk featureFlagClient() {
         return (new HttpFeatureFlagSdk.Builder()).withBaseURI(URI.create(featureFlagsUrl)).build()
+    }
+
+    @Bean
+    BnPlSdk bnplSdk() {
+        return new HttpBnPlSdk(wabi2bBnplCreditsURI)
     }
 }

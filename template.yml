@@ -384,6 +384,11 @@ Resources:
           Value:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-feature-flags-ApiRootURL"
 
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: bnpl_credits_url
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-bnpl-credits-ApiRootURL"
+
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:

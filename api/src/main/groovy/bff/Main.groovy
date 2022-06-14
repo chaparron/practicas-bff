@@ -93,6 +93,9 @@ class Main {
                 .add(AddBranchOfficeFailed.class)
                 .add(RequestForExternalPayment.class)
                 .add(RequestForExternalPaymentFailed.class)
+                .add(CreditLines.class)
+                .add(SuperMoneyCreditLine.class)
+                .add(ButtonWithUrlCreditLinesAction.class)
     }
 
     /**

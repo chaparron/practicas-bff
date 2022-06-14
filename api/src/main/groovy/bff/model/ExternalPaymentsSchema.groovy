@@ -3,6 +3,7 @@ package bff.model
 
 import groovy.transform.Immutable
 
+
 interface RequestForExternalPaymentResult {}
 
 @Immutable
