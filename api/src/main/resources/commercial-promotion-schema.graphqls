@@ -1,5 +1,10 @@
 union CommercialPromotionType = Discount | FreeProduct
 
+type CommercialPromotions {
+  discount: Discount
+  freeProduct: FreeProduct
+}
+
 type CommercialPromotion {
   id: ID!
   description: String!
@@ -18,11 +23,21 @@ type DiscountStep {
 }
 
 type Discount {
+  id: ID!
+  description: String!
+  expiration: TimestampOutput!
+  label(languageTag: LanguageTag!): String!
+  remainingUses: Int!
   progressive: Boolean!
   steps: [DiscountStep!]!
 }
 
 type FreeProduct {
+  id: ID!
+  description: String!
+  expiration: TimestampOutput!
+  label(languageTag: LanguageTag!): String!
+  remainingUses: Int!
   from: Int!
   quantity: Int!
   product: Product!

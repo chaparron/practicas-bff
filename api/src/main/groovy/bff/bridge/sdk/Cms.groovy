@@ -386,7 +386,7 @@ class Cms {
                     configuration: new SupplierProductConfiguration(
                             disableMinAmountCount: option.minPurchaseAmountCountDisabled()
                     ),
-                    commercialPromotion: toJava(option.commercialPromotion())
+                    commercialPromotions: toJava(option.commercialPromotion())
                             .flatMap { promo ->
                                 switch (promo) {
                                     case { it instanceof CmsDiscount }:
@@ -399,43 +399,46 @@ class Cms {
                                         )
                                     case { it instanceof CmsFreeProduct }:
                                         return of(commercialPromotion(promo as CmsFreeProduct))
-                                    default: empty() as Optional<CommercialPromotion>
+                                    default: empty() as Optional<CommercialPromotionType>
                                 }
                             }
-                            .orElse(null),
+                            .map { new CommercialPromotions(it) },
                     accessToken: this.accessToken.orElse(null),
                     countryId: countryId
             )
         }
 
-        protected CommercialPromotion commercialPromotion(AvailableOption option,
-                                                          CmsDiscount promotion,
-                                                          String countryId) {
-            def discount = new Discount(
-                    progressive: promotion.progressive(),
-                    steps: asJava(promotion.steps()).collect {
-                        new DiscountStep(
-                                from: it.from(),
-                                to: it.to(),
-                                value: option.price().toBigDecimal() - it.amount().toBigDecimal(),
-                                unitValue: option.price() / option.display().units() - it.amount() / option.display().units(),
-                                percentage: it.percentage().toBigDecimal(),
-                                countryId: countryId
-                        )
-                    }
-            )
-            new CommercialPromotion(
+        protected Discount commercialPromotion(AvailableOption option,
+                                               CmsDiscount promotion,
+                                               String countryId) {
+            def steps = asJava(promotion.steps()).collect {
+                new DiscountStep(
+                        from: it.from(),
+                        to: it.to(),
+                        value: option.price().toBigDecimal() - it.amount().toBigDecimal(),
+                        unitValue: option.price() / option.display().units() - it.amount() / option.display().units(),
+                        percentage: it.percentage().toBigDecimal(),
+                        countryId: countryId
+                )
+            }
+            new Discount(
                     id: promotion.id(),
                     description: promotion.description(),
                     expiration: new TimestampOutput(promotion.expiration().toString()),
-                    type: discount,
-                    label: labelBuilder.apply(discount),
-                    remainingUses: promotion.remainingUses()
+                    label: labelBuilder.discount(steps),
+                    remainingUses: promotion.remainingUses(),
+                    progressive: promotion.progressive(),
+                    steps: steps
             )
         }
 
-        protected CommercialPromotion commercialPromotion(CmsFreeProduct promotion) {
-            def freeProduct = new FreeProduct(
+        protected FreeProduct commercialPromotion(CmsFreeProduct promotion) {
+            new FreeProduct(
+                    id: promotion.id(),
+                    description: promotion.description(),
+                    expiration: new TimestampOutput(promotion.expiration().toString()),
+                    label: labelBuilder.freeProduct(),
+                    remainingUses: promotion.remainingUses(),
                     from: promotion.from(),
                     quantity: promotion.quantity(),
                     product: new Product(product(promotion.product())),
@@ -444,14 +447,6 @@ class Cms {
                             ean: promotion.display().ean(),
                             units: promotion.display().units()
                     )
-            )
-            new CommercialPromotion(
-                    id: promotion.id(),
-                    description: promotion.description(),
-                    expiration: new TimestampOutput(promotion.expiration().toString()),
-                    type: freeProduct,
-                    label: labelBuilder.apply(freeProduct),
-                    remainingUses: promotion.remainingUses()
             )
         }
 

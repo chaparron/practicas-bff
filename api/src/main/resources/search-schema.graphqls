@@ -196,6 +196,7 @@ type PreviewPrice {
   display: Display
   minUnits: Int
   commercialPromotion: CommercialPromotion
+  commercialPromotions: CommercialPromotions
 }
 
 enum SupplierAvatarSize {
@@ -337,6 +338,7 @@ type Price {
   promotions: [Promotion]
   configuration: SupplierProductConfiguration
   commercialPromotion: CommercialPromotion
+  commercialPromotions: CommercialPromotions
 }
 
 type SupplierProductConfiguration {

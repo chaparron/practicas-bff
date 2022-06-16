@@ -559,14 +559,14 @@ class SyncCartResult {
 }
 
 class PromotedProductsCart {
-    CommercialPromotion commercialPromotion
+    CommercialPromotions commercialPromotions
     List<ProductCart> products
 
-    static Optional<PromotedProductsCart> apply(CommercialPromotion promotion,
+    static Optional<PromotedProductsCart> apply(CommercialPromotionType promotion,
                                                 List<ProductCart> selection) {
         of(
                 new PromotedProductsCart(
-                        commercialPromotion: promotion,
+                        commercialPromotions: new CommercialPromotions(promotion),
                         products: selection
                 )
         ).filter { promotion.appliesTo(selection) }
