@@ -402,8 +402,7 @@ class Cms {
                                     default: empty() as Optional<CommercialPromotionType>
                                 }
                             }
-                            .map { new CommercialPromotions(it) }
-                            .orElse(new CommercialPromotions()),
+                            .map { new CommercialPromotions(it) },
                     accessToken: this.accessToken.orElse(null),
                     countryId: countryId
             )

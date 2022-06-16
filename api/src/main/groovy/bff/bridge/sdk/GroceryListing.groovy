@@ -2,6 +2,7 @@ package bff.bridge.sdk
 
 import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
+import bff.bridge.sdk.GroceryListing.SuggestionQueryRequestBuilder
 import bff.configuration.EntityNotFoundException
 import bff.model.*
 import groovy.util.logging.Slf4j
@@ -815,8 +816,7 @@ class GroceryListing {
                                     default: empty() as Optional<CommercialPromotionType>
                                 }
                             }
-                            .map { new CommercialPromotions(it) }
-                            .orElse(new CommercialPromotions()),
+                            .map { new CommercialPromotions(it) },
                     accessToken: this.accessToken.orElse(null),
                     countryId: countryId
             )
@@ -1436,8 +1436,12 @@ class GroceryListing {
                                         item.units == price.display.units)
                                     new Tuple2(
                                             new ProductCart(product, price, item.quantity),
-                                            price.commercialPromotions.discount |
-                                                    { price.commercialPromotions.freeProduct }
+                                            price.commercialPromotions
+                                                    .flatMap { it.discount } |
+                                                    {
+                                                        price.commercialPromotions
+                                                                .flatMap { it.freeProduct }
+                                                    }
                                     )
                                 else null
                             }
@@ -1473,7 +1477,7 @@ class GroceryListing {
                             }
                             .collect { it.first as ProductCart }
                             .sort {
-                                it.product.prices.findResult { it.commercialPromotions.nonEmpty() } ? -1 : 1
+                                it.product.prices.findResult { it.commercialPromotions.isPresent() } ? -1 : 1
                             }
             new SyncCartResult(
                     promoted: promoted,

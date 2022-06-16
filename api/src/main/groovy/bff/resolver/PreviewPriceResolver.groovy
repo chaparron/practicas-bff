@@ -25,9 +25,11 @@ class PreviewPriceResolver implements GraphQLResolver<PreviewPrice> {
     @Deprecated
     CommercialPromotion commercialPromotion(PreviewPrice price) {
         (price.commercialPromotions
-                .discount
+                .flatMap { it.discount }
                 .map { new CommercialPromotion(it) } | {
-            price.commercialPromotions.freeProduct.map { new CommercialPromotion(it) }
+            price.commercialPromotions
+                    .flatMap { it.freeProduct }
+                    .map { new CommercialPromotion(it) }
         }).orElse(null)
     }
 

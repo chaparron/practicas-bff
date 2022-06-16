@@ -334,7 +334,7 @@ class PreviewPrice {
     Money unitValueMoney
     Display display
     Integer minUnits
-    CommercialPromotions commercialPromotions
+    Optional<CommercialPromotions> commercialPromotions
 
     PreviewPrice(Price price) {
         this.countryId = price.countryId
@@ -433,8 +433,13 @@ class ProductSearch implements ProductResult, Piece {
             (a.minUnits == b.minUnits) ? a.unitValue <=> b.unitValue : a.minUnits <=> b.minUnits
         }
         this.highlightedPrice =
-                ofNullable(prices.find { it.commercialPromotions.freeProduct.orElse(null) })
-                        .orElse(prices.min { it.netUnitValue() })
+                ofNullable(
+                        prices.find {
+                            it.commercialPromotions
+                                    .flatMap { it.freeProduct }
+                                    .orElse(null)
+                        }
+                ).orElse(prices.min { it.netUnitValue() })
     }
 }
 
@@ -528,17 +533,19 @@ class Price {
     TimestampOutput updated
     List<Promotion> promotions
     SupplierProductConfiguration configuration
-    CommercialPromotions commercialPromotions
+    Optional<CommercialPromotions> commercialPromotions
     String countryId
 
     def netValue() {
-        commercialPromotions.discount
+        commercialPromotions
+                .flatMap { it.discount }
                 .map { it.minValue() }
                 .orElse(value)
     }
 
     def netUnitValue() {
-        commercialPromotions.discount
+        commercialPromotions
+                .flatMap { it.discount }
                 .map { it.minUnitValue() }
                 .orElse(unitValue)
     }

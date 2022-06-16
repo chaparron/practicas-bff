@@ -6,9 +6,7 @@ import sun.util.locale.LanguageTag
 
 import static java.text.NumberFormat.getNumberInstance
 import static java.util.Locale.forLanguageTag
-import static java.util.Optional.empty
-import static java.util.Optional.of
-import static java.util.Optional.ofNullable
+import static java.util.Optional.*
 
 interface CommercialPromotionType {
 
@@ -19,31 +17,33 @@ interface CommercialPromotionType {
 }
 
 class CommercialPromotions {
-    Optional<Discount> discount = empty()
-    Optional<FreeProduct> freeProduct = empty()
 
-    CommercialPromotions() {}
+    Optional<Discount> discount
+    Optional<FreeProduct> freeProduct
 
+    private CommercialPromotions() {}
+
+    // An instance of this class must contain at least one promotion of a given type
     CommercialPromotions(CommercialPromotionType promotion) {
         switch (promotion) {
-            case {it instanceof Discount}:
+            case { it instanceof Discount }:
                 this.discount = of(promotion as Discount)
+                this.freeProduct = empty()
                 break
-            case {it instanceof FreeProduct}:
+            case { it instanceof FreeProduct }:
+                this.discount = empty()
                 this.freeProduct = of(promotion as FreeProduct)
                 break
             default:
+                this.discount = empty()
+                this.freeProduct = empty()
                 break
         }
     }
 
-    boolean nonEmpty() {
-        !discount.empty || !freeProduct.empty
-    }
-
     boolean contains(CommercialPromotionType promotion) {
-        discount.map {it == promotion }.orElse(false) ||
-                freeProduct.map {it == promotion }.orElse(false)
+        discount.map { it == promotion }.orElse(false) ||
+                freeProduct.map { it == promotion }.orElse(false)
     }
 }
 
@@ -56,8 +56,6 @@ class CommercialPromotion {
     CommercialPromotionType type
     Closure<String> label
     Integer remainingUses
-
-    CommercialPromotion() {}
 
     CommercialPromotion(CommercialPromotionType promotion) {
         switch (promotion) {
@@ -111,7 +109,10 @@ class CommercialPromotionLabelBuilder {
             def percentages =
                     ofNullable(
                             selection.collect {
-                                it.price.commercialPromotions.discount.map { it.steps }.orElse([])
+                                it.price.commercialPromotions
+                                        .flatMap { it.discount }
+                                        .map { it.steps }
+                                        .orElse([])
                             }.flatten() as List<DiscountStep>
                     )
                             .filter { !it.empty }
@@ -205,7 +206,9 @@ class Discount implements CommercialPromotionType {
         this.appliesTo(
                 selection
                         .findResults {
-                            (it.price.commercialPromotions.discount.orElse(null)?.id == this.id) ? it.quantity : null
+                            (it.price.commercialPromotions
+                                    .flatMap { it.discount }
+                                    .orElse(null)?.id == this.id) ? it.quantity : null
                         }
                         .sum() as Integer
         )
@@ -250,7 +253,9 @@ class FreeProduct implements CommercialPromotionType {
         this.appliesTo(
                 selection
                         .findResults {
-                            (it.price.commercialPromotions.freeProduct.orElse(null)?.id == this.id) ? it.quantity : null
+                            (it.price.commercialPromotions
+                                    .flatMap { it.freeProduct }
+                                    .orElse(null)?.id == this.id) ? it.quantity : null
                         }
                         .sum() as Integer
         )
