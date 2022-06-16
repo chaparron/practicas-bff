@@ -242,6 +242,7 @@ type Mutation {
 
   updateBranchOfficeProfile(input: UpdateBranchOfficeProfileInput!): Customer!
 
+  loanPayment(input: LoanPaymentRequestInput!): LoanPaymentResult!
 }
 
 scalar NonEmptyString

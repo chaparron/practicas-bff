@@ -1,8 +1,10 @@
 package bff.model
 
 import bnpl.sdk.model.CreditLineResponse
+import bnpl.sdk.model.PaymentResponse
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import java.time.Instant
 
 import static bff.model.CreditProvider.SUPERMONEY
 
@@ -63,3 +65,63 @@ class SuperMoneyCreditLine implements CreditLine {
 }
 
 interface CreditLinesResult {}
+
+
+@ToString
+class LoanPaymentRequestInput {
+    Long orderId
+    String accessToken
+    String customerId
+    String supplierId
+    String invoiceCode
+    Money money
+}
+
+@EqualsAndHashCode
+class LoanPayment implements LoanPaymentResult {
+    UUID id
+    Long orderId
+    String externalId
+    String customerId
+    String supplierId
+    TimestampOutput created
+    Money money
+    Loan loan
+    Invoice invoice
+
+    static def LoanPayment fromSdk(PaymentResponse response) {
+        new LoanPayment(
+                id: response.id, orderId: response.orderId, customerId: response.customerId, externalId: response.externalId,
+                supplierId: response.supplierId, created: fromResponse(response.created),
+                money: new Money(response.money.currency, response.money.amount),
+                loan: new Loan(id: response.loan.id, created: fromResponse(response.loan.created),
+                        approved: fromResponse(response.loan.approved), paid: fromResponse(response.loan.paid),
+                        dueDate: fromResponse(response.loan.settlement), status: response.loan.status.name()),
+                invoice: new Invoice(id: response.invoice.id, code: response.invoice.code)
+        )
+    }
+
+    private static def TimestampOutput fromResponse(Instant date) {
+        if (date != null) new TimestampOutput(date.toString()) else null
+    }
+}
+
+@EqualsAndHashCode
+class Loan {
+    UUID id
+    TimestampOutput created
+    TimestampOutput approved
+    TimestampOutput paid
+    TimestampOutput dueDate
+    String status
+}
+
+@EqualsAndHashCode
+class Invoice {
+    UUID id
+    String code
+}
+
+interface LoanPaymentResult {}
+
+

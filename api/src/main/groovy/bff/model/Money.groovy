@@ -1,5 +1,6 @@
 package bff.model
 
+import groovy.transform.EqualsAndHashCode
 import groovy.transform.Immutable
 import groovy.util.logging.Slf4j
 import java.util.Currency
@@ -7,6 +8,7 @@ import java.text.NumberFormat
 
 @Immutable
 @Slf4j
+@EqualsAndHashCode
 class Money {
 
     String currency

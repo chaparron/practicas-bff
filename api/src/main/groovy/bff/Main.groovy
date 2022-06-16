@@ -96,6 +96,9 @@ class Main {
                 .add(CreditLines.class)
                 .add(SuperMoneyCreditLine.class)
                 .add(ButtonWithUrlCreditLinesAction.class)
+                .add(LoanPayment.class)
+                .add(Invoice.class)
+                .add(Loan.class)
     }
 
     /**

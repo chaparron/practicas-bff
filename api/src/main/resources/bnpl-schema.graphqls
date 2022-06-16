@@ -28,3 +28,47 @@ type SuperMoneyCreditLine implements CreditLine {
 }
 
 union CreditLinesResult = CreditLines
+
+
+input LoanPaymentRequestInput {
+  accessToken: String!
+  orderId: Long!
+  customerId: String!
+  supplierId: String!
+  invoiceCode: String!
+  money: MoneyLoanInput!
+}
+
+input MoneyLoanInput {
+  currency: String!
+  amount: Float!
+}
+
+type LoanPayment {
+  id: ID!
+  orderId: Long!
+  customerId: String!
+  supplierId: String!
+  created: TimestampOutput!
+  externalId: String!
+  money: Money!
+  loan: Loan!
+  invoice: Invoice!
+}
+
+type Loan {
+  id: ID!
+  created: TimestampOutput!
+  approved: TimestampOutput
+  paid: TimestampOutput
+  dueDate: TimestampOutput!
+  status: String!
+
+}
+
+type Invoice {
+  id: ID!
+  code: String!
+}
+
+union LoanPaymentResult = LoanPayment

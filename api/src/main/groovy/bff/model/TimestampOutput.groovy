@@ -1,10 +1,12 @@
 package bff.model
 
 import com.fasterxml.jackson.databind.util.StdDateFormat
+import groovy.transform.EqualsAndHashCode
 
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+@EqualsAndHashCode
 class TimestampOutput {
     Date value
 
