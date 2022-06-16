@@ -7,31 +7,44 @@ import sun.util.locale.LanguageTag
 import static java.text.NumberFormat.getNumberInstance
 import static java.util.Locale.forLanguageTag
 import static java.util.Optional.empty
+import static java.util.Optional.of
 import static java.util.Optional.ofNullable
 
-@Deprecated
 interface CommercialPromotionType {
-
-    boolean appliesTo(Integer quantity)
 
     boolean appliesTo(List<ProductCart> selection)
 
     CommercialPromotionType labeled(Closure<String> label)
+
 }
 
 class CommercialPromotions {
-    Optional<Discount> discount
-    Optional<FreeProduct> freeProduct
+    Optional<Discount> discount = empty()
+    Optional<FreeProduct> freeProduct = empty()
 
-    CommercialPromotions() {
-        this.discount = empty()
-        this.freeProduct = empty()
+    CommercialPromotions() {}
+
+    CommercialPromotions(CommercialPromotionType promotion) {
+        switch (promotion) {
+            case {it instanceof Discount}:
+                this.discount = of(promotion as Discount)
+                break
+            case {it instanceof FreeProduct}:
+                this.freeProduct = of(promotion as FreeProduct)
+                break
+            default:
+                break
+        }
     }
 
     boolean nonEmpty() {
         !discount.empty || !freeProduct.empty
     }
 
+    boolean contains(CommercialPromotionType promotion) {
+        discount.map {it == promotion }.orElse(false) ||
+                freeProduct.map {it == promotion }.orElse(false)
+    }
 }
 
 @Deprecated
@@ -188,21 +201,22 @@ class Discount implements CommercialPromotionType {
     def minUnitValue() { steps.min { it.unitValue }.unitValue }
 
     @Override
+    boolean appliesTo(List<ProductCart> selection) {
+        this.appliesTo(
+                selection
+                        .findResults {
+                            (it.price.commercialPromotions.discount.orElse(null)?.id == this.id) ? it.quantity : null
+                        }
+                        .sum() as Integer
+        )
+    }
+
     boolean appliesTo(Integer quantity) {
         ofNullable(
                 progressive ?
                         steps.find { quantity >= it.from && quantity <= it?.to } :
                         steps.find { quantity % it.from == 0 && quantity >= it.from && quantity <= it?.to }
         ).isPresent()
-    }
-
-    @Override
-    boolean appliesTo(List<ProductCart> selection) {
-        selection
-                .findResults {
-                    (it.price.commercialPromotions.discount.orElse(null)?.id == this.id) ? it.quantity : null
-                }
-                .sum() as Integer
     }
 
     Discount labeled(Closure<String> label) {
@@ -232,17 +246,18 @@ class FreeProduct implements CommercialPromotionType {
     Display display
 
     @Override
-    boolean appliesTo(Integer quantity) {
-        quantity >= from
+    boolean appliesTo(List<ProductCart> selection) {
+        this.appliesTo(
+                selection
+                        .findResults {
+                            (it.price.commercialPromotions.freeProduct.orElse(null)?.id == this.id) ? it.quantity : null
+                        }
+                        .sum() as Integer
+        )
     }
 
-    @Override
-    boolean appliesTo(List<ProductCart> selection) {
-        selection
-                .findResults {
-                    (it.price.commercialPromotions.freeProduct.orElse(null)?.id == this.id) ? it.quantity : null
-                }
-                .sum() as Integer
+    boolean appliesTo(Integer quantity) {
+        quantity >= from
     }
 
     FreeProduct labeled(Closure<String> label) {

@@ -809,13 +809,13 @@ class GroceryListing {
                                                         promo as AvailableDiscount,
                                                         countryId
                                                 )
-                                        ).map { new CommercialPromotions(discount: of(it)) }
+                                        )
                                     case { it instanceof AvailableFreeProduct }:
                                         return of(commercialPromotion(promo as AvailableFreeProduct))
-                                                .map { new CommercialPromotions(freeProduct: of(it)) }
-                                    default: empty() as Optional<CommercialPromotions>
+                                    default: empty() as Optional<CommercialPromotionType>
                                 }
                             }
+                            .map { new CommercialPromotions(it) }
                             .orElse(new CommercialPromotions()),
                     accessToken: this.accessToken.orElse(null),
                     countryId: countryId
@@ -1464,10 +1464,10 @@ class GroceryListing {
                     available
                             .findAll {
                                 (it.second as Optional<CommercialPromotionType>)
-                                        .filter {
-                                            promoted
-                                                    .collect { it.commercialPromotion.type }
-                                                    .contains(it)
+                                        .filter { promotion ->
+                                            promoted.any {
+                                                it.commercialPromotions.contains(promotion)
+                                            }
                                         }
                                         .isEmpty()
                             }

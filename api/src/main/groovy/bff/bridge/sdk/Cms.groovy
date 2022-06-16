@@ -396,13 +396,13 @@ class Cms {
                                                         promo as CmsDiscount,
                                                         countryId
                                                 )
-                                        ).map { new CommercialPromotions(discount: of(it)) }
+                                        )
                                     case { it instanceof CmsFreeProduct }:
                                         return of(commercialPromotion(promo as CmsFreeProduct))
-                                                .map { new CommercialPromotions(freeProduct: of(it)) }
-                                    default: empty() as Optional<CommercialPromotions>
+                                    default: empty() as Optional<CommercialPromotionType>
                                 }
                             }
+                            .map { new CommercialPromotions(it) }
                             .orElse(new CommercialPromotions()),
                     accessToken: this.accessToken.orElse(null),
                     countryId: countryId

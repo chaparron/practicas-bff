@@ -434,6 +434,7 @@ type ProductCart {
 
 type PromotedProductsCart {
   commercialPromotion: CommercialPromotion!
+  commercialPromotions: CommercialPromotions!
   products: [ProductCart!]!
 }
 
