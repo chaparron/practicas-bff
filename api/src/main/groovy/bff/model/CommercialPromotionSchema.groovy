@@ -35,7 +35,8 @@ class CommercialPromotion {
                 description: this.description,
                 expiration: this.expiration,
                 type: this.type,
-                label: label
+                label: label,
+                remainingUses: this.remainingUses
         )
     }
 
