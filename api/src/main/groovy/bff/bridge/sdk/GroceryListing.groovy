@@ -799,7 +799,7 @@ class GroceryListing {
                     configuration: new SupplierProductConfiguration(
                             disableMinAmountCount: option.minPurchaseAmountCountDisabled()
                     ),
-                    commercialPromotion: toJava(option.commercialPromotion())
+                    commercialPromotions: toJava(option.commercialPromotion())
                             .flatMap { promo ->
                                 switch (promo) {
                                     case { it instanceof AvailableDiscount }:
@@ -809,46 +809,50 @@ class GroceryListing {
                                                         promo as AvailableDiscount,
                                                         countryId
                                                 )
-                                        )
+                                        ).map { new CommercialPromotions(discount: of(it)) }
                                     case { it instanceof AvailableFreeProduct }:
                                         return of(commercialPromotion(promo as AvailableFreeProduct))
-                                    default: empty() as Optional<CommercialPromotion>
+                                                .map { new CommercialPromotions(freeProduct: of(it)) }
+                                    default: empty() as Optional<CommercialPromotions>
                                 }
                             }
-                            .orElse(null),
+                            .orElse(new CommercialPromotions()),
                     accessToken: this.accessToken.orElse(null),
                     countryId: countryId
             )
         }
 
-        protected CommercialPromotion commercialPromotion(AvailableOption option,
-                                                          AvailableDiscount promotion,
-                                                          String countryId) {
-            def discount = new Discount(
-                    progressive: promotion.progressive(),
-                    steps: asJava(promotion.steps()).collect {
-                        new DiscountStep(
-                                from: it.from(),
-                                to: it.to(),
-                                value: option.price().toBigDecimal() - it.amount().toBigDecimal(),
-                                unitValue: option.price() / option.display().units() - it.amount() / option.display().units(),
-                                percentage: it.percentage().toBigDecimal(),
-                                countryId: countryId
-                        )
-                    }
-            )
-            new CommercialPromotion(
+        protected Discount commercialPromotion(AvailableOption option,
+                                               AvailableDiscount promotion,
+                                               String countryId) {
+            def steps = asJava(promotion.steps()).collect {
+                new DiscountStep(
+                        from: it.from(),
+                        to: it.to(),
+                        value: option.price().toBigDecimal() - it.amount().toBigDecimal(),
+                        unitValue: option.price() / option.display().units() - it.amount() / option.display().units(),
+                        percentage: it.percentage().toBigDecimal(),
+                        countryId: countryId
+                )
+            }
+            new Discount(
                     id: promotion.id(),
                     description: promotion.description(),
                     expiration: new TimestampOutput(promotion.expiration().toString()),
-                    type: discount,
-                    label: labelBuilder.apply(discount),
-                    remainingUses: promotion.remainingUses()
+                    label: labelBuilder.discount(steps),
+                    remainingUses: promotion.remainingUses(),
+                    progressive: promotion.progressive(),
+                    steps: steps
             )
         }
 
-        protected CommercialPromotion commercialPromotion(AvailableFreeProduct promotion) {
-            def freeProduct = new FreeProduct(
+        protected FreeProduct commercialPromotion(AvailableFreeProduct promotion) {
+            new FreeProduct(
+                    id: promotion.id(),
+                    description: promotion.description(),
+                    expiration: new TimestampOutput(promotion.expiration().toString()),
+                    label: labelBuilder.freeProduct(),
+                    remainingUses: promotion.remainingUses(),
                     from: promotion.from(),
                     quantity: promotion.quantity(),
                     product: new Product(product(promotion.product())),
@@ -857,14 +861,6 @@ class GroceryListing {
                             ean: promotion.display().ean(),
                             units: promotion.display().units()
                     )
-            )
-            new CommercialPromotion(
-                    id: promotion.id(),
-                    description: promotion.description(),
-                    expiration: new TimestampOutput(promotion.expiration().toString()),
-                    type: freeProduct,
-                    label: labelBuilder.apply(freeProduct),
-                    remainingUses: promotion.remainingUses()
             )
         }
 
@@ -1440,7 +1436,8 @@ class GroceryListing {
                                         item.units == price.display.units)
                                     new Tuple2(
                                             new ProductCart(product, price, item.quantity),
-                                            ofNullable(price.commercialPromotion)
+                                            price.commercialPromotions.discount |
+                                                    { price.commercialPromotions.freeProduct }
                                     )
                                 else null
                             }
@@ -1452,11 +1449,11 @@ class GroceryListing {
                             .findAll { it.second.isPresent() }
                             .groupBy { it.second.get() }
                             .findResults {
-                                def promotion = (it.key as CommercialPromotion)
+                                def promotion = (it.key as CommercialPromotionType)
                                 def selection = it.value.collect { it.first as ProductCart }
                                 PromotedProductsCart.apply(
                                         // when grouped, promotion label must be rebuilt
-                                        promotion.labeled(labelBuilder.apply(promotion.type, selection)),
+                                        promotion.labeled(labelBuilder.apply(promotion, selection)),
                                         selection
                                 ).orElse(null)
                             }
@@ -1466,15 +1463,18 @@ class GroceryListing {
             def unpromoted =
                     available
                             .findAll {
-                                (it.second as Optional<CommercialPromotion>)
+                                (it.second as Optional<CommercialPromotionType>)
                                         .filter {
-                                            promoted.collect { it.commercialPromotion }
+                                            promoted
+                                                    .collect { it.commercialPromotion.type }
                                                     .contains(it)
                                         }
                                         .isEmpty()
                             }
                             .collect { it.first as ProductCart }
-                            .sort { it.product.prices.findResult { it.commercialPromotion } ? -1 : 1 }
+                            .sort {
+                                it.product.prices.findResult { it.commercialPromotions.nonEmpty() } ? -1 : 1
+                            }
             new SyncCartResult(
                     promoted: promoted,
                     unpromoted: unpromoted

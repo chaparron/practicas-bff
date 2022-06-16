@@ -1,5 +1,6 @@
 package bff.resolver
 
+import bff.model.CommercialPromotion
 import bff.model.Money
 import bff.model.PreviewPrice
 import bff.service.MoneyService
@@ -20,4 +21,14 @@ class PreviewPriceResolver implements GraphQLResolver<PreviewPrice> {
     Money unitValueMoney(PreviewPrice previewPrice) {
         moneyService.getMoneyByCountry(previewPrice.countryId, previewPrice.unitValue)
     }
+
+    @Deprecated
+    CommercialPromotion commercialPromotion(PreviewPrice price) {
+        (price.commercialPromotions
+                .discount
+                .map { new CommercialPromotion(it) } | {
+            price.commercialPromotions.freeProduct.map { new CommercialPromotion(it) }
+        }).orElse(null)
+    }
+
 }

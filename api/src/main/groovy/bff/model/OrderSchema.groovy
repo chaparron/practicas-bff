@@ -562,11 +562,11 @@ class PromotedProductsCart {
     CommercialPromotion commercialPromotion
     List<ProductCart> products
 
-    static Optional<PromotedProductsCart> apply(CommercialPromotion promotion,
+    static Optional<PromotedProductsCart> apply(CommercialPromotionType promotion,
                                                 List<ProductCart> selection) {
         of(
                 new PromotedProductsCart(
-                        commercialPromotion: promotion,
+                        commercialPromotion: new CommercialPromotion(promotion),
                         products: selection
                 )
         ).filter { promotion.appliesTo(selection) }

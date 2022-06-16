@@ -1,6 +1,7 @@
 package bff.resolver
 
 import bff.bridge.ProductBridge
+import bff.model.CommercialPromotion
 import bff.model.Money
 import bff.model.Price
 import bff.model.Supplier
@@ -29,4 +30,14 @@ class PriceResolver implements GraphQLResolver<Price> {
     Money unitValueMoney(Price price) {
         moneyService.getMoney(price.accessToken, price.unitValue)
     }
+
+    @Deprecated
+    CommercialPromotion commercialPromotion(Price price) {
+        (price.commercialPromotions
+                .discount
+                .map { new CommercialPromotion(it) } | {
+            price.commercialPromotions.freeProduct.map { new CommercialPromotion(it) }
+        }).orElse(null)
+    }
+
 }
