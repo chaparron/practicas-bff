@@ -2,7 +2,6 @@ package bff.bridge.sdk
 
 import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
-import bff.bridge.sdk.GroceryListing.SuggestionQueryRequestBuilder
 import bff.configuration.EntityNotFoundException
 import bff.model.*
 import groovy.util.logging.Slf4j
@@ -1527,7 +1526,7 @@ class GroceryListing {
                                         selection
                                 ).orElse(null)
                             }
-                            .sort { (it.commercialPromotion.type instanceof FreeProduct) ? -1 : 1 }
+                            .sort {it.commercialPromotions.freeProduct.isPresent() ? -1 : 1 }
             // then we list those with no applied commercial promotion at all
             // sorting first those with available commercial promotion
             def unpromoted =
