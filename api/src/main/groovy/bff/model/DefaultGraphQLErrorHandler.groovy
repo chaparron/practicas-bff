@@ -16,6 +16,7 @@ import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.oauth2.client.resource.OAuth2AccessDeniedException
 import org.springframework.stereotype.Component
+import wabi.sdk.Forbidden
 
 import java.util.concurrent.CompletionException
 
@@ -89,15 +90,15 @@ class DefaultGraphQLErrorHandler implements GraphQLErrorHandler {
     }
 
     private List<GraphQLError> unwrap(AccessToBackendDeniedException cause, ExceptionWhileDataFetching error) {
-        [new GenericError(
-            path: error.path,
-            extensions: [
-                    entity      : 'Credentials',
-                    property    : 'invalid_token',
-            ]
-        )]
+        [GenericError.exposeInvalidToken(error)]
     }
 
+    /*
+    TODO: En teoria por un error de token expirado el authorizer deberia tirar Unauthorize en vez de Forbidden.
+     */
+    private List<GraphQLError> unwrap(Forbidden cause, ExceptionWhileDataFetching error) {
+        [GenericError.exposeInvalidToken(error)]
+    }
 
     private List<GraphQLError> unwrap(BackendServerErrorException cause, ExceptionWhileDataFetching error) {
         NewRelic.noticeError(cause)
@@ -134,6 +135,16 @@ class GenericError implements GraphQLError {
                 path: error.path,
                 extensions: [
                         message: cause.message
+                ]
+        )
+    }
+
+    static GenericError exposeInvalidToken(ExceptionWhileDataFetching error) {
+        new GenericError(
+                path: error.path,
+                extensions: [
+                        entity      : 'Credentials',
+                        property    : 'invalid_token',
                 ]
         )
     }
