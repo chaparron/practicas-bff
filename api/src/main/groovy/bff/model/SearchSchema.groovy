@@ -263,6 +263,24 @@ class PreviewSuggestInput {
 
 }
 
+@ToString(excludes = ["accessToken"])
+class MostSearchedTermsInput {
+    String accessToken
+}
+
+class PreviewMostSearchedTermsInput {
+    String country
+    BigDecimal lat
+    BigDecimal lng
+}
+
+class MostSearchedTerm {
+    String text
+    Optional<String> language
+    Optional<Category> category
+    Closure<String> label
+}
+
 class FeatureInput {
     String id
     String value

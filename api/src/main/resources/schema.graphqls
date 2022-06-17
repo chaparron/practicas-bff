@@ -21,6 +21,10 @@ type Query {
 
   previewSuggest(input: PreviewSuggestInput!): Suggestions!
 
+  mostSearchedTerms(input: MostSearchedTermsInput!): [MostSearchedTerm!]!
+
+  previewMostSearchedTerms(input: PreviewMostSearchedTermsInput!): [MostSearchedTerm!]!
+
   productDetail(input: ProductInput!): ProductResult
 
   productDetailByEan(input: ProductEanInput!): ProductResult

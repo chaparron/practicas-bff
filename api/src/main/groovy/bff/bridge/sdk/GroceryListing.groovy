@@ -19,6 +19,7 @@ import static scala.jdk.javaapi.CollectionConverters.asScala
 import static scala.jdk.javaapi.OptionConverters.toJava
 import static scala.jdk.javaapi.OptionConverters.toScala
 import static wabi2b.grocery.listing.sdk.BrandQueryRequest.availableBrandsIn
+import static wabi2b.grocery.listing.sdk.MostSearchedTermsQueryRequest.mostSearchedTermsIn
 import static wabi2b.grocery.listing.sdk.ProductQueryRequest.availableProductsIn
 import static wabi2b.grocery.listing.sdk.ProductQueryRequest.similarProductsTo
 import static wabi2b.grocery.listing.sdk.PromotionQueryRequest.availablePromotionsIn
@@ -176,6 +177,38 @@ class GroceryListing {
             return new SuggestionsMapper().map(response)
         } catch (Exception ex) {
             log.error("Error fetching suggestions for request {}", request, ex)
+            throw ex
+        }
+    }
+
+    List<MostSearchedTerm> mostSearchedTerms(MostSearchedTermsInput input) {
+        def (customer, deliveryAddress) = getCustomerAndDeliveryAddress(input.accessToken)
+        def request = mostSearchedTermsIn(*deliveryAddress)
+                .since(30)
+                .forCustomer(*customer)
+                .sized(5)
+        try {
+            def response = sdk.query(request)
+            return new MostSearchedTermsMapper().map(response)
+        } catch (Exception ex) {
+            log.error("Error fetching most searched terms for request {}", request, ex)
+            throw ex
+        }
+    }
+
+    List<MostSearchedTerm> previewMostSearchedTerms(PreviewMostSearchedTermsInput input) {
+        def request =
+                mostSearchedTermsIn(
+                        new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
+                        toScala(ofNullable(input.country))
+                )
+                        .since(30)
+                        .sized(5)
+        try {
+            def response = sdk.query(request)
+            return new MostSearchedTermsMapper().map(response)
+        } catch (Exception ex) {
+            log.error("Error fetching most searched terms for request {}", request, ex)
             throw ex
         }
     }
@@ -1397,6 +1430,39 @@ class GroceryListing {
                     }
             )
         }
+    }
+
+    private class MostSearchedTermsMapper {
+
+        List<MostSearchedTerm> map(MostSearchedTermsQueryResponse response) {
+            asJava(response.hits()).collect {
+                def text = it.text()
+                def category = toJava(it.category()).map {
+                    new Category(
+                            id: it.id().toLong(),
+                            parentId: toJava(it.parent()).map { it.toLong() }.orElse(null),
+                            name: it.name().defaultEntry(),
+                            enabled: true
+                    )
+                }
+                new MostSearchedTerm(
+                        text: text,
+                        language: toJava(it.language()),
+                        category: category,
+                        label: { languageTag ->
+                            def locale = forLanguageTag(ofNullable(languageTag.toString()).orElse("en"))
+                            messageSource.getMessage(
+                                    category
+                                            .map { "mostSearchedTerms.label.CATEGORY" }
+                                            .orElse("mostSearchedTerms.label.GLOBAL"),
+                                    [text, category.map { it.name }.orElse(null)].toArray(),
+                                    locale
+                            )
+                        }
+                )
+            }
+        }
+
     }
 
     private class RefreshCartMapper extends ProductQueryResponseMapper {

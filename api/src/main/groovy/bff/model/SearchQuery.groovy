@@ -81,6 +81,14 @@ class SearchQuery implements GraphQLQueryResolver {
         ).map { (it.arguments.first().value as IntValue).value.toInteger() }
     }
 
+    List<MostSearchedTerm> mostSearchedTerms(MostSearchedTermsInput input) {
+        return groceryListing.mostSearchedTerms(input)
+    }
+
+    List<MostSearchedTerm> previewMostSearchedTerms(PreviewMostSearchedTermsInput input) {
+        return groceryListing.previewMostSearchedTerms(input)
+    }
+
 }
 
 

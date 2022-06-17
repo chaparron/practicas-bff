@@ -64,6 +64,16 @@ input PreviewSuggestInput {
   favourites: Boolean
 }
 
+input MostSearchedTermsInput {
+  accessToken: NonEmptyString!
+}
+
+input PreviewMostSearchedTermsInput {
+  lat: Float!,
+  lng: Float!
+  country: String
+}
+
 input FeatureInput {
   id: String,
   value: String
@@ -140,6 +150,13 @@ type SuggestedSupplier {
   id: Int!
   name: NonEmptyString!
   avatar: NonEmptyString
+}
+
+type MostSearchedTerm {
+  text: String!
+  language: String
+  category: Category
+  label(languageTag: LanguageTag!): String!
 }
 
 type Filter{
