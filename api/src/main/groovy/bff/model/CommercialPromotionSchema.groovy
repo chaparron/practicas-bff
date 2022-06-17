@@ -140,39 +140,14 @@ class CommercialPromotionLabelBuilder {
     }
 
     Closure<String> apply(CommercialPromotionType type, List<ProductCart> selection) {
-        { LanguageTag languageTag ->
-            def locale = forLanguageTag(ofNullable(languageTag.toString()).orElse("en"))
-            switch (type) {
-                case { type instanceof Discount }:
-                    // when grouped discount, we have to inspect all selected products under
-                    // the given promotion in order to consider all step percentages;
-                    // otherwise, if no selection, we only consider the discount steps.
-                    // then, for all considered steps, we take the unique set of them, and:
-                    // 1) if one single percentage for all, then we label as "fixed percentage"
-                    // 2) if more than one percentage available, we took the max an label as "up to percentage"
-                    def percentages =
-                            ofNullable(
-                                    selection.collect {
-                                        (it.price.commercialPromotion.type as Discount).steps
-                                    }.flatten() as List<DiscountStep>
-                            )
-                                    .filter { !it.empty }
-                                    .orElse((type as Discount).steps)
-                                    .collect { it.percentage }
-                                    .unique()
-                    messageSource.getMessage(
-                            (percentages.size() == 1) ?
-                                    "commercialPromotion.label.FIXED_PERCENTAGE" :
-                                    "commercialPromotion.label.UP_TO_PERCENTAGE",
-                            [getNumberInstance(locale).format(percentages.max())].toArray(),
-                            locale
-                    )
-                    break
-                case { type instanceof FreeProduct }:
-                    messageSource.getMessage("commercialPromotion.label.FREE_PRODUCT", [].toArray(), locale)
-                    break
-                default: ""
-            }
+        switch (type) {
+            case { type instanceof Discount }:
+                discount((type as Discount).steps, selection)
+                break
+            case { type instanceof FreeProduct }:
+                freeProduct()
+                break
+            default: { LanguageTag languageTag -> "" }
         }
     }
 
