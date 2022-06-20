@@ -4,6 +4,7 @@ import bff.bridge.*
 import bff.bridge.sdk.GroceryListing
 import bff.configuration.BadRequestErrorException
 import bff.configuration.EntityNotFoundException
+import bff.model.order.ValidateOrderInputV2
 import bff.service.DeviceIdentifierService
 import com.coxautodev.graphql.tools.GraphQLQueryResolver
 import graphql.schema.DataFetchingEnvironment
@@ -314,7 +315,17 @@ class Query implements GraphQLQueryResolver {
         }
     }
 
+    @Deprecated
     ValidateOrderResultV1 validateOrderV1(ValidateOrderInputV1 validateOrderInput) {
+        try {
+            orderBridge.validateOrder(validateOrderInput)
+        }
+        catch (BadRequestErrorException ex) {
+            ValidateOrderFailedReason.valueOf((String) ex.innerResponse).build()
+        }
+    }
+
+    ValidateOrderResultV1 validateOrderV2(ValidateOrderInputV2 validateOrderInput) {
         try {
             orderBridge.validateOrder(validateOrderInput)
         }

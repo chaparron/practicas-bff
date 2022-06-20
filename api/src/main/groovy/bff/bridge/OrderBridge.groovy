@@ -1,6 +1,7 @@
 package bff.bridge
 
 import bff.model.*
+import bff.model.order.ValidateOrderInputV2
 
 interface OrderBridge {
 
@@ -31,5 +32,8 @@ interface OrderBridge {
     @Deprecated
     ValidateOrderResponse validateOrder(ValidateOrderInput validateOrderInput)
 
+    @Deprecated
     ValidateOrderResponseV1 validateOrder(ValidateOrderInputV1 validateOrderInput)
+
+    ValidateOrderResponseV1 validateOrder(ValidateOrderInputV2 validateOrderInput)
 }

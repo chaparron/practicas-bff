@@ -4,6 +4,7 @@ import bff.JwtToken
 import bff.bridge.OrderBridge
 import bff.configuration.BadRequestErrorException
 import bff.model.*
+import bff.model.order.ValidateOrderInputV2
 import bff.service.SummaryService
 import groovy.util.logging.Slf4j
 import org.springframework.core.ParameterizedTypeReference
@@ -362,19 +363,27 @@ class OrderBridgeImpl implements OrderBridge {
 
     @Override
     ValidateOrderResponseV1 validateOrder(ValidateOrderInputV1 validateOrderInput) {
-        def uri = UriComponentsBuilder.fromUri(root.resolve("/order/v1/cart/validate"))
-                .toUriString().toURI()
+        makeRequestToValidateOrders("/order/v1/cart/validate", validateOrderInput.orders, validateOrderInput.accessToken)
+    }
+
+    @Override
+    ValidateOrderResponseV1 validateOrder(ValidateOrderInputV2 validateOrderInput) {
+        makeRequestToValidateOrders("/order/v2/cart/validate", validateOrderInput.orders, validateOrderInput.accessToken)
+    }
+
+    private makeRequestToValidateOrders(String urlAsString, List orderInputs, String accessToken) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve(urlAsString)).toUriString().toURI()
 
         def validateOrderResponse = http.exchange(
                 RequestEntity.method(HttpMethod.POST, uri)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer $validateOrderInput.accessToken")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body([orders: validateOrderInput.orders])
+                        .body([orders: orderInputs])
                 , ValidateOrderResponseV1).body
 
         validateOrderResponse.errors = validateOrderResponse.errors?.collect { error ->
             new OrderErrorV1(
-                    accessToken: validateOrderInput.accessToken,
+                    accessToken: accessToken,
                     error: error.error,
                     supplierId: error.supplierId,
                     productId: error.productId,

@@ -1,6 +1,9 @@
 package bff.bridge.data
 
 import bff.model.*
+import bff.model.order.CartLineInput
+import bff.model.order.OrderInputV2
+import bff.model.order.ValidateOrderInputV2
 
 abstract class OrderBridgeImplTestData {
 
@@ -28,6 +31,20 @@ abstract class OrderBridgeImplTestData {
                     deliveryZoneId: 1L,
                     deliveryCost: new BigDecimal(10),
                     products: [new ProductOrderInput(
+                            productId: 1,
+                            units: 1,
+                            quantity: 1,
+                            price: new BigDecimal(10)
+                    )]
+            )]
+    )
+    protected static final ValidateOrderInputV2 VALIDATE_ORDER_INPUT_V2 = new ValidateOrderInputV2(
+            accessToken: JWT_AR,
+            orders: [new OrderInputV2(
+                    supplierId: 1,
+                    deliveryZoneId: 1L,
+                    deliveryCost: new BigDecimal(10),
+                    products: [new CartLineInput(
                             productId: 1,
                             units: 1,
                             quantity: 1,

@@ -127,6 +127,8 @@ type Query {
 
   validateOrderV1(input: ValidateOrderInputV1!): ValidateOrderResultV1
 
+  validateOrderV2(input: ValidateOrderInputV2!): ValidateOrderResultV1
+
   previewHomeSuppliers(input: CoordinatesInput!): HomeSupplierResult
 
   getSuppliersThatHasSuggestedOrders(input: AccessTokenInput!): [SuppliersNameResult]

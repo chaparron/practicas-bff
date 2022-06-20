@@ -507,11 +507,26 @@ input OrderInputV1 {
   appliedPromotions: [AppliedPromotionInput]
 }
 
+input OrderInputV2 {
+  supplierId: Int!
+  deliveryCost: Float!
+  deliveryZoneId: Int!
+  products: [CartLineInput]!
+  appliedPromotions: [AppliedPromotionInputV2]
+}
+
 input AppliedPromotionInput {
   type: PromotionType!
   triggerCartItems: [TriggerCartItem]
   product: ProductFreeItemInput
   promotionId: String
+}
+
+input AppliedPromotionInputV2 {
+  type: PromotionType!
+  promotionId: String!
+  triggerCartItems: [TriggerCartItemV2]
+  productsFreeSelected: [ProductFreeItemInput]
 }
 
 input ProductFreeInput {
@@ -522,6 +537,12 @@ input ProductFreeInput {
 input TriggerCartItem {
   productId: Int!
   units: Int!
+}
+
+input TriggerCartItemV2 {
+  productId: Int!
+  units: Int!
+  totalPrice: Float
 }
 
 input ProductFreeItemInput {
@@ -545,6 +566,11 @@ input ValidateOrderInput {
 input ValidateOrderInputV1 {
   accessToken: String!
   orders: [OrderInputV1]!
+}
+
+input ValidateOrderInputV2 {
+  accessToken: String!
+  orders: [OrderInputV2]!
 }
 
 union ValidateOrderResult = ValidateOrderResponse | ValidateOrderFailed
@@ -618,6 +644,13 @@ input ProductOrderInput {
   price: Float!
   #sumatoria de precio real (incluido con promociones)
   totalPrice: Float
+}
+
+input CartLineInput {
+  productId: Int!
+  quantity: Int!
+  units: Int!
+  price: Float!
 }
 
 enum SupplierFailedReason {
