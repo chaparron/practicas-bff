@@ -79,7 +79,7 @@ class OrderBridgeImplTest extends OrderBridgeImplTestData {
         // given
         Mockito.when(
                 http.exchange(
-                        RequestEntity.method(HttpMethod.POST, UriComponentsBuilder.fromUri(orderBridge.root.resolve("/order/v2/cart/validate"))
+                        RequestEntity.method(HttpMethod.POST, UriComponentsBuilder.fromUri(orderBridge.root.resolve("/v2/order/cart/validate"))
                                 .toUriString().toURI())
                                 .header(HttpHeaders.AUTHORIZATION, "Bearer $VALIDATE_ORDER_INPUT_V2.accessToken")
                                 .contentType(MediaType.APPLICATION_JSON)
