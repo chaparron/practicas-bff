@@ -368,7 +368,7 @@ class OrderBridgeImpl implements OrderBridge {
 
     @Override
     ValidateOrderResponseV1 validateOrder(ValidateOrderInputV2 validateOrderInput) {
-        makeRequestToValidateOrders("/order/v2/cart/validate", validateOrderInput.orders, validateOrderInput.accessToken)
+        makeRequestToValidateOrders("/v2/order/cart/validate", validateOrderInput.orders, validateOrderInput.accessToken)
     }
 
     private makeRequestToValidateOrders(String urlAsString, List orderInputs, String accessToken) {
