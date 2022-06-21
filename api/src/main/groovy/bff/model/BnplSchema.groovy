@@ -4,6 +4,7 @@ import bnpl.sdk.model.CreditLineResponse
 import bnpl.sdk.model.PaymentResponse
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+
 import java.time.Instant
 
 import static bff.model.CreditProvider.SUPERMONEY
@@ -21,7 +22,7 @@ class CreditLines implements CreditLinesResult{
     CreditProvider provider
     String scroll
 
-    static def CreditLines fromSdk(CreditLineResponse creditLineResponse) {
+    static CreditLines fromSdk(CreditLineResponse creditLineResponse) {
         def currency = creditLineResponse.approvedMoney.currency
         def toRepay = creditLineResponse.approvedMoney.amount - creditLineResponse.unusedMoney.amount
         new CreditLines(
@@ -32,10 +33,12 @@ class CreditLines implements CreditLinesResult{
                                 toRepay: new Money(currency: currency, amount: toRepay),
                         )
                 ],
-                action: new ButtonWithUrlCreditLinesAction(
-                        redirectUrl: URI.create("http://unaUrlDePruebaFake.com"),
-                        provider: SUPERMONEY
-                ),
+                action: Optional.ofNullable(creditLineResponse.getRepaymentLink()).map{
+                    new ButtonWithUrlCreditLinesAction(
+                            redirectUrl: it,
+                            provider: SUPERMONEY
+                    )
+                }.orElse(null),
                 provider: SUPERMONEY
         )
     }
@@ -76,10 +79,9 @@ interface CreditLinesResult {}
 class LoanPaymentRequestInput {
     Long orderId
     String accessToken
-    String customerId
     String supplierId
     String invoiceCode
-    Money money
+    BigDecimal amount
 }
 
 @EqualsAndHashCode

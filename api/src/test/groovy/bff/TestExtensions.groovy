@@ -32,9 +32,9 @@ class TestExtensions {
         new PaymentRequest(orderId, customerId, supplierId, invoiceCode, currencyCode, amount)
     }
 
-    static LoanPaymentRequestInput anyLoanPaymentRequestInput(String token, String customerId, String supplierId,
+    static LoanPaymentRequestInput anyLoanPaymentRequestInput(String token, String supplierId,
                                                               Long orderId, String code, Money money) {
-        new LoanPaymentRequestInput(accessToken: token, customerId: customerId, supplierId: supplierId,
+        new LoanPaymentRequestInput(accessToken: token, supplierId: supplierId,
                 orderId: orderId, invoiceCode: code, money: money)
     }
 }
