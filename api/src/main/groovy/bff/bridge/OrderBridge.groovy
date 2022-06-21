@@ -1,6 +1,7 @@
 package bff.bridge
 
 import bff.model.*
+import bff.model.order.OrderInputV2
 import bff.model.order.ValidateOrderInputV2
 
 interface OrderBridge {
@@ -22,6 +23,8 @@ interface OrderBridge {
     Customer getCustomerOrder(String accessToken, Long orderId)
 
     def placeOrder(String accessToken, List<OrderInput> orders, String wabiPayAccessToken, List<String> coupons)
+
+    def placeOrderV1(String accessToken, List<OrderInputV2> orders, String wabiPayAccessToken, List<String> coupons)
 
     SupplierOrder getSupplierOrder(String accessToken, Long supplierOrderId)
 

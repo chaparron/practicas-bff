@@ -208,6 +208,9 @@ type Mutation {
   # Creates an order
   placeOrder(input: PlaceOrderInput!): PlaceOrderResult
 
+  # Creates an order
+  placeOrderV1(input: PlaceOrderInputV1!): PlaceOrderResult
+
   #registro
   signIn(input: SignInInput!): SignInResult
   passwordlessSignUp(input: PasswordlessSignUpInput!): PasswordlessSignUpResult

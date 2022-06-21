@@ -4,6 +4,7 @@ import bff.JwtToken
 import bff.bridge.OrderBridge
 import bff.configuration.BadRequestErrorException
 import bff.model.*
+import bff.model.order.OrderInputV2
 import bff.model.order.ValidateOrderInputV2
 import bff.service.SummaryService
 import groovy.util.logging.Slf4j
@@ -237,7 +238,18 @@ class OrderBridgeImpl implements OrderBridge {
 
     @Override
     def placeOrder(String accessToken, List<OrderInput> orders, String wabiPayAccessToken, List<String> coupons) {
-        def uri = UriComponentsBuilder.fromUri(root.resolve("/order"))
+        final urlAsString = "/order"
+        makePlacerOrderRequest(urlAsString, accessToken, orders, coupons, wabiPayAccessToken)
+    }
+
+    @Override
+    def placeOrderV1(String accessToken, List<OrderInputV2> orders, String wabiPayAccessToken, List<String> coupons) {
+        final urlAsString = "/v2/order"
+        makePlacerOrderRequest(urlAsString, accessToken, orders, coupons, wabiPayAccessToken)
+    }
+
+    private void makePlacerOrderRequest(String urlAsString, String accessToken, List orders, List<String> coupons, String wabiPayAccessToken) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve(urlAsString))
                 .toUriString().toURI()
 
         http.exchange(
@@ -250,7 +262,6 @@ class OrderBridgeImpl implements OrderBridge {
                                                        use_wabipay_credits   : wabiPayAccessToken != null,
                                                        use_wabipay_money     : wabiPayAccessToken != null]])
                 , Map).body
-
     }
 
     @Override

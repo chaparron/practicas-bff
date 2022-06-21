@@ -327,6 +327,16 @@ class Mutation implements GraphQLMutationResolver {
         }
     }
 
+    PlaceOrderResult placeOrderV1(PlaceOrderInputV1 placeOrderInput) {
+        try {
+            def order = orderBridge.placeOrderV1(placeOrderInput.accessToken, placeOrderInput.orders, placeOrderInput.wabiPayAccessToken, placeOrderInput.coupons)
+            return new Void(id: order.id, voidReason: VoidReason.SUCCESS)
+        }
+        catch (BadRequestErrorException ex) {
+            PlaceOrderFailedReason.valueOf((String) ex.innerResponse).build()
+        }
+    }
+
     CustomerRateSupplierResult customerRateSupplier(CustomerRateSupplierInput customerRateSupplierInput) {
         try {
             customerBridge.customerRateSupplier(customerRateSupplierInput.accessToken, customerRateSupplierInput.supplierOrderId, customerRateSupplierInput.supplierId, customerRateSupplierInput.opinion, customerRateSupplierInput.score)

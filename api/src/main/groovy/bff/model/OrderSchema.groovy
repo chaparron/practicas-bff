@@ -1,5 +1,6 @@
 package bff.model
 
+import bff.model.order.OrderInputV2
 import groovy.transform.InheritConstructors
 
 import static java.util.Optional.of
@@ -622,6 +623,12 @@ class PlaceOrderInput {
     List<OrderInput> orders
 }
 
+class PlaceOrderInputV1 {
+    String accessToken
+    String wabiPayAccessToken
+    List<String> coupons
+    List<OrderInputV2> orders
+}
 
 class CustomerRateSupplierInput {
     String accessToken

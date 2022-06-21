@@ -559,6 +559,13 @@ input PlaceOrderInput {
   orders: [OrderInput]!
 }
 
+input PlaceOrderInputV1 {
+  accessToken: String!
+  wabiPayAccessToken: String!
+  coupons: [String]
+  orders: [OrderInputV2]!
+}
+
 input ValidateOrderInput {
   accessToken: String!
   orders: [OrderInput]!
