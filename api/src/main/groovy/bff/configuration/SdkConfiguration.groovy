@@ -28,8 +28,10 @@ import wabi2b.sdk.featureflags.FeatureFlagsSdk
 import wabi2b.sdk.featureflags.HttpFeatureFlagSdk
 import wabi2b.sdk.integration.HttpMarketingConsentSdk
 import wabi2b.sdk.integration.MarketingConsentSdk
-import wabi2b.sdk.regional.HttpRegionalConfigSdk
 import wabi2b.sdk.regional.RegionalConfigSdk
+import wabi2b.sdk.regional.RegionalConfigSdkFactory
+
+import java.time.Duration
 
 @Slf4j
 @Configuration
@@ -100,8 +102,13 @@ class SdkConfiguration {
     }
 
     @Bean
-    RegionalConfigSdk regionalConfigSdk(WebClient.Builder webClientBuilder) {
-        new HttpRegionalConfigSdk(regionalConfigUrl.toURI(), webClientBuilder)
+    RegionalConfigSdk regionalConfigSdk(
+            CacheConfigurationProperties cacheConfiguration,
+            WebClient.Builder webClientBuilder
+    ) {
+        new RegionalConfigSdkFactory(
+                defaultExpirationTime: Duration.ofMinutes(cacheConfiguration.regionalConfig)
+        ).build(regionalConfigUrl.toURI(), webClientBuilder)
     }
 
     @Bean
@@ -115,7 +122,7 @@ class SdkConfiguration {
     }
 
     @Bean
-    MarketingConsentSdk marketingConsentSdk(){
+    MarketingConsentSdk marketingConsentSdk() {
         return new HttpMarketingConsentSdk.Builder().withBaseURI(thirdPartyUrl).build()
     }
 

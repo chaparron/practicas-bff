@@ -22,33 +22,19 @@ class StateGatewayBridgeImplTest extends StateGatewayBridgeImplTestData {
     @Mock
     private RegionalConfigSdk regionalConfigSdk
 
-    @Mock
-    CacheConfigurationProperties cacheConfiguration
-
     @InjectMocks
     StateGatewayBridgeImpl stateBridge = new StateGatewayBridgeImpl()
 
-    @Before
-    void init() {
-        Mockito.when(cacheConfiguration.states).thenReturn(1L)
-        stateBridge.init()
-    }
-
     @Test
     void getByCountryIdTest() {
-        Mockito.when(regionalConfigSdk.findStatesForCountry("es")).thenReturn(Mono.just(statesEs))
+        Mockito.when(regionalConfigSdk.findStatesForCountry("es")).thenReturn(statesEs)
 
         def response = stateBridge.getByCountryId("es")
         Assert.assertNotNull(response)
         Assert.assertFalse(response.empty)
         Assert.assertTrue(response.size() == 2)
 
-        response = stateBridge.getByCountryId("es")
-        Assert.assertNotNull(response)
-        Assert.assertFalse(response.empty)
-        Assert.assertTrue(response.size() == 2)
-
-        Mockito.verify(regionalConfigSdk, Mockito.times(1)).findStatesForCountry("es")
+        Mockito.verify(regionalConfigSdk).findStatesForCountry("es")
     }
 
 }

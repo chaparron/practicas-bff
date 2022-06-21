@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component
 class CacheConfigurationProperties {
 
     Long categories
-    Long countries
-    Long states
+    Long regionalConfig
     Long favorites
     Long brands;
     Long suppliers;

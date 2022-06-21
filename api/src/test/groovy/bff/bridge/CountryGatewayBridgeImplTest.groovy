@@ -2,7 +2,6 @@ package bff.bridge
 
 import bff.bridge.data.CountryGatewayBridgeImplTestData
 import bff.bridge.http.CountryGatewayBridgeImpl
-import bff.configuration.CacheConfigurationProperties
 import bff.mapper.CountryMapper
 import bff.model.LegalUrlType
 import org.junit.Assert
@@ -14,7 +13,6 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.context.support.AbstractMessageSource
-import reactor.core.publisher.Mono
 import wabi2b.sdk.regional.RegionalConfigSdk
 
 import java.text.MessageFormat
@@ -25,9 +23,6 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
     @Mock
     private RegionalConfigSdk regionalConfigSdk
 
-    @Mock
-    CacheConfigurationProperties cacheConfiguration
-
     @InjectMocks
     private CountryGatewayBridgeImpl countryBridge = new CountryGatewayBridgeImpl()
 
@@ -37,35 +32,29 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
 
     @Before
     void init() {
-        Mockito.when(cacheConfiguration.countries).thenReturn(1L)
         countryMapper.messageSource = new AbstractMessageSource() {
             protected MessageFormat resolveCode(String code, Locale locale) {
                 return new MessageFormat("")
             }
         }
         countryBridge.countryMapper = countryMapper
-        countryBridge.init()
     }
 
     @Test
     void getCountryConfiguration() {
-        Mockito.when(regionalConfigSdk.findCountryConfig("es")).thenReturn(Mono.just(countryServiceResponseEs))
+        Mockito.when(regionalConfigSdk.findCountryConfig("es")).thenReturn(countryServiceResponseEs)
+
         def countryConfigs = countryBridge.getCountryConfiguration("es")
         Assert.assertNotNull(countryConfigs)
         Assert.assertFalse(countryConfigs.empty)
         Assert.assertTrue(countryConfigs.size() == 3)
 
-        countryConfigs = countryBridge.getCountryConfiguration("es")
-        Assert.assertNotNull(countryConfigs)
-        Assert.assertFalse(countryConfigs.empty)
-        Assert.assertTrue(countryConfigs.size() == 3)
-
-        Mockito.verify(regionalConfigSdk, Mockito.times(1)).findCountryConfig("es")
+        Mockito.verify(regionalConfigSdk).findCountryConfig("es")
     }
 
     @Test
     void getCountryConfiguration_NoResponse() {
-        Mockito.when(regionalConfigSdk.findCountryConfig("es")).thenReturn(Mono.justOrEmpty(Optional.empty()))
+        Mockito.when(regionalConfigSdk.findCountryConfig("es")).thenReturn(null)
         def countryConfigs = countryBridge.getCountryConfiguration("es")
 
         Assert.assertNull(countryConfigs)
@@ -73,7 +62,7 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
 
     @Test
     void getCustomerCountryConfiguration() {
-        Mockito.when(regionalConfigSdk.findCountryConfig("ru")).thenReturn(Mono.just(countryServiceResponseEs))
+        Mockito.when(regionalConfigSdk.findCountryConfig("ru")).thenReturn(countryServiceResponseEs)
         def countryConfigs = countryBridge.getCustomerCountryConfiguration(JWT)
 
         Assert.assertNotNull(countryConfigs)
@@ -83,7 +72,7 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
 
     @Test
     void getCustomerCountryConfiguration_NoResponse() {
-        Mockito.when(regionalConfigSdk.findCountryConfig("ru")).thenReturn(Mono.justOrEmpty(Optional.empty()))
+        Mockito.when(regionalConfigSdk.findCountryConfig("ru")).thenReturn(null)
         def countryConfigs = countryBridge.getCustomerCountryConfiguration(JWT)
 
         Assert.assertNull(countryConfigs)
@@ -91,9 +80,7 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
 
     @Test
     void getHomeCountries() {
-        Mockito.when(regionalConfigSdk.findCountries(true)).thenReturn(Mono.just(
-                [regionalCountryEs, regionalCountryAr]
-        ))
+        Mockito.when(regionalConfigSdk.findCountries(true)).thenReturn([regionalCountryEs, regionalCountryAr])
 
         def countriesHome = countryBridge.getHomeCountries("es")
         Assert.assertNotNull(countriesHome)
@@ -108,7 +95,7 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
 
     @Test
     void checkHomeCountriesOrderByCountryName() {
-        Mockito.when(regionalConfigSdk.findCountries(true)).thenReturn(Mono.just(homeCountriesResponse))
+        Mockito.when(regionalConfigSdk.findCountries(true)).thenReturn(homeCountriesResponse)
 
         def countriesHome = countryBridge.getHomeCountries("es")
         Assert.assertNotNull(countriesHome)
@@ -168,12 +155,12 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
         Assert.assertEquals("000000009999", countriesHome.find { it.id == "ph" }?.legalDocumentInformation?.mask)
         Assert.assertEquals("^\\d{8,12}\$", countriesHome.find { it.id == "ph" }?.legalDocumentInformation?.maskRegex)
 
-        Mockito.verify(regionalConfigSdk, Mockito.times(3)).findCountries(true)
+        Mockito.verify(regionalConfigSdk, Mockito.times(5)).findCountries(true)
     }
 
     @Test
     void getCountryNewResponseMap() {
-        Mockito.when(regionalConfigSdk.findCountry("ru")).thenReturn(Mono.just(publicCountryResponse))
+        Mockito.when(regionalConfigSdk.findCountry("ru")).thenReturn(publicCountryResponse)
 
         def country = countryBridge.getCountry("ru")
         Assert.assertNotNull(country)
@@ -198,7 +185,7 @@ class CountryGatewayBridgeImplTest extends CountryGatewayBridgeImplTestData {
 
     @Test
     void 'check legal urls'() {
-        Mockito.when(regionalConfigSdk.findCountries(true)).thenReturn(Mono.just(homeCountriesResponse))
+        Mockito.when(regionalConfigSdk.findCountries(true)).thenReturn(homeCountriesResponse)
 
         def countriesHome = countryBridge.getHomeCountries("es")
         Assert.assertNotNull(countriesHome)
