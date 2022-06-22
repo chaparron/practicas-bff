@@ -248,7 +248,7 @@ class OrderBridgeImpl implements OrderBridge {
         makePlacerOrderRequest(urlAsString, accessToken, orders, coupons, wabiPayAccessToken)
     }
 
-    private void makePlacerOrderRequest(String urlAsString, String accessToken, List orders, List<String> coupons, String wabiPayAccessToken) {
+    private def makePlacerOrderRequest(String urlAsString, String accessToken, List orders, List<String> coupons, String wabiPayAccessToken) {
         def uri = UriComponentsBuilder.fromUri(root.resolve(urlAsString))
                 .toUriString().toURI()
 
