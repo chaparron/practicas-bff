@@ -8,7 +8,7 @@ type AppliedPromotionDetailResponse {
   description: String!
   code: String
   type: PromotionType!
-  freeDetail: FreePromotionDetailResponse
+  productsFreeSelected: [FreePromotionDetailResponse]
 }
 
 type FreePromotionDetailResponse {
