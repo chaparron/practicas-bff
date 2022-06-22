@@ -88,8 +88,8 @@ input HourRangeInput {
 
 
 input StateInput {
-  id: ID!
-  name: String!
+  id: ID
+  name: String
 }
 
 
