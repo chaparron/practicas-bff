@@ -526,7 +526,7 @@ input AppliedPromotionInput {
 input AppliedPromotionInputV2 {
   type: String!
   promotionId: String!
-  triggerCartItems: [TriggerCartItemV2]
+  triggerCartItems: [TriggerCartItemV2]!
   productsFreeSelected: [ProductFreeItemInput]
 }
 
