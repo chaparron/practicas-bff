@@ -1,7 +1,6 @@
 package bff
 
 import bff.model.LoanPaymentRequestInput
-import bff.model.Money
 import bnpl.sdk.model.InvoiceResponse
 import bnpl.sdk.model.LoanResponse
 import bnpl.sdk.model.MoneyResponse
@@ -27,14 +26,13 @@ class TestExtensions {
         )
     }
 
-    static PaymentRequest anyPaymentRequest(Long orderId,  String customerId, String supplierId, String invoiceCode,
-                                            String currencyCode, BigDecimal amount) {
-        new PaymentRequest(orderId, customerId, supplierId, invoiceCode, currencyCode, amount)
+    static PaymentRequest anyPaymentRequest(Long orderId,  String customerId, String supplierId, String invoiceCode, BigDecimal amount) {
+        new PaymentRequest(orderId, customerId, supplierId, invoiceCode, amount)
     }
 
     static LoanPaymentRequestInput anyLoanPaymentRequestInput(String token, String supplierId,
-                                                              Long orderId, String code, Money money) {
+                                                              Long orderId, String code, BigDecimal amount) {
         new LoanPaymentRequestInput(accessToken: token, supplierId: supplierId,
-                orderId: orderId, invoiceCode: code, money: money)
+                orderId: orderId, invoiceCode: code, amount: amount)
     }
 }

@@ -2,7 +2,6 @@ package bff
 
 import bff.model.BnplMutation
 import bff.model.LoanPayment
-import bff.model.Money
 import bnpl.sdk.BnPlSdk
 import bnpl.sdk.model.InvoiceResponse
 import bnpl.sdk.model.LoanResponse
@@ -54,7 +53,6 @@ class BnplMutationTest {
                 "2456",
                 "supplierId",
                 "code",
-                "ARS",
                 BigDecimal.TEN)
 
         def expectedResponse = LoanPayment.fromSdk(sdkResponse)
@@ -62,7 +60,7 @@ class BnplMutationTest {
         when(bnPlSdk.payWithLoan(eq(sdkRequest), eq(token))).thenReturn(Mono.just(sdkResponse))
 
         def response = sut.loanPayment(TestExtensions.anyLoanPaymentRequestInput(token, "supplierId", orderId, "code",
-                new Money("ARS", BigDecimal.TEN))).get()
+                BigDecimal.TEN)).get()
 
         assert response == expectedResponse
     }
