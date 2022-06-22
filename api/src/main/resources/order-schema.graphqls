@@ -222,6 +222,7 @@ type SupplierOrder {
   cancelRequested: Boolean
   summary: [Summary!]
   appliedPromotions: [AppliedPromotionResponse!]!
+  creditLineProviders: [CreditLineProvider!]
 }
 
 
@@ -727,6 +728,7 @@ type OrderSummary {
   totalProducts: Money!
   supplier: Supplier!
   summary: [Summary]
+  creditLineProviders: [CreditLineProvider!]
 }
 
 enum CartSummaryItemType {

@@ -41,6 +41,11 @@ class CreditLines implements CreditLinesResult{
     }
 }
 
+@EqualsAndHashCode
+class CreditLineProvider {
+    CreditProvider provider
+}
+
 enum CreditProvider {
     SUPERMONEY
 }
