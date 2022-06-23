@@ -79,7 +79,7 @@ interface CreditLinesResult {}
 class LoanPaymentRequestInput {
     Long orderId
     String accessToken
-    String supplierId
+    Long supplierId
     String invoiceCode
     BigDecimal amount
 }
@@ -89,8 +89,6 @@ class LoanPayment implements LoanPaymentResult {
     UUID id
     Long orderId
     String externalId
-    String customerId
-    String supplierId
     TimestampOutput created
     Money money
     Loan loan
@@ -98,8 +96,8 @@ class LoanPayment implements LoanPaymentResult {
 
     static def LoanPayment fromSdk(PaymentResponse response) {
         new LoanPayment(
-                id: response.id, orderId: response.orderId, customerId: response.customerId, externalId: response.externalId,
-                supplierId: response.supplierId, created: fromResponse(response.created),
+                id: response.id, orderId: response.orderId, externalId: response.externalId,
+                created: fromResponse(response.created),
                 money: new Money(response.money.currency, response.money.amount),
                 loan: new Loan(id: response.loan.id, created: fromResponse(response.loan.created),
                         approved: fromResponse(response.loan.approved), paid: fromResponse(response.loan.paid),

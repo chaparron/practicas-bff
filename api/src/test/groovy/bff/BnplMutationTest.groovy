@@ -46,12 +46,12 @@ class BnplMutationTest {
         def invoiceId = UUID.randomUUID()
         def invoiceResponse = new InvoiceResponse(invoiceId, "code")
 
-        def sdkResponse = TestExtensions.anyPaymentResponse(paymentId, orderId, "externalId", "customerId", "supplierId", created,
+        def sdkResponse = TestExtensions.anyPaymentResponse(paymentId, orderId, "externalId", 2456, 5624, created,
                 moneyResponse, loanResponse, invoiceResponse)
 
         def sdkRequest = TestExtensions.anyPaymentRequest(orderId,
-                "2456",
-                "supplierId",
+                sdkResponse.customerId.toLong(),
+                sdkResponse.supplierId.toLong(),
                 "code",
                 BigDecimal.TEN)
 
@@ -59,7 +59,7 @@ class BnplMutationTest {
 
         when(bnPlSdk.payWithLoan(eq(sdkRequest), eq(token))).thenReturn(Mono.just(sdkResponse))
 
-        def response = sut.loanPayment(TestExtensions.anyLoanPaymentRequestInput(token, "supplierId", orderId, "code",
+        def response = sut.loanPayment(TestExtensions.anyLoanPaymentRequestInput(token, sdkRequest.supplierId.toLong(), orderId, "code",
                 BigDecimal.TEN)).get()
 
         assert response == expectedResponse

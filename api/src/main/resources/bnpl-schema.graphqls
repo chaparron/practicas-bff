@@ -32,7 +32,7 @@ union CreditLinesResult = CreditLines
 input LoanPaymentRequestInput {
   accessToken: String!
   orderId: Long!
-  supplierId: String!
+  supplierId: Long!
   invoiceCode: String!
   amount: Float!
 }
@@ -40,8 +40,6 @@ input LoanPaymentRequestInput {
 type LoanPayment {
   id: ID!
   orderId: Long!
-  customerId: String!
-  supplierId: String!
   created: TimestampOutput!
   externalId: String!
   money: Money!
