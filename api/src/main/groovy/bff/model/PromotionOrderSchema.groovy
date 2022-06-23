@@ -10,7 +10,7 @@ class AppliedPromotionDetailResponse {
     String description
     String code
     PromotionType type
-    FreePromotionDetailResponse freeDetail
+    Collection<FreePromotionDetailResponse> productsFreeSelected
 }
 
 class FreePromotionDetailResponse {

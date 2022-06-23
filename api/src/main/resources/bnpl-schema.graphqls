@@ -29,26 +29,17 @@ type SuperMoneyCreditLine implements CreditLine {
 
 union CreditLinesResult = CreditLines
 
-
 input LoanPaymentRequestInput {
   accessToken: String!
   orderId: Long!
-  customerId: String!
-  supplierId: String!
+  supplierId: Long!
   invoiceCode: String!
-  money: MoneyLoanInput!
-}
-
-input MoneyLoanInput {
-  currency: String!
   amount: Float!
 }
 
 type LoanPayment {
   id: ID!
   orderId: Long!
-  customerId: String!
-  supplierId: String!
   created: TimestampOutput!
   externalId: String!
   money: Money!

@@ -29,7 +29,8 @@ class BnplCreditLineQueryTest {
         def sdkResponse = new CreditLineResponse(
                 customerId,
                 new MoneyResponse("INR", TEN),
-                new MoneyResponse("INR", TEN)
+                new MoneyResponse("INR", TEN),
+                null
         )
 
         Mockito.when(bnPlSdk.fetchBalance(customerId, input.accessToken)).thenReturn(Mono.just(sdkResponse))
