@@ -77,17 +77,22 @@ interface CreditLinesResult {}
 
 @ToString
 class LoanPaymentRequestInput {
-    Long orderId
+    Long supplierOrderId
     String accessToken
     Long supplierId
-    String invoiceCode
+    InvoiceInput invoice
     BigDecimal amount
+}
+
+class InvoiceInput {
+    String code
+    String fileId
 }
 
 @EqualsAndHashCode
 class LoanPayment implements LoanPaymentResult {
     UUID id
-    Long orderId
+    Long supplierOrderId
     String externalId
     Long customerId
     Long supplierId
@@ -96,9 +101,9 @@ class LoanPayment implements LoanPaymentResult {
     Loan loan
     Invoice invoice
 
-    static def LoanPayment fromSdk(PaymentResponse response) {
+    static LoanPayment fromSdk(PaymentResponse response) {
         new LoanPayment(
-                id: response.id, orderId: response.orderId, customerId: response.customerId.toLong(), externalId: response.externalId,
+                id: response.id, supplierOrderId: response.orderId, customerId: response.customerId.toLong(), externalId: response.externalId,
                 supplierId: response.supplierId.toLong(), created: fromResponse(response.created),
                 money: new Money(response.money.currency, response.money.amount),
                 loan: new Loan(id: response.loan.id, created: fromResponse(response.loan.created),

@@ -19,7 +19,7 @@ class BnplMutation implements GraphQLMutationResolver {
 
     CompletableFuture<LoanPaymentResult> loanPayment(LoanPaymentRequestInput input) {
         def customerIdUserId = JwtToken.userIdFromToken(input.getAccessToken())
-        def request = new PaymentRequest(input.orderId, customerIdUserId, input.supplierId.toString(), input.invoiceCode, input.amount)
+        def request = new PaymentRequest(input.supplierOrderId, customerIdUserId, input.supplierId.toString(), input.invoice.code, input.amount)
         bnPlSdk.payWithLoan(request, input.accessToken)
                 .map { response ->
                     fromSdk(response)

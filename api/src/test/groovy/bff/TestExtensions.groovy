@@ -1,5 +1,6 @@
 package bff
 
+import bff.model.InvoiceInput
 import bff.model.LoanPaymentRequestInput
 import bnpl.sdk.model.InvoiceResponse
 import bnpl.sdk.model.LoanResponse
@@ -33,6 +34,6 @@ class TestExtensions {
     static LoanPaymentRequestInput anyLoanPaymentRequestInput(String token, Long supplierId,
                                                               Long orderId, String code, BigDecimal amount) {
         new LoanPaymentRequestInput(accessToken: token, supplierId: supplierId,
-                orderId: orderId, invoiceCode: code, amount: amount)
+                supplierOrderId: orderId, invoice: new InvoiceInput(code: code, fileId: randomString()), amount: amount)
     }
 }
