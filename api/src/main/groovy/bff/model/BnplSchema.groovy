@@ -89,6 +89,8 @@ class LoanPayment implements LoanPaymentResult {
     UUID id
     Long orderId
     String externalId
+    Long customerId
+    Long supplierId
     TimestampOutput created
     Money money
     Loan loan
@@ -96,8 +98,8 @@ class LoanPayment implements LoanPaymentResult {
 
     static def LoanPayment fromSdk(PaymentResponse response) {
         new LoanPayment(
-                id: response.id, orderId: response.orderId, externalId: response.externalId,
-                created: fromResponse(response.created),
+                id: response.id, orderId: response.orderId, customerId: response.customerId.toLong(), externalId: response.externalId,
+                supplierId: response.supplierId.toLong(), created: fromResponse(response.created),
                 money: new Money(response.money.currency, response.money.amount),
                 loan: new Loan(id: response.loan.id, created: fromResponse(response.loan.created),
                         approved: fromResponse(response.loan.approved), paid: fromResponse(response.loan.paid),

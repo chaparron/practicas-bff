@@ -39,7 +39,6 @@ input LoanPaymentRequestInput {
 
 type LoanPayment {
   id: ID!
-  orderId: Long!
   created: TimestampOutput!
   externalId: String!
   money: Money!
