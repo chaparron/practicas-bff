@@ -5,7 +5,6 @@ import bff.model.LoanPayment
 import bnpl.sdk.BnPlSdk
 import bnpl.sdk.model.InvoiceResponse
 import bnpl.sdk.model.LoanResponse
-import bnpl.sdk.model.LoanStatus
 import bnpl.sdk.model.MoneyResponse
 import org.junit.Before
 import org.junit.Test
@@ -15,6 +14,7 @@ import reactor.core.publisher.Mono
 
 import java.time.Instant
 
+import static bff.TestExtensions.anyLoanPaymentRequestInput
 import static bff.TestExtensions.validAccessToken
 import static org.mockito.ArgumentMatchers.eq
 import static org.mockito.Mockito.when
@@ -34,33 +34,34 @@ class BnplMutationTest {
 
     @Test
     void 'should return loan payment result if the request is valid'() {
-        def orderId = 11111L
+        Long supplierOrderId = 11111L
         def token = validAccessToken()
-        def paymentId = UUID.randomUUID()
-        def created = Instant.now()
-        def dueDate = Instant.now().plusSeconds(200)
         def moneyResponse = new MoneyResponse("ARS", BigDecimal.TEN)
-        def loanId = UUID.randomUUID()
         def loanCreated = Instant.now()
-        def loanResponse = new LoanResponse(loanId, loanCreated, null, null, dueDate, LoanStatus.APPROVED)
-        def invoiceId = UUID.randomUUID()
-        def invoiceResponse = new InvoiceResponse(invoiceId, "code")
+        def loanResponse = new LoanResponse("externalId", loanCreated)
+        def invoiceResponse = new InvoiceResponse("code")
 
-        def sdkResponse = TestExtensions.anyPaymentResponse(paymentId, orderId, "externalId", 2456, 5624, created,
+        def sdkResponse = TestExtensions.anyPaymentResponse(supplierOrderId, 2456, 5624,
                 moneyResponse, loanResponse, invoiceResponse)
 
-        def sdkRequest = TestExtensions.anyPaymentRequest(orderId,
-                sdkResponse.customerId.toLong(),
-                sdkResponse.supplierId.toLong(),
-                "code",
+        def sdkRequest = TestExtensions.anyPaymentRequest(
+                supplierOrderId,
+                sdkResponse.customerUserId,
+                sdkResponse.supplierId,
+                invoiceResponse.code,
                 BigDecimal.TEN)
 
         def expectedResponse = LoanPayment.fromSdk(sdkResponse)
 
         when(bnPlSdk.payWithLoan(eq(sdkRequest), eq(token))).thenReturn(Mono.just(sdkResponse))
 
-        def response = sut.loanPayment(TestExtensions.anyLoanPaymentRequestInput(token, sdkRequest.supplierId.toLong(), orderId, "code",
-                BigDecimal.TEN)).get()
+        def response = sut.loanPayment(anyLoanPaymentRequestInput(
+                token,
+                sdkRequest.supplierId,
+                supplierOrderId,
+                sdkRequest.invoiceCode,
+                sdkRequest.invoiceFileId,
+                sdkRequest.amount)).get()
 
         assert response == expectedResponse
     }

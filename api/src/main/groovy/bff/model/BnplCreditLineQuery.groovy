@@ -20,7 +20,7 @@ class BnplCreditLineQuery implements GraphQLQueryResolver {
 
     CompletableFuture<CreditLinesResult> getCreditLines(CreditLinesRequestInput input) {
         def userId = JwtToken.userIdFromToken(input.getAccessToken())
-        bnPlSdk.fetchBalance(userId, input.getAccessToken())
+        bnPlSdk.fetchBalance(userId.toLong(), input.getAccessToken())
                 .map{
                     fromSdk(it)
                 }
