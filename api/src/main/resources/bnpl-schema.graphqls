@@ -7,7 +7,7 @@ type CreditLines{
   credits: [CreditLine]!
   @deprecated(reason: "use CreditLineProvider.poweredByLabel(languageTag: String!) instead")
   providerLabel(languageTag:String!): String!
-  provider: CreditLineProvider
+  provider: CreditLineProvider!
   action: CreditLinesAction
   scroll: String
 }
