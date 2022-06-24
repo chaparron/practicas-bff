@@ -5,8 +5,6 @@ input CreditLinesRequestInput{
 
 type CreditLines{
   credits: [CreditLine]!
-  @deprecated(reason: "use CreditLineProvider.poweredByLabel(languageTag: String!) instead")
-  providerLabel(languageTag:String!): String!
   provider: CreditLineProvider!
   action: CreditLinesAction
   scroll: String
