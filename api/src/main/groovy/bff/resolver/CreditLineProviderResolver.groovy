@@ -2,7 +2,6 @@ package bff.resolver
 
 import bff.model.CreditLineProvider
 import com.coxautodev.graphql.tools.GraphQLResolver
-import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import org.springframework.stereotype.Component
@@ -10,16 +9,18 @@ import reactor.core.publisher.Mono
 
 import java.util.concurrent.CompletableFuture
 
-import static bff.model.BnplCreditLineQuery.BNPL_PROPERTY_PREFIX
-
 @Component
-@Slf4j
 class CreditLineProviderResolver implements GraphQLResolver<CreditLineProvider> {
+
     @Autowired
-    MessageSource messageSource
+    private MessageSource messageSource
 
     CompletableFuture<String> poweredByLabel(CreditLineProvider creditLineProvider, String languageTag) {
-        def key = BNPL_PROPERTY_PREFIX + "provider." + creditLineProvider.provider.name()
-        Mono.just(messageSource.getMessage(key, null, key, Locale.forLanguageTag(languageTag))).toFuture()
+        Mono.just(messageSource.getMessage(
+                "bnpl.creditProvider.poweredBy.label",
+                [creditLineProvider.provider.poweredBy].toArray(),
+                creditLineProvider.provider.poweredBy,
+                Locale.forLanguageTag(languageTag)
+        )).toFuture()
     }
 }

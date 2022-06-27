@@ -51,7 +51,6 @@ type LoanPayment {
 type Loan {
   created: TimestampOutput!
   externalId: String!
-
 }
 
 type Invoice {
@@ -62,7 +61,7 @@ union LoanPaymentResult = LoanPayment
 
 type CreditLineProvider {
   provider: CreditProvider!
-  poweredByLabel(languageTag:String!): String!
+  poweredByLabel(languageTag: String!): String!
 }
 
 enum CreditProvider {

@@ -25,6 +25,7 @@ Mappings:
       GoogleSpreadsheetIdPreSignUp: "1HfV1TseKMNKtSbT78K1HSXnKgmzYwqbFvlHcPs8C0u8"
       JwtSigningKeyId: "qa/jwt-signingKey"
       WabipayUrl: 'https://www-qa.wabipay.com/'
+      BnplEnabledCountries: "in"
     prod:
       MinPoolSize: '2'
       MaxPoolSize: '4'
@@ -43,6 +44,7 @@ Mappings:
       GoogleSpreadsheetIdPreSignUp: "1s9HK51X1WiRnJCy6-DjvWtJQQHt0r--zc77Z2S6istQ"
       JwtSigningKeyId: "prod/jwt-signingKey"
       WabipayUrl: 'https://www.wabipay.com/'
+      BnplEnabledCountries: "in"
 
 Resources:
   Wabi2bCertificate:
@@ -388,6 +390,10 @@ Resources:
           OptionName: bnpl_credits_url
           Value:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-bnpl-credits-ApiRootURL"
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: bnpl_enabled_countries
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, BnplEnabledCountries ]
 
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile

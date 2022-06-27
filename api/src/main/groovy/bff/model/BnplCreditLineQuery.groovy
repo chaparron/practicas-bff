@@ -14,7 +14,6 @@ import static bff.model.CreditLines.fromSdk
 @Component
 @Slf4j
 class BnplCreditLineQuery implements GraphQLQueryResolver {
-    static String BNPL_PROPERTY_PREFIX = "bnpl."
     @Autowired
     private BnPlSdk bnPlSdk;
 

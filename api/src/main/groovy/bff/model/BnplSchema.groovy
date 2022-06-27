@@ -51,7 +51,13 @@ class CreditLineProvider {
 }
 
 enum CreditProvider {
-    SUPERMONEY
+    SUPERMONEY("Supermoney")
+
+    String poweredBy
+
+    CreditProvider(String poweredBy) {
+        this.poweredBy = poweredBy
+    }
 }
 
 interface CreditLinesAction{}

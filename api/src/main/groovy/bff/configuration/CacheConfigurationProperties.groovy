@@ -13,4 +13,5 @@ class CacheConfigurationProperties {
     Long brands;
     Long suppliers;
     Long promotions;
+    Long supplierOrders
 }
