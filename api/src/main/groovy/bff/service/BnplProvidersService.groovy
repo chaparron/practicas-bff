@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 @Service
 class BnplProvidersService {
 
-    def knownUsers = ["2456", "1725", "1510"]
+    def knownUsers = ["2456", "1725", "1510","1488"]
 
     List<CreditLineProvider> creditLineProvidersFor(String accessToken) {
         def userId = JwtToken.userIdFromToken(accessToken)
