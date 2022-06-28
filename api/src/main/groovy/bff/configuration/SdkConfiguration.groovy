@@ -18,6 +18,8 @@ import org.springframework.web.client.RestOperations
 import org.springframework.web.reactive.function.client.WebClient
 import wabi2b.cms.sdk.Sdk as CmsSdk
 import wabi2b.grocery.listing.sdk.Sdk as GroceryListingSdk
+import wabi2b.payments.sdk.client.WalletSdk
+import wabi2b.payments.sdk.client.impl.HttpWalletSdk
 import wabi2b.payments.sdk.client.impl.WabiPaymentSdk
 import wabi2b.sdk.api.HttpWabi2bSdk
 import wabi2b.sdk.api.Wabi2bSdk
@@ -134,5 +136,10 @@ class SdkConfiguration {
     @Bean
     BnPlSdk bnplSdk() {
         return new HttpBnPlSdk(wabi2bBnplCreditsURI)
+    }
+
+    @Bean
+    WalletSdk walletSdk() {
+        new HttpWalletSdk(paymentsUrl)
     }
 }

@@ -11,8 +11,6 @@ import reactor.core.publisher.Mono
 
 import java.util.concurrent.CompletableFuture
 
-import static bff.model.BnplCreditLineQuery.BNPL_PROPERTY_PREFIX
-
 @Component
 @Slf4j
 class ButtonWithUrlCreditLinesActionResolver implements GraphQLResolver<ButtonWithUrlCreditLinesAction> {
@@ -20,8 +18,12 @@ class ButtonWithUrlCreditLinesActionResolver implements GraphQLResolver<ButtonWi
     MessageSource messageSource
 
     CompletableFuture<String> text(ButtonWithUrlCreditLinesAction button, String languageTag) {
-        def key = BNPL_PROPERTY_PREFIX + "action." + button.provider.name()
-        Mono.just(messageSource.getMessage(key, null, key, Locale.forLanguageTag(languageTag))).toFuture()
+        Mono.just(messageSource.getMessage(
+                "bnpl.action.label",
+                [button.provider.poweredBy.toUpperCase()].toArray(),
+                button.provider.poweredBy.toUpperCase(),
+                Locale.forLanguageTag(languageTag)
+        )).toFuture()
     }
 
 }

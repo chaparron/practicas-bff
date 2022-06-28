@@ -25,15 +25,15 @@ class BnplCreditLineQueryTest {
     @Test
     void 'when getCreditLines should request it to the sdk'() {
         def input  = new CreditLinesRequestInput(accessToken: validAccessToken())
-        String customerId = JwtToken.userIdFromToken(input.accessToken)
+        def customerUserId = JwtToken.userIdFromToken(input.accessToken).toLong()
         def sdkResponse = new CreditLineResponse(
-                customerId,
+                customerUserId,
                 new MoneyResponse("INR", TEN),
                 new MoneyResponse("INR", TEN),
                 null
         )
 
-        Mockito.when(bnPlSdk.fetchBalance(customerId, input.accessToken)).thenReturn(Mono.just(sdkResponse))
+        Mockito.when(bnPlSdk.fetchBalance(customerUserId, input.accessToken)).thenReturn(Mono.just(sdkResponse))
 
         assert sut.getCreditLines(input).get() == CreditLines.fromSdk(sdkResponse)
     }

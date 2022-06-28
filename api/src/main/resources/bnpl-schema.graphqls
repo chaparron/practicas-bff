@@ -5,7 +5,7 @@ input CreditLinesRequestInput{
 
 type CreditLines{
   credits: [CreditLine]!
-  providerLabel(languageTag:String!): String!
+  provider: CreditLineProvider!
   action: CreditLinesAction
   scroll: String
 }
@@ -43,26 +43,17 @@ input InvoiceInput {
 }
 
 type LoanPayment {
-  id: ID!
-  created: TimestampOutput!
-  externalId: String!
   money: Money!
   loan: Loan!
   invoice: Invoice!
 }
 
 type Loan {
-  id: ID!
   created: TimestampOutput!
-  approved: TimestampOutput
-  paid: TimestampOutput
-  dueDate: TimestampOutput!
-  status: String!
-
+  externalId: String!
 }
 
 type Invoice {
-  id: ID!
   code: String!
 }
 
@@ -70,6 +61,7 @@ union LoanPaymentResult = LoanPayment
 
 type CreditLineProvider {
   provider: CreditProvider!
+  poweredByLabel(languageTag: String!): String!
 }
 
 enum CreditProvider {
