@@ -35,7 +35,7 @@ class CustomerResolver implements GraphQLResolver<Customer> {
 
         customer.addresses.each { address ->
             if(address.state != null && address.state.name == null){
-                address.state.name = regionalConfigSdk.findStatesForCountry(customer.country_id).find{it.isoCode == address.state.id}.name
+                address.state.name = regionalConfigSdk.findStatesForCountry(customer.country_id).find{it.isoCode == address.state.id}?.name
             }
         }
         customer.addresses
