@@ -4,7 +4,6 @@ import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.ThirdPartyBridge
 import bff.model.*
-import com.amazonaws.util.StringUtils
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
