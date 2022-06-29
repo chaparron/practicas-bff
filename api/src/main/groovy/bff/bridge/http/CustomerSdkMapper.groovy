@@ -8,7 +8,6 @@ import bff.model.Country
 import bff.model.Customer
 import bff.model.CustomerStatus
 import bff.model.CustomerType
-import bff.model.CustomerUpdateInputV2
 import bff.model.Day
 import bff.model.HourRange
 import bff.model.RatingScore
@@ -21,10 +20,10 @@ import bff.model.VerificationDocumentInput
 import bff.model.VerificationDocumentType
 import bff.model.WorkingDays
 import org.springframework.stereotype.Component
-import wabi2b.dtos.customers.branchoffice.CreateBranchOfficeAddressDto
 import wabi2b.dtos.customers.branchoffice.CreateBranchOfficeOrganicRequestDto
-import wabi2b.dtos.customers.branchoffice.CreateBranchOfficeUserDto
 import wabi2b.dtos.customers.shared.AddressDto
+import wabi2b.dtos.customers.shared.CreateCustomerAddressDto
+import wabi2b.dtos.customers.shared.CreateCustomerUserDto
 import wabi2b.dtos.customers.shared.CustomerDto
 import wabi2b.dtos.customers.shared.DayDto
 import wabi2b.dtos.customers.shared.HourRangeDto
@@ -52,8 +51,8 @@ class CustomerSdkMapper {
         )
     }
 
-    CreateBranchOfficeAddressDto toDto(AddressInput addressInput){
-        return new CreateBranchOfficeAddressDto(
+    CreateCustomerAddressDto toDto(AddressInput addressInput){
+        return new CreateCustomerAddressDto(
                 addressInput.formatted,
                 addressInput.lat.toFloat(),
                 addressInput.lon.toFloat(),
@@ -183,8 +182,8 @@ class CustomerSdkMapper {
         }
     }
 
-    CreateBranchOfficeUserDto toDtoUser(AddBranchOfficeInput addBranchOfficeInput){
-        return new CreateBranchOfficeUserDto(
+    CreateCustomerUserDto toDtoUser(AddBranchOfficeInput addBranchOfficeInput){
+        return new CreateCustomerUserDto(
                 addBranchOfficeInput.firstName,
                 addBranchOfficeInput.lastName,
                 addBranchOfficeInput.countryCode,
@@ -204,7 +203,7 @@ class CustomerSdkMapper {
                 user: new User(id: customerDto.user.id),
                 smsVerification: customerDto.smsVerification,
                 emailVerification: customerDto.emailVerification,
-                customerType: new CustomerType(code: customerDto.customerTypeCode),
+                customerType: new CustomerType(code: customerDto.customerTypeCode, name: customerDto.customerTypeName),
                 addresses: toAddressList(customerDto.addresses),
                 marketingEnabled: customerDto.marketingEnabled,
                 workingDays: toWorkingDays(customerDto.workingDays),

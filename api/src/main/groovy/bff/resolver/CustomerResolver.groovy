@@ -4,10 +4,12 @@ import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.ThirdPartyBridge
 import bff.model.*
+import com.amazonaws.util.StringUtils
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import wabi2b.sdk.featureflags.FeatureFlagsSdk
+import wabi2b.sdk.regional.RegionalConfigSdk
 
 @Component
 class CustomerResolver implements GraphQLResolver<Customer> {
@@ -20,6 +22,8 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     ThirdPartyBridge thirdPartyBridge
     @Autowired
     FeatureFlagsSdk featureFlagsSdk
+    @Autowired
+    RegionalConfigSdk regionalConfigSdk
 
 
     List<VerificationDocument> verificationDocuments(Customer customer) {
@@ -28,6 +32,13 @@ class CustomerResolver implements GraphQLResolver<Customer> {
 
     List<Address> addresses(Customer customer) {
         customer.addresses ?: customerBridge.findAddressesByCustomerAccessToken(customer.accessToken)
+
+        customer.addresses.each { address ->
+            if(address.state != null && address.state.name == null){
+                address.state.name = regionalConfigSdk.findStatesForCountry(customer.country_id).find{it.isoCode == address.state.id}.name
+            }
+        }
+        customer.addresses
     }
 
     List<ProfileSection> profileSections(Customer customer) {
