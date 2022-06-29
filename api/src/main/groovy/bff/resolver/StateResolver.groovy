@@ -15,6 +15,8 @@ class StateResolver implements GraphQLResolver<State> {
     String name(State state){
         if(state.name == null && state.countryId != null){
             regionalConfigSdk.findStatesForCountry(state.countryId).find{it.isoCode == state.id}?.name
+        }else{
+            state.name
         }
     }
 
