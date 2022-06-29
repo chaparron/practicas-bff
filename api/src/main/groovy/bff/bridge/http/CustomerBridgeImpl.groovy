@@ -673,7 +673,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                     customerSdkMapper.toDto(addBranchOfficeInput),
                     addBranchOfficeInput.accessToken
             )
-            Customer customer = customerSdkMapper.toCustomer(customerDto)
+            Customer customer = customerSdkMapper.toCustomer(customerDto, addBranchOfficeInput.accessToken)
             customer = mapCustomer(customer, addBranchOfficeInput.accessToken)
             customer.marketingEnabledForcedInResponse = addBranchOfficeInput.marketingEnabled
             return customer
@@ -693,7 +693,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                 customerSdkMapper.toDto(input),
                 input.accessToken
         )
-        Customer customer = customerSdkMapper.toCustomer(customerDto)
+        Customer customer = customerSdkMapper.toCustomer(customerDto, input.accessToken)
         customer = mapCustomer(customer, input.accessToken)
         customer.marketingEnabledForcedInResponse = input.marketingEnabled
         return customer

@@ -62,7 +62,7 @@ class CustomerSdkMapper {
         )
     }
 
-    Address toAddress(AddressDto addressDto){
+    Address toAddress(AddressDto addressDto, String countryId, String accessToken){
         return new Address(
                 id: addressDto.id,
                 formatted: addressDto.formatted,
@@ -72,14 +72,14 @@ class CustomerSdkMapper {
                 preferred: addressDto.preferred,
                 addressType: AddressMode.valueOf(addressDto.addressType),
                 enabled: true,
-                state: new State(id: addressDto.state.id),
+                state: new State(id: addressDto.state.id, countryId: countryId, accessToken: accessToken),
                 postalCode: addressDto.postalCode
         )
     }
 
-    List<Address> toAddressList(List<AddressDto> addressDtos){
+    List<Address> toAddressList(List<AddressDto> addressDtos, String countryId, String accessToken){
         return addressDtos?.collect{
-            toAddress(it)
+            toAddress(it, countryId, accessToken)
         }
     }
 
@@ -192,7 +192,7 @@ class CustomerSdkMapper {
         )
     }
 
-    Customer toCustomer(CustomerDto customerDto){
+    Customer toCustomer(CustomerDto customerDto, String accessToken){
         return new Customer(
                 id: customerDto.id,
                 name: customerDto.name,
@@ -204,7 +204,7 @@ class CustomerSdkMapper {
                 smsVerification: customerDto.smsVerification,
                 emailVerification: customerDto.emailVerification,
                 customerType: new CustomerType(code: customerDto.customerTypeCode, name: customerDto.customerTypeName),
-                addresses: toAddressList(customerDto.addresses),
+                addresses: toAddressList(customerDto.addresses, customerDto.countryId, accessToken),
                 marketingEnabled: customerDto.marketingEnabled,
                 workingDays: toWorkingDays(customerDto.workingDays),
                 rating: new RatingScore(

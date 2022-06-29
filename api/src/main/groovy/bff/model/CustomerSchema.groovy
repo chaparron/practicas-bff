@@ -202,6 +202,8 @@ class ProfileSection{
 class State {
     String id
     String name
+    String countryId
+    String accessToken
 }
 
 class VerificationDocument {
