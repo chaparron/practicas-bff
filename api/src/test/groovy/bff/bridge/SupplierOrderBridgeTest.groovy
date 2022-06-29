@@ -2,8 +2,11 @@ package bff.bridge
 
 import bff.bridge.data.SupplierOrderBridgeTestData
 import bff.bridge.http.SupplierOrderBridgeImpl
+import bff.configuration.CacheConfigurationProperties
 import bff.model.AppliedPromotionResponse
+import bff.model.Order
 import bff.model.PromotionType
+import bff.model.Supplier
 import groovy.json.JsonSlurper
 import org.junit.Assert
 import org.junit.Before
@@ -25,12 +28,18 @@ class SupplierOrderBridgeTest extends SupplierOrderBridgeTestData {
     @Mock
     RestOperations http
 
+    @Mock
+    CacheConfigurationProperties cacheConfiguration
+
     @InjectMocks
     private SupplierOrderBridge supplierOrderBridge = new SupplierOrderBridgeImpl()
 
     @Before
     void init() {
+        Mockito.when(cacheConfiguration.supplierOrders).thenReturn(1L)
+
         supplierOrderBridge.root = new URI("http://localhost:3000/")
+        supplierOrderBridge.init()
     }
 
     @Test
@@ -100,5 +109,93 @@ class SupplierOrderBridgeTest extends SupplierOrderBridgeTestData {
         // then
         Assert.assertNotNull(appliedPromotions)
         Assert.assertTrue(appliedPromotions.empty)
+    }
+
+    @Test
+    void 'should return parsed supplier by supplierOrder id from http request'() {
+        //given
+        def expected = 67890
+
+        Mockito.when(
+                http.<Supplier> exchange(
+                        Mockito.any(RequestEntity) as RequestEntity,
+                        Mockito.any(Class) as Class<Supplier>
+                )
+        )
+                .thenReturn(new ResponseEntity<Supplier>(
+                        new JsonSlurper().parseText("{\"id\":$expected}") as Supplier, HttpStatus.OK
+                ))
+
+        assert supplierOrderBridge.getSupplierBySupplierOrderId(JWT_AR, 12345).id == expected
+    }
+
+    @Test
+    void 'should return parsed supplier by supplierOrder id from cached response'() {
+        //given
+        def expected = 67890
+
+        Mockito.when(
+                http.<Supplier> exchange(
+                        Mockito.any(RequestEntity) as RequestEntity,
+                        Mockito.any(Class) as Class<Supplier>
+                )
+        )
+                .thenReturn(new ResponseEntity<Supplier>(
+                        new JsonSlurper().parseText("{\"id\":$expected}") as Supplier, HttpStatus.OK
+                ))
+
+        assert supplierOrderBridge.getSupplierBySupplierOrderId(JWT_AR, 1111).id == expected
+        assert supplierOrderBridge.getSupplierBySupplierOrderId(JWT_AR, 1111).id == expected
+
+        Mockito
+                .verify(http, Mockito.times(1))
+                .<Supplier> exchange(
+                        Mockito.any(RequestEntity) as RequestEntity,
+                        Mockito.any(Class) as Class<Supplier>
+                )
+    }
+
+    @Test
+    void 'should return parsed order by supplierOrder id from http request'() {
+        //given
+        def expected = 333
+
+        Mockito.when(
+                http.<Order> exchange(
+                        Mockito.any(RequestEntity) as RequestEntity,
+                        Mockito.any(Class) as Class<Order>
+                )
+        )
+                .thenReturn(new ResponseEntity<Order>(
+                        new JsonSlurper().parseText("{\"id\":$expected}") as Order, HttpStatus.OK
+                ))
+
+        assert supplierOrderBridge.getOrderBySupplierOrderId(JWT_AR, 5005).id == expected
+    }
+
+    @Test
+    void 'should return parsed order by supplierOrder id from cached response'() {
+        //given
+        def expected = 333
+
+        Mockito.when(
+                http.<Order> exchange(
+                        Mockito.any(RequestEntity) as RequestEntity,
+                        Mockito.any(Class) as Class<Order>
+                )
+        )
+                .thenReturn(new ResponseEntity<Order>(
+                        new JsonSlurper().parseText("{\"id\":$expected}") as Order, HttpStatus.OK
+                ))
+
+        assert supplierOrderBridge.getOrderBySupplierOrderId(JWT_AR, 772).id == expected
+        assert supplierOrderBridge.getOrderBySupplierOrderId(JWT_AR, 772).id == expected
+
+        Mockito
+                .verify(http, Mockito.times(1))
+                .<Order> exchange(
+                        Mockito.any(RequestEntity) as RequestEntity,
+                        Mockito.any(Class) as Class<Order>
+                )
     }
 }

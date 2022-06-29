@@ -9,6 +9,7 @@ import java.time.Instant
 
 import static bff.model.CreditProvider.SUPERMONEY
 
+//Begin CreditLine related classes ------------------------------------------------------
 @ToString
 class CreditLinesRequestInput {
     String accessToken
@@ -19,7 +20,7 @@ class CreditLinesRequestInput {
 class CreditLines implements CreditLinesResult{
     List<CreditLine> credits
     CreditLinesAction action
-    CreditProvider provider
+    CreditLineProvider provider
     String scroll
 
     static CreditLines fromSdk(CreditLineResponse creditLineResponse) {
@@ -39,7 +40,7 @@ class CreditLines implements CreditLinesResult{
                             provider: SUPERMONEY
                     )
                 }.orElse(null),
-                provider: SUPERMONEY
+                provider: new CreditLineProvider(provider: SUPERMONEY)
         )
     }
 }
@@ -50,7 +51,13 @@ class CreditLineProvider {
 }
 
 enum CreditProvider {
-    SUPERMONEY
+    SUPERMONEY("Supermoney")
+
+    String poweredBy
+
+    CreditProvider(String poweredBy) {
+        this.poweredBy = poweredBy
+    }
 }
 
 interface CreditLinesAction{}
@@ -73,36 +80,42 @@ class SuperMoneyCreditLine implements CreditLine {
 }
 
 interface CreditLinesResult {}
-
-
+//End CreditLine related classes --------------------------------------------------
+//Begin Loan related classes ------------------------------------------------------
 @ToString
 class LoanPaymentRequestInput {
-    Long orderId
+    Long supplierOrderId
     String accessToken
     Long supplierId
-    String invoiceCode
+    InvoiceInput invoice
     BigDecimal amount
+}
+
+class InvoiceInput {
+    String code
+    String fileId
 }
 
 @EqualsAndHashCode
 class LoanPayment implements LoanPaymentResult {
-    UUID id
-    Long orderId
-    String externalId
-    TimestampOutput created
+    Long supplierOrderId
+    Long customerUserId
+    Long supplierId
     Money money
     Loan loan
     Invoice invoice
 
-    static def LoanPayment fromSdk(PaymentResponse response) {
+    static LoanPayment fromSdk(PaymentResponse response) {
         new LoanPayment(
-                id: response.id, orderId: response.orderId, externalId: response.externalId,
-                created: fromResponse(response.created),
+                supplierOrderId: response.supplierOrderId,
+                customerUserId: response.customerUserId,
+                supplierId: response.supplierId,
                 money: new Money(response.money.currency, response.money.amount),
-                loan: new Loan(id: response.loan.id, created: fromResponse(response.loan.created),
-                        approved: fromResponse(response.loan.approved), paid: fromResponse(response.loan.paid),
-                        dueDate: fromResponse(response.loan.settlement), status: response.loan.status.name()),
-                invoice: new Invoice(id: response.invoice.id, code: response.invoice.code)
+                loan: new Loan(
+                        created: fromResponse(response.loan.created),
+                        externalId: response.loan.externalId
+                ),
+                invoice: new Invoice(code: response.invoice.code)
         )
     }
 
@@ -113,20 +126,19 @@ class LoanPayment implements LoanPaymentResult {
 
 @EqualsAndHashCode
 class Loan {
-    UUID id
+    String externalId
     TimestampOutput created
-    TimestampOutput approved
-    TimestampOutput paid
-    TimestampOutput dueDate
-    String status
 }
 
 @EqualsAndHashCode
 class Invoice {
-    UUID id
     String code
+}
+
+class LoanPaymentFailed implements LoanPaymentResult{
+
 }
 
 interface LoanPaymentResult {}
 
-
+//End Loan related classes ------------------------------------------------------

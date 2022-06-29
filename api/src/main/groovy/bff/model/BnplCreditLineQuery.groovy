@@ -14,13 +14,12 @@ import static bff.model.CreditLines.fromSdk
 @Component
 @Slf4j
 class BnplCreditLineQuery implements GraphQLQueryResolver {
-    static String BNPL_PROPERTY_PREFIX = "bnpl."
     @Autowired
     private BnPlSdk bnPlSdk;
 
     CompletableFuture<CreditLinesResult> getCreditLines(CreditLinesRequestInput input) {
         def userId = JwtToken.userIdFromToken(input.getAccessToken())
-        bnPlSdk.fetchBalance(userId, input.getAccessToken())
+        bnPlSdk.fetchBalance(userId.toLong(), input.getAccessToken())
                 .map{
                     fromSdk(it)
                 }

@@ -4,7 +4,7 @@ import bff.model.CartSummaryItemType
 import bff.model.CreditLineProvider
 import bff.model.Money
 import bff.model.OrderSummary
-import bff.service.BnplProvidersService
+import bff.service.bnpl.BnplProvidersService
 import bff.service.MoneyService
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,6 +25,6 @@ class OrderSummaryResolver implements GraphQLResolver<OrderSummary> {
     }
 
     List<CreditLineProvider> creditLineProviders(OrderSummary os) {
-        bnplProvidersService.creditLineProvidersFor(os.summary.first().accessToken)
+        bnplProvidersService.creditLineProvidersFor(os.supplier, os.summary.first().accessToken)
     }
 }

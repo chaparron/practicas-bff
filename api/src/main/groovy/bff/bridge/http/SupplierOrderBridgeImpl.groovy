@@ -1,7 +1,13 @@
 package bff.bridge.http
 
 import bff.bridge.SupplierOrderBridge
+import bff.configuration.CacheConfigurationProperties
 import bff.model.*
+import com.github.benmanes.caffeine.cache.CacheLoader
+import com.github.benmanes.caffeine.cache.Caffeine
+import com.github.benmanes.caffeine.cache.LoadingCache
+import groovy.transform.EqualsAndHashCode
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -10,24 +16,53 @@ import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
 
+import javax.annotation.PostConstruct
+import java.util.concurrent.TimeUnit
+
 class SupplierOrderBridgeImpl implements SupplierOrderBridge {
 
     URI root
     RestOperations http
 
+    @Autowired
+    private CacheConfigurationProperties cacheConfiguration
+
+    private LoadingCache<SupplierOrderCacheKey, Supplier> suppliersCache
+    private LoadingCache<SupplierOrderCacheKey, Order> ordersCache
+
+    @PostConstruct
+    void init() {
+        suppliersCache = Caffeine
+                .newBuilder()
+                .expireAfterWrite(cacheConfiguration.supplierOrders, TimeUnit.MINUTES)
+                .build(
+                        new CacheLoader<SupplierOrderCacheKey, Supplier>() {
+                            Supplier load(SupplierOrderCacheKey key) {
+                                getUnCachedSupplierBySupplierOrderId(key.accessToken, key.supplierOrderId)
+                            }
+                        }
+                )
+
+        ordersCache = Caffeine
+                .newBuilder()
+                .expireAfterWrite(cacheConfiguration.supplierOrders, TimeUnit.MINUTES)
+                .build(
+                        new CacheLoader<SupplierOrderCacheKey, Order>() {
+                            Order load(SupplierOrderCacheKey key) {
+                                getUnCachedOrderBySupplierOrderId(key.accessToken, key.supplierOrderId)
+                            }
+                        }
+                )
+    }
+
     @Override
     Supplier getSupplierBySupplierOrderId(String accessToken, Long supplierOrderId) {
-        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplierOrder/${supplierOrderId}/supplier"))
-            .toUriString().toURI()
-        def r = http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-            , Supplier).body
-
-        r.accessToken = accessToken
-        r
+        suppliersCache.get(
+                new SupplierOrderCacheKey(
+                        accessToken: accessToken,
+                        supplierOrderId: supplierOrderId
+                )
+        )
     }
 
     @Override
@@ -78,19 +113,12 @@ class SupplierOrderBridgeImpl implements SupplierOrderBridge {
 
     @Override
     Order getOrderBySupplierOrderId(String accessToken, Long supplierOrderId) {
-        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplierOrders/${supplierOrderId}/order"))
-            .toUriString().toURI()
-
-        def r = http.exchange(
-            RequestEntity.method(HttpMethod.GET, uri)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .build()
-            , Order).body
-
-        r.accessToken = accessToken
-        r
-
+        ordersCache.get(
+                new SupplierOrderCacheKey(
+                        accessToken: accessToken,
+                        supplierOrderId: supplierOrderId
+                )
+        )
     }
 
     @Override
@@ -140,4 +168,40 @@ class SupplierOrderBridgeImpl implements SupplierOrderBridge {
                         .build()
                 , new ParameterizedTypeReference<List<AppliedPromotionResponse>>() {}).body
     }
+
+    Supplier getUnCachedSupplierBySupplierOrderId(String accessToken, Long supplierOrderId) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplierOrder/${supplierOrderId}/supplier"))
+                .toUriString().toURI()
+        def r = http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , Supplier).body
+
+        r.accessToken = accessToken
+        r
+    }
+
+    Order getUnCachedOrderBySupplierOrderId(String accessToken, Long supplierOrderId) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplierOrders/${supplierOrderId}/order"))
+                .toUriString().toURI()
+
+        def r = http.exchange(
+                RequestEntity.method(HttpMethod.GET, uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .build()
+                , Order).body
+
+        r.accessToken = accessToken
+        r
+
+    }
+}
+
+@EqualsAndHashCode
+class SupplierOrderCacheKey {
+    String accessToken
+    Long supplierOrderId
 }
