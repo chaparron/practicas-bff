@@ -99,6 +99,7 @@ class Main {
                 .add(LoanPayment.class)
                 .add(Invoice.class)
                 .add(Loan.class)
+                .add(LoanPaymentFailed.class)
     }
 
     /**

@@ -6,6 +6,8 @@ import bnpl.sdk.model.requests.PaymentRequest
 import com.coxautodev.graphql.tools.GraphQLMutationResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Mono
+import wabi.sdk.impl.CustomSdkException
 
 import java.util.concurrent.CompletableFuture
 
@@ -23,6 +25,9 @@ class BnplMutation implements GraphQLMutationResolver {
         bnPlSdk.payWithLoan(request, input.accessToken)
                 .map { response ->
                     fromSdk(response)
+                }
+                .onErrorResume(CustomSdkException) {
+                    Mono.just(LoanPaymentFailedReason.findByName(it.error.reason).build(it.error.detail))
                 }
                 .toFuture()
     }

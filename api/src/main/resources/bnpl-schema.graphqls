@@ -57,7 +57,7 @@ type Invoice {
   code: String!
 }
 
-union LoanPaymentResult = LoanPayment
+union LoanPaymentResult = LoanPayment | LoanPaymentFailed
 
 type CreditLineProvider {
   provider: CreditProvider!
@@ -66,4 +66,9 @@ type CreditLineProvider {
 
 enum CreditProvider {
   SUPERMONEY
+}
+
+type LoanPaymentFailed{
+  sourceErrorMessage: String!
+  text(languageTag: String!): String!
 }

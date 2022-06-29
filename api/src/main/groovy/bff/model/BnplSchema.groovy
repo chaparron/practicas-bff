@@ -135,10 +135,26 @@ class Invoice {
     String code
 }
 
-class LoanPaymentFailed implements LoanPaymentResult{
+interface LoanPaymentResult {}
 
+@EqualsAndHashCode
+class LoanPaymentFailed implements LoanPaymentResult{
+    LoanPaymentFailedReason reason
+    String sourceErrorMessage
 }
 
-interface LoanPaymentResult {}
+enum LoanPaymentFailedReason {
+    INVALID_SUPPLIER_ORDER_ID,
+    UNKNOWN
+
+    static LoanPaymentFailedReason findByName(String name){
+        Optional.ofNullable(values().find {it.name() == name}).orElse(UNKNOWN)
+    }
+
+    def build(String message) {
+        new LoanPaymentFailed(reason: this, sourceErrorMessage: message)
+    }
+
+}
 
 //End Loan related classes ------------------------------------------------------
