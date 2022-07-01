@@ -107,13 +107,18 @@ class AuthServerBridgeImpl implements AuthServerBridge {
             ChallengeDemandFailureReason.valueOf((String)accessToBackendDeniedException.cause.statusCode.name()).doThrow()
             throw accessToBackendDeniedException
         } catch (BadRequestErrorException badRequestErrorException) {
-            String innerResponse = (String)badRequestErrorException.innerResponse
-            if ("TOO_MANY_SHIPMENTS" == innerResponse) {
-                int waitTime = ((BridgeHttpServerErrorException)badRequestErrorException.cause).responseHeaders.getFirst("wait-time").toInteger()
-                throw new TooManyShipmentsException(waitTime)
+            String innerResponse = (String) badRequestErrorException.innerResponse
+            switch (innerResponse) {
+                case "TOO_MANY_SHIPMENTS":
+                    int waitTime = ((BridgeHttpServerErrorException) badRequestErrorException.cause).responseHeaders.getFirst("wait-time").toInteger()
+                    throw new TooManyShipmentsException(waitTime)
+                case "FORBIDDEN":
+                    ChallengeDemandFailureReason.UNKNOWN_PHONE.doThrow()
+                    break
+                default:
+                    ChallengeDemandFailureReason.valueOf(innerResponse).doThrow()
+                    break
             }
-            ChallengeDemandFailureReason.valueOf((String)badRequestErrorException.innerResponse).doThrow()
-            badRequestErrorException.printStackTrace()
         }
     }
 
