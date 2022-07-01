@@ -5,7 +5,9 @@ import bff.model.CreditLineProvider
 import bff.model.CreditProvider
 import bff.model.Order
 import bff.model.OrderStatus
+import bff.model.OrderSummary
 import bff.model.Supplier
+import bnpl.sdk.BnPlSdk
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -23,13 +25,20 @@ class BnplProvidersService {
     @Autowired
     private WalletSdk walletSdk
 
-    List<CreditLineProvider> creditLineProvidersFor(Supplier supplier, String accessToken) {
+    @Autowired
+    private BnPlSdk bnPlSdk
+
+
+    List<CreditLineProvider> creditLineProvidersFor(OrderSummary os) {
+        def supplier = os.supplier
+        def accessToken = os.supplier.accessToken
         def country = JwtToken.countryFromString(accessToken)
 
         new BnplCreditLineProvidersProcess()
                 .nextCondition { enabledCountries.contains(country) }
+                .nextCondition { os.totalProducts.amount <= bnPlSdk.supportedLimitedAmount(country, accessToken).block().amount }
                 .nextCondition { currentUserHasBnplWallet(accessToken) }
-                .nextCondition { supplierHasBnplWallet(supplier) }
+                .nextCondition { supplierHasBnplWallet(supplier, accessToken) }
                 .successfullyValue([new CreditLineProvider(provider: CreditProvider.SUPERMONEY)])
                 .unsuccessfullyValue(null)
                 .execute()
@@ -42,7 +51,7 @@ class BnplProvidersService {
                 .nextCondition { enabledCountries.contains(country) }
                 .nextCondition { [OrderStatus.PENDING, OrderStatus.IN_PROGRESS].contains(order.status) }
                 .nextCondition { currentUserHasBnplWallet(accessToken) }
-                .nextCondition { supplierHasBnplWallet(supplier) }
+                .nextCondition { supplierHasBnplWallet(supplier, accessToken) }
                 .successfullyValue([new CreditLineProvider(provider: CreditProvider.SUPERMONEY)])
                 .unsuccessfullyValue(null)
                 .execute()
@@ -52,16 +61,13 @@ class BnplProvidersService {
         log.debug("About to find BNPL wallet for user {}", JwtToken.userIdFromToken(accessToken))
 
         walletSdk
-                .getWallet(WalletProvider.@Companion.buyNowPayLater(), accessToken)
-                .blockOptional()
-                .isPresent()
+                .getWallet(WalletProvider.@Companion.buyNowPayLater(), accessToken) != null
     }
 
-    private boolean supplierHasBnplWallet(Supplier supplier) {
+    private boolean supplierHasBnplWallet(Supplier supplier, String accessToken) {
         log.debug("About to find BNPL wallet for supplier {}", supplier.id)
+        def userId = JwtToken.userIdFromToken(accessToken)
 
-        //TODO: missing sdk method
-
-        true
+        walletSdk.getSupportedProvidersBetween(supplier.id.toString(), userId, accessToken).provides.any { it -> it == WalletProvider.@Companion.buyNowPayLater().value }
     }
 }

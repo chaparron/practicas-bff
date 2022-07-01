@@ -2,6 +2,10 @@ package bff
 
 import bff.model.InvoiceInput
 import bff.model.LoanPaymentRequestInput
+import bff.model.Money
+import bff.model.OrderSummary
+import bff.model.Summary
+import bff.model.Supplier
 import bnpl.sdk.model.InvoiceResponse
 import bnpl.sdk.model.LoanResponse
 import bnpl.sdk.model.MoneyResponse
@@ -29,7 +33,7 @@ class TestExtensions {
         )
     }
 
-    static PaymentRequest anyPaymentRequest(Long supplierOrderId,  Long customerUserId, Long supplierId, String invoiceCode, BigDecimal amount) {
+    static PaymentRequest anyPaymentRequest(Long supplierOrderId, Long customerUserId, Long supplierId, String invoiceCode, BigDecimal amount) {
         new PaymentRequest(supplierOrderId, customerUserId, supplierId, invoiceCode, randomString(), amount)
     }
 
@@ -37,5 +41,12 @@ class TestExtensions {
                                                               Long supplierOrderId, String code, String fileId, BigDecimal amount) {
         new LoanPaymentRequestInput(accessToken: token, supplierId: supplierId,
                 supplierOrderId: supplierOrderId, invoice: new InvoiceInput(code: code, fileId: fileId), amount: amount)
+    }
+
+    static OrderSummary anyOrderSummary(Money totalProducts, Supplier supplier, List<Summary> summary) {
+        new OrderSummary(
+                totalProducts: totalProducts,
+                supplier: supplier,
+                summary: summary)
     }
 }
