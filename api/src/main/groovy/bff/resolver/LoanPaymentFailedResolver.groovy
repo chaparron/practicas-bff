@@ -16,7 +16,7 @@ class LoanPaymentFailedResolver implements GraphQLResolver<LoanPaymentFailed> {
     private MessageSource messageSource
 
     CompletableFuture<String> text(LoanPaymentFailed failure, String languageTag) {
-        def key = "bnpl.loan.payment.error.${failure.reason.name()}"
+        def key = "bnpl.loan.payment.error.label.${failure.reason.name()}"
         Mono.just(messageSource.getMessage(
                 key,
                 null,
