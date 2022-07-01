@@ -16,7 +16,6 @@ Mappings:
       MaxHeapSize: '-Xmx1024m'
       LoggingLevel: 'TRACE'
       NewRelicAppName: 'Wabi2B - BFF - Dev'
-      NewRelicLicenseKey: '2277dfa871634a7d0e7707a31781d430b528NRAL'
       ApiRoot: 'https://api-qa.wabi2b.com/'
       SiteRoot: 'https://qa.wabi2b.com'
       SecurityGroups: '{{resolve:ssm:/foundation/qa/beanstalk/security_groups:1}}'
@@ -35,7 +34,6 @@ Mappings:
       MaxHeapSize: '-Xmx4096m'
       LoggingLevel: 'TRACE'
       NewRelicAppName: "wabi2b-bff-prod"
-      NewRelicLicenseKey: "602c96ea128d65e4582bc82ba2214a01be9239eb"
       ApiRoot: 'https://api.wabi2b.com/'
       SiteRoot: 'https://wabi2b.com'
       SecurityGroups: '{{resolve:ssm:/foundation/prod/beanstalk/security_groups:1}}'
@@ -202,7 +200,8 @@ Resources:
 
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: NEW_RELIC_LICENSE_KEY
-          Value: !FindInMap [ Config, !Ref EnvironmentStackName, NewRelicLicenseKey ]
+          Value: !Sub  '{{resolve:secretsmanager:NEW_RELIC_LICENSE_KEY:SecretString:LicenseKey}}'
+
 
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: API_ROOT
