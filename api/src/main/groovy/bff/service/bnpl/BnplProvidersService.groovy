@@ -1,13 +1,7 @@
 package bff.service.bnpl
 
 import bff.JwtToken
-import bff.model.CreditLineProvider
-import bff.model.CreditProvider
-import bff.model.Money
-import bff.model.Order
-import bff.model.OrderStatus
-import bff.model.OrderSummary
-import bff.model.Supplier
+import bff.model.*
 import bnpl.sdk.BnPlSdk
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import wabi2b.payments.common.model.request.WalletProvider
 import wabi2b.payments.sdk.client.WalletSdk
+
+import static java.util.Collections.singletonList
 
 @Slf4j
 @Service
@@ -36,7 +32,7 @@ class BnplProvidersService {
 
         new BnplCreditLineProvidersProcess()
                 .nextCondition { enabledCountries.contains(country) }
-                .nextCondition { total.amount <= bnPlSdk.supportedLimitedAmount(country, accessToken).block().amount }
+                .nextCondition { total.amount >= bnPlSdk.supportedLimitedAmount(country, accessToken).block().amount }
                 .nextCondition { currentUserHasBnplWallet(accessToken) }
                 .nextCondition { supplierHasBnplWallet(supplier, accessToken) }
                 .successfullyValue([new CreditLineProvider(provider: CreditProvider.SUPERMONEY)])
@@ -67,7 +63,8 @@ class BnplProvidersService {
     private boolean supplierHasBnplWallet(Supplier supplier, String accessToken) {
         log.debug("About to find BNPL wallet for supplier {}", supplier.id)
         def userId = JwtToken.userIdFromToken(accessToken)
+        def suppliers = singletonList(supplier.id.toString())
 
-        !walletSdk.getSupportedProvidersBetween([supplier.id.toString()], userId, WalletProvider.@Companion.buyNowPayLater(), accessToken).supplierProviders.isEmpty()
+        walletSdk.getSupportedProvidersBetween(suppliers, userId, WalletProvider.@Companion.buyNowPayLater(), accessToken).supplierProviders.any { it -> it.supplierId.toLong() == supplier.id }
     }
 }
