@@ -1,5 +1,6 @@
 package bff.service.bnpl
 
+import bff.bridge.SupplierOrderBridge
 import bff.model.*
 import bnpl.sdk.BnPlSdk
 import bnpl.sdk.model.SupportedLimitedAmountResponse
@@ -14,7 +15,9 @@ import wabi2b.payments.sdk.client.WalletSdk
 
 import static bff.model.OrderStatus.*
 import static java.math.BigDecimal.ONE
+import static java.math.BigDecimal.ZERO
 import static java.util.Collections.singletonList
+import static org.mockito.Mockito.*
 
 class BnplProvidersServiceTest {
 
@@ -30,10 +33,11 @@ class BnplProvidersServiceTest {
     private final def wabipayCustomerWallet = new WalletResponse("4444", "AA44AA", wabiPayWalletProvider.value)
     private final def wabiPayCheckProvidersSupportedResponse = new CheckSupportedProvidersResponse(wabipayCustomerWallet, singletonList(wabipaySupplierWallet))
 
-    private def enabledCountries = ["in"]
-    private def walletSdk = Mockito.mock(WalletSdk)
-    private def bnplSdk = Mockito.mock(BnPlSdk)
-    private def sut = new BnplProvidersService(enabledCountries: enabledCountries, walletSdk: walletSdk, bnPlSdk: bnplSdk)
+    private final def enabledCountries = ["in"]
+    private final def walletSdk = mock(WalletSdk)
+    private final def bnplSdk = mock(BnPlSdk)
+    private final supplierOrderBridge = mock(SupplierOrderBridge)
+    private def sut = new BnplProvidersService(supplierOrderBridge: supplierOrderBridge, enabledCountries: enabledCountries, walletSdk: walletSdk, bnPlSdk: bnplSdk)
 
     @Test
     void 'bnpl provider is null for not enabled user country by supplier'() {
@@ -56,7 +60,7 @@ class BnplProvidersServiceTest {
 
     @Test
     void 'bnpl provider is null if the amount of the order is less than the limited amount in bnpl'() {
-        Mockito.when(bnplSdk.supportedLimitedAmount(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new SupportedLimitedAmountResponse(ONE, "in")))
+        when(bnplSdk.supportedLimitedAmount(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new SupportedLimitedAmountResponse(ONE, "in")))
 
         def supplierWithAccessToken = new Supplier(id: 0000, accessToken: indianToken)
 
@@ -71,15 +75,15 @@ class BnplProvidersServiceTest {
                 )])
         assert sut.creditLineProvidersFor(orderSummary, new Money("ARS", BigDecimal.TEN)) == null
 
-        Mockito.verify(walletSdk).getWallet(walletProvider, indianToken)
-        Mockito.verify(bnplSdk).supportedLimitedAmount("in", supplierWithAccessToken.accessToken)
+        verify(walletSdk).getWallet(walletProvider, indianToken)
+        verify(bnplSdk).supportedLimitedAmount("in", supplierWithAccessToken.accessToken)
 
     }
 
     @Test
     void 'bnpl provider is null for user without wallet by supplier'() {
-        Mockito.when(walletSdk.getWallet(Mockito.any(), Mockito.any())).thenReturn(null)
-        Mockito.when(bnplSdk.supportedLimitedAmount(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new SupportedLimitedAmountResponse(BigDecimal.TEN, "in")))
+        when(walletSdk.getWallet(Mockito.any(), Mockito.any())).thenReturn(null)
+        when(bnplSdk.supportedLimitedAmount(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new SupportedLimitedAmountResponse(BigDecimal.TEN, "in")))
 
         def supplierWithAccessToken = new Supplier(id: 0000, accessToken: indianToken)
 
@@ -95,16 +99,16 @@ class BnplProvidersServiceTest {
 
         assert sut.creditLineProvidersFor(orderSummary, new Money("ARS", BigDecimal.TEN)) == null
 
-        Mockito.verify(walletSdk).getWallet(walletProvider, supplierWithAccessToken.accessToken)
-        Mockito.verify(bnplSdk).supportedLimitedAmount("in", supplierWithAccessToken.accessToken)
-        Mockito.verifyNoMoreInteractions(walletSdk)
+        verify(walletSdk).getWallet(walletProvider, supplierWithAccessToken.accessToken)
+        verify(bnplSdk).supportedLimitedAmount("in", supplierWithAccessToken.accessToken)
+        verifyNoMoreInteractions(walletSdk)
     }
 
     @Test
     void 'bnpl provider is supermoney for user with wallet by supplier'() {
-        Mockito.when(walletSdk.getWallet(Mockito.any(), Mockito.any())).thenReturn(wabipayCustomerWallet)
-        Mockito.when(walletSdk.getSupportedProvidersBetween(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(checkProvidersSupportedResponse)
-        Mockito.when(bnplSdk.supportedLimitedAmount(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new SupportedLimitedAmountResponse(BigDecimal.TEN, "in")))
+        when(walletSdk.getWallet(Mockito.any(), Mockito.any())).thenReturn(wabipayCustomerWallet)
+        when(walletSdk.getSupportedProvidersBetween(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(checkProvidersSupportedResponse)
+        when(bnplSdk.supportedLimitedAmount(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new SupportedLimitedAmountResponse(BigDecimal.TEN, "in")))
 
         def supplierWithAccessToken = new Supplier(id: 0000, accessToken: indianToken)
 
@@ -120,74 +124,96 @@ class BnplProvidersServiceTest {
         assert sut.creditLineProvidersFor(orderSummary, new Money("ARS", BigDecimal.TEN)) ==
                 [new CreditLineProvider(provider: CreditProvider.SUPERMONEY)]
 
-        Mockito.verify(walletSdk).getWallet(walletProvider, supplierWithAccessToken.accessToken)
-        Mockito.verify(walletSdk).getSupportedProvidersBetween(singletonList(supplier.id.toString()), wabipayCustomerWallet.userId, WalletProvider.@Companion.buyNowPayLater(), supplierWithAccessToken.accessToken)
-        Mockito.verify(bnplSdk).supportedLimitedAmount("in", supplierWithAccessToken.accessToken)
-        Mockito.verifyNoMoreInteractions(walletSdk)
+        verify(walletSdk).getWallet(walletProvider, supplierWithAccessToken.accessToken)
+        verify(walletSdk).getSupportedProvidersBetween(singletonList(supplier.id.toString()), wabipayCustomerWallet.userId, WalletProvider.@Companion.buyNowPayLater(), supplierWithAccessToken.accessToken)
+        verify(bnplSdk).supportedLimitedAmount("in", supplierWithAccessToken.accessToken)
+        verifyNoMoreInteractions(walletSdk)
     }
 
     @Test
     void 'bnpl provider is null for not enabled user country by supplier and order'() {
-        assert sut.creditLineProvidersFor(supplier, anyOrder(PENDING), russianToken) == null
+        def supplierOrder = new SupplierOrder(id: 1L, order: anyOrder(PENDING), accessToken: russianToken)
+        assert sut.creditLineProvidersFor(supplierOrder) == null
 
         Mockito.verifyZeroInteractions(walletSdk)
     }
 
     @Test
     void 'bnpl provider is null for finished order'() {
-        assert sut.creditLineProvidersFor(supplier, anyOrder(FINISHED), indianToken) == null
+        def supplierOrder = new SupplierOrder(id: 1L, order: anyOrder(FINISHED), accessToken: indianToken, payment_pending: ZERO)
+        when(supplierOrderBridge.getOrderBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplierOrder.order)
+        when(supplierOrderBridge.getSupplierBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplier)
+        when(bnplSdk.supportedLimitedAmount(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new SupportedLimitedAmountResponse(supplierOrder.payment_pending, "in")))
+
+        assert sut.creditLineProvidersFor(supplierOrder) == null
 
         Mockito.verifyZeroInteractions(walletSdk)
     }
 
     @Test
     void 'bnpl provider is null for user without wallet by supplier and order'() {
-        Mockito.when(walletSdk.getWallet(Mockito.any(), Mockito.any())).thenReturn(null)
+        when(walletSdk.getWallet(Mockito.any(), Mockito.any())).thenReturn(null)
+        when(walletSdk.getSupportedProvidersBetween(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(checkProvidersSupportedResponse)
+        def supplierOrder = new SupplierOrder(id: 1L, order: anyOrder(PENDING), accessToken: indianToken, payment_pending: ONE)
+        when(supplierOrderBridge.getOrderBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplierOrder.order)
+        when(supplierOrderBridge.getSupplierBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplier)
+        when(bnplSdk.supportedLimitedAmount(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new SupportedLimitedAmountResponse(supplierOrder.payment_pending, "in")))
 
-        assert sut.creditLineProvidersFor(supplier, anyOrder(PENDING), indianToken) == null
+        assert sut.creditLineProvidersFor(supplierOrder) == null
 
-        Mockito.verify(walletSdk).getWallet(walletProvider, indianToken)
-        Mockito.verifyNoMoreInteractions(walletSdk)
+        verify(walletSdk).getWallet(walletProvider, indianToken)
+        verifyNoMoreInteractions(walletSdk)
     }
 
     @Test
     void 'bnpl provider is supermoney for user with wallet by supplier and pending order'() {
-        Mockito.when(walletSdk.getWallet(Mockito.any(), Mockito.any())).thenReturn(wabipayCustomerWallet)
-        Mockito.when(walletSdk.getSupportedProvidersBetween(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(checkProvidersSupportedResponse)
+        when(walletSdk.getWallet(Mockito.any(), Mockito.any())).thenReturn(bnplCustomerWallet)
+        when(walletSdk.getSupportedProvidersBetween(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(checkProvidersSupportedResponse)
+        def supplierOrder = new SupplierOrder(id: 1L, order: anyOrder(PENDING), accessToken: indianToken, payment_pending: ONE)
+        when(supplierOrderBridge.getOrderBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplierOrder.order)
+        when(supplierOrderBridge.getSupplierBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplier)
+        when(bnplSdk.supportedLimitedAmount(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new SupportedLimitedAmountResponse(supplierOrder.payment_pending, "in")))
 
-        assert sut.creditLineProvidersFor(supplier, anyOrder(PENDING), indianToken) ==
-                [new CreditLineProvider(provider: CreditProvider.SUPERMONEY)]
+        assert sut.creditLineProvidersFor(supplierOrder) == [new CreditLineProvider(provider: CreditProvider.SUPERMONEY)]
 
-        Mockito.verify(walletSdk).getWallet(walletProvider, indianToken)
-        Mockito.verify(walletSdk).getSupportedProvidersBetween(singletonList(supplier.id.toString()), wabipayCustomerWallet.userId, WalletProvider.@Companion.buyNowPayLater(), indianToken)
+        verify(walletSdk).getWallet(walletProvider, indianToken)
+        verify(walletSdk).getSupportedProvidersBetween(singletonList(supplier.id.toString()), wabipayCustomerWallet.userId, WalletProvider.@Companion.buyNowPayLater(), indianToken)
 
-        Mockito.verifyNoMoreInteractions(walletSdk)
+        verifyNoMoreInteractions(walletSdk)
     }
 
     @Test
     void 'bnpl provider is null if the supplier has not bnpl wallet'() {
-        Mockito.when(walletSdk.getWallet(Mockito.any(), Mockito.any())).thenReturn(bnplCustomerWallet)
-        Mockito.when(walletSdk.getSupportedProvidersBetween(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new CheckSupportedProvidersResponse(bnplCustomerWallet, Collections.emptyList()))
+        when(walletSdk.getWallet(Mockito.any(), Mockito.any())).thenReturn(bnplCustomerWallet)
+        when(walletSdk.getSupportedProvidersBetween(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new CheckSupportedProvidersResponse(bnplCustomerWallet, Collections.emptyList()))
+        def supplierOrder = new SupplierOrder(id: 1L, order: anyOrder(PENDING), accessToken: indianToken, payment_pending: ONE)
+        when(supplierOrderBridge.getOrderBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplierOrder.order)
+        when(supplierOrderBridge.getSupplierBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplier)
+        when(bnplSdk.supportedLimitedAmount(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new SupportedLimitedAmountResponse(supplierOrder.payment_pending, "in")))
 
-        assert sut.creditLineProvidersFor(supplier, anyOrder(PENDING), indianToken) == null
+        assert sut.creditLineProvidersFor(supplierOrder) == null
 
-        Mockito.verify(walletSdk).getWallet(walletProvider, indianToken)
-        Mockito.verify(walletSdk).getSupportedProvidersBetween(singletonList(supplier.id.toString()), wabipayCustomerWallet.userId, WalletProvider.@Companion.buyNowPayLater(), indianToken)
+        verify(walletSdk).getWallet(walletProvider, indianToken)
+        verify(walletSdk).getSupportedProvidersBetween(singletonList(supplier.id.toString()), wabipayCustomerWallet.userId, WalletProvider.@Companion.buyNowPayLater(), indianToken)
 
-        Mockito.verifyNoMoreInteractions(walletSdk)
+        verifyNoMoreInteractions(walletSdk)
     }
 
     @Test
     void 'bnpl provider is supermoney for user with wallet by supplier and in progress order'() {
-        Mockito.when(walletSdk.getWallet(Mockito.any(), Mockito.any())).thenReturn(bnplCustomerWallet)
-        Mockito.when(walletSdk.getSupportedProvidersBetween(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(checkProvidersSupportedResponse)
+        when(walletSdk.getWallet(Mockito.any(), Mockito.any())).thenReturn(bnplCustomerWallet)
+        when(walletSdk.getSupportedProvidersBetween(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(checkProvidersSupportedResponse)
+        def supplierOrder = new SupplierOrder(id: 1L, order: anyOrder(IN_PROGRESS), accessToken: indianToken, payment_pending: ONE)
+        when(supplierOrderBridge.getOrderBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplierOrder.order)
+        when(supplierOrderBridge.getSupplierBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplier)
+        when(bnplSdk.supportedLimitedAmount(Mockito.any(), Mockito.any())).thenReturn(Mono.just(new SupportedLimitedAmountResponse(supplierOrder.payment_pending, "in")))
 
-        assert sut.creditLineProvidersFor(supplier, anyOrder(IN_PROGRESS), indianToken) ==
+        assert sut.creditLineProvidersFor(supplierOrder) ==
                 [new CreditLineProvider(provider: CreditProvider.SUPERMONEY)]
 
-        Mockito.verify(walletSdk).getWallet(walletProvider, indianToken)
-        Mockito.verify(walletSdk).getSupportedProvidersBetween(singletonList(supplier.id.toString()), bnplCustomerWallet.userId, WalletProvider.@Companion.buyNowPayLater(), indianToken)
-        Mockito.verifyNoMoreInteractions(walletSdk)
+        verify(walletSdk).getWallet(walletProvider, indianToken)
+        verify(walletSdk).getSupportedProvidersBetween(singletonList(supplier.id.toString()), bnplCustomerWallet.userId, WalletProvider.@Companion.buyNowPayLater(), indianToken)
+        verifyNoMoreInteractions(walletSdk)
     }
 
     private final Order anyOrder(OrderStatus status) {

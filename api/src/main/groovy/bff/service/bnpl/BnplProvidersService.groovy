@@ -1,6 +1,7 @@
 package bff.service.bnpl
 
 import bff.JwtToken
+import bff.bridge.SupplierOrderBridge
 import bff.model.*
 import bnpl.sdk.BnPlSdk
 import groovy.util.logging.Slf4j
@@ -15,6 +16,8 @@ import static java.util.Collections.singletonList
 @Slf4j
 @Service
 class BnplProvidersService {
+    @Autowired
+    private SupplierOrderBridge supplierOrderBridge
 
     @Value('${bnpl.enabled.countries:[]}')
     private List<String> enabledCountries
@@ -40,12 +43,16 @@ class BnplProvidersService {
                 .execute()
     }
 
-    List<CreditLineProvider> creditLineProvidersFor(Supplier supplier, Order order, String accessToken) {
+    List<CreditLineProvider> creditLineProvidersFor(SupplierOrder supplierOrder) {
+        def supplier = supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
+        def order = supplierOrderBridge.getOrderBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
+        def accessToken = supplierOrder.accessToken
         def country = JwtToken.countryFromString(accessToken)
 
         new BnplCreditLineProvidersProcess()
                 .nextCondition { enabledCountries.contains(country) }
                 .nextCondition { [OrderStatus.PENDING, OrderStatus.IN_PROGRESS].contains(order.status) }
+                .nextCondition { supplierOrder.payment_pending >= bnPlSdk.supportedLimitedAmount(country, accessToken).block().amount }
                 .nextCondition { currentUserHasBnplWallet(accessToken) }
                 .nextCondition { supplierHasBnplWallet(supplier, accessToken) }
                 .successfullyValue([new CreditLineProvider(provider: CreditProvider.SUPERMONEY)])

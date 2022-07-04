@@ -2,8 +2,8 @@ package bff.resolver
 
 import bff.bridge.SupplierOrderBridge
 import bff.model.*
-import bff.service.bnpl.BnplProvidersService
 import bff.service.MoneyService
+import bff.service.bnpl.BnplProvidersService
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -89,6 +89,6 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
     }
 
     List<CreditLineProvider> creditLineProviders(SupplierOrder supplierOrder) {
-        bnplProvidersService.creditLineProvidersFor(supplier(supplierOrder), order(supplierOrder), supplierOrder.accessToken)
+        bnplProvidersService.creditLineProvidersFor(supplierOrder)
     }
 }
