@@ -35,6 +35,9 @@ class CustomerResolver implements GraphQLResolver<Customer> {
         List<ProfileSection> ps = new ArrayList<ProfileSection>()
         ps.push(new ProfileSection(id: "ORDERS"))
         ps.push(new ProfileSection(id: "SUGGESTED_ORDER"))
+        if (customer.country_id == 'in'){
+            ps.push(new ProfileSection(id: "CREDIT_LINES"))
+        }
         ps.push(new ProfileSection(id: "STORE_INFORMATION"))
         ps.push(new ProfileSection(id: "PERSONAL_INFORMATION"))
         ps.push(new ProfileSection(id: "DOCUMENTS"))
@@ -48,9 +51,7 @@ class CustomerResolver implements GraphQLResolver<Customer> {
             ps.push(new ProfileSection(id: "QR_PAYMENTS"))
             ps.push(new ProfileSection(id: "PAY_WITH_QR"))
         }
-        if (customer.country_id == 'in'){
-            ps.push(new ProfileSection(id: "CREDIT_LINES"))
-        }
+
         ps
     }
 
