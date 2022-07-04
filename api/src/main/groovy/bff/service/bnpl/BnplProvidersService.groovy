@@ -3,6 +3,7 @@ package bff.service.bnpl
 import bff.JwtToken
 import bff.model.CreditLineProvider
 import bff.model.CreditProvider
+import bff.model.Money
 import bff.model.Order
 import bff.model.OrderStatus
 import bff.model.OrderSummary
@@ -28,15 +29,14 @@ class BnplProvidersService {
     @Autowired
     private BnPlSdk bnPlSdk
 
-
-    List<CreditLineProvider> creditLineProvidersFor(OrderSummary os) {
+    List<CreditLineProvider> creditLineProvidersFor(OrderSummary os, Money total) {
         def supplier = os.supplier
         def accessToken = os.supplier.accessToken
         def country = JwtToken.countryFromString(accessToken)
 
         new BnplCreditLineProvidersProcess()
                 .nextCondition { enabledCountries.contains(country) }
-                .nextCondition { os.totalProducts.amount <= bnPlSdk.supportedLimitedAmount(country, accessToken).block().amount }
+                .nextCondition { total.amount <= bnPlSdk.supportedLimitedAmount(country, accessToken).block().amount }
                 .nextCondition { currentUserHasBnplWallet(accessToken) }
                 .nextCondition { supplierHasBnplWallet(supplier, accessToken) }
                 .successfullyValue([new CreditLineProvider(provider: CreditProvider.SUPERMONEY)])
@@ -68,6 +68,6 @@ class BnplProvidersService {
         log.debug("About to find BNPL wallet for supplier {}", supplier.id)
         def userId = JwtToken.userIdFromToken(accessToken)
 
-        walletSdk.getSupportedProvidersBetween(supplier.id.toString(), userId, accessToken).provides.any { it -> it == WalletProvider.@Companion.buyNowPayLater().value }
+        !walletSdk.getSupportedProvidersBetween([supplier.id.toString()], userId, WalletProvider.@Companion.buyNowPayLater(), accessToken).supplierProviders.isEmpty()
     }
 }

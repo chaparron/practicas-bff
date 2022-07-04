@@ -25,6 +25,6 @@ class OrderSummaryResolver implements GraphQLResolver<OrderSummary> {
     }
 
     List<CreditLineProvider> creditLineProviders(OrderSummary os) {
-        bnplProvidersService.creditLineProvidersFor(os)
+        bnplProvidersService.creditLineProvidersFor(os, totalProducts(os))
     }
 }
