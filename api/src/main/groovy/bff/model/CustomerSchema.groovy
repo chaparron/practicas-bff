@@ -561,3 +561,38 @@ class AddBranchOfficeInput{
     boolean marketingEnabled
     boolean acceptWhatsApp
 }
+
+class RetailerInformation {
+    RetailerInfoSummary retailerInfoSummary
+    List<RetailerInformationItems> retailerInfoItems
+}
+
+
+class RetailerInfoSummary {
+    Long totalVolume
+    Long totalValue
+    Long debit
+}
+
+class RetailerInformationItems {
+    TimestampOutput deliveryDate
+    Long invoiceNumber
+    Long totalValue
+    List<RetailDetail> detail
+}
+
+
+class RetailDetail {
+    String sku
+    Integer quantity
+}
+
+class InvoicesResponse extends PaginatedResponse<RetailerInformation> {
+    String accessToken
+    Long total
+    Long active
+}
+
+class FindMyInvoicesInput extends PaginatedInput {
+    String accessToken
+}

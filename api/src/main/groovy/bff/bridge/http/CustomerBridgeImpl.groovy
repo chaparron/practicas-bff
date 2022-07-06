@@ -6,6 +6,7 @@ import bff.bridge.CustomerBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.ConflictErrorException
 import bff.model.*
+import bnpl.sdk.model.InvoiceResponse
 import groovy.util.logging.Slf4j
 import io.ktor.client.features.ClientRequestException
 import org.apache.commons.lang3.NotImplementedException
@@ -712,6 +713,184 @@ class CustomerBridgeImpl implements CustomerBridge {
                 , User).body
         user.accessToken = accessToken
         return user
+    }
+
+    @Override
+    List<InvoicesResponse> findMyInvoices(FindMyInvoicesInput findMyInvoicesInput) {
+
+        def retailDetail1 = new RetailDetail(
+                sku: "SKU 4225-776-3234",
+                quantity: 10
+        )
+
+        def retailDetail2 = new RetailDetail(
+                sku: "SKU 4225-776-1201",
+                quantity: 5
+        )
+
+        List<RetailDetail> retailDetailComposedList = new ArrayList()
+        retailDetailComposedList.add(retailDetail1)
+        retailDetailComposedList.add(retailDetail2)
+
+        List<RetailDetail> retailDetailSimpleList = new ArrayList()
+        retailDetailSimpleList.add(retailDetail1)
+
+        List<RetailDetail> retailDetailSimpleList2 = new ArrayList()
+        retailDetailSimpleList2.add(retailDetail2)
+
+        def retailerInfoSummary1 = new RetailerInfoSummary(
+                totalVolume: 30000,
+                totalValue: 50000,
+                debit: 3000
+        )
+
+        def retailerInfoSummary2 = new RetailerInfoSummary(
+                totalVolume: 20000,
+                totalValue: 10000,
+                debit: 1500
+        )
+
+        def retailerInfoSummary3 = new RetailerInfoSummary(
+                totalVolume: 12000,
+                totalValue: 15000,
+                debit: 3000
+        )
+
+        def retailerInfoSummary4 = new RetailerInfoSummary(
+                totalVolume: 60000,
+                totalValue: 99000,
+                debit: 7000
+        )
+
+
+        def retailerInformationItems = new RetailerInformationItems(
+                deliveryDate: new TimestampOutput("2022-01-01"),
+                invoiceNumber: 100000,
+                totalValue: 50000,
+                detail: retailDetailComposedList
+        )
+
+        def retailerInformationItems2 = new RetailerInformationItems(
+                deliveryDate: new TimestampOutput("2022-01-02"),
+                invoiceNumber: 400000,
+                totalValue: 30000,
+                detail: retailDetailComposedList
+        )
+
+        def retailerInformationItems3 = new RetailerInformationItems(
+                deliveryDate: new TimestampOutput("2022-01-01"),
+                invoiceNumber: 100000,
+                totalValue: 50000,
+                detail: retailDetailSimpleList
+        )
+
+        def retailerInformationItems4 = new RetailerInformationItems(
+                deliveryDate: new TimestampOutput("2022-01-01"),
+                invoiceNumber: 500000,
+                totalValue: 20000,
+                detail: retailDetailSimpleList2
+        )
+
+        List<RetailerInformationItems> retailerInformationItemsList = new ArrayList()
+        retailerInformationItemsList.add(retailerInformationItems)
+        retailerInformationItemsList.add(retailerInformationItems2)
+
+        List<RetailerInformationItems> retailerInformationItemsList1 = new ArrayList()
+        retailerInformationItemsList1.add(retailerInformationItems3)
+
+        List<RetailerInformationItems> retailerInformationItemsList2 = new ArrayList()
+        retailerInformationItemsList2.add(retailerInformationItems4)
+
+
+
+        def retailerInformation1 = new RetailerInformation(
+                retailerInfoSummary: retailerInfoSummary1,
+                retailerInfoItems: retailerInformationItemsList
+        )
+
+        def retailerInformation2 = new RetailerInformation(
+                retailerInfoSummary: retailerInfoSummary2,
+                retailerInfoItems: retailerInformationItemsList
+        )
+
+        def retailerInformationS1 = new RetailerInformation(
+                retailerInfoSummary: retailerInfoSummary3,
+                retailerInfoItems: retailerInformationItemsList1
+        )
+
+        def retailerInformationS2 = new RetailerInformation(
+                retailerInfoSummary: retailerInfoSummary4,
+                retailerInfoItems: retailerInformationItemsList2
+        )
+
+
+        List<RetailerInformation> retailerInformationList = new ArrayList()
+        retailerInformationList.add(retailerInformation1)
+        retailerInformationList.add(retailerInformation2)
+
+        List<RetailerInformation> retailerInformationSimpleList = new ArrayList()
+        retailerInformationSimpleList.add(retailerInformationS1)
+        retailerInformationSimpleList.add(retailerInformationS2)
+
+        List<RetailerInformation> retailerInformationUniqueList = new ArrayList()
+        retailerInformationUniqueList.add(retailerInformationS1)
+
+        def invoicesComposedResponse = new InvoicesResponse(
+                accessToken: findMyInvoicesInput.accessToken,
+                total: 10,
+                active: 1,
+                headers: new Headers(
+                        page: 1,
+                        page_size: 5,
+                        total: 10,
+                        sort: new SortResult(direction: SortResult.Direction.ASC)
+                ),
+                content: retailerInformationList
+        )
+
+        def invoicesSimpleResponse = new InvoicesResponse(
+                accessToken: findMyInvoicesInput.accessToken,
+                total: 10,
+                active: 1,
+                headers: new Headers(
+                        page: 1,
+                        page_size: 5,
+                        total: 10,
+                        sort: new SortResult(direction: SortResult.Direction.ASC)
+                ),
+                content: retailerInformationSimpleList
+        )
+
+        def invoiceUniqueResponse = new InvoicesResponse(
+                accessToken: findMyInvoicesInput.accessToken,
+                total: 10,
+                active: 1,
+                headers: new Headers(
+                page: 1,
+                page_size: 5,
+                total: 10,
+                sort: new SortResult(direction: SortResult.Direction.ASC)
+        ),
+        content: retailerInformationUniqueList
+        )
+
+        List<InvoiceResponse> composedInvoiceDetailInfo = new ArrayList()
+        composedInvoiceDetailInfo.add(invoicesComposedResponse)
+
+        List<InvoiceResponse> simpleInvoiceDetailInfo = new ArrayList()
+        simpleInvoiceDetailInfo.add(invoicesSimpleResponse)
+
+        List<InvoiceResponse> uniqueInvoiceDetailInfo = new ArrayList()
+        uniqueInvoiceDetailInfo.add(invoiceUniqueResponse)
+
+        switch (findMyInvoicesInput.accessToken) {
+            case "COMPOSED_DETAIL":
+                return composedInvoiceDetailInfo
+            case "SINGLE_DETAIL":
+                return simpleInvoiceDetailInfo
+            default:
+                return uniqueInvoiceDetailInfo
+        }
     }
 
     private static String prepareAccessToken(String token) {

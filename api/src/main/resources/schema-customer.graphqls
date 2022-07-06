@@ -264,6 +264,15 @@ input AcceptTcInput {
   accessToken: String
 }
 
+
+input FindMyInvoicesInput {
+  accessToken: String!
+  from: String!
+  to: String!
+  page: Int
+  size: Int
+}
+
 type State {
   id: ID!
   name: String!
@@ -432,4 +441,34 @@ input GetBranchOfficeInput {
 
 type ProfileSection{
   id: ID!
+}
+
+type InvoicesResponse {
+  headers: Headers!
+  content: [RetailerInformation]!
+  total: Int!
+  active: Int!
+}
+
+type RetailerInformation {
+  retailerInfoSummary: RetailerInfoSummary
+  retailerInfoItems: [RetailerInformationItems]!
+}
+
+type RetailerInfoSummary {
+  totalVolume: Long!
+  totalValue: Long!
+  debit: Long!
+}
+
+type RetailerInformationItems {
+  deliveryDate: TimestampOutput!
+  invoiceNumber: Long!
+  totalValue: Long!
+  detail: [RetailerDetail]!
+}
+
+type RetailerDetail {
+  sku: String!
+  quantity: Int!
 }

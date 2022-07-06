@@ -82,4 +82,6 @@ interface CustomerBridge {
     Customer updateBranchOfficeProfile(UpdateBranchOfficeProfileInput input)
 
     User getUserById(String accessToken, Long userId)
+
+    List<InvoicesResponse> findMyInvoices(FindMyInvoicesInput findMyInvoicesInput)
 }

@@ -154,6 +154,8 @@ type Query {
   requestForExternalPayment(input: RequestForExternalPaymentInput!): RequestForExternalPaymentResult
 
   getCreditLines(input: CreditLinesRequestInput!): CreditLinesResult
+
+  findMyInvoices(input: FindMyInvoicesInput!): [InvoicesResponse]
 }
 
 type Mutation {

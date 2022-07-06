@@ -369,6 +369,10 @@ class Query implements GraphQLQueryResolver {
     Customer getBranchOffice(GetBranchOfficeInput getBranchOfficeInput) {
         customerBridge.getBranchOffice(getBranchOfficeInput.accessToken, getBranchOfficeInput.branchOfficeId)
     }
+
+    List<InvoicesResponse> findMyInvoices(FindMyInvoicesInput findMyInvoicesInput) {
+        customerBridge.findMyInvoices(findMyInvoicesInput)
+    }
 }
 
 
