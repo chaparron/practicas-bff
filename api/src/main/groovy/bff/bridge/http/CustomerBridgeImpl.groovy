@@ -802,27 +802,21 @@ class CustomerBridgeImpl implements CustomerBridge {
         retailerInformationItemsList2.add(retailerInformationItems4)
 
 
-
         def retailerInformation1 = new RetailerInformation(
-                retailerInfoSummary: retailerInfoSummary1,
                 retailerInfoItems: retailerInformationItemsList
         )
 
         def retailerInformation2 = new RetailerInformation(
-                retailerInfoSummary: retailerInfoSummary2,
                 retailerInfoItems: retailerInformationItemsList
         )
 
         def retailerInformationS1 = new RetailerInformation(
-                retailerInfoSummary: retailerInfoSummary3,
                 retailerInfoItems: retailerInformationItemsList1
         )
 
         def retailerInformationS2 = new RetailerInformation(
-                retailerInfoSummary: retailerInfoSummary4,
                 retailerInfoItems: retailerInformationItemsList2
         )
-
 
         List<RetailerInformation> retailerInformationList = new ArrayList()
         retailerInformationList.add(retailerInformation1)
@@ -845,7 +839,8 @@ class CustomerBridgeImpl implements CustomerBridge {
                         total: 10,
                         sort: new SortResult(direction: SortResult.Direction.ASC)
                 ),
-                content: retailerInformationList
+                content: retailerInformationList,
+                retailerInfoSummary: retailerInfoSummary1
         )
 
         def invoicesSimpleResponse = new InvoicesResponse(
@@ -858,7 +853,8 @@ class CustomerBridgeImpl implements CustomerBridge {
                         total: 10,
                         sort: new SortResult(direction: SortResult.Direction.ASC)
                 ),
-                content: retailerInformationSimpleList
+                content: retailerInformationSimpleList,
+                retailerInfoSummary: retailerInfoSummary4
         )
 
         def invoiceUniqueResponse = new InvoicesResponse(
@@ -870,24 +866,29 @@ class CustomerBridgeImpl implements CustomerBridge {
                 page_size: 5,
                 total: 10,
                 sort: new SortResult(direction: SortResult.Direction.ASC)
-        ),
-        content: retailerInformationUniqueList
+                ),
+                content: retailerInformationUniqueList,
+                retailerInfoSummary: retailerInfoSummary3
         )
 
-        List<InvoiceResponse> composedInvoiceDetailInfo = new ArrayList()
+        List<InvoicesResponse> composedInvoiceDetailInfo = new ArrayList()
         composedInvoiceDetailInfo.add(invoicesComposedResponse)
 
-        List<InvoiceResponse> simpleInvoiceDetailInfo = new ArrayList()
+        List<InvoicesResponse> simpleInvoiceDetailInfo = new ArrayList()
         simpleInvoiceDetailInfo.add(invoicesSimpleResponse)
 
-        List<InvoiceResponse> uniqueInvoiceDetailInfo = new ArrayList()
+        List<InvoicesResponse> uniqueInvoiceDetailInfo = new ArrayList()
         uniqueInvoiceDetailInfo.add(invoiceUniqueResponse)
+
+        List<InvoicesResponse> emptyInvoiceDetailInfo = new ArrayList()
 
         switch (findMyInvoicesInput.accessToken) {
             case "COMPOSED_DETAIL":
                 return composedInvoiceDetailInfo
             case "SINGLE_DETAIL":
                 return simpleInvoiceDetailInfo
+            case "EMPTY_DETAIL":
+                return emptyInvoiceDetailInfo
             default:
                 return uniqueInvoiceDetailInfo
         }

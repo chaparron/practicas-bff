@@ -563,7 +563,6 @@ class AddBranchOfficeInput{
 }
 
 class RetailerInformation {
-    RetailerInfoSummary retailerInfoSummary
     List<RetailerInformationItems> retailerInfoItems
 }
 
@@ -591,8 +590,11 @@ class InvoicesResponse extends PaginatedResponse<RetailerInformation> {
     String accessToken
     Long total
     Long active
+    RetailerInfoSummary retailerInfoSummary
 }
 
 class FindMyInvoicesInput extends PaginatedInput {
     String accessToken
+    Long fromEpochMillis
+    Long toEpochMillis
 }

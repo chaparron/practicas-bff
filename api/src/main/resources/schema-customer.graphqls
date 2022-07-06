@@ -267,8 +267,8 @@ input AcceptTcInput {
 
 input FindMyInvoicesInput {
   accessToken: String!
-  from: String!
-  to: String!
+  fromEpochMillis: Long!
+  toEpochMillis: Long!
   page: Int
   size: Int
 }
@@ -446,13 +446,13 @@ type ProfileSection{
 type InvoicesResponse {
   headers: Headers!
   content: [RetailerInformation]!
+  retailerInfoSummary: RetailerInfoSummary!
   total: Int!
   active: Int!
 }
 
 type RetailerInformation {
-  retailerInfoSummary: RetailerInfoSummary!
-  retailerInfoItems: [RetailerInformationItems]!
+  retailerInfoItems: [RetailerInformationItems!]!
 }
 
 type RetailerInfoSummary {
