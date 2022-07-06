@@ -569,8 +569,8 @@ class RetailerInformation {
 
 
 class RetailerInfoSummary {
-    Long totalVolume
-    Long totalValue
+    Long volume
+    Long value
     Long debit
 }
 

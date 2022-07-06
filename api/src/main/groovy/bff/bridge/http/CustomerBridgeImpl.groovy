@@ -739,26 +739,26 @@ class CustomerBridgeImpl implements CustomerBridge {
         retailDetailSimpleList2.add(retailDetail2)
 
         def retailerInfoSummary1 = new RetailerInfoSummary(
-                totalVolume: 30000,
-                totalValue: 50000,
+                volume: 30000,
+                value: 50000,
                 debit: 3000
         )
 
         def retailerInfoSummary2 = new RetailerInfoSummary(
-                totalVolume: 20000,
-                totalValue: 10000,
+                volume: 20000,
+                value: 10000,
                 debit: 1500
         )
 
         def retailerInfoSummary3 = new RetailerInfoSummary(
-                totalVolume: 12000,
-                totalValue: 15000,
+                volume: 12000,
+                value: 15000,
                 debit: 3000
         )
 
         def retailerInfoSummary4 = new RetailerInfoSummary(
-                totalVolume: 60000,
-                totalValue: 99000,
+                volume: 60000,
+                value: 99000,
                 debit: 7000
         )
 

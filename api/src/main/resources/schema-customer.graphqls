@@ -456,8 +456,8 @@ type RetailerInformation {
 }
 
 type RetailerInfoSummary {
-  totalVolume: Long!
-  totalValue: Long!
+  volume: Long!
+  value: Long!
   debit: Long!
 }
 
