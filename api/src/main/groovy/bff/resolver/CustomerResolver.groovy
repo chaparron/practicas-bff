@@ -35,6 +35,7 @@ class CustomerResolver implements GraphQLResolver<Customer> {
         List<ProfileSection> ps = new ArrayList<ProfileSection>()
         ps.push(new ProfileSection(id: "ORDERS"))
         ps.push(new ProfileSection(id: "SUGGESTED_ORDER"))
+        ps.push(new ProfileSection(id: "INVOICES"))
         if (customer.country_id == 'in'){
             ps.push(new ProfileSection(id: "CREDIT_LINES"))
         }
