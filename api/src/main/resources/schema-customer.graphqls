@@ -451,7 +451,7 @@ type InvoicesResponse {
 }
 
 type RetailerInformation {
-  retailerInfoSummary: RetailerInfoSummary
+  retailerInfoSummary: RetailerInfoSummary!
   retailerInfoItems: [RetailerInformationItems]!
 }
 
