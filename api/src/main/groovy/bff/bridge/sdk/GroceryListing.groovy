@@ -416,6 +416,7 @@ class GroceryListing {
         Optional<Integer> maybeDiscount
         Optional<String> maybeCommercialPromotion
         Optional<Boolean> maybePurchased
+        Optional<String> maybeCollection
 
         ProductQueryRequestFilteringBuilder(SearchInput input) {
             this(
@@ -429,7 +430,8 @@ class GroceryListing {
                     input.promoted,
                     input.discount,
                     input.commercialPromotion,
-                    input.purchased
+                    input.purchased,
+                    input.collection
             )
         }
 
@@ -445,7 +447,8 @@ class GroceryListing {
                     input.promoted,
                     input.discount,
                     input.commercialPromotion,
-                    null
+                    null,
+                    input.collection
             )
         }
 
@@ -459,7 +462,8 @@ class GroceryListing {
                                                     Boolean promoted,
                                                     Integer discount,
                                                     String commercialPromotion,
-                                                    Boolean purchased) {
+                                                    Boolean purchased,
+                                                    String collection) {
             this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }
             this.maybeCategory = ofNullable(category)
             this.maybeBrand = ofNullable(brand)
@@ -471,6 +475,7 @@ class GroceryListing {
             this.maybeDiscount = ofNullable(discount)
             this.maybeCommercialPromotion = ofNullable(commercialPromotion)
             this.maybePurchased = ofNullable(purchased)
+            this.maybeCollection = ofNullable(collection).filter { !it.isEmpty() }
         }
 
         ProductQueryRequest apply(ProductQueryRequest request) {
@@ -484,7 +489,8 @@ class GroceryListing {
                             favouritesFiltering(),
                             discountFiltering(),
                             commercialPromotionFiltering(),
-                            purchasedFiltering()
+                            purchasedFiltering(),
+                            collectionFiltering()
                     ] + featuresFiltering()
             )
                     .inject(request, { acc, filter -> filter(acc) })
@@ -613,6 +619,16 @@ class GroceryListing {
                     .orElse(identity)
         }
 
+        private Closure<ProductQueryRequest> collectionFiltering() {
+            maybeCollection
+                    .map { collection ->
+                        { ProductQueryRequest r ->
+                            r.filteredByCollection(collection) as ProductQueryRequest
+                        }
+                    }
+                    .orElse(identity)
+        }
+
     }
 
     private class ProductQueryRequestSortingBuilder implements ProductQueryRequestBuilder {
@@ -622,25 +638,28 @@ class GroceryListing {
         Boolean maybeKeyword
         Boolean maybeSimilarTo
         Boolean maybePromoted
+        Boolean maybeCollection
 
         ProductQueryRequestSortingBuilder(SearchInput input) {
-            this(input.sort, input.sortDirection, input.keyword, input.similarTo, input.promoted)
+            this(input.sort, input.sortDirection, input.keyword, input.similarTo, input.promoted, input.collection)
         }
 
         ProductQueryRequestSortingBuilder(PreviewSearchInput input) {
-            this(input.sort, input.sortDirection, input.keyword, input.similarTo, input.promoted)
+            this(input.sort, input.sortDirection, input.keyword, input.similarTo, input.promoted, input.collection)
         }
 
         private ProductQueryRequestSortingBuilder(String sort,
                                                   SortInput direction,
                                                   String keyword,
                                                   Integer similarTo,
-                                                  Boolean promoted) {
+                                                  Boolean promoted,
+                                                  String collection) {
             this.maybeSort = ofNullable(sort).filter { !it.isEmpty() }
             this.maybeDirection = ofNullable(direction)
             this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }.present
             this.maybeSimilarTo = ofNullable(similarTo).present
             this.maybePromoted = ofNullable(promoted).filter { it }.present
+            this.maybeCollection = ofNullable(collection).filter { !it.isEmpty() }.present
         }
 
         ProductQueryRequest apply(ProductQueryRequest request) {
@@ -648,6 +667,7 @@ class GroceryListing {
                 case "DEFAULT":
                     if (maybeKeyword || maybeSimilarTo) sortedByRelevance(request)
                     else if (maybePromoted) sortedByLastAvailabilityUpdate(request)
+                    else if (maybeCollection) request
                     else sortedByTotalSalesInLast15Days(request)
                     break
                 case "TITLE":
@@ -1526,7 +1546,7 @@ class GroceryListing {
                                         selection
                                 ).orElse(null)
                             }
-                            .sort {it.commercialPromotions.freeProduct.isPresent() ? -1 : 1 }
+                            .sort { it.commercialPromotions.freeProduct.isPresent() ? -1 : 1 }
             // then we list those with no applied commercial promotion at all
             // sorting first those with available commercial promotion
             def unpromoted =

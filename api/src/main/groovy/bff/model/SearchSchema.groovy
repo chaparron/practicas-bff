@@ -158,6 +158,7 @@ class PreviewSearchInput {
     Boolean promoted
     Integer discount
     String commercialPromotion
+    String collection
 }
 
 @ToString(excludes = ["accessToken"])
@@ -180,6 +181,7 @@ class SearchInput {
     Integer discount
     String commercialPromotion
     Boolean purchased
+    String collection
 }
 
 @ToString(excludes = ["accessToken"])

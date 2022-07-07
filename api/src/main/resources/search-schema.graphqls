@@ -17,6 +17,7 @@ input SearchInput {
   discount: Int
   commercialPromotion: String
   purchased: Boolean
+  collection: String
 }
 
 input SearchScrollInput {
@@ -42,6 +43,7 @@ input PreviewSearchInput {
   promoted: Boolean
   discount: Int
   commercialPromotion: String
+  collection: String
 }
 
 input PreviewSearchScrollInput {
