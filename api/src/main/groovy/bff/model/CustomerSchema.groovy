@@ -563,7 +563,7 @@ class AddBranchOfficeInput{
 }
 
 class RetailerInformation {
-    List<RetailerInformationItems> retailerInfoItems
+    RetailerInformationItems retailerInfoItems
 }
 
 

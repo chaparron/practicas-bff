@@ -744,12 +744,6 @@ class CustomerBridgeImpl implements CustomerBridge {
                 debit: 3000
         )
 
-        def retailerInfoSummary2 = new RetailerInfoSummary(
-                volume: 20000,
-                value: 10000,
-                debit: 1500
-        )
-
         def retailerInfoSummary3 = new RetailerInfoSummary(
                 volume: 12000,
                 value: 15000,
@@ -812,61 +806,42 @@ class CustomerBridgeImpl implements CustomerBridge {
                 detail: retailDetailSimpleList2
         )
 
-        def retailerInformationItems8 = new RetailerInformationItems(
-                deliveryDate: new TimestampOutput("2022-01-01"),
-                invoiceNumber: 500000,
-                totalValue: 20000,
-                detail: retailDetailSimpleList2
-        )
-
-        def retailerInformationItems9 = new RetailerInformationItems(
-                deliveryDate: new TimestampOutput("2022-01-01"),
-                invoiceNumber: 500000,
-                totalValue: 20000,
-                detail: retailDetailSimpleList2
-        )
-
-
-        List<RetailerInformationItems> retailerInformationItemsList = new ArrayList()
-        retailerInformationItemsList.add(retailerInformationItems)
-        retailerInformationItemsList.add(retailerInformationItems2)
-        retailerInformationItemsList.add(retailerInformationItems3)
-        retailerInformationItemsList.add(retailerInformationItems4)
-        retailerInformationItemsList.add(retailerInformationItems5)
-        retailerInformationItemsList.add(retailerInformationItems6)
-        retailerInformationItemsList.add(retailerInformationItems7)
-        retailerInformationItemsList.add(retailerInformationItems8)
-        retailerInformationItemsList.add(retailerInformationItems9)
-
-        List<RetailerInformationItems> retailerInformationItemsList1 = new ArrayList()
-        retailerInformationItemsList1.add(retailerInformationItems3)
-        retailerInformationItemsList1.add(retailerInformationItems4)
-        retailerInformationItemsList1.add(retailerInformationItems5)
-
-        List<RetailerInformationItems> retailerInformationItemsList2 = new ArrayList()
-        retailerInformationItemsList2.add(retailerInformationItems4)
-        retailerInformationItemsList2.add(retailerInformationItems5)
-
-
         def retailerInformation1 = new RetailerInformation(
-                retailerInfoItems: retailerInformationItemsList
+                retailerInfoItems: retailerInformationItems
         )
 
         def retailerInformation2 = new RetailerInformation(
-                retailerInfoItems: retailerInformationItemsList
+                retailerInfoItems: retailerInformationItems2
         )
 
         def retailerInformationS1 = new RetailerInformation(
-                retailerInfoItems: retailerInformationItemsList1
+                retailerInfoItems: retailerInformationItems3
         )
 
         def retailerInformationS2 = new RetailerInformation(
-                retailerInfoItems: retailerInformationItemsList2
+                retailerInfoItems: retailerInformationItems4
+        )
+
+        def retailerInformationS3 = new RetailerInformation(
+                retailerInfoItems: retailerInformationItems5
+        )
+
+        def retailerInformationS4 = new RetailerInformation(
+                retailerInfoItems: retailerInformationItems6
+        )
+
+        def retailerInformationS5 = new RetailerInformation(
+                retailerInfoItems: retailerInformationItems7
         )
 
         List<RetailerInformation> retailerInformationList = new ArrayList()
         retailerInformationList.add(retailerInformation1)
         retailerInformationList.add(retailerInformation2)
+        retailerInformationList.add(retailerInformationS1)
+        retailerInformationList.add(retailerInformationS2)
+        retailerInformationList.add(retailerInformationS3)
+        retailerInformationList.add(retailerInformationS4)
+        retailerInformationList.add(retailerInformationS5)
 
         List<RetailerInformation> retailerInformationSimpleList = new ArrayList()
         retailerInformationSimpleList.add(retailerInformationS1)
