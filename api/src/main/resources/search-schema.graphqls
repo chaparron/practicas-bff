@@ -55,6 +55,7 @@ input SuggestInput {
   keyword: NonEmptyString!,
   languageTag: LanguageTag
   favourites: Boolean
+  category: Int
 }
 
 input PreviewSuggestInput {
@@ -64,6 +65,7 @@ input PreviewSuggestInput {
   keyword: NonEmptyString!,
   languageTag: LanguageTag
   favourites: Boolean
+  category: Int
 }
 
 input MostSearchedTermsInput {

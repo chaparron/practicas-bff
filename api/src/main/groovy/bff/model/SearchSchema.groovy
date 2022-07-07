@@ -203,6 +203,7 @@ class SuggestInput {
     String keyword
     LanguageTag languageTag
     Boolean favourites
+    Integer category
     Optional<Integer> maybeProducts = empty()
     Optional<Integer> maybeBrands = empty()
     Optional<Integer> maybeCategories = empty()
@@ -238,6 +239,7 @@ class PreviewSuggestInput {
     BigDecimal lng
     String keyword
     LanguageTag languageTag
+    Integer category
     Optional<Integer> maybeProducts = empty()
     Optional<Integer> maybeBrands = empty()
     Optional<Integer> maybeCategories = empty()

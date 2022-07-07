@@ -737,6 +737,7 @@ class GroceryListing {
         Optional<Integer> maybeCategories
         Optional<Integer> maybeSuppliers
         Optional<Boolean> maybeFavourites
+        Optional<Integer> maybeCategory
 
         SuggestionQueryRequestBuilder(SuggestInput input) {
             this(
@@ -744,7 +745,8 @@ class GroceryListing {
                     input.maybeBrands,
                     input.maybeCategories,
                     input.maybeSuppliers,
-                    ofNullable(input.favourites)
+                    input.favourites,
+                    input.category
             )
         }
 
@@ -753,7 +755,10 @@ class GroceryListing {
                     input.maybeProducts,
                     input.maybeBrands,
                     input.maybeCategories,
-                    input.maybeSuppliers
+                    input.maybeSuppliers,
+                    null,
+                    input.category
+
             )
         }
 
@@ -761,12 +766,14 @@ class GroceryListing {
                                               Optional<Integer> maybeBrands,
                                               Optional<Integer> maybeCategories,
                                               Optional<Integer> maybeSuppliers,
-                                              Optional<Boolean> maybeFavourites = empty()) {
+                                              Boolean favourites,
+                                              Integer category) {
             this.maybeProducts = maybeProducts
             this.maybeBrands = maybeBrands
             this.maybeCategories = maybeCategories
             this.maybeSuppliers = maybeSuppliers
-            this.maybeFavourites = maybeFavourites
+            this.maybeFavourites = ofNullable(favourites)
+            this.maybeCategory = ofNullable(category)
         }
 
         SuggestionQueryRequest apply(wabi2b.grocery.listing.sdk.SuggestionQueryRequestBuilder request) {
@@ -786,6 +793,11 @@ class GroceryListing {
                     maybeFavourites
                             .filter { it }
                             .map { { b -> b.favourites() } }
+                            .orElse(identity),
+                    maybeCategory
+                            .map { category ->
+                                { b -> b.filteredByCategory(category.toString(), asScala([] as List<String>).toSeq()) }
+                            }
                             .orElse(identity)
             ].inject(request, { acc, filter -> filter(acc) }) as SuggestionQueryRequest
         }
