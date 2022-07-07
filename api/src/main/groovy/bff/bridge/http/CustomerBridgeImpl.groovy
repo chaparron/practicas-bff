@@ -791,15 +791,61 @@ class CustomerBridgeImpl implements CustomerBridge {
                 detail: retailDetailSimpleList2
         )
 
+        def retailerInformationItems5 = new RetailerInformationItems(
+                deliveryDate: new TimestampOutput("2022-01-01"),
+                invoiceNumber: 500000,
+                totalValue: 20000,
+                detail: retailDetailSimpleList2
+        )
+
+        def retailerInformationItems6 = new RetailerInformationItems(
+                deliveryDate: new TimestampOutput("2022-01-01"),
+                invoiceNumber: 500000,
+                totalValue: 20000,
+                detail: retailDetailSimpleList2
+        )
+
+        def retailerInformationItems7 = new RetailerInformationItems(
+                deliveryDate: new TimestampOutput("2022-01-01"),
+                invoiceNumber: 500000,
+                totalValue: 20000,
+                detail: retailDetailSimpleList2
+        )
+
+        def retailerInformationItems8 = new RetailerInformationItems(
+                deliveryDate: new TimestampOutput("2022-01-01"),
+                invoiceNumber: 500000,
+                totalValue: 20000,
+                detail: retailDetailSimpleList2
+        )
+
+        def retailerInformationItems9 = new RetailerInformationItems(
+                deliveryDate: new TimestampOutput("2022-01-01"),
+                invoiceNumber: 500000,
+                totalValue: 20000,
+                detail: retailDetailSimpleList2
+        )
+
+
         List<RetailerInformationItems> retailerInformationItemsList = new ArrayList()
         retailerInformationItemsList.add(retailerInformationItems)
         retailerInformationItemsList.add(retailerInformationItems2)
+        retailerInformationItemsList.add(retailerInformationItems3)
+        retailerInformationItemsList.add(retailerInformationItems4)
+        retailerInformationItemsList.add(retailerInformationItems5)
+        retailerInformationItemsList.add(retailerInformationItems6)
+        retailerInformationItemsList.add(retailerInformationItems7)
+        retailerInformationItemsList.add(retailerInformationItems8)
+        retailerInformationItemsList.add(retailerInformationItems9)
 
         List<RetailerInformationItems> retailerInformationItemsList1 = new ArrayList()
         retailerInformationItemsList1.add(retailerInformationItems3)
+        retailerInformationItemsList1.add(retailerInformationItems4)
+        retailerInformationItemsList1.add(retailerInformationItems5)
 
         List<RetailerInformationItems> retailerInformationItemsList2 = new ArrayList()
         retailerInformationItemsList2.add(retailerInformationItems4)
+        retailerInformationItemsList2.add(retailerInformationItems5)
 
 
         def retailerInformation1 = new RetailerInformation(
