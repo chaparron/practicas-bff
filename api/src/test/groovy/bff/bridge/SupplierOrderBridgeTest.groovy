@@ -22,6 +22,9 @@ import org.springframework.http.RequestEntity
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
+import static org.mockito.Mockito.verify
+import static org.mockito.Mockito.verifyNoMoreInteractions
+
 @RunWith(MockitoJUnitRunner.class)
 class SupplierOrderBridgeTest extends SupplierOrderBridgeTestData {
 
@@ -143,16 +146,18 @@ class SupplierOrderBridgeTest extends SupplierOrderBridgeTestData {
                 .thenReturn(new ResponseEntity<Supplier>(
                         new JsonSlurper().parseText("{\"id\":$expected}") as Supplier, HttpStatus.OK
                 ))
+        def anotherToken = UUID.randomUUID().toString()
 
         assert supplierOrderBridge.getSupplierBySupplierOrderId(JWT_AR, 1111).id == expected
         assert supplierOrderBridge.getSupplierBySupplierOrderId(JWT_AR, 1111).id == expected
+        assert supplierOrderBridge.getSupplierBySupplierOrderId(anotherToken, 1111).id == expected
 
-        Mockito
-                .verify(http, Mockito.times(1))
+        verify(http)
                 .<Supplier> exchange(
                         Mockito.any(RequestEntity) as RequestEntity,
                         Mockito.any(Class) as Class<Supplier>
                 )
+        verifyNoMoreInteractions(http)
     }
 
     @Test
@@ -187,15 +192,15 @@ class SupplierOrderBridgeTest extends SupplierOrderBridgeTestData {
                 .thenReturn(new ResponseEntity<Order>(
                         new JsonSlurper().parseText("{\"id\":$expected}") as Order, HttpStatus.OK
                 ))
-
+        def anotherToken = UUID.randomUUID().toString()
         assert supplierOrderBridge.getOrderBySupplierOrderId(JWT_AR, 772).id == expected
-        assert supplierOrderBridge.getOrderBySupplierOrderId(JWT_AR, 772).id == expected
+        assert supplierOrderBridge.getOrderBySupplierOrderId(anotherToken, 772).id == expected
 
-        Mockito
-                .verify(http, Mockito.times(1))
+        verify(http)
                 .<Order> exchange(
                         Mockito.any(RequestEntity) as RequestEntity,
                         Mockito.any(Class) as Class<Order>
                 )
+        verifyNoMoreInteractions(http)
     }
 }

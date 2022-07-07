@@ -3,10 +3,8 @@ package bff.bridge.http
 import bff.bridge.SupplierOrderBridge
 import bff.configuration.CacheConfigurationProperties
 import bff.model.*
-import com.github.benmanes.caffeine.cache.CacheLoader
+import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.github.benmanes.caffeine.cache.LoadingCache
-import groovy.transform.EqualsAndHashCode
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders
@@ -27,42 +25,27 @@ class SupplierOrderBridgeImpl implements SupplierOrderBridge {
     @Autowired
     private CacheConfigurationProperties cacheConfiguration
 
-    private LoadingCache<SupplierOrderCacheKey, Supplier> suppliersCache
-    private LoadingCache<SupplierOrderCacheKey, Order> ordersCache
+    private Cache<Long, Supplier> suppliersCache
+    private Cache<Long, Order> ordersCache
 
     @PostConstruct
     void init() {
         suppliersCache = Caffeine
                 .newBuilder()
                 .expireAfterWrite(cacheConfiguration.supplierOrders, TimeUnit.MINUTES)
-                .build(
-                        new CacheLoader<SupplierOrderCacheKey, Supplier>() {
-                            Supplier load(SupplierOrderCacheKey key) {
-                                getUnCachedSupplierBySupplierOrderId(key.accessToken, key.supplierOrderId)
-                            }
-                        }
-                )
+                .build()
 
         ordersCache = Caffeine
                 .newBuilder()
                 .expireAfterWrite(cacheConfiguration.supplierOrders, TimeUnit.MINUTES)
-                .build(
-                        new CacheLoader<SupplierOrderCacheKey, Order>() {
-                            Order load(SupplierOrderCacheKey key) {
-                                getUnCachedOrderBySupplierOrderId(key.accessToken, key.supplierOrderId)
-                            }
-                        }
-                )
+                .build()
     }
 
     @Override
     Supplier getSupplierBySupplierOrderId(String accessToken, Long supplierOrderId) {
-        suppliersCache.get(
-                new SupplierOrderCacheKey(
-                        accessToken: accessToken,
-                        supplierOrderId: supplierOrderId
-                )
-        )
+        suppliersCache.get(supplierOrderId){
+            getUnCachedSupplierBySupplierOrderId(accessToken, it)
+        }
     }
 
     @Override
@@ -113,12 +96,9 @@ class SupplierOrderBridgeImpl implements SupplierOrderBridge {
 
     @Override
     Order getOrderBySupplierOrderId(String accessToken, Long supplierOrderId) {
-        ordersCache.get(
-                new SupplierOrderCacheKey(
-                        accessToken: accessToken,
-                        supplierOrderId: supplierOrderId
-                )
-        )
+        ordersCache.get(supplierOrderId){
+            getUnCachedOrderBySupplierOrderId(accessToken, it)
+        }
     }
 
     @Override
@@ -169,7 +149,7 @@ class SupplierOrderBridgeImpl implements SupplierOrderBridge {
                 , new ParameterizedTypeReference<List<AppliedPromotionResponse>>() {}).body
     }
 
-    Supplier getUnCachedSupplierBySupplierOrderId(String accessToken, Long supplierOrderId) {
+    private Supplier getUnCachedSupplierBySupplierOrderId(String accessToken, Long supplierOrderId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplierOrder/${supplierOrderId}/supplier"))
                 .toUriString().toURI()
         def r = http.exchange(
@@ -183,7 +163,7 @@ class SupplierOrderBridgeImpl implements SupplierOrderBridge {
         r
     }
 
-    Order getUnCachedOrderBySupplierOrderId(String accessToken, Long supplierOrderId) {
+    private Order getUnCachedOrderBySupplierOrderId(String accessToken, Long supplierOrderId) {
         def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/supplierOrders/${supplierOrderId}/order"))
                 .toUriString().toURI()
 
@@ -198,10 +178,4 @@ class SupplierOrderBridgeImpl implements SupplierOrderBridge {
         r
 
     }
-}
-
-@EqualsAndHashCode
-class SupplierOrderCacheKey {
-    String accessToken
-    Long supplierOrderId
 }
