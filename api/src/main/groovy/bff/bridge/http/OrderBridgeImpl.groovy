@@ -16,7 +16,6 @@ import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
 
-
 @Slf4j
 class OrderBridgeImpl implements OrderBridge {
 
@@ -407,7 +406,6 @@ class OrderBridgeImpl implements OrderBridge {
         validateOrderResponse
     }
 }
-
 
 
 

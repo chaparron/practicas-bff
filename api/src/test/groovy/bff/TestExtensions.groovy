@@ -3,14 +3,21 @@ package bff
 import bff.model.InvoiceInput
 import bff.model.LoanPaymentRequestInput
 import bff.model.Money
+import bff.model.Order
+import bff.model.OrderStatus
 import bff.model.OrderSummary
 import bff.model.Summary
 import bff.model.Supplier
+import bff.model.SupplierOrder
 import bnpl.sdk.model.InvoiceResponse
 import bnpl.sdk.model.LoanResponse
 import bnpl.sdk.model.MoneyResponse
 import bnpl.sdk.model.PaymentResponse
+import bnpl.sdk.model.SupportedMinimumAmountResponse
 import bnpl.sdk.model.requests.PaymentRequest
+import wabi2b.payments.common.model.request.WalletProvider
+import wabi2b.payments.common.model.response.SupplierWalletResponse
+import wabi2b.payments.common.model.response.WalletResponse
 
 class TestExtensions {
     static String randomString() {
@@ -49,4 +56,21 @@ class TestExtensions {
                 supplier: supplier,
                 summary: summary)
     }
+
+    static WalletResponse anyWalletResponse(String userId, String walletId, WalletProvider walletProvider) {
+        new WalletResponse(userId, walletId, walletProvider.value)
+    }
+
+    static SupplierWalletResponse anySupplierWalletResponse(String supplierId, String walletId, WalletProvider bnplProvider) {
+        new SupplierWalletResponse(supplierId, walletId, bnplProvider.value)
+    }
+
+    static SupportedMinimumAmountResponse anySupportedMinimumAmountResponse(String country) {
+        new SupportedMinimumAmountResponse(BigDecimal.TEN, country)
+    }
+
+    static Order anyOrder(OrderStatus status, List<SupplierOrder> supplierOrders) {
+        new Order(id: 007, status: status, supplierOrders: supplierOrders)
+    }
+
 }

@@ -67,5 +67,4 @@ class OrderResolver implements GraphQLResolver<Order> {
     Money totalMoney(Order order) {
         moneyService.getMoney(order.accessToken, order.total_money)
     }
-
 }
