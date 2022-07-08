@@ -195,7 +195,7 @@ class Cms {
         Optional<String> link(CmsModule module) {
             def contentType = module.contentType()
             switch (contentType) {
-                case { it instanceof ProductShowCase }:
+                case { (it instanceof ProductShowCase) && (it as ProductShowCase).allowShowAll() }:
                     def request = (contentType as ProductShowCase).request()
                     def filteredByTerm = { UriBuilder b ->
                         request.filtering().byTerm()
