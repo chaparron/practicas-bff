@@ -2,6 +2,7 @@ package bff.service.bnpl
 
 import bff.JwtToken
 import bff.bridge.BnplBridge
+import bff.bridge.OrderBridge
 import bff.bridge.SupplierOrderBridge
 import bff.bridge.WalletBridge
 import bff.model.*
@@ -21,6 +22,8 @@ class BnplProvidersService {
 
     @Autowired
     private SupplierOrderBridge supplierOrderBridge
+    @Autowired
+    private OrderBridge orderBridge
 
     @Value('${bnpl.enabled.countries:[]}')
     private List<String> enabledCountries
@@ -48,7 +51,8 @@ class BnplProvidersService {
 
     List<CreditLineProvider> creditLineProvidersFor(SupplierOrder supplierOrder) {
         def order = supplierOrderBridge.getOrderBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
-        def suppliers = order.supplierOrders.stream().map { supplierOrderBridge.getSupplierBySupplierOrderId(it.accessToken, it.id) }.collect(Collectors.toList())
+        def supplierOrders = orderBridge.getSupplierOrders(supplierOrder.accessToken, order.id)
+        def suppliers = supplierOrders.collect { supplierOrderBridge.getSupplierBySupplierOrderId(it.accessToken, it.id) }
         def accessToken = supplierOrder.accessToken
         def country = JwtToken.countryFromString(accessToken)
 

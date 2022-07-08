@@ -2,6 +2,7 @@ package bff.service.bnpl
 
 import bff.TestExtensions
 import bff.bridge.BnplBridge
+import bff.bridge.OrderBridge
 import bff.bridge.SupplierOrderBridge
 import bff.bridge.WalletBridge
 import bff.model.*
@@ -37,7 +38,14 @@ class BnplProvidersServiceTest {
     private final def walletBridge = mock(WalletBridge)
     private final def bnplBridge = mock(BnplBridge)
     private final supplierOrderBridge = mock(SupplierOrderBridge)
-    private def sut = new BnplProvidersService(supplierOrderBridge: supplierOrderBridge, enabledCountries: enabledCountries, walletBridge: walletBridge, bnplBridge: bnplBridge)
+    private final orderBridge = mock(OrderBridge)
+    private def sut = new BnplProvidersService(
+            supplierOrderBridge: supplierOrderBridge,
+            enabledCountries: enabledCountries,
+            walletBridge: walletBridge,
+            bnplBridge: bnplBridge,
+            orderBridge: orderBridge
+    )
 
     @Test
     void 'bnpl provider is null for not enabled user country by supplier'() {
@@ -174,6 +182,7 @@ class BnplProvidersServiceTest {
                 [new SupplierOrder(id: 1L, order: TestExtensions.anyOrder(PENDING, emptyList()), accessToken: indianToken, payment_pending: ONE)]), accessToken: indianToken, payment_pending: ONE)
         when(supplierOrderBridge.getOrderBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplierOrder.order)
         when(supplierOrderBridge.getSupplierBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplier)
+        when(orderBridge.getSupplierOrders(indianToken, supplierOrder.order.id)).thenReturn(singletonList(supplierOrder))
         when(bnplBridge.supportedMinimumAmount(Mockito.any(), Mockito.any())).thenReturn(new SupportedMinimumAmountResponse(supplierOrder.payment_pending, "in"))
 
         assert sut.creditLineProvidersFor(supplierOrder) == [new CreditLineProvider(provider: CreditProvider.SUPERMONEY)]
@@ -192,6 +201,7 @@ class BnplProvidersServiceTest {
                 [new SupplierOrder(id: 1L, order: TestExtensions.anyOrder(PENDING, emptyList()), accessToken: indianToken, payment_pending: ONE)]), accessToken: indianToken, payment_pending: ONE)
         when(supplierOrderBridge.getOrderBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplierOrder.order)
         when(supplierOrderBridge.getSupplierBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplier)
+        when(orderBridge.getSupplierOrders(indianToken, supplierOrder.order.id)).thenReturn(singletonList(supplierOrder))
         when(bnplBridge.supportedMinimumAmount(Mockito.any(), Mockito.any())).thenReturn(new SupportedMinimumAmountResponse(supplierOrder.payment_pending, "in"))
 
         assert sut.creditLineProvidersFor(supplierOrder) == null
@@ -211,6 +221,7 @@ class BnplProvidersServiceTest {
                 accessToken: indianToken, payment_pending: ONE)
         when(supplierOrderBridge.getOrderBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplierOrder.order)
         when(supplierOrderBridge.getSupplierBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplier)
+        when(orderBridge.getSupplierOrders(indianToken, supplierOrder.order.id)).thenReturn(singletonList(supplierOrder))
         when(bnplBridge.supportedMinimumAmount(Mockito.any(), Mockito.any())).thenReturn(new SupportedMinimumAmountResponse(supplierOrder.payment_pending, "in"))
 
         assert sut.creditLineProvidersFor(supplierOrder) ==
