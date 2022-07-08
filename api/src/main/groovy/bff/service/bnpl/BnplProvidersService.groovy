@@ -47,13 +47,14 @@ class BnplProvidersService {
     }
 
     List<CreditLineProvider> creditLineProvidersFor(SupplierOrder supplierOrder) {
-        def suppliers = supplierOrder.order.supplierOrders.stream().map { supplierOrderBridge.getSupplierBySupplierOrderId(it.accessToken, it.id) }.collect(Collectors.toList())
+        def order = supplierOrderBridge.getOrderBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
+        def suppliers = order.supplierOrders.stream().map { supplierOrderBridge.getSupplierBySupplierOrderId(it.accessToken, it.id) }.collect(Collectors.toList())
         def accessToken = supplierOrder.accessToken
         def country = JwtToken.countryFromString(accessToken)
 
         new BnplCreditLineProvidersProcess()
                 .nextCondition { enabledCountries.contains(country) }
-                .nextCondition { [OrderStatus.PENDING, OrderStatus.IN_PROGRESS].contains(supplierOrder.order.status) }
+                .nextCondition { [OrderStatus.PENDING, OrderStatus.IN_PROGRESS].contains(order.status) }
                 .nextCondition { supplierOrder.payment_pending >= bnplBridge.supportedMinimumAmount(country, accessToken).amount }
                 .nextCondition { currentUserHasBnplWallet(accessToken) }
                 .nextCondition { supplierHasBnplWallet(suppliers, accessToken) }
