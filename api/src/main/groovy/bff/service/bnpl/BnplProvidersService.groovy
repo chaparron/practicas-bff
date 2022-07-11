@@ -67,7 +67,7 @@ class BnplProvidersService {
                 .execute()
     }
 
-    private boolean currentUserHasBnplWallet(String accessToken) {
+    boolean currentUserHasBnplWallet(String accessToken) {
         def userId = JwtToken.userIdFromToken(accessToken)
         log.debug("About to find BNPL wallet for user {}", userId)
 

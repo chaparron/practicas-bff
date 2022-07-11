@@ -4,6 +4,7 @@ import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.ThirdPartyBridge
 import bff.model.*
+import bff.service.bnpl.BnplProvidersService
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -20,7 +21,8 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     ThirdPartyBridge thirdPartyBridge
     @Autowired
     FeatureFlagsSdk featureFlagsSdk
-
+    @Autowired
+    BnplProvidersService bnplProvidersService
 
     List<VerificationDocument> verificationDocuments(Customer customer) {
         customer.verificationDocuments ?: customerBridge.findVerificationDocs(customer.accessToken)
@@ -38,7 +40,9 @@ class CustomerResolver implements GraphQLResolver<Customer> {
         // TODO: Check country_id: 'in'
         ps.push(new ProfileSection(id: "INVOICES")) // MOCK Invoices
         if (customer.country_id == 'in'){
-            ps.push(new ProfileSection(id: "CREDIT_LINES"))
+            if (bnplProvidersService.currentUserHasBnplWallet(customer.accessToken)){
+                ps.push(new ProfileSection(id: "CREDIT_LINES"))
+            }
         }
         ps.push(new ProfileSection(id: "STORE_INFORMATION"))
         ps.push(new ProfileSection(id: "PERSONAL_INFORMATION"))

@@ -1,19 +1,7 @@
 package bff
 
-import bff.model.InvoiceInput
-import bff.model.LoanPaymentRequestInput
-import bff.model.Money
-import bff.model.Order
-import bff.model.OrderStatus
-import bff.model.OrderSummary
-import bff.model.Summary
-import bff.model.Supplier
-import bff.model.SupplierOrder
-import bnpl.sdk.model.InvoiceResponse
-import bnpl.sdk.model.LoanResponse
-import bnpl.sdk.model.MoneyResponse
-import bnpl.sdk.model.PaymentResponse
-import bnpl.sdk.model.SupportedMinimumAmountResponse
+import bff.model.*
+import bnpl.sdk.model.*
 import bnpl.sdk.model.requests.PaymentRequest
 import wabi2b.payments.common.model.request.WalletProvider
 import wabi2b.payments.common.model.response.SupplierWalletResponse
@@ -73,4 +61,7 @@ class TestExtensions {
         new Order(id: 007, status: status, supplierOrders: supplierOrders)
     }
 
+    static Customer anyCustomerWithIdAndAccessToken(String country) {
+        new Customer(id: randomString(), accessToken: randomString(), country_id: country)
+    }
 }
