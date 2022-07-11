@@ -1051,7 +1051,9 @@ class GroceryListing {
                                                         id: it.min() as Integer,
                                                         name: { LanguageTag languageTag ->
                                                             messageSource.getMessage(
-                                                                    "search.DISCOUNT_SLICE",
+                                                                    it.min() == 0 ?
+                                                                            "search.WITH_DISCOUNTS_SLICE" :
+                                                                            "search.DISCOUNT_SLICE",
                                                                     [it.min()].toArray(),
                                                                     forLanguageTag(
                                                                             ofNullable(languageTag.toString()).
@@ -1236,7 +1238,6 @@ class GroceryListing {
 
         protected Optional<Facet> discountFacet(ProductQueryResponse response) {
             toJava(response.aggregations().discounts())
-                    .filter { request.filtering().byDiscount().isEmpty() }
                     .map {
                         new Facet(
                                 id: "discount",
