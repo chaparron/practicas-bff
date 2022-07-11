@@ -273,6 +273,11 @@ input FindMyInvoicesInput {
   size: Int
 }
 
+input DownloadInvoiceInput {
+  accessToken: String!
+  id: String!
+}
+
 type State {
   id: ID!
   name: String!

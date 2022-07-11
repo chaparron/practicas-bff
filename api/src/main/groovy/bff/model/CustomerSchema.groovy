@@ -598,3 +598,8 @@ class FindMyInvoicesInput extends PaginatedInput {
     Long fromEpochMillis
     Long toEpochMillis
 }
+
+class DownloadInvoiceInput {
+    String accessToken
+    String id
+}

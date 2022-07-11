@@ -373,6 +373,10 @@ class Query implements GraphQLQueryResolver {
     List<InvoicesResponse> findMyInvoices(FindMyInvoicesInput findMyInvoicesInput) {
         customerBridge.findMyInvoices(findMyInvoicesInput)
     }
+
+    String downloadPDFInvoice(DownloadInvoiceInput downloadInvoiceInput) {
+        "https://qa-wabi2b-mocks.s3.eu-central-1.amazonaws.com/invoice.pdf"
+    }
 }
 
 
