@@ -1469,14 +1469,12 @@ class GroceryListing {
         List<MostSearchedTerm> map(MostSearchedTermsQueryResponse response) {
             asJava(response.hits()).collect {
                 def text = it.text()
-                def category = toJava(it.category()).map {
-                    new Category(
-                            id: it.id().toLong(),
-                            parentId: toJava(it.parent()).map { it.toLong() }.orElse(null),
-                            name: it.name().defaultEntry(),
-                            enabled: true
-                    )
-                }
+                def category = new Category(
+                        id: it.category().id().toLong(),
+                        parentId: toJava(it.category().parent()).map { it.toLong() }.orElse(null),
+                        name: it.category().name().defaultEntry(),
+                        enabled: true
+                )
                 new MostSearchedTerm(
                         text: text,
                         language: toJava(it.language()),
@@ -1484,10 +1482,8 @@ class GroceryListing {
                         label: { languageTag ->
                             def locale = forLanguageTag(ofNullable(languageTag.toString()).orElse("en"))
                             messageSource.getMessage(
-                                    category
-                                            .map { "mostSearchedTerms.label.CATEGORY" }
-                                            .orElse("mostSearchedTerms.label.GLOBAL"),
-                                    [text, category.map { it.name }.orElse(null)].toArray(),
+                                    "mostSearchedTerms.label.CATEGORY",
+                                    [text, category.name].toArray(),
                                     locale
                             )
                         }
