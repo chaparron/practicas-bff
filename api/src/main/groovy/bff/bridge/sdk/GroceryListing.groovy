@@ -912,15 +912,16 @@ class GroceryListing {
 
         protected FreeProduct commercialPromotion(AvailableFreeProduct promotion) {
             new FreeProduct(
-                    id: promotion.id(),
-                    description: promotion.description(),
-                    expiration: new TimestampOutput(promotion.expiration().toString()),
-                    label: labelBuilder.freeProduct(),
-                    remainingUses: promotion.remainingUses(),
-                    from: promotion.from(),
-                    quantity: promotion.quantity(),
-                    product: new Product(product(promotion.product())),
-                    display: new Display(
+                    promotion.id(),
+                    promotion.description(),
+                    new TimestampOutput(promotion.expiration().toString()),
+                    labelBuilder.freeProduct(),
+                    promotion.remainingUses(),
+                    promotion.from(),
+                    toJava(promotion.to()).orElse(null) as Integer,
+                    promotion.quantity(),
+                    new Product(product(promotion.product())),
+                    new Display(
                             id: promotion.display().id().toInteger(),
                             ean: promotion.display().ean(),
                             units: promotion.display().units()

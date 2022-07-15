@@ -101,6 +101,8 @@ class Main {
                 .add(Loan.class)
                 .add(LoanPaymentFailed.class)
                 .add(InvoicesResponse.class)
+                .add(FixedQuantityFreeProduct.class)
+                .add(ProportionalQuantityFreeProduct.class)
     }
 
     /**
