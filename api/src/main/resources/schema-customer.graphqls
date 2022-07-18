@@ -273,6 +273,12 @@ input FindMyInvoicesInput {
   size: Int
 }
 
+
+input FindInvoiceInput {
+  accessToken: String!
+  id: ID!
+}
+
 input DownloadInvoiceInput {
   accessToken: String!
   id: String!
@@ -454,6 +460,11 @@ type InvoicesResponse {
   retailerInfoSummary: RetailerInfoSummary!
   total: Int!
   active: Int!
+}
+
+type InvoiceResponse {
+  retailerInformation: RetailerInformation!
+  retailerInfoSummary: RetailerInfoSummary!
 }
 
 type RetailerInformation {

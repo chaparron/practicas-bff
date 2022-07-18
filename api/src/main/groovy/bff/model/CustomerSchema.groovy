@@ -593,10 +593,20 @@ class InvoicesResponse extends PaginatedResponse<RetailerInformation> {
     RetailerInfoSummary retailerInfoSummary
 }
 
+class InvoiceResponse {
+    RetailerInfoSummary retailerInfoSummary
+    RetailerInformation retailerInformation
+}
+
 class FindMyInvoicesInput extends PaginatedInput {
     String accessToken
     Long fromEpochMillis
     Long toEpochMillis
+}
+
+class FindInvoiceInput {
+    String accessToken
+    String id
 }
 
 class DownloadInvoiceInput {

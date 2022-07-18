@@ -157,6 +157,8 @@ type Query {
 
   findMyInvoices(input: FindMyInvoicesInput!): [InvoicesResponse!]
 
+  findInvoice(input: FindInvoiceInput!): InvoiceResponse!
+
   downloadPDFInvoice(input: DownloadInvoiceInput!): String!
 }
 

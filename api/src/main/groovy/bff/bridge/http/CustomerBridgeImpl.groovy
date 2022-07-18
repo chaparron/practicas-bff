@@ -947,6 +947,55 @@ class CustomerBridgeImpl implements CustomerBridge {
         }
     }
 
+    @Override
+    bff.model.InvoiceResponse findInvoice(FindInvoiceInput findInvoiceInput) {
+
+        def money = new Money("INR", new BigDecimal(2000))
+        money.text("en-US")
+        money.symbol("in")
+
+        def retailerInfoSummary = new RetailerInfoSummary(
+                volume: 30000,
+                value: 50000,
+                debit: money
+        )
+
+
+        def retailDetail1 = new RetailDetail(
+                sku: "SKU 4225-776-3234",
+                quantity: 10
+        )
+
+        def retailDetail2 = new RetailDetail(
+                sku: "SKU 4225-776-1201",
+                quantity: 5
+        )
+
+        List<RetailDetail> retailDetailComposedList = new ArrayList()
+        retailDetailComposedList.add(retailDetail1)
+        retailDetailComposedList.add(retailDetail2)
+
+
+        def moneyInfo = new Money("INR", new BigDecimal(5000))
+        moneyInfo.text("en-US")
+        moneyInfo.symbol("in")
+        def retailerInformationItems = new RetailerInformationItems(
+                deliveryDate: new TimestampOutput("2022-01-01"),
+                invoiceNumber: 100000,
+                totalValue: moneyInfo,
+                detail: retailDetailComposedList
+        )
+
+        def retailerInformation = new RetailerInformation(
+                retailerInfoItems: retailerInformationItems
+        )
+
+        return new bff.model.InvoiceResponse(
+                retailerInformation: retailerInformation,
+                retailerInfoSummary: retailerInfoSummary
+        )
+    }
+
     private static String prepareAccessToken(String token) {
         if (token.startsWith("Bearer ")) {
             return token
