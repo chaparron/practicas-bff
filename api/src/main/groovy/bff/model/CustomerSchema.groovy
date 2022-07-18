@@ -570,13 +570,13 @@ class RetailerInformation {
 class RetailerInfoSummary {
     Long volume
     Long value
-    Long debit
+    Money debit
 }
 
 class RetailerInformationItems {
     TimestampOutput deliveryDate
     Long invoiceNumber
-    Long totalValue
+    Money totalValue
     List<RetailDetail> detail
 }
 

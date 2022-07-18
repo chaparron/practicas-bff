@@ -463,13 +463,13 @@ type RetailerInformation {
 type RetailerInfoSummary {
   volume: Long!
   value: Long!
-  debit: Long!
+  debit: Money!
 }
 
 type RetailerInformationItems {
   deliveryDate: TimestampOutput!
   invoiceNumber: Long!
-  totalValue: Long!
+  totalValue: Money!
   detail: [RetailerDetail]!
 }
 

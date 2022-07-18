@@ -741,68 +741,68 @@ class CustomerBridgeImpl implements CustomerBridge {
         def retailerInfoSummary1 = new RetailerInfoSummary(
                 volume: 30000,
                 value: 50000,
-                debit: 3000
+                debit: new Money("in", new BigDecimal(2000))
         )
 
         def retailerInfoSummary3 = new RetailerInfoSummary(
                 volume: 12000,
                 value: 15000,
-                debit: 3000
+                debit: new Money("in", new BigDecimal(3000))
         )
 
         def retailerInfoSummary4 = new RetailerInfoSummary(
                 volume: 60000,
                 value: 99000,
-                debit: 7000
+                debit: new Money("in", new BigDecimal(7000))
         )
 
 
         def retailerInformationItems = new RetailerInformationItems(
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 100000,
-                totalValue: 50000,
+                totalValue: new Money("in", new BigDecimal(5000)),
                 detail: retailDetailComposedList
         )
 
         def retailerInformationItems2 = new RetailerInformationItems(
                 deliveryDate: new TimestampOutput("2022-01-02"),
                 invoiceNumber: 400000,
-                totalValue: 30000,
+                totalValue: new Money("in", new BigDecimal(20000)),
                 detail: retailDetailComposedList
         )
 
         def retailerInformationItems3 = new RetailerInformationItems(
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 100000,
-                totalValue: 50000,
+                totalValue: new Money("in", new BigDecimal(50000)),
                 detail: retailDetailSimpleList
         )
 
         def retailerInformationItems4 = new RetailerInformationItems(
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 500000,
-                totalValue: 20000,
+                totalValue: new Money("in", new BigDecimal(20000)),
                 detail: retailDetailSimpleList2
         )
 
         def retailerInformationItems5 = new RetailerInformationItems(
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 500000,
-                totalValue: 20000,
+                totalValue: new Money("in", new BigDecimal(20000)),
                 detail: retailDetailSimpleList2
         )
 
         def retailerInformationItems6 = new RetailerInformationItems(
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 500000,
-                totalValue: 20000,
+                totalValue: new Money("in", new BigDecimal(20000)),
                 detail: retailDetailSimpleList2
         )
 
         def retailerInformationItems7 = new RetailerInformationItems(
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 500000,
-                totalValue: 20000,
+                totalValue: new Money("in", new BigDecimal(20000)),
                 detail: retailDetailSimpleList2
         )
 
