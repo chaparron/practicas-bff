@@ -953,6 +953,8 @@ class CustomerBridgeImpl implements CustomerBridge {
 
         List<InvoicesResponse> emptyInvoiceDetailInfo = new ArrayList()
 
+        // TODO: LISTADO
+
         switch (findMyInvoicesInput.accessToken) {
             case "COMPOSED_DETAIL":
                 return composedInvoiceDetailInfo
@@ -966,7 +968,7 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    InvoiceRetailerResponse findInvoice(FindInvoiceInput findInvoiceInput) {
+    List<InvoiceRetailerResponse> findInvoice(FindInvoiceInput findInvoiceInput) {
 
         def money = new Money("INR", new BigDecimal(2000))
         money.text("en-US")
@@ -1012,10 +1014,100 @@ class CustomerBridgeImpl implements CustomerBridge {
                 retailerInfoItems: retailerInformationItems
         )
 
-        return new InvoiceRetailerResponse(
+        def invoiceRetailerResponse= new InvoiceRetailerResponse(
                 retailerInformation: retailerInformation,
                 retailerInfoSummary: retailerInfoSummary
         )
+
+        List<InvoiceRetailerResponse> singleResultList= new ArrayList()
+        singleResultList.add(invoiceRetailerResponse)
+
+
+        // multiple list
+        def multipleMoney = new Money("INR", new BigDecimal(2000))
+        multipleMoney.text("en-US")
+        multipleMoney.symbol("in")
+
+        def multipleValueMoney = new Money("INR", new BigDecimal(50000))
+        multipleValueMoney.text("en-US")
+        multipleValueMoney.symbol("in")
+        def multipleRetailerInfoSummary1 = new RetailerInfoSummary(
+                volume: 30000,
+                value: multipleValueMoney,
+                debit: multipleMoney
+        )
+
+        def moneyMultipleInfo = new Money("INR", new BigDecimal(5000))
+        moneyMultipleInfo.text("en-US")
+        moneyMultipleInfo.symbol("in")
+        def multipleRetailerInformationItems = new RetailerInformationItems(
+                deliveryDate: new TimestampOutput("2022-01-01"),
+                invoiceNumber: 100000,
+                totalValue: moneyMultipleInfo,
+                invoicePrimaryId: "invoice-primary-1",
+                detail: retailDetailComposedList
+        )
+
+
+        def multipleRetailerInformation1 = new RetailerInformation(
+                retailerInfoItems: multipleRetailerInformationItems
+        )
+
+        def invoiceRetailerMultipleResponse1= new InvoiceRetailerResponse(
+                retailerInformation: multipleRetailerInformation1,
+                retailerInfoSummary: multipleRetailerInfoSummary1
+        )
+
+        def moneyMultipleInfo2 = new Money("INR", new BigDecimal(5000))
+        moneyMultipleInfo2.text("en-US")
+        moneyMultipleInfo2.symbol("in")
+        def multipleRetailerInformationItems2 = new RetailerInformationItems(
+                deliveryDate: new TimestampOutput("2022-01-01"),
+                invoiceNumber: 100000,
+                totalValue: moneyMultipleInfo2,
+                invoicePrimaryId: "invoice-primary-1",
+                detail: retailDetailComposedList
+        )
+
+        def multipleMoney2 = new Money("INR", new BigDecimal(2000))
+        multipleMoney2.text("en-US")
+        multipleMoney2.symbol("in")
+
+        def multipleValueMoney2 = new Money("INR", new BigDecimal(50000))
+        multipleValueMoney2.text("en-US")
+        multipleValueMoney2.symbol("in")
+        def multipleRetailerInfoSummary2 = new RetailerInfoSummary(
+                volume: 30000,
+                value: multipleValueMoney2,
+                debit: multipleMoney2
+        )
+
+        def multipleRetailerInformation2 = new RetailerInformation(
+                retailerInfoItems: multipleRetailerInformationItems2
+        )
+
+        def invoiceRetailerMultipleResponse2 = new InvoiceRetailerResponse(
+                retailerInformation: multipleRetailerInformation2,
+                retailerInfoSummary: multipleRetailerInfoSummary2
+        )
+
+        List<InvoiceRetailerResponse> multipleResultList = new ArrayList()
+        multipleResultList.add(invoiceRetailerMultipleResponse1)
+        multipleResultList.add(invoiceRetailerMultipleResponse2)
+
+
+        List<InvoiceRetailerResponse> emptyResultList = new ArrayList()
+
+        switch (findInvoiceInput.accessToken) {
+            case "SINGLE_RESULT":
+                return singleResultList
+            case "MULTIPLE_RESULT":
+                return multipleResultList
+            case "EMPTY_RESULT":
+                return emptyResultList
+            default:
+                return singleResultList
+        }
     }
 
     private static String prepareAccessToken(String token) {

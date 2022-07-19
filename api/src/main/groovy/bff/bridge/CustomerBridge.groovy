@@ -85,5 +85,5 @@ interface CustomerBridge {
 
     List<InvoicesResponse> findMyInvoices(FindMyInvoicesInput findMyInvoicesInput)
 
-    InvoiceRetailerResponse findInvoice(FindInvoiceInput findInvoiceInput)
+    List<InvoiceRetailerResponse> findInvoice(FindInvoiceInput findInvoiceInput)
 }
