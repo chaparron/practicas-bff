@@ -953,7 +953,7 @@ class CustomerBridgeImpl implements CustomerBridge {
 
         List<InvoicesResponse> emptyInvoiceDetailInfo = new ArrayList()
 
-        // TODO: LISTADO
+        if (findMyInvoicesInput.page == 2) return emptyInvoiceDetailInfo
 
         switch (findMyInvoicesInput.accessToken) {
             case "COMPOSED_DETAIL":
@@ -970,6 +970,7 @@ class CustomerBridgeImpl implements CustomerBridge {
     @Override
     List<InvoiceRetailerResponse> findInvoice(FindInvoiceInput findInvoiceInput) {
 
+        // Single list
         def money = new Money("INR", new BigDecimal(2000))
         money.text("en-US")
         money.symbol("in")
@@ -1023,7 +1024,7 @@ class CustomerBridgeImpl implements CustomerBridge {
         singleResultList.add(invoiceRetailerResponse)
 
 
-        // multiple list
+        // Multiple list
         def multipleMoney = new Money("INR", new BigDecimal(2000))
         multipleMoney.text("en-US")
         multipleMoney.symbol("in")
