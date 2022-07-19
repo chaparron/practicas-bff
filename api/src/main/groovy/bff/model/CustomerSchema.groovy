@@ -569,7 +569,7 @@ class RetailerInformation {
 
 class RetailerInfoSummary {
     Long volume
-    Long value
+    Money value
     Money debit
 }
 
@@ -577,6 +577,7 @@ class RetailerInformationItems {
     TimestampOutput deliveryDate
     Long invoiceNumber
     Money totalValue
+    String invoicePrimaryId
     List<RetailDetail> detail
 }
 

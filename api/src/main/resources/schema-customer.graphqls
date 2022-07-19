@@ -473,7 +473,7 @@ type RetailerInformation {
 
 type RetailerInfoSummary {
   volume: Long!
-  value: Long!
+  value: Money!
   debit: Money!
 }
 
@@ -481,6 +481,7 @@ type RetailerInformationItems {
   deliveryDate: TimestampOutput!
   invoiceNumber: Long!
   totalValue: Money!
+  invoicePrimaryId: String
   detail: [RetailerDetail]!
 }
 

@@ -741,11 +741,19 @@ class CustomerBridgeImpl implements CustomerBridge {
         money1.text("en-US")
         money1.symbol("in")
 
+        def valueMoney1 = new Money("INR", new BigDecimal(50000))
+        valueMoney1.text("en-US")
+        valueMoney1.symbol("in")
+
         def retailerInfoSummary1 = new RetailerInfoSummary(
                 volume: 30000,
-                value: 50000,
+                value: valueMoney1,
                 debit: money1
         )
+
+        def valueMoney3 = new Money("INR", new BigDecimal(15000))
+        valueMoney3.text("en-US")
+        valueMoney3.symbol("in")
 
         def money3 = new Money("INR", new BigDecimal(3000))
         money3.text("en-US")
@@ -753,7 +761,7 @@ class CustomerBridgeImpl implements CustomerBridge {
 
         def retailerInfoSummary3 = new RetailerInfoSummary(
                 volume: 12000,
-                value: 15000,
+                value: valueMoney3,
                 debit: money3
         )
 
@@ -761,9 +769,13 @@ class CustomerBridgeImpl implements CustomerBridge {
         money4.text("en-US")
         money4.symbol("in")
 
+        def valueMoney4 = new Money("INR", new BigDecimal(99000))
+        valueMoney4.text("en-US")
+        valueMoney4.symbol("in")
+
         def retailerInfoSummary4 = new RetailerInfoSummary(
                 volume: 60000,
-                value: 99000,
+                value: valueMoney4,
                 debit: money4
         )
 
@@ -774,6 +786,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 100000,
                 totalValue: moneyInfo,
+                invoicePrimaryId: "invoice-primary-1",
                 detail: retailDetailComposedList
         )
 
@@ -784,6 +797,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                 deliveryDate: new TimestampOutput("2022-01-02"),
                 invoiceNumber: 400000,
                 totalValue: moneyInfo2,
+                invoicePrimaryId: "invoice-primary-2",
                 detail: retailDetailComposedList
         )
 
@@ -794,6 +808,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 100000,
                 totalValue: moneyInfo3,
+                invoicePrimaryId: "invoice-primary-3",
                 detail: retailDetailSimpleList
         )
 
@@ -804,6 +819,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 500000,
                 totalValue: moneyInfo4,
+                invoicePrimaryId: "invoice-primary-4",
                 detail: retailDetailSimpleList2
         )
 
@@ -814,6 +830,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 500000,
                 totalValue: moneyInfo5,
+                invoicePrimaryId: "invoice-primary-5",
                 detail: retailDetailSimpleList2
         )
 
@@ -824,6 +841,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 500000,
                 totalValue: moneyInfo6,
+                invoicePrimaryId: "invoice-primary-6",
                 detail: retailDetailSimpleList2
         )
 
@@ -834,6 +852,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 500000,
                 totalValue: moneyInfo7,
+                invoicePrimaryId: "invoice-primary-7",
                 detail: retailDetailSimpleList2
         )
 
@@ -953,9 +972,12 @@ class CustomerBridgeImpl implements CustomerBridge {
         money.text("en-US")
         money.symbol("in")
 
+        def valueMoney = new Money("INR", new BigDecimal(50000))
+        valueMoney.text("en-US")
+        valueMoney.symbol("in")
         def retailerInfoSummary = new RetailerInfoSummary(
                 volume: 30000,
-                value: 50000,
+                value: valueMoney,
                 debit: money
         )
 
@@ -982,6 +1004,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 100000,
                 totalValue: moneyInfo,
+                invoicePrimaryId: "invoice-primary-1",
                 detail: retailDetailComposedList
         )
 
