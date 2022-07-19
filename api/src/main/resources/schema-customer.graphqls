@@ -462,7 +462,7 @@ type InvoicesResponse {
   active: Int!
 }
 
-type InvoiceResponse {
+type InvoiceRetailerResponse {
   retailerInformation: RetailerInformation!
   retailerInfoSummary: RetailerInfoSummary!
 }

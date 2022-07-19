@@ -375,7 +375,7 @@ class Query implements GraphQLQueryResolver {
     }
 
 
-    InvoiceResponse findInvoice(FindInvoiceInput findInvoiceInput) {
+    InvoiceRetailerResponse findInvoice(FindInvoiceInput findInvoiceInput) {
         customerBridge.findInvoice(findInvoiceInput)
     }
 

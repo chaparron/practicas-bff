@@ -593,7 +593,7 @@ class InvoicesResponse extends PaginatedResponse<RetailerInformation> {
     RetailerInfoSummary retailerInfoSummary
 }
 
-class InvoiceResponse {
+class InvoiceRetailerResponse {
     RetailerInfoSummary retailerInfoSummary
     RetailerInformation retailerInformation
 }

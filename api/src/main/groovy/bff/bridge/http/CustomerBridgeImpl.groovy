@@ -6,7 +6,6 @@ import bff.bridge.CustomerBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.ConflictErrorException
 import bff.model.*
-import bnpl.sdk.model.InvoiceResponse
 import groovy.util.logging.Slf4j
 import io.ktor.client.features.ClientRequestException
 import org.apache.commons.lang3.NotImplementedException
@@ -948,7 +947,7 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    bff.model.InvoiceResponse findInvoice(FindInvoiceInput findInvoiceInput) {
+    InvoiceRetailerResponse findInvoice(FindInvoiceInput findInvoiceInput) {
 
         def money = new Money("INR", new BigDecimal(2000))
         money.text("en-US")
@@ -990,7 +989,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                 retailerInfoItems: retailerInformationItems
         )
 
-        return new bff.model.InvoiceResponse(
+        return new InvoiceRetailerResponse(
                 retailerInformation: retailerInformation,
                 retailerInfoSummary: retailerInfoSummary
         )
