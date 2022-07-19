@@ -50,8 +50,8 @@ class BnplProvidersService {
     }
 
     List<CreditLineProvider> creditLineProvidersFor(SupplierOrder supplierOrder) {
-        def order = supplierOrderBridge.getOrderBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
-        def supplierOrders = orderBridge.getSupplierOrders(supplierOrder.accessToken, order.id)
+        def order = supplierOrder.order
+        def supplierOrders = order.supplierOrders
         def suppliers = supplierOrders.collect { supplierOrderBridge.getSupplierBySupplierOrderId(it.accessToken, it.id) }
         def accessToken = supplierOrder.accessToken
         def country = JwtToken.countryFromString(accessToken)
