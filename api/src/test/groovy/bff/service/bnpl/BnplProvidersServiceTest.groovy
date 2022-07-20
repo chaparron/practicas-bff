@@ -141,7 +141,9 @@ class BnplProvidersServiceTest {
     @Test
     void 'bnpl provider is null for not enabled user country by supplier and order'() {
         def supplierOrder = new SupplierOrder(id: 1L, order: TestExtensions.anyOrder(PENDING, emptyList()), accessToken: russianToken)
+        def supplier = new Supplier(id: 2L)
         when(supplierOrderBridge.getOrderBySupplierOrderId(russianToken, supplierOrder.id)).thenReturn(supplierOrder.order)
+        when(supplierOrderBridge.getSupplierBySupplierOrderId(russianToken, supplierOrder.id)).thenReturn(supplier)
         assert sut.creditLineProvidersFor(supplierOrder) == null
 
         verifyZeroInteractions(walletBridge)
