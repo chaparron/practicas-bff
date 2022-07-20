@@ -6,6 +6,7 @@ import bff.bridge.CustomerBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.ConflictErrorException
 import bff.model.*
+import bnpl.sdk.model.InvoiceResponse
 import groovy.util.logging.Slf4j
 import io.ktor.client.features.ClientRequestException
 import org.apache.commons.lang3.NotImplementedException
@@ -715,7 +716,7 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    List<InvoicesResponse> findMyInvoices(FindMyInvoicesInput findMyInvoicesInput) {
+    InvoicesResponse findMyInvoices(FindMyInvoicesInput findMyInvoicesInput) {
 
         def retailDetail1 = new RetailDetail(
                 sku: "SKU 4225-776-3234",
@@ -900,7 +901,7 @@ class CustomerBridgeImpl implements CustomerBridge {
         List<RetailerInformation> retailerInformationUniqueList = new ArrayList()
         retailerInformationUniqueList.add(retailerInformationS1)
 
-        def invoicesComposedResponse = new InvoicesResponse(
+        def composedDetail = new InvoicesResponse(
                 accessToken: findMyInvoicesInput.accessToken,
                 total: 10,
                 active: 1,
@@ -914,7 +915,22 @@ class CustomerBridgeImpl implements CustomerBridge {
                 retailerInfoSummary: retailerInfoSummary1
         )
 
-        def invoicesSimpleResponse = new InvoicesResponse(
+
+        def uniqueDetail = new InvoicesResponse(
+                accessToken: findMyInvoicesInput.accessToken,
+                total: 10,
+                active: 1,
+                headers: new Headers(
+                        page: 1,
+                        page_size: 5,
+                        total: 10,
+                        sort: new SortResult(direction: SortResult.Direction.ASC)
+                ),
+                content: retailerInformationUniqueList,
+                retailerInfoSummary: retailerInfoSummary3
+        )
+
+        def simpleDetail = new InvoicesResponse(
                 accessToken: findMyInvoicesInput.accessToken,
                 total: 10,
                 active: 1,
@@ -928,48 +944,30 @@ class CustomerBridgeImpl implements CustomerBridge {
                 retailerInfoSummary: retailerInfoSummary4
         )
 
-        def invoiceUniqueResponse = new InvoicesResponse(
-                accessToken: findMyInvoicesInput.accessToken,
-                total: 10,
-                active: 1,
-                headers: new Headers(
-                page: 1,
-                page_size: 5,
-                total: 10,
-                sort: new SortResult(direction: SortResult.Direction.ASC)
-                ),
-                content: retailerInformationUniqueList,
-                retailerInfoSummary: retailerInfoSummary3
+        def emptyDetail = new InvoicesResponse(
+                retailerInfoSummary: null,
+                content: [],
+                total: 0,
+                active: 0,
+                headers: null,
         )
 
-        List<InvoicesResponse> composedInvoiceDetailInfo = new ArrayList()
-        composedInvoiceDetailInfo.add(invoicesComposedResponse)
-
-        List<InvoicesResponse> simpleInvoiceDetailInfo = new ArrayList()
-        simpleInvoiceDetailInfo.add(invoicesSimpleResponse)
-
-        List<InvoicesResponse> uniqueInvoiceDetailInfo = new ArrayList()
-        uniqueInvoiceDetailInfo.add(invoiceUniqueResponse)
-
-        List<InvoicesResponse> emptyInvoiceDetailInfo = new ArrayList()
-
-        if (findMyInvoicesInput.page == 2) return emptyInvoiceDetailInfo
+        if (findMyInvoicesInput.page == 2) return emptyDetail
 
         switch (findMyInvoicesInput.accessToken) {
             case "COMPOSED_DETAIL":
-                return composedInvoiceDetailInfo
+                return composedDetail
             case "SINGLE_DETAIL":
-                return simpleInvoiceDetailInfo
+                return simpleDetail
             case "EMPTY_DETAIL":
-                return emptyInvoiceDetailInfo
+                return emptyDetail
             default:
-                return uniqueInvoiceDetailInfo
+                return uniqueDetail
         }
     }
 
     @Override
-    List<InvoiceRetailerResponse> findInvoice(FindInvoiceInput findInvoiceInput) {
-
+    InvoiceRetailerResponse findInvoice(FindInvoiceInput findInvoiceInput) {
         // Single list
         def money = new Money("INR", new BigDecimal(2000))
         money.text("en-US")
@@ -1011,17 +1009,20 @@ class CustomerBridgeImpl implements CustomerBridge {
                 detail: retailDetailComposedList
         )
 
-        def retailerInformation = new RetailerInformation(
+        def retailerInformation1 = new RetailerInformation(
                 retailerInfoItems: retailerInformationItems
         )
 
-        def invoiceRetailerResponse= new InvoiceRetailerResponse(
-                retailerInformation: retailerInformation,
+        List<RetailerInformation> retailerInformationList = new ArrayList()
+        retailerInformationList.add(retailerInformation1)
+
+        def singleInvoiceRetailerResponse= new InvoiceRetailerResponse(
+                retailerInformation: retailerInformationList,
                 retailerInfoSummary: retailerInfoSummary
         )
 
         List<InvoiceRetailerResponse> singleResultList= new ArrayList()
-        singleResultList.add(invoiceRetailerResponse)
+        singleResultList.add(singleInvoiceRetailerResponse)
 
 
         // Multiple list
@@ -1032,11 +1033,6 @@ class CustomerBridgeImpl implements CustomerBridge {
         def multipleValueMoney = new Money("INR", new BigDecimal(50000))
         multipleValueMoney.text("en-US")
         multipleValueMoney.symbol("in")
-        def multipleRetailerInfoSummary1 = new RetailerInfoSummary(
-                volume: 30000,
-                value: multipleValueMoney,
-                debit: multipleMoney
-        )
 
         def moneyMultipleInfo = new Money("INR", new BigDecimal(5000))
         moneyMultipleInfo.text("en-US")
@@ -1052,11 +1048,6 @@ class CustomerBridgeImpl implements CustomerBridge {
 
         def multipleRetailerInformation1 = new RetailerInformation(
                 retailerInfoItems: multipleRetailerInformationItems
-        )
-
-        def invoiceRetailerMultipleResponse1= new InvoiceRetailerResponse(
-                retailerInformation: multipleRetailerInformation1,
-                retailerInfoSummary: multipleRetailerInfoSummary1
         )
 
         def moneyMultipleInfo2 = new Money("INR", new BigDecimal(5000))
@@ -1087,27 +1078,29 @@ class CustomerBridgeImpl implements CustomerBridge {
                 retailerInfoItems: multipleRetailerInformationItems2
         )
 
-        def invoiceRetailerMultipleResponse2 = new InvoiceRetailerResponse(
-                retailerInformation: multipleRetailerInformation2,
-                retailerInfoSummary: multipleRetailerInfoSummary2
+        List<RetailerInformation> retailerInformationListM = new ArrayList()
+        retailerInformationListM.add(multipleRetailerInformation2)
+        retailerInformationListM.add(multipleRetailerInformation1)
+
+        def multipleInvoiceRetailerResponse = new InvoiceRetailerResponse(
+                retailerInfoSummary: multipleRetailerInfoSummary2,
+                retailerInformation: retailerInformationListM
         )
 
-        List<InvoiceRetailerResponse> multipleResultList = new ArrayList()
-        multipleResultList.add(invoiceRetailerMultipleResponse1)
-        multipleResultList.add(invoiceRetailerMultipleResponse2)
-
-
-        List<InvoiceRetailerResponse> emptyResultList = new ArrayList()
+        def emptyResponse = new InvoiceRetailerResponse(
+                retailerInformation: [],
+                retailerInfoSummary: null
+        )
 
         switch (findInvoiceInput.accessToken) {
-            case "SINGLE_RESULT":
-                return singleResultList
-            case "MULTIPLE_RESULT":
-                return multipleResultList
-            case "EMPTY_RESULT":
-                return emptyResultList
+            case "SINGLE_DETAIL":
+                return singleInvoiceRetailerResponse
+            case "COMPOSED_DETAIL":
+                return multipleInvoiceRetailerResponse
+            case "EMPTY_DETAIL":
+                return emptyResponse
             default:
-                return singleResultList
+                return singleInvoiceRetailerResponse
         }
     }
 

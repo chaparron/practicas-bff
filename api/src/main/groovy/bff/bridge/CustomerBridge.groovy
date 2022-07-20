@@ -83,7 +83,7 @@ interface CustomerBridge {
 
     User getUserById(String accessToken, Long userId)
 
-    List<InvoicesResponse> findMyInvoices(FindMyInvoicesInput findMyInvoicesInput)
+    InvoicesResponse findMyInvoices(FindMyInvoicesInput findMyInvoicesInput)
 
-    List<InvoiceRetailerResponse> findInvoice(FindInvoiceInput findInvoiceInput)
+    InvoiceRetailerResponse findInvoice(FindInvoiceInput findInvoiceInput)
 }

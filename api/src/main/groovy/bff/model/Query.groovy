@@ -370,12 +370,12 @@ class Query implements GraphQLQueryResolver {
         customerBridge.getBranchOffice(getBranchOfficeInput.accessToken, getBranchOfficeInput.branchOfficeId)
     }
 
-    List<InvoicesResponse> findMyInvoices(FindMyInvoicesInput findMyInvoicesInput) {
+    InvoicesResponse findMyInvoices(FindMyInvoicesInput findMyInvoicesInput) {
         customerBridge.findMyInvoices(findMyInvoicesInput)
     }
 
 
-    List<InvoiceRetailerResponse> findInvoice(FindInvoiceInput findInvoiceInput) {
+    InvoiceRetailerResponse findInvoice(FindInvoiceInput findInvoiceInput) {
         customerBridge.findInvoice(findInvoiceInput)
     }
 

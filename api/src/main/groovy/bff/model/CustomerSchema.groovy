@@ -596,7 +596,7 @@ class InvoicesResponse extends PaginatedResponse<RetailerInformation> {
 
 class InvoiceRetailerResponse {
     RetailerInfoSummary retailerInfoSummary
-    RetailerInformation retailerInformation
+    List<RetailerInformation> retailerInformation
 }
 
 class FindMyInvoicesInput extends PaginatedInput {
