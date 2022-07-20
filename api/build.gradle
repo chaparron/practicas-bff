@@ -18,7 +18,7 @@ dependencies {
     implementation "com.github.ben-manes.caffeine:caffeine:2.9.2"
     implementation "wabi2b.sdk:grocery-listing:1200-b90a14c53d96b958dd16e43b5f911945262696f0"
     implementation "wabi2b.sdk:supplier-credits:10013-5b3ebcb2efd390ddb0fffcc003762f30b7f16055"
-    implementation "wabi2b.sdk:cms:1113-816eab319f96ea21541b903928f3bbe6a5859cb0"
+    implementation "wabi2b.sdk:cms:1115-0d210bca9b80ba2ddfc8e04e797913f2f7608991"
     implementation "wabi2b:regional-config:1029-e8936196376587d6a2a5f4f89c6ddc995bed4e16"
     implementation "com.wabi2b:phone-notifier-sdk:10144-76744096d3a1c81c01910dfeb44eff235aa2f690"
     implementation "wabi2b.sdk:wabi2b-api-sdk:1959-e12cbc005dc532f26157749159e9835369511a45"
