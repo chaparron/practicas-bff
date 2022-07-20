@@ -25,7 +25,7 @@ class OrderResolver implements GraphQLResolver<Order> {
     }
 
     List<SupplierOrder> supplierOrders(Order order) {
-        orderBridge.getSupplierOrders(order.accessToken, order.id)
+        orderBridge.getSupplierOrders(order.accessToken, order)
     }
 
     List<OrderCancellation> ordersCancellations(Order order) {

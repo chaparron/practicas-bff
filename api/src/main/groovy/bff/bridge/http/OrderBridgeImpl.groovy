@@ -187,8 +187,8 @@ class OrderBridgeImpl implements OrderBridge {
     }
 
     @Override
-    List<SupplierOrder> getSupplierOrders(String accessToken, Long orderId) {
-        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/${orderId}/supplierOrder"))
+    List<SupplierOrder> getSupplierOrders(String accessToken, Order order) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/${order.id}/supplierOrder"))
                 .toUriString().toURI()
 
         def param = new ParameterizedTypeReference<List<SupplierOrder>>() {}
@@ -215,7 +215,8 @@ class OrderBridgeImpl implements OrderBridge {
                 )
             }
             it.summary = SummaryService.sortAndGetVisibleForMe(it.summary, JwtToken.countryFromString(accessToken))
-            it.order.supplierOrders = r
+            order.supplierOrders = r
+            it.order = order
         }
         r
     }

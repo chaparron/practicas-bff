@@ -184,7 +184,7 @@ class BnplProvidersServiceTest {
                 [new SupplierOrder(id: 1L, order: TestExtensions.anyOrder(PENDING, emptyList()), accessToken: indianToken, payment_pending: ONE)]), accessToken: indianToken, payment_pending: ONE)
         when(supplierOrderBridge.getOrderBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplierOrder.order)
         when(supplierOrderBridge.getSupplierBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplier)
-        when(orderBridge.getSupplierOrders(indianToken, supplierOrder.order.id)).thenReturn(singletonList(supplierOrder))
+        when(orderBridge.getSupplierOrders(indianToken, supplierOrder.order)).thenReturn(singletonList(supplierOrder))
         when(bnplBridge.supportedMinimumAmount(Mockito.any(), Mockito.any())).thenReturn(new SupportedMinimumAmountResponse(supplierOrder.payment_pending, "in"))
 
         assert sut.creditLineProvidersFor(supplierOrder) == [new CreditLineProvider(provider: CreditProvider.SUPERMONEY)]
@@ -203,7 +203,7 @@ class BnplProvidersServiceTest {
                 [new SupplierOrder(id: 1L, order: TestExtensions.anyOrder(PENDING, emptyList()), accessToken: indianToken, payment_pending: ONE)]), accessToken: indianToken, payment_pending: ONE)
         when(supplierOrderBridge.getOrderBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplierOrder.order)
         when(supplierOrderBridge.getSupplierBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplier)
-        when(orderBridge.getSupplierOrders(indianToken, supplierOrder.order.id)).thenReturn(singletonList(supplierOrder))
+        when(orderBridge.getSupplierOrders(indianToken, supplierOrder.order)).thenReturn(singletonList(supplierOrder))
         when(bnplBridge.supportedMinimumAmount(Mockito.any(), Mockito.any())).thenReturn(new SupportedMinimumAmountResponse(supplierOrder.payment_pending, "in"))
 
         assert sut.creditLineProvidersFor(supplierOrder) == null
@@ -223,7 +223,7 @@ class BnplProvidersServiceTest {
                 accessToken: indianToken, payment_pending: ONE)
         when(supplierOrderBridge.getOrderBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplierOrder.order)
         when(supplierOrderBridge.getSupplierBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplier)
-        when(orderBridge.getSupplierOrders(indianToken, supplierOrder.order.id)).thenReturn(singletonList(supplierOrder))
+        when(orderBridge.getSupplierOrders(indianToken, supplierOrder.order)).thenReturn(singletonList(supplierOrder))
         when(bnplBridge.supportedMinimumAmount(Mockito.any(), Mockito.any())).thenReturn(new SupportedMinimumAmountResponse(supplierOrder.payment_pending, "in"))
 
         assert sut.creditLineProvidersFor(supplierOrder) ==
