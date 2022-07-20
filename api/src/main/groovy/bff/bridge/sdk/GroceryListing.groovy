@@ -639,13 +639,30 @@ class GroceryListing {
         Boolean maybeSimilarTo
         Boolean maybePromoted
         Boolean maybeCollection
+        Boolean maybeDiscount
 
         ProductQueryRequestSortingBuilder(SearchInput input) {
-            this(input.sort, input.sortDirection, input.keyword, input.similarTo, input.promoted, input.collection)
+            this(
+                    input.sort,
+                    input.sortDirection,
+                    input.keyword,
+                    input.similarTo,
+                    input.promoted,
+                    input.collection,
+                    input.discount
+            )
         }
 
         ProductQueryRequestSortingBuilder(PreviewSearchInput input) {
-            this(input.sort, input.sortDirection, input.keyword, input.similarTo, input.promoted, input.collection)
+            this(
+                    input.sort,
+                    input.sortDirection,
+                    input.keyword,
+                    input.similarTo,
+                    input.promoted,
+                    input.collection,
+                    input.discount
+            )
         }
 
         private ProductQueryRequestSortingBuilder(String sort,
@@ -653,13 +670,15 @@ class GroceryListing {
                                                   String keyword,
                                                   Integer similarTo,
                                                   Boolean promoted,
-                                                  String collection) {
+                                                  String collection,
+                                                  Integer discount) {
             this.maybeSort = ofNullable(sort).filter { !it.isEmpty() }
             this.maybeDirection = ofNullable(direction)
             this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }.present
             this.maybeSimilarTo = ofNullable(similarTo).present
             this.maybePromoted = ofNullable(promoted).filter { it }.present
             this.maybeCollection = ofNullable(collection).filter { !it.isEmpty() }.present
+            this.maybeDiscount = ofNullable(discount).present
         }
 
         ProductQueryRequest apply(ProductQueryRequest request) {
@@ -668,6 +687,7 @@ class GroceryListing {
                     if (maybeKeyword || maybeSimilarTo) sortedByRelevance(request)
                     else if (maybePromoted) sortedByLastAvailabilityUpdate(request)
                     else if (maybeCollection) request
+                    else if (maybeDiscount) request
                     else sortedByTotalSalesInLast15Days(request)
                     break
                 case "TITLE":
