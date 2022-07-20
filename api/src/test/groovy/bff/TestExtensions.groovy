@@ -28,8 +28,8 @@ class TestExtensions {
         )
     }
 
-    static PaymentRequest anyPaymentRequest(Long supplierOrderId, Long customerUserId, Long supplierId, String invoiceCode, BigDecimal amount) {
-        new PaymentRequest(supplierOrderId, customerUserId, supplierId, invoiceCode, randomString(), amount)
+    static PaymentRequest anyPaymentRequest(Long supplierOrderId, Long customerUserId, String invoiceCode, BigDecimal amount) {
+        new PaymentRequest(supplierOrderId, customerUserId, invoiceCode, randomString(), amount)
     }
 
     static LoanPaymentRequestInput anyLoanPaymentRequestInput(String token, Long supplierId,

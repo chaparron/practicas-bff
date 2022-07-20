@@ -26,7 +26,7 @@ dependencies {
     implementation "wabi2b:payments-sdk:10297-840fd17a995e8b413a6ea05a000314d4e26c3a27"
     implementation "wabi2b:third-party-integration:10032-174a757eb2148e06cd2af7a5d543e47ec89778b4"
     implementation "wabi2b:feature-flags:10037-dcc43a1b3566323e441c71e972a670640a0b1480"
-    implementation "wabi2b:bnpl-credits-sdk:1062-31f317d7e7fedd60c39a37ff8ddc03ace678f939"
+    implementation "wabi2b:bnpl-credits-sdk:1074-16a9f966f2f545d1da818eae1d29906d658cdad1"
 
 
     implementation "io.ktor:ktor-client-cio:1.6.5"
