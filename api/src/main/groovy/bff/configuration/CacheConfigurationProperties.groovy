@@ -14,4 +14,6 @@ class CacheConfigurationProperties {
     Long suppliers;
     Long promotions;
     Long supplierOrders
+    Long bnpl
+    Long wallets
 }

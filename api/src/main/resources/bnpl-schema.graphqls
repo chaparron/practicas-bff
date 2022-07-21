@@ -4,7 +4,7 @@ input CreditLinesRequestInput{
 }
 
 type CreditLines{
-  credits: [CreditLine]!
+  credits: [CreditLine!]
   provider: CreditLineProvider!
   action: CreditLinesAction
   scroll: String
@@ -42,7 +42,12 @@ input InvoiceInput {
   fileId: String!
 }
 
-type LoanPayment {
+interface PaymentAware{
+  paymentId: Long!
+}
+
+type LoanPayment implements PaymentAware{
+  paymentId: Long!
   money: Money!
   loan: Loan!
   invoice: Invoice!

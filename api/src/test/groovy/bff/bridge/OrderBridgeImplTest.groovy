@@ -30,6 +30,7 @@ class OrderBridgeImplTest extends OrderBridgeImplTestData {
 
     @Before
     void init() {
+
         orderBridge.root = new URI("http://localhost:3000/")
     }
 

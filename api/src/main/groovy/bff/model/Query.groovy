@@ -370,8 +370,18 @@ class Query implements GraphQLQueryResolver {
         customerBridge.getBranchOffice(getBranchOfficeInput.accessToken, getBranchOfficeInput.branchOfficeId)
     }
 
-    List<InvoicesResponse> findMyInvoices(FindMyInvoicesInput findMyInvoicesInput) {
+    InvoicesResponse findMyInvoices(FindMyInvoicesInput findMyInvoicesInput) {
         customerBridge.findMyInvoices(findMyInvoicesInput)
+    }
+
+
+    InvoiceRetailerResponse findInvoice(FindInvoiceInput findInvoiceInput) {
+        customerBridge.findInvoice(findInvoiceInput)
+    }
+
+
+    String downloadPDFInvoice(DownloadInvoiceInput downloadInvoiceInput) {
+        "https://qa-wabi2b-mocks.s3.eu-central-1.amazonaws.com/invoice.pdf"
     }
 }
 

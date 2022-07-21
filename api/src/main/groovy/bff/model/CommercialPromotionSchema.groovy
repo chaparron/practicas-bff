@@ -211,6 +211,43 @@ class Discount implements CommercialPromotionType {
 
 }
 
+interface RewardItem {}
+
+@EqualsAndHashCode
+class FixedQuantityFreeProduct implements RewardItem {
+    Product product
+    Display display
+    Integer quantity
+}
+
+@EqualsAndHashCode
+class ProportionalQuantityFreeProduct implements RewardItem {
+    Product product
+    Display display
+    Integer quantity
+}
+
+enum RewardsNodeType {
+    AND,
+    OR,
+    ITEMS
+}
+
+@EqualsAndHashCode
+class RewardsNode {
+    String id
+    Optional<String> parent
+    RewardsNodeType type
+    List<RewardItem> items
+}
+
+@EqualsAndHashCode
+class FreeProductStep {
+    Integer from
+    Integer to
+    List<RewardsNode> rewards
+}
+
 @EqualsAndHashCode(includes = ["id"])
 class FreeProduct implements CommercialPromotionType {
     String id
@@ -218,10 +255,62 @@ class FreeProduct implements CommercialPromotionType {
     TimestampOutput expiration
     Closure<String> label
     Integer remainingUses
-    Integer from
-    Integer quantity
-    Product product
-    Display display
+    List<FreeProductStep> steps
+
+    FreeProduct(
+            String id,
+            String description,
+            TimestampOutput expiration,
+            Closure<String> label,
+            Integer remainingUses,
+            Integer from,
+            Integer to,
+            Integer quantity,
+            Product product,
+            Display display) {
+        this(
+                id,
+                description,
+                expiration,
+                label,
+                remainingUses,
+                [
+                        new FreeProductStep(
+                                from: from,
+                                to: to,
+                                rewards: [
+                                        new RewardsNode(
+                                                id: id,
+                                                parent: empty(),
+                                                type: RewardsNodeType.ITEMS,
+                                                items: [
+                                                        new FixedQuantityFreeProduct(
+                                                                product: product,
+                                                                display: display,
+                                                                quantity: quantity
+                                                        )
+                                                ]
+                                        )
+                                ]
+                        )
+                ]
+        )
+    }
+
+    FreeProduct(
+            String id,
+            String description,
+            TimestampOutput expiration,
+            Closure<String> label,
+            Integer remainingUses,
+            List<FreeProductStep> steps) {
+        this.id = id
+        this.description = description
+        this.expiration = expiration
+        this.label = label
+        this.remainingUses = remainingUses
+        this.steps = steps
+    }
 
     @Override
     boolean appliesTo(List<ProductCart> selection) {
@@ -237,20 +326,18 @@ class FreeProduct implements CommercialPromotionType {
     }
 
     boolean appliesTo(Integer quantity) {
-        quantity >= from
+        quantity >= steps.min { it.from }.from &&
+                quantity < of(steps.max { it.to }.to).orElse(Integer.MAX_VALUE)
     }
 
     FreeProduct labeled(Closure<String> label) {
         new FreeProduct(
-                id: this.id,
-                description: this.description,
-                expiration: this.expiration,
-                label: label,
-                remainingUses: this.remainingUses,
-                from: this.from,
-                quantity: this.quantity,
-                product: this.product,
-                display: this.display
+                this.id,
+                this.description,
+                this.expiration,
+                label,
+                this.remainingUses,
+                this.steps
         )
     }
 

@@ -18,7 +18,7 @@ interface OrderBridge {
 
     Address getDeliveryAddress(String accessToken, Long orderId)
 
-    List<SupplierOrder> getSupplierOrders(String accessToken, Long orderId)
+    List<SupplierOrder> getSupplierOrders(String accessToken, Order order)
 
     Customer getCustomerOrder(String accessToken, Long orderId)
 

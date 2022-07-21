@@ -155,7 +155,11 @@ type Query {
 
   getCreditLines(input: CreditLinesRequestInput!): CreditLinesResult
 
-  findMyInvoices(input: FindMyInvoicesInput!): [InvoicesResponse!]
+  findMyInvoices(input: FindMyInvoicesInput!): InvoicesResponse
+
+  findInvoice(input: FindInvoiceInput!): InvoiceRetailerResponse
+
+  downloadPDFInvoice(input: DownloadInvoiceInput!): String!
 }
 
 type Mutation {

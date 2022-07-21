@@ -50,7 +50,6 @@ class BnplMutationTest {
         def sdkRequest = anyPaymentRequest(
                 supplierOrderId,
                 sdkResponse.customerUserId,
-                sdkResponse.supplierId,
                 invoiceResponse.code,
                 BigDecimal.TEN)
 
@@ -60,7 +59,7 @@ class BnplMutationTest {
 
         def response = sut.loanPayment(anyLoanPaymentRequestInput(
                 token,
-                sdkRequest.supplierId,
+                666L,
                 supplierOrderId,
                 sdkRequest.invoiceCode,
                 sdkRequest.invoiceFileId,
@@ -84,7 +83,6 @@ class BnplMutationTest {
         def sdkRequest = anyPaymentRequest(
                 supplierOrderId,
                 sdkResponse.customerUserId,
-                sdkResponse.supplierId,
                 invoiceResponse.code,
                 BigDecimal.TEN)
 
@@ -94,7 +92,7 @@ class BnplMutationTest {
 
         def response = sut.loanPayment(anyLoanPaymentRequestInput(
                 token,
-                sdkRequest.supplierId,
+                666L,
                 supplierOrderId,
                 sdkRequest.invoiceCode,
                 sdkRequest.invoiceFileId,
@@ -118,7 +116,6 @@ class BnplMutationTest {
         def sdkRequest = anyPaymentRequest(
                 supplierOrderId,
                 sdkResponse.customerUserId,
-                sdkResponse.supplierId,
                 invoiceResponse.code,
                 BigDecimal.TEN)
 
@@ -128,7 +125,7 @@ class BnplMutationTest {
 
         def response = sut.loanPayment(anyLoanPaymentRequestInput(
                 token,
-                sdkRequest.supplierId,
+                666L,
                 supplierOrderId,
                 sdkRequest.invoiceCode,
                 sdkRequest.invoiceFileId,

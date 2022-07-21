@@ -273,6 +273,17 @@ input FindMyInvoicesInput {
   size: Int
 }
 
+
+input FindInvoiceInput {
+  accessToken: String!
+  id: ID!
+}
+
+input DownloadInvoiceInput {
+  accessToken: String!
+  id: String!
+}
+
 type State {
   id: ID!
   name: String!
@@ -444,11 +455,16 @@ type ProfileSection{
 }
 
 type InvoicesResponse {
-  headers: Headers!
-  content: [RetailerInformation]!
-  retailerInfoSummary: RetailerInfoSummary!
+  headers: Headers
+  content: [RetailerInformation!]
+  retailerInfoSummary: RetailerInfoSummary
   total: Int!
   active: Int!
+}
+
+type InvoiceRetailerResponse {
+  retailerInformation: [RetailerInformation!]
+  retailerInfoSummary: RetailerInfoSummary
 }
 
 type RetailerInformation {
@@ -457,14 +473,15 @@ type RetailerInformation {
 
 type RetailerInfoSummary {
   volume: Long!
-  value: Long!
-  debit: Long!
+  value: Money!
+  debit: Money!
 }
 
 type RetailerInformationItems {
   deliveryDate: TimestampOutput!
   invoiceNumber: Long!
-  totalValue: Long!
+  totalValue: Money!
+  invoicePrimaryId: String
   detail: [RetailerDetail]!
 }
 

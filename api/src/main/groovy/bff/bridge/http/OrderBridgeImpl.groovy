@@ -16,7 +16,6 @@ import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 import org.springframework.web.util.UriComponentsBuilder
 
-
 @Slf4j
 class OrderBridgeImpl implements OrderBridge {
 
@@ -188,8 +187,8 @@ class OrderBridgeImpl implements OrderBridge {
     }
 
     @Override
-    List<SupplierOrder> getSupplierOrders(String accessToken, Long orderId) {
-        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/${orderId}/supplierOrder"))
+    List<SupplierOrder> getSupplierOrders(String accessToken, Order order) {
+        def uri = UriComponentsBuilder.fromUri(root.resolve("/customer/me/order/${order.id}/supplierOrder"))
                 .toUriString().toURI()
 
         def param = new ParameterizedTypeReference<List<SupplierOrder>>() {}
@@ -216,6 +215,8 @@ class OrderBridgeImpl implements OrderBridge {
                 )
             }
             it.summary = SummaryService.sortAndGetVisibleForMe(it.summary, JwtToken.countryFromString(accessToken))
+            order.supplierOrders = r
+            it.order = order
         }
         r
     }
@@ -407,7 +408,6 @@ class OrderBridgeImpl implements OrderBridge {
         validateOrderResponse
     }
 }
-
 
 
 

@@ -639,13 +639,30 @@ class GroceryListing {
         Boolean maybeSimilarTo
         Boolean maybePromoted
         Boolean maybeCollection
+        Boolean maybeDiscount
 
         ProductQueryRequestSortingBuilder(SearchInput input) {
-            this(input.sort, input.sortDirection, input.keyword, input.similarTo, input.promoted, input.collection)
+            this(
+                    input.sort,
+                    input.sortDirection,
+                    input.keyword,
+                    input.similarTo,
+                    input.promoted,
+                    input.collection,
+                    input.discount
+            )
         }
 
         ProductQueryRequestSortingBuilder(PreviewSearchInput input) {
-            this(input.sort, input.sortDirection, input.keyword, input.similarTo, input.promoted, input.collection)
+            this(
+                    input.sort,
+                    input.sortDirection,
+                    input.keyword,
+                    input.similarTo,
+                    input.promoted,
+                    input.collection,
+                    input.discount
+            )
         }
 
         private ProductQueryRequestSortingBuilder(String sort,
@@ -653,13 +670,15 @@ class GroceryListing {
                                                   String keyword,
                                                   Integer similarTo,
                                                   Boolean promoted,
-                                                  String collection) {
+                                                  String collection,
+                                                  Integer discount) {
             this.maybeSort = ofNullable(sort).filter { !it.isEmpty() }
             this.maybeDirection = ofNullable(direction)
             this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }.present
             this.maybeSimilarTo = ofNullable(similarTo).present
             this.maybePromoted = ofNullable(promoted).filter { it }.present
             this.maybeCollection = ofNullable(collection).filter { !it.isEmpty() }.present
+            this.maybeDiscount = ofNullable(discount).present
         }
 
         ProductQueryRequest apply(ProductQueryRequest request) {
@@ -668,6 +687,7 @@ class GroceryListing {
                     if (maybeKeyword || maybeSimilarTo) sortedByRelevance(request)
                     else if (maybePromoted) sortedByLastAvailabilityUpdate(request)
                     else if (maybeCollection) request
+                    else if (maybeDiscount) request
                     else sortedByTotalSalesInLast15Days(request)
                     break
                 case "TITLE":
@@ -912,15 +932,16 @@ class GroceryListing {
 
         protected FreeProduct commercialPromotion(AvailableFreeProduct promotion) {
             new FreeProduct(
-                    id: promotion.id(),
-                    description: promotion.description(),
-                    expiration: new TimestampOutput(promotion.expiration().toString()),
-                    label: labelBuilder.freeProduct(),
-                    remainingUses: promotion.remainingUses(),
-                    from: promotion.from(),
-                    quantity: promotion.quantity(),
-                    product: new Product(product(promotion.product())),
-                    display: new Display(
+                    promotion.id(),
+                    promotion.description(),
+                    new TimestampOutput(promotion.expiration().toString()),
+                    labelBuilder.freeProduct(),
+                    promotion.remainingUses(),
+                    promotion.from(),
+                    toJava(promotion.to()).orElse(null) as Integer,
+                    promotion.quantity(),
+                    new Product(product(promotion.product())),
+                    new Display(
                             id: promotion.display().id().toInteger(),
                             ean: promotion.display().ean(),
                             units: promotion.display().units()
@@ -1051,7 +1072,9 @@ class GroceryListing {
                                                         id: it.min() as Integer,
                                                         name: { LanguageTag languageTag ->
                                                             messageSource.getMessage(
-                                                                    "search.DISCOUNT_SLICE",
+                                                                    it.min() == 0 ?
+                                                                            "search.WITH_DISCOUNTS_SLICE" :
+                                                                            "search.DISCOUNT_SLICE",
                                                                     [it.min()].toArray(),
                                                                     forLanguageTag(
                                                                             ofNullable(languageTag.toString()).
@@ -1236,7 +1259,6 @@ class GroceryListing {
 
         protected Optional<Facet> discountFacet(ProductQueryResponse response) {
             toJava(response.aggregations().discounts())
-                    .filter { request.filtering().byDiscount().isEmpty() }
                     .map {
                         new Facet(
                                 id: "discount",
@@ -1468,14 +1490,12 @@ class GroceryListing {
         List<MostSearchedTerm> map(MostSearchedTermsQueryResponse response) {
             asJava(response.hits()).collect {
                 def text = it.text()
-                def category = toJava(it.category()).map {
-                    new Category(
-                            id: it.id().toLong(),
-                            parentId: toJava(it.parent()).map { it.toLong() }.orElse(null),
-                            name: it.name().defaultEntry(),
-                            enabled: true
-                    )
-                }
+                def category = new Category(
+                        id: it.category().id().toLong(),
+                        parentId: toJava(it.category().parent()).map { it.toLong() }.orElse(null),
+                        name: it.category().name().defaultEntry(),
+                        enabled: true
+                )
                 new MostSearchedTerm(
                         text: text,
                         language: toJava(it.language()),
@@ -1483,10 +1503,8 @@ class GroceryListing {
                         label: { languageTag ->
                             def locale = forLanguageTag(ofNullable(languageTag.toString()).orElse("en"))
                             messageSource.getMessage(
-                                    category
-                                            .map { "mostSearchedTerms.label.CATEGORY" }
-                                            .orElse("mostSearchedTerms.label.GLOBAL"),
-                                    [text, category.map { it.name }.orElse(null)].toArray(),
+                                    "mostSearchedTerms.label.CATEGORY",
+                                    [text, category.name].toArray(),
                                     locale
                             )
                         }
@@ -1574,7 +1592,7 @@ class GroceryListing {
                             }
                             .collect { it.first as ProductCart }
                             .sort {
-                                it.product.prices.findResult { it.commercialPromotions.isPresent() } ? -1 : 1
+                                it.product.prices.find { it.commercialPromotions.isPresent() } ? -1 : 1
                             }
             new SyncCartResult(
                     promoted: promoted,

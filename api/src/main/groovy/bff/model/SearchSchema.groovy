@@ -281,7 +281,7 @@ class PreviewMostSearchedTermsInput {
 class MostSearchedTerm {
     String text
     Optional<String> language
-    Optional<Category> category
+    Category category
     Closure<String> label
 }
 

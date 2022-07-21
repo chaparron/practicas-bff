@@ -716,7 +716,7 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
     @Override
-    List<InvoicesResponse> findMyInvoices(FindMyInvoicesInput findMyInvoicesInput) {
+    InvoicesResponse findMyInvoices(FindMyInvoicesInput findMyInvoicesInput) {
 
         def retailDetail1 = new RetailDetail(
                 sku: "SKU 4225-776-3234",
@@ -738,71 +738,122 @@ class CustomerBridgeImpl implements CustomerBridge {
         List<RetailDetail> retailDetailSimpleList2 = new ArrayList()
         retailDetailSimpleList2.add(retailDetail2)
 
+        def money1 = new Money("INR", new BigDecimal(2000))
+        money1.text("en-US")
+        money1.symbol("in")
+
+        def valueMoney1 = new Money("INR", new BigDecimal(50000))
+        valueMoney1.text("en-US")
+        valueMoney1.symbol("in")
+
         def retailerInfoSummary1 = new RetailerInfoSummary(
                 volume: 30000,
-                value: 50000,
-                debit: 3000
+                value: valueMoney1,
+                debit: money1
         )
+
+        def valueMoney3 = new Money("INR", new BigDecimal(15000))
+        valueMoney3.text("en-US")
+        valueMoney3.symbol("in")
+
+        def money3 = new Money("INR", new BigDecimal(3000))
+        money3.text("en-US")
+        money3.symbol("in")
 
         def retailerInfoSummary3 = new RetailerInfoSummary(
                 volume: 12000,
-                value: 15000,
-                debit: 3000
+                value: valueMoney3,
+                debit: money3
         )
+
+        def money4 = new Money("INR", new BigDecimal(7000))
+        money4.text("en-US")
+        money4.symbol("in")
+
+        def valueMoney4 = new Money("INR", new BigDecimal(99000))
+        valueMoney4.text("en-US")
+        valueMoney4.symbol("in")
 
         def retailerInfoSummary4 = new RetailerInfoSummary(
                 volume: 60000,
-                value: 99000,
-                debit: 7000
+                value: valueMoney4,
+                debit: money4
         )
 
-
+        def moneyInfo = new Money("INR", new BigDecimal(5000))
+        moneyInfo.text("en-US")
+        moneyInfo.symbol("in")
         def retailerInformationItems = new RetailerInformationItems(
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 100000,
-                totalValue: 50000,
+                totalValue: moneyInfo,
+                invoicePrimaryId: "invoice-primary-1",
                 detail: retailDetailComposedList
         )
 
+        def moneyInfo2 = new Money("INR", new BigDecimal(20000))
+        moneyInfo2.text("en-US")
+        moneyInfo2.symbol("in")
         def retailerInformationItems2 = new RetailerInformationItems(
                 deliveryDate: new TimestampOutput("2022-01-02"),
                 invoiceNumber: 400000,
-                totalValue: 30000,
+                totalValue: moneyInfo2,
+                invoicePrimaryId: "invoice-primary-2",
                 detail: retailDetailComposedList
         )
 
+        def moneyInfo3 = new Money("INR", new BigDecimal(50000))
+        moneyInfo3.text("en-US")
+        moneyInfo3.symbol("in")
         def retailerInformationItems3 = new RetailerInformationItems(
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 100000,
-                totalValue: 50000,
+                totalValue: moneyInfo3,
+                invoicePrimaryId: "invoice-primary-3",
                 detail: retailDetailSimpleList
         )
 
+        def moneyInfo4 = new Money("INR", new BigDecimal(20000))
+        moneyInfo4.text("en-US")
+        moneyInfo4.symbol("in")
         def retailerInformationItems4 = new RetailerInformationItems(
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 500000,
-                totalValue: 20000,
+                totalValue: moneyInfo4,
+                invoicePrimaryId: "invoice-primary-4",
                 detail: retailDetailSimpleList2
         )
 
+        def moneyInfo5 = new Money("INR", new BigDecimal(20000))
+        moneyInfo5.text("en-US")
+        moneyInfo5.symbol("in")
         def retailerInformationItems5 = new RetailerInformationItems(
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 500000,
-                totalValue: 20000,
+                totalValue: moneyInfo5,
+                invoicePrimaryId: "invoice-primary-5",
                 detail: retailDetailSimpleList2
         )
 
+        def moneyInfo6 = new Money("INR", new BigDecimal(20000))
+        moneyInfo6.text("en-US")
+        moneyInfo6.symbol("in")
         def retailerInformationItems6 = new RetailerInformationItems(
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 500000,
-                totalValue: 20000,
+                totalValue: moneyInfo6,
+                invoicePrimaryId: "invoice-primary-6",
                 detail: retailDetailSimpleList2
         )
 
+        def moneyInfo7 = new Money("INR", new BigDecimal(20000))
+        moneyInfo7.text("en-US")
+        moneyInfo7.symbol("in")
         def retailerInformationItems7 = new RetailerInformationItems(
                 deliveryDate: new TimestampOutput("2022-01-01"),
                 invoiceNumber: 500000,
-                totalValue: 20000,
+                totalValue: moneyInfo7,
+                invoicePrimaryId: "invoice-primary-7",
                 detail: retailDetailSimpleList2
         )
 
@@ -850,7 +901,7 @@ class CustomerBridgeImpl implements CustomerBridge {
         List<RetailerInformation> retailerInformationUniqueList = new ArrayList()
         retailerInformationUniqueList.add(retailerInformationS1)
 
-        def invoicesComposedResponse = new InvoicesResponse(
+        def composedDetail = new InvoicesResponse(
                 accessToken: findMyInvoicesInput.accessToken,
                 total: 10,
                 active: 1,
@@ -864,7 +915,22 @@ class CustomerBridgeImpl implements CustomerBridge {
                 retailerInfoSummary: retailerInfoSummary1
         )
 
-        def invoicesSimpleResponse = new InvoicesResponse(
+
+        def uniqueDetail = new InvoicesResponse(
+                accessToken: findMyInvoicesInput.accessToken,
+                total: 10,
+                active: 1,
+                headers: new Headers(
+                        page: 1,
+                        page_size: 5,
+                        total: 10,
+                        sort: new SortResult(direction: SortResult.Direction.ASC)
+                ),
+                content: retailerInformationUniqueList,
+                retailerInfoSummary: retailerInfoSummary3
+        )
+
+        def simpleDetail = new InvoicesResponse(
                 accessToken: findMyInvoicesInput.accessToken,
                 total: 10,
                 active: 1,
@@ -878,40 +944,163 @@ class CustomerBridgeImpl implements CustomerBridge {
                 retailerInfoSummary: retailerInfoSummary4
         )
 
-        def invoiceUniqueResponse = new InvoicesResponse(
-                accessToken: findMyInvoicesInput.accessToken,
-                total: 10,
-                active: 1,
-                headers: new Headers(
-                page: 1,
-                page_size: 5,
-                total: 10,
-                sort: new SortResult(direction: SortResult.Direction.ASC)
-                ),
-                content: retailerInformationUniqueList,
-                retailerInfoSummary: retailerInfoSummary3
+        def emptyDetail = new InvoicesResponse(
+                retailerInfoSummary: null,
+                content: [],
+                total: 0,
+                active: 0,
+                headers: null,
         )
 
-        List<InvoicesResponse> composedInvoiceDetailInfo = new ArrayList()
-        composedInvoiceDetailInfo.add(invoicesComposedResponse)
-
-        List<InvoicesResponse> simpleInvoiceDetailInfo = new ArrayList()
-        simpleInvoiceDetailInfo.add(invoicesSimpleResponse)
-
-        List<InvoicesResponse> uniqueInvoiceDetailInfo = new ArrayList()
-        uniqueInvoiceDetailInfo.add(invoiceUniqueResponse)
-
-        List<InvoicesResponse> emptyInvoiceDetailInfo = new ArrayList()
+        if (findMyInvoicesInput.page == 2) return emptyDetail
 
         switch (findMyInvoicesInput.accessToken) {
             case "COMPOSED_DETAIL":
-                return composedInvoiceDetailInfo
+                return composedDetail
             case "SINGLE_DETAIL":
-                return simpleInvoiceDetailInfo
+                return simpleDetail
             case "EMPTY_DETAIL":
-                return emptyInvoiceDetailInfo
+                return emptyDetail
             default:
-                return uniqueInvoiceDetailInfo
+                return uniqueDetail
+        }
+    }
+
+    @Override
+    InvoiceRetailerResponse findInvoice(FindInvoiceInput findInvoiceInput) {
+        // Single list
+        def money = new Money("INR", new BigDecimal(2000))
+        money.text("en-US")
+        money.symbol("in")
+
+        def valueMoney = new Money("INR", new BigDecimal(50000))
+        valueMoney.text("en-US")
+        valueMoney.symbol("in")
+        def retailerInfoSummary = new RetailerInfoSummary(
+                volume: 30000,
+                value: valueMoney,
+                debit: money
+        )
+
+
+        def retailDetail1 = new RetailDetail(
+                sku: "SKU 4225-776-3234",
+                quantity: 10
+        )
+
+        def retailDetail2 = new RetailDetail(
+                sku: "SKU 4225-776-1201",
+                quantity: 5
+        )
+
+        List<RetailDetail> retailDetailComposedList = new ArrayList()
+        retailDetailComposedList.add(retailDetail1)
+        retailDetailComposedList.add(retailDetail2)
+
+
+        def moneyInfo = new Money("INR", new BigDecimal(5000))
+        moneyInfo.text("en-US")
+        moneyInfo.symbol("in")
+        def retailerInformationItems = new RetailerInformationItems(
+                deliveryDate: new TimestampOutput("2022-01-01"),
+                invoiceNumber: 100000,
+                totalValue: moneyInfo,
+                invoicePrimaryId: "invoice-primary-1",
+                detail: retailDetailComposedList
+        )
+
+        def retailerInformation1 = new RetailerInformation(
+                retailerInfoItems: retailerInformationItems
+        )
+
+        List<RetailerInformation> retailerInformationList = new ArrayList()
+        retailerInformationList.add(retailerInformation1)
+
+        def singleInvoiceRetailerResponse= new InvoiceRetailerResponse(
+                retailerInformation: retailerInformationList,
+                retailerInfoSummary: retailerInfoSummary
+        )
+
+        List<InvoiceRetailerResponse> singleResultList= new ArrayList()
+        singleResultList.add(singleInvoiceRetailerResponse)
+
+
+        // Multiple list
+        def multipleMoney = new Money("INR", new BigDecimal(2000))
+        multipleMoney.text("en-US")
+        multipleMoney.symbol("in")
+
+        def multipleValueMoney = new Money("INR", new BigDecimal(50000))
+        multipleValueMoney.text("en-US")
+        multipleValueMoney.symbol("in")
+
+        def moneyMultipleInfo = new Money("INR", new BigDecimal(5000))
+        moneyMultipleInfo.text("en-US")
+        moneyMultipleInfo.symbol("in")
+        def multipleRetailerInformationItems = new RetailerInformationItems(
+                deliveryDate: new TimestampOutput("2022-01-01"),
+                invoiceNumber: 100000,
+                totalValue: moneyMultipleInfo,
+                invoicePrimaryId: "invoice-primary-1",
+                detail: retailDetailComposedList
+        )
+
+
+        def multipleRetailerInformation1 = new RetailerInformation(
+                retailerInfoItems: multipleRetailerInformationItems
+        )
+
+        def moneyMultipleInfo2 = new Money("INR", new BigDecimal(5000))
+        moneyMultipleInfo2.text("en-US")
+        moneyMultipleInfo2.symbol("in")
+        def multipleRetailerInformationItems2 = new RetailerInformationItems(
+                deliveryDate: new TimestampOutput("2022-01-01"),
+                invoiceNumber: 100000,
+                totalValue: moneyMultipleInfo2,
+                invoicePrimaryId: "invoice-primary-1",
+                detail: retailDetailComposedList
+        )
+
+        def multipleMoney2 = new Money("INR", new BigDecimal(2000))
+        multipleMoney2.text("en-US")
+        multipleMoney2.symbol("in")
+
+        def multipleValueMoney2 = new Money("INR", new BigDecimal(50000))
+        multipleValueMoney2.text("en-US")
+        multipleValueMoney2.symbol("in")
+        def multipleRetailerInfoSummary2 = new RetailerInfoSummary(
+                volume: 30000,
+                value: multipleValueMoney2,
+                debit: multipleMoney2
+        )
+
+        def multipleRetailerInformation2 = new RetailerInformation(
+                retailerInfoItems: multipleRetailerInformationItems2
+        )
+
+        List<RetailerInformation> retailerInformationListM = new ArrayList()
+        retailerInformationListM.add(multipleRetailerInformation2)
+        retailerInformationListM.add(multipleRetailerInformation1)
+
+        def multipleInvoiceRetailerResponse = new InvoiceRetailerResponse(
+                retailerInfoSummary: multipleRetailerInfoSummary2,
+                retailerInformation: retailerInformationListM
+        )
+
+        def emptyResponse = new InvoiceRetailerResponse(
+                retailerInformation: [],
+                retailerInfoSummary: null
+        )
+
+        switch (findInvoiceInput.accessToken) {
+            case "SINGLE_DETAIL":
+                return singleInvoiceRetailerResponse
+            case "COMPOSED_DETAIL":
+                return multipleInvoiceRetailerResponse
+            case "EMPTY_DETAIL":
+                return emptyResponse
+            default:
+                return singleInvoiceRetailerResponse
         }
     }
 

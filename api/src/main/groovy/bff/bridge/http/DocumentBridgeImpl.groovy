@@ -9,6 +9,8 @@ import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.web.client.RestOperations
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION
+
 class DocumentBridgeImpl implements DocumentBridge{
     URI root
     RestOperations http
@@ -18,6 +20,7 @@ class DocumentBridgeImpl implements DocumentBridge{
         def body = http.exchange(
                 RequestEntity.method(HttpMethod.POST, root.resolve('/resource/uploadDocument'))
                         .contentType(contentType)
+                        .header(AUTHORIZATION, "Bearer $accessToken")
                         .contentLength(content.length)
                         .body(content)
                 , UploadedDocument

@@ -159,7 +159,7 @@ type SuggestedSupplier {
 type MostSearchedTerm {
   text: String!
   language: String
-  category: Category
+  category: Category!
   label(languageTag: LanguageTag!): String!
 }
 

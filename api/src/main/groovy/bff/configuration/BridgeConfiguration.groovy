@@ -81,6 +81,16 @@ class BridgeConfiguration {
     }
 
     @Bean
+    BnplBridge bnplBridge() {
+        new BnplBridgeImpl()
+    }
+
+    @Bean
+    WalletBridge walletBridge()  {
+        new WalletBridgeImpl()
+    }
+
+    @Bean
     ProductBridge productBridge() {
         new ProductBridgeImpl(
                 http: http,

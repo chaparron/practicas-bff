@@ -32,6 +32,39 @@ type Discount {
   steps: [DiscountStep!]!
 }
 
+type FixedQuantityFreeProduct {
+  product: Product!
+  display: Display!
+  quantity: Int!
+}
+
+type ProportionalQuantityFreeProduct {
+  product: Product!
+  display: Display!
+  quantity: Float!
+}
+
+union RewardItem = FixedQuantityFreeProduct | ProportionalQuantityFreeProduct
+
+enum RewardsNodeType {
+  AND
+  OR
+  ITEMS
+}
+
+type RewardsNode {
+  id: ID!
+  parent: ID
+  type: RewardsNodeType!
+  items: [RewardItem!]
+}
+
+type FreeProductStep {
+  from: Int!
+  to: Int!
+  rewards: [RewardsNode!]!
+}
+
 type FreeProduct {
   id: ID!
   description: String!
@@ -42,4 +75,5 @@ type FreeProduct {
   quantity: Int!
   product: Product!
   display: Display!
+  steps: [FreeProductStep!]!
 }

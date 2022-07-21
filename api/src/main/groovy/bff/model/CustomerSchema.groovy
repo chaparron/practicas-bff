@@ -569,14 +569,15 @@ class RetailerInformation {
 
 class RetailerInfoSummary {
     Long volume
-    Long value
-    Long debit
+    Money value
+    Money debit
 }
 
 class RetailerInformationItems {
     TimestampOutput deliveryDate
     Long invoiceNumber
-    Long totalValue
+    Money totalValue
+    String invoicePrimaryId
     List<RetailDetail> detail
 }
 
@@ -593,8 +594,23 @@ class InvoicesResponse extends PaginatedResponse<RetailerInformation> {
     RetailerInfoSummary retailerInfoSummary
 }
 
+class InvoiceRetailerResponse {
+    RetailerInfoSummary retailerInfoSummary
+    List<RetailerInformation> retailerInformation
+}
+
 class FindMyInvoicesInput extends PaginatedInput {
     String accessToken
     Long fromEpochMillis
     Long toEpochMillis
+}
+
+class FindInvoiceInput {
+    String accessToken
+    String id
+}
+
+class DownloadInvoiceInput {
+    String accessToken
+    String id
 }

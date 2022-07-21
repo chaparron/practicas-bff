@@ -96,8 +96,9 @@ class InvoiceInput {
     String fileId
 }
 
-@EqualsAndHashCode
+@EqualsAndHashCode(excludes = ["paymentId"])
 class LoanPayment implements LoanPaymentResult {
+    Long paymentId
     Long supplierOrderId
     Long customerUserId
     Long supplierId
@@ -107,6 +108,7 @@ class LoanPayment implements LoanPaymentResult {
 
     static LoanPayment fromSdk(PaymentResponse response) {
         new LoanPayment(
+                paymentId: new Random().nextInt(90000000),
                 supplierOrderId: response.supplierOrderId,
                 customerUserId: response.customerUserId,
                 supplierId: response.supplierId,
