@@ -1592,7 +1592,7 @@ class GroceryListing {
                             }
                             .collect { it.first as ProductCart }
                             .sort {
-                                it.product.prices.findResult { it.commercialPromotions.isPresent() } ? -1 : 1
+                                it.product.prices.find { it.commercialPromotions.isPresent() } ? -1 : 1
                             }
             new SyncCartResult(
                     promoted: promoted,
