@@ -229,8 +229,7 @@ class ProportionalQuantityFreeProduct implements RewardItem {
 
 enum RewardsNodeType {
     AND,
-    OR,
-    ITEMS
+    OR
 }
 
 @EqualsAndHashCode
@@ -282,7 +281,7 @@ class FreeProduct implements CommercialPromotionType {
                                         new RewardsNode(
                                                 id: id,
                                                 parent: empty(),
-                                                type: RewardsNodeType.ITEMS,
+                                                type: RewardsNodeType.AND,
                                                 items: [
                                                         new FixedQuantityFreeProduct(
                                                                 product: product,

@@ -49,7 +49,6 @@ union RewardItem = FixedQuantityFreeProduct | ProportionalQuantityFreeProduct
 enum RewardsNodeType {
   AND
   OR
-  ITEMS
 }
 
 type RewardsNode {
