@@ -67,4 +67,24 @@ class OrderResolver implements GraphQLResolver<Order> {
     Money totalMoney(Order order) {
         moneyService.getMoney(order.accessToken, order.total_money)
     }
+
+    static PaymentMode paymentMode(Order order) {
+        switch (order.total_money.toInteger()) {
+            case 0..100:
+                new PaymentMode(paymentType: PaymentModeType.PAY_NOW)
+                break
+            case 101..200:
+                new PaymentMode(paymentType: PaymentModeType.PAY_LATER)
+                break
+            case 201..300:
+                new PaymentMode(paymentType: PaymentModeType.PAY_NOW_OR_LATER)
+                break
+            case 301..400:
+                new PaymentMode(paymentType: PaymentModeType.NONE)
+                break
+            default:
+                new PaymentMode(paymentType: PaymentModeType.PAY_NOW_OR_LATER)
+                break
+        }
+    }
 }

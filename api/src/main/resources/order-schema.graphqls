@@ -367,6 +367,7 @@ type Order {
   discountsMoney: Money
   total: Float
   totalMoney: Money
+  paymentMode: PaymentMode!
 }
 
 enum CustomerOrderFindFailedReason {
@@ -810,3 +811,15 @@ type SummaryFailed {
 union SupplierOrderResponse = SupplierOrder | SupplierOrderFailed
 
 union SummaryResult = OrderSummaryResponse | SummaryFailed
+
+enum PaymentModeType {
+  PAY_NOW,
+  PAY_LATER,
+  PAY_NOW_OR_LATER,
+  NONE
+}
+
+type PaymentMode {
+  paymentType: PaymentModeType!,
+  text(languageTag: String!): String!
+}

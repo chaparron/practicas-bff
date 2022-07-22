@@ -57,8 +57,8 @@ class TestExtensions {
         new SupportedMinimumAmountResponse(BigDecimal.TEN, country)
     }
 
-    static Order anyOrder(OrderStatus status, List<SupplierOrder> supplierOrders) {
-        new Order(id: 007, status: status, supplierOrders: supplierOrders)
+    static Order anyOrder(OrderStatus status, List<SupplierOrder> supplierOrders, BigDecimal total_money = null) {
+        new Order(id: 007, status: status, supplierOrders: supplierOrders, total_money: total_money)
     }
 
     static Customer anyCustomerWithIdAndAccessToken(String country) {

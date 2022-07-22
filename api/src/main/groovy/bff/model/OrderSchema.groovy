@@ -887,3 +887,14 @@ class MarkSuggestionInput {
     String accessToken
     List<Long> supplierIds
 }
+
+enum PaymentModeType {
+    PAY_NOW,
+    PAY_LATER,
+    PAY_NOW_OR_LATER,
+    NONE
+}
+
+class PaymentMode {
+    PaymentModeType paymentType
+}
