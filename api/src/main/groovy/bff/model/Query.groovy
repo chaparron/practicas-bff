@@ -191,7 +191,7 @@ class Query implements GraphQLQueryResolver {
     }
 
     List<SupplierOrder> getSupplierOrders(GetSupplierOrdersInput input) {
-        orderBridge.getSupplierOrders(input.accessToken, input.orderId)
+        orderBridge.getSupplierOrders(input.accessToken, new Order(id: input.orderId))
     }
 
     SupplierResponse getSupplier(GetSupplierInput getSupplierInput) {
