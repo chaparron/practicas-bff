@@ -1,6 +1,7 @@
 package bff.model
 
 import bff.bridge.BrandBridge
+import bff.bridge.OrderBridge
 import bff.bridge.ProductBridge
 import bff.bridge.SupplierHomeBridge
 import bff.bridge.sdk.GroceryListing
@@ -10,7 +11,9 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 
+import static bff.TestExtensions.randomString
 import static org.junit.Assert.assertEquals
+import static org.mockito.ArgumentMatchers.*
 import static org.mockito.Mockito.*
 
 @RunWith(MockitoJUnitRunner.class)
@@ -24,6 +27,9 @@ class QueryTest {
     SupplierHomeBridge supplierBridge
     @Mock
     GroceryListing groceryListing
+    @Mock
+    OrderBridge orderBridge
+
     @InjectMocks
     Query query
 
@@ -101,4 +107,17 @@ class QueryTest {
         verify(supplierBridge, never()).previewHomeSuppliers(input)
     }
 
+
+    @Test
+    void 'requesting a valid orderId should request to the orderBridge'() {
+        def input = new GetSupplierOrdersInput(accessToken: randomString(), orderId: 66l)
+        def response = [new SupplierOrder()]
+
+        when(orderBridge.getSupplierOrders(any(), any())).thenReturn(response)
+
+        assertEquals(response, query.getSupplierOrders(input))
+        verify(orderBridge).getSupplierOrders(eq(input.accessToken), argThat{
+            it.id == input.orderId
+        })
+    }
 }
