@@ -160,6 +160,8 @@ type Query {
   findInvoice(input: FindInvoiceInput!): InvoiceRetailerResponse
 
   downloadPDFInvoice(input: DownloadInvoiceInput!): String!
+
+  findMyCoupons(input: FindMyCouponsInput!): CouponResponse
 }
 
 type Mutation {

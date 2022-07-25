@@ -1,0 +1,14 @@
+type Coupon {
+  code: String!
+  description: String!
+  expires: TimestampOutput!
+}
+
+type CouponResponse {
+  coupons: [Coupon!]!
+}
+input FindMyCouponsInput {
+  accessToken: String!
+  items: [ProductCartItemInput!]!
+  totalPrice: Float!
+}
