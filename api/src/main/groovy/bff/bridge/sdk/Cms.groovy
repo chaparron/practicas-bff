@@ -10,8 +10,9 @@ import scala.Option
 import wabi2b.cms.sdk.*
 import wabi2b.cms.sdk.Banner as CmsBanner
 import wabi2b.cms.sdk.Brand as CmsBrand
+import wabi2b.cms.sdk.CommercialPromotion as CmsCommercialPromotion
 import wabi2b.cms.sdk.Discount as CmsDiscount
-import wabi2b.cms.sdk.FreeProduct as CmsFreeProduct
+import wabi2b.cms.sdk.FixedQuantityFreeProduct as CmsFixedQuantityFreeProduct
 import wabi2b.cms.sdk.Module as CmsModule
 import wabi2b.cms.sdk.Piece as CmsPiece
 import wabi2b.cms.sdk.Product as CmsProduct
@@ -233,12 +234,12 @@ class Cms {
                     }
                     def filteredByCollection = { UriBuilder b ->
                         request.filtering().byCollection()
-                                .map {b.queryParam("collection", it.id()) }
+                                .map { b.queryParam("collection", it.id()) }
                                 .getOrElse { b }
                     }
                     def filteredByDiscount = { UriBuilder b ->
                         request.filtering().byDiscount()
-                                .map {b.queryParam("discount", it.min()) }
+                                .map { b.queryParam("discount", it.min()) }
                                 .getOrElse { b }
                     }
                     def sortedByPrice = { UriBuilder b ->
@@ -399,68 +400,98 @@ class Cms {
                             disableMinAmountCount: option.minPurchaseAmountCountDisabled()
                     ),
                     commercialPromotions: toJava(option.commercialPromotion())
-                            .flatMap { promo ->
-                                switch (promo) {
-                                    case { it instanceof CmsDiscount }:
-                                        return of(
-                                                commercialPromotion(
-                                                        option,
-                                                        promo as CmsDiscount,
-                                                        countryId
-                                                )
-                                        )
-                                    case { it instanceof CmsFreeProduct }:
-                                        return of(commercialPromotion(promo as CmsFreeProduct))
-                                    default: empty() as Optional<CommercialPromotionType>
-                                }
-                            }
-                            .map { new CommercialPromotions(it) },
+                            .flatMap { commercialPromotions(option, it, countryId) },
                     accessToken: this.accessToken.orElse(null),
                     countryId: countryId
             )
         }
 
-        protected Discount commercialPromotion(AvailableOption option,
-                                               CmsDiscount promotion,
-                                               String countryId) {
-            def steps = asJava(promotion.steps()).collect {
-                new DiscountStep(
-                        from: it.from(),
-                        to: it.to(),
-                        value: option.price().toBigDecimal() - it.amount().toBigDecimal(),
-                        unitValue: option.price() / option.display().units() - it.amount() / option.display().units(),
-                        percentage: it.percentage().toBigDecimal(),
-                        countryId: countryId
-                )
-            }
-            new Discount(
-                    id: promotion.id(),
-                    description: promotion.description(),
-                    expiration: new TimestampOutput(promotion.expiration().toString()),
-                    label: labelBuilder.discount(steps),
-                    remainingUses: promotion.remainingUses(),
-                    progressive: promotion.progressive(),
-                    steps: steps
+        protected Optional<CommercialPromotions> commercialPromotions(AvailableOption option,
+                                                                      CmsCommercialPromotion promotion,
+                                                                      String countryId) {
+            (of(
+                    asJava(promotion.steps()).findResults { step ->
+                        toJava(step.rewards().headOption())
+                                .flatMap { toJava(it.items().headOption()) }
+                                .filter { it instanceof CmsDiscount }
+                                .map {
+                                    def discount = (it as CmsDiscount)
+                                    new DiscountStep(
+                                            from: step.from(),
+                                            to: toJava(step.to()).orElse(null),
+                                            value: option.price().toBigDecimal() - discount.amount().toBigDecimal(),
+                                            unitValue: option.price() / option.display().units() - discount.amount() / option.display().units(),
+                                            percentage: discount.percentage().toBigDecimal(),
+                                            countryId: countryId
+                                    )
+                                }
+                                .orElse(null)
+                    }.toList()
             )
-        }
-
-        protected FreeProduct commercialPromotion(CmsFreeProduct promotion) {
-            new FreeProduct(
-                    promotion.id(),
-                    promotion.description(),
-                    new TimestampOutput(promotion.expiration().toString()),
-                    labelBuilder.freeProduct(),
-                    promotion.remainingUses(),
-                    promotion.from(),
-                    toJava(promotion.to()).orElse(null) as Integer,
-                    promotion.quantity(),
-                    new Product(product(promotion.product())),
-                    new Display(
-                            id: promotion.display().id().toInteger(),
-                            ean: promotion.display().ean(),
-                            units: promotion.display().units()
-                    )
-            )
+                    .filter { !it.empty }
+                    .map { steps ->
+                        new Discount(
+                                id: promotion.id(),
+                                description: promotion.description(),
+                                expiration: new TimestampOutput(promotion.expiration().toString()),
+                                label: labelBuilder.discount(steps),
+                                remainingUses: promotion.remainingUses(),
+                                progressive: promotion.progressive(),
+                                steps: steps
+                        )
+                    } | {
+                toJava(promotion.steps().headOption())
+                        .flatMap { step ->
+                            of(
+                                    asJava(step.rewards()).findResults { node ->
+                                        of(
+                                                asJava(node.items()).findResults { reward ->
+                                                    if (reward instanceof CmsFixedQuantityFreeProduct) {
+                                                        def freeProduct = reward as CmsFixedQuantityFreeProduct
+                                                        new FixedQuantityFreeProduct(
+                                                                quantity: freeProduct.quantity(),
+                                                                product: new Product(product(freeProduct.product())),
+                                                                display: new Display(
+                                                                        id: freeProduct.display().id().toInteger(),
+                                                                        ean: freeProduct.display().ean(),
+                                                                        units: freeProduct.display().units()
+                                                                )
+                                                        )
+                                                    } else null
+                                                }.toList()
+                                        )
+                                                .filter { !it.empty }
+                                                .map { items ->
+                                                    new RewardsNode(
+                                                            id: node.id(),
+                                                            parent: toJava(node.parent()),
+                                                            type: (node.nodeType() instanceof AndOperator) ? RewardsNodeType.AND : RewardsNodeType.OR,
+                                                            items: items
+                                                    )
+                                                }
+                                                .orElse(null)
+                                    }
+                            )
+                                    .filter { !it.empty }
+                                    .map {
+                                        new FreeProduct(
+                                                promotion.id(),
+                                                promotion.description(),
+                                                new TimestampOutput(promotion.expiration().toString()),
+                                                labelBuilder.freeProduct(),
+                                                promotion.remainingUses(),
+                                                [
+                                                        new FreeProductStep(
+                                                                from: step.from(),
+                                                                to: toJava(step.to()).orElse(null),
+                                                                rewards: it
+                                                        )
+                                                ]
+                                        )
+                                    }
+                        }
+            })
+                    .map { new CommercialPromotions(it) }
         }
 
         private Supplier supplier(AvailableOption option) {

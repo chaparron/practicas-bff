@@ -70,9 +70,5 @@ type FreeProduct {
   expiration: TimestampOutput!
   label(languageTag: LanguageTag!): String!
   remainingUses: Int!
-  from: Int!
-  quantity: Int!
-  product: Product!
-  display: Display!
   steps: [FreeProductStep!]!
 }

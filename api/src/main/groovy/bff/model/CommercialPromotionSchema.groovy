@@ -262,46 +262,6 @@ class FreeProduct implements CommercialPromotionType {
             TimestampOutput expiration,
             Closure<String> label,
             Integer remainingUses,
-            Integer from,
-            Integer to,
-            Integer quantity,
-            Product product,
-            Display display) {
-        this(
-                id,
-                description,
-                expiration,
-                label,
-                remainingUses,
-                [
-                        new FreeProductStep(
-                                from: from,
-                                to: to,
-                                rewards: [
-                                        new RewardsNode(
-                                                id: id,
-                                                parent: empty(),
-                                                type: RewardsNodeType.AND,
-                                                items: [
-                                                        new FixedQuantityFreeProduct(
-                                                                product: product,
-                                                                display: display,
-                                                                quantity: quantity
-                                                        )
-                                                ]
-                                        )
-                                ]
-                        )
-                ]
-        )
-    }
-
-    FreeProduct(
-            String id,
-            String description,
-            TimestampOutput expiration,
-            Closure<String> label,
-            Integer remainingUses,
             List<FreeProductStep> steps) {
         this.id = id
         this.description = description
