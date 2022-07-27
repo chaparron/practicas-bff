@@ -105,6 +105,9 @@ class Main {
                 .add(FixedQuantityFreeProduct.class)
                 .add(ProportionalQuantityFreeProduct.class)
                 .add(InstantPaymentProvider.class)
+                .add(JpMorganPaymentGatewayData.class)
+                .add(PaymentGatewayDataFailed.class)
+                .add(PaymentGatewayDataResult)
     }
 
     /**
