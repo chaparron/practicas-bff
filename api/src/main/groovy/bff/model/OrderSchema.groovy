@@ -254,6 +254,7 @@ class SupplierOrder implements SupplierOrderResponse {
     Long id
     Order order
     SupplierOrderStatus status
+    SupplierOrderPaymentV2 payment
     TimestampOutput created
     TimestampOutput updated
     TimestampOutput shippedAt
@@ -290,6 +291,11 @@ class SupplierOrder implements SupplierOrderResponse {
     Map metadata
     List<Summary> summary
     List<AppliedPromotionResponse> appliedPromotions
+}
+
+class SupplierOrderPaymentV2 {
+    Long supplierOrderId
+    Long paymentId
 }
 
 class SupplierOrderResult {

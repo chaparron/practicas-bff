@@ -189,6 +189,7 @@ type SupplierOrder {
   order: Order
   supplier: Supplier!
   status: SupplierOrderStatus!
+  payment: SupplierOrderPaymentV2
   created: TimestampOutput!
   updated: TimestampOutput
   shippedAt: TimestampOutput
@@ -264,6 +265,9 @@ enum PaymentProviderCode {
   JPMORGAN, SUPERMONEY
 }
 
+type SupplierOrderPaymentV2 {
+  paymentId: Long!
+}
 
 type SupplierOrderResult {
   id:Int!
