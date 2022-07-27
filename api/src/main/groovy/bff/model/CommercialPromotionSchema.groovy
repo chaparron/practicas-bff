@@ -56,18 +56,7 @@ class CommercialPromotion {
     CommercialPromotionType type
     Closure<String> label
     Integer remainingUses
-
-    CommercialPromotion(CommercialPromotionType promotion) {
-        switch (promotion) {
-            case { it instanceof Discount }:
-                new CommercialPromotion(promotion as Discount)
-                break
-            case { it instanceof FreeProduct }:
-                new CommercialPromotion(promotion as FreeProduct)
-                break
-            default: null
-        }
-    }
+    Set<Integer> linkedProducts
 
     CommercialPromotion(Discount discount) {
         id = discount.id
@@ -76,6 +65,7 @@ class CommercialPromotion {
         type = discount
         label = discount.label
         remainingUses = discount.remainingUses
+        linkedProducts = discount.linkedProducts
     }
 
     CommercialPromotion(FreeProduct freeProduct) {
@@ -85,6 +75,7 @@ class CommercialPromotion {
         type = freeProduct
         label = freeProduct.label
         remainingUses = freeProduct.remainingUses
+        linkedProducts = freeProduct.linkedProducts
     }
 
 }
@@ -153,6 +144,11 @@ class CommercialPromotionLabelBuilder {
 
 }
 
+class MinProductQuantityByProduct {
+    Integer product
+    Integer quantity
+}
+
 class DiscountStep {
     Integer from
     Integer to
@@ -160,6 +156,7 @@ class DiscountStep {
     BigDecimal unitValue
     BigDecimal percentage
     String countryId
+    Map<Integer, Integer> minQuantityByProducts
 }
 
 @EqualsAndHashCode(includes = ["id"])
@@ -171,6 +168,7 @@ class Discount implements CommercialPromotionType {
     Integer remainingUses
     Boolean progressive
     List<DiscountStep> steps
+    Set<Integer> linkedProducts
 
     def minValue() { steps.min { it.value }.value }
 
@@ -245,6 +243,7 @@ class FreeProductStep {
     Integer from
     Integer to
     List<RewardsNode> rewards
+    Map<Integer, Integer> minQuantityByProducts
 }
 
 @EqualsAndHashCode(includes = ["id"])
@@ -255,21 +254,7 @@ class FreeProduct implements CommercialPromotionType {
     Closure<String> label
     Integer remainingUses
     List<FreeProductStep> steps
-
-    FreeProduct(
-            String id,
-            String description,
-            TimestampOutput expiration,
-            Closure<String> label,
-            Integer remainingUses,
-            List<FreeProductStep> steps) {
-        this.id = id
-        this.description = description
-        this.expiration = expiration
-        this.label = label
-        this.remainingUses = remainingUses
-        this.steps = steps
-    }
+    Set<Integer> linkedProducts
 
     @Override
     boolean appliesTo(List<ProductCart> selection) {
@@ -291,12 +276,13 @@ class FreeProduct implements CommercialPromotionType {
 
     FreeProduct labeled(Closure<String> label) {
         new FreeProduct(
-                this.id,
-                this.description,
-                this.expiration,
-                label,
-                this.remainingUses,
-                this.steps
+                id:  this.id,
+                description:  this.description,
+                expiration:  this.expiration,
+                label:  label,
+                remainingUses:  this.remainingUses,
+                steps:  this.steps,
+                linkedProducts: this.linkedProducts
         )
     }
 

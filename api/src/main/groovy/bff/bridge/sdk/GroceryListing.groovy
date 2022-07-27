@@ -907,7 +907,11 @@ class GroceryListing {
                                             value: option.price().toBigDecimal() - discount.amount().toBigDecimal(),
                                             unitValue: option.price() / option.display().units() - discount.amount() / option.display().units(),
                                             percentage: discount.percentage().toBigDecimal(),
-                                            countryId: countryId
+                                            countryId: countryId,
+                                            minQuantityByProducts:
+                                                    asJava(step.minQuantityByProducts()).collectEntries {
+                                                        [it.key.toInteger(), it.value as Integer]
+                                                    }
                                     )
                                 }
                                 .orElse(null)
@@ -922,7 +926,8 @@ class GroceryListing {
                                 label: labelBuilder.discount(steps),
                                 remainingUses: promotion.remainingUses(),
                                 progressive: promotion.progressive(),
-                                steps: steps
+                                steps: steps,
+                                linkedProducts: asJava(promotion.linkedProducts()).collect { it.toInteger() }
                         )
                     } | {
                 toJava(promotion.steps().headOption())
@@ -960,18 +965,23 @@ class GroceryListing {
                                     .filter { !it.empty }
                                     .map {
                                         new FreeProduct(
-                                                promotion.id(),
-                                                promotion.description(),
-                                                new TimestampOutput(promotion.expiration().toString()),
-                                                labelBuilder.freeProduct(),
-                                                promotion.remainingUses(),
-                                                [
+                                                id:  promotion.id(),
+                                                description:  promotion.description(),
+                                                expiration:  new TimestampOutput(promotion.expiration().toString()),
+                                                label:  labelBuilder.freeProduct(),
+                                                remainingUses:  promotion.remainingUses(),
+                                                steps: [
                                                         new FreeProductStep(
                                                                 from: step.from(),
                                                                 to: toJava(step.to()).orElse(null),
-                                                                rewards: it
+                                                                rewards: it,
+                                                                minQuantityByProducts:
+                                                                        asJava(step.minQuantityByProducts()).collectEntries {
+                                                                            [it.key.toInteger(), it.value as Integer]
+                                                                        }
                                                         )
-                                                ]
+                                                ],
+                                                linkedProducts: asJava(promotion.linkedProducts()).collect { it.toInteger() }
                                         )
                                     }
                         }
