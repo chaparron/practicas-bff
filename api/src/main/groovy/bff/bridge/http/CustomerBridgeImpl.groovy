@@ -718,12 +718,12 @@ class CustomerBridgeImpl implements CustomerBridge {
 
         def retailDetail1 = new RetailDetail(
                 sku: "SKU - I_P_S_QA",
-                quantity: invoicesPossibles.size()
+                quantity: 1
         )
 
         def retailDetail2 = new RetailDetail(
                 sku: "SKU I_P_S_QA",
-                quantity: invoicesPossibles.size()
+                quantity: 3
         )
 
         List<RetailDetail> retailDetailComposedList = new ArrayList()
@@ -745,7 +745,7 @@ class CustomerBridgeImpl implements CustomerBridge {
         valueMoney1.symbol("in")
 
         def retailerInfoSummary1 = new RetailerInfoSummary(
-                volume: invoicesPossibles.size(),
+                volume: 4,
                 value: valueMoney1,
                 debit: money1
         )
@@ -773,7 +773,7 @@ class CustomerBridgeImpl implements CustomerBridge {
         valueMoney4.symbol("in")
 
         def retailerInfoSummary4 = new RetailerInfoSummary(
-                volume: invoicesPossibles.size(),
+                volume: 7,
                 value: valueMoney4,
                 debit: money4
         )
@@ -916,12 +916,12 @@ class CustomerBridgeImpl implements CustomerBridge {
 
         def uniqueDetail = new InvoicesResponse(
                 accessToken: findMyInvoicesInput.accessToken,
-                total: invoicesPossibles.size(),
-                active: invoicesPossibles.size(),
+                total: 33,
+                active: 10,
                 headers: new Headers(
-                        page: invoicesPossibles.size(),
-                        page_size: invoicesPossibles.size(),
-                        total: invoicesPossibles.size(),
+                        page: 44,
+                        page_size: 32,
+                        total: 10,
                         sort: new SortResult(direction: SortResult.Direction.ASC)
                 ),
                 content: retailerInformationUniqueList,
