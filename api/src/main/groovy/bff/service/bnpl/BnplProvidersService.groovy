@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service
 import wabi2b.payments.common.model.request.WalletProvider
 import java.util.stream.Collectors
 
+import static bff.model.CreditLineProvider.*
+
 @Slf4j
 @Service
 class BnplProvidersService {
@@ -41,7 +43,7 @@ class BnplProvidersService {
                 .nextCondition { total.amount >= bnplBridge.supportedMinimumAmount(country, accessToken).amount }
                 .nextCondition { currentUserHasBnplWallet(accessToken) }
                 .nextCondition { supplierHasBnplWallet(Collections.singletonList(supplier), accessToken, supplier.id.toString()) }
-                .successfullyValue([new CreditLineProvider(provider: CreditProvider.SUPERMONEY)])
+                .successfullyValue([buildSuperMoneyCreditLineProvider()])
                 .unsuccessfullyValue(null)
                 .execute()
     }
@@ -60,7 +62,7 @@ class BnplProvidersService {
                 .nextCondition { supplierOrder.payment_pending >= bnplBridge.supportedMinimumAmount(country, accessToken).amount }
                 .nextCondition { currentUserHasBnplWallet(accessToken) }
                 .nextCondition { supplierHasBnplWallet(suppliers, accessToken, supplierId) }
-                .successfullyValue([new CreditLineProvider(provider: CreditProvider.SUPERMONEY)])
+                .successfullyValue([buildSuperMoneyCreditLineProvider()])
                 .unsuccessfullyValue(null)
                 .execute()
     }

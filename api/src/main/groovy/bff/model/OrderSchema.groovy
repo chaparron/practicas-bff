@@ -1,6 +1,7 @@
 package bff.model
 
 import bff.model.order.OrderInputV2
+import groovy.transform.EqualsAndHashCode
 import groovy.transform.InheritConstructors
 
 import static java.util.Optional.of
@@ -253,6 +254,7 @@ class SupplierOrder implements SupplierOrderResponse {
     Long id
     Order order
     SupplierOrderStatus status
+    SupplierOrderPaymentV2 payment
     TimestampOutput created
     TimestampOutput updated
     TimestampOutput shippedAt
@@ -289,6 +291,11 @@ class SupplierOrder implements SupplierOrderResponse {
     Map metadata
     List<Summary> summary
     List<AppliedPromotionResponse> appliedPromotions
+}
+
+class SupplierOrderPaymentV2 {
+    Long supplierOrderId
+    Long paymentId
 }
 
 class SupplierOrderResult {
@@ -682,6 +689,36 @@ enum SummaryFailedReason {
 
     def build() {
         new SummaryFailed(reason: this)
+    }
+}
+
+class SupportedPaymentProviders {
+    List<SupportedPaymentProvider> providers
+    PaymentMode paymentMode
+}
+
+interface PaymentProvider {}
+
+@EqualsAndHashCode
+class SupportedPaymentProvider {
+    String title
+    String description
+    PaymentProvider paymentProvider
+    String avatar
+}
+
+@EqualsAndHashCode
+class InstantPaymentProvider implements PaymentProvider {
+    PaymentProviderCode providerCode
+}
+
+enum PaymentProviderCode {
+    JPMORGAN("J.P.Morgan"), SUPERMONEY("Supermoney")
+
+    String poweredBy
+
+    PaymentProviderCode(String poweredBy) {
+        this.poweredBy = poweredBy
     }
 }
 

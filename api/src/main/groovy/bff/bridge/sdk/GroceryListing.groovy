@@ -10,6 +10,8 @@ import scala.Option
 import sun.util.locale.LanguageTag
 import wabi2b.grocery.listing.sdk.*
 
+import static bff.model.ApplicationMode.NON_PROGRESSIVE
+import static bff.model.ApplicationMode.PROGRESSIVE
 import static bff.model.SortInput.DESC
 import static java.util.Locale.forLanguageTag
 import static java.util.Optional.*
@@ -885,68 +887,108 @@ class GroceryListing {
                             disableMinAmountCount: option.minPurchaseAmountCountDisabled()
                     ),
                     commercialPromotions: toJava(option.commercialPromotion())
-                            .flatMap { promo ->
-                                switch (promo) {
-                                    case { it instanceof AvailableDiscount }:
-                                        return of(
-                                                commercialPromotion(
-                                                        option,
-                                                        promo as AvailableDiscount,
-                                                        countryId
-                                                )
-                                        )
-                                    case { it instanceof AvailableFreeProduct }:
-                                        return of(commercialPromotion(promo as AvailableFreeProduct))
-                                    default: empty() as Optional<CommercialPromotionType>
-                                }
-                            }
-                            .map { new CommercialPromotions(it) },
+                            .flatMap { commercialPromotions(option, it, countryId) },
                     accessToken: this.accessToken.orElse(null),
                     countryId: countryId
             )
         }
 
-        protected Discount commercialPromotion(AvailableOption option,
-                                               AvailableDiscount promotion,
-                                               String countryId) {
-            def steps = asJava(promotion.steps()).collect {
-                new DiscountStep(
-                        from: it.from(),
-                        to: it.to(),
-                        value: option.price().toBigDecimal() - it.amount().toBigDecimal(),
-                        unitValue: option.price() / option.display().units() - it.amount() / option.display().units(),
-                        percentage: it.percentage().toBigDecimal(),
-                        countryId: countryId
-                )
-            }
-            new Discount(
-                    id: promotion.id(),
-                    description: promotion.description(),
-                    expiration: new TimestampOutput(promotion.expiration().toString()),
-                    label: labelBuilder.discount(steps),
-                    remainingUses: promotion.remainingUses(),
-                    progressive: promotion.progressive(),
-                    steps: steps
+        protected Optional<CommercialPromotions> commercialPromotions(AvailableOption option,
+                                                                      AvailableCommercialPromotion promotion,
+                                                                      String countryId) {
+            (of(
+                    asJava(promotion.steps()).findResults { step ->
+                        toJava(step.rewards().headOption())
+                                .flatMap { toJava(it.items().headOption()) }
+                                .filter { it instanceof AvailableDiscount }
+                                .map {
+                                    def discount = (it as AvailableDiscount)
+                                    new DiscountStep(
+                                            from: step.from(),
+                                            to: toJava(step.to()).orElse(null),
+                                            value: option.price().toBigDecimal() - discount.amount().toBigDecimal(),
+                                            unitValue: option.price() / option.display().units() - discount.amount() / option.display().units(),
+                                            percentage: discount.percentage().toBigDecimal(),
+                                            countryId: countryId,
+                                            minQuantityByProducts:
+                                                    asJava(step.minQuantityByProducts()).collectEntries {
+                                                        [it.key.toInteger(), it.value as Integer]
+                                                    }
+                                    )
+                                }
+                                .orElse(null)
+                    }.toList()
             )
-        }
-
-        protected FreeProduct commercialPromotion(AvailableFreeProduct promotion) {
-            new FreeProduct(
-                    promotion.id(),
-                    promotion.description(),
-                    new TimestampOutput(promotion.expiration().toString()),
-                    labelBuilder.freeProduct(),
-                    promotion.remainingUses(),
-                    promotion.from(),
-                    toJava(promotion.to()).orElse(null) as Integer,
-                    promotion.quantity(),
-                    new Product(product(promotion.product())),
-                    new Display(
-                            id: promotion.display().id().toInteger(),
-                            ean: promotion.display().ean(),
-                            units: promotion.display().units()
-                    )
-            )
+                    .filter { !it.empty }
+                    .map { steps ->
+                        new Discount(
+                                id: promotion.id(),
+                                description: promotion.description(),
+                                expiration: new TimestampOutput(promotion.expiration().toString()),
+                                label: labelBuilder.discount(steps),
+                                remainingUses: promotion.remainingUses(),
+                                applicationMode: promotion.progressive() ? PROGRESSIVE : NON_PROGRESSIVE,
+                                steps: steps,
+                                linkedProducts: asJava(promotion.linkedProducts()).collect { it.toInteger() }
+                        )
+                    } | {
+                toJava(promotion.steps().headOption())
+                        .flatMap { step ->
+                            of(
+                                    asJava(step.rewards()).findResults { node ->
+                                        of(
+                                                asJava(node.items()).findResults { reward ->
+                                                    if (reward instanceof AvailableFixedQuantityFreeProduct) {
+                                                        def freeProduct = reward as AvailableFixedQuantityFreeProduct
+                                                        new FixedQuantityFreeProduct(
+                                                                quantity: freeProduct.quantity(),
+                                                                product: new Product(product(freeProduct.product())),
+                                                                display: new Display(
+                                                                        id: freeProduct.display().id().toInteger(),
+                                                                        ean: freeProduct.display().ean(),
+                                                                        units: freeProduct.display().units()
+                                                                )
+                                                        )
+                                                    } else null
+                                                }.toList()
+                                        )
+                                                .filter { !it.empty }
+                                                .map { items ->
+                                                    new RewardsNode(
+                                                            id: node.id(),
+                                                            parent: toJava(node.parent()),
+                                                            type: (node.nodeType() instanceof AvailableAndOperator) ? RewardsNodeType.AND : RewardsNodeType.OR,
+                                                            items: items
+                                                    )
+                                                }
+                                                .orElse(null)
+                                    }
+                            )
+                                    .filter { !it.empty }
+                                    .map {
+                                        new FreeProduct(
+                                                id:  promotion.id(),
+                                                description:  promotion.description(),
+                                                expiration:  new TimestampOutput(promotion.expiration().toString()),
+                                                label:  labelBuilder.freeProduct(),
+                                                remainingUses:  promotion.remainingUses(),
+                                                steps: [
+                                                        new FreeProductStep(
+                                                                from: step.from(),
+                                                                to: toJava(step.to()).orElse(null),
+                                                                rewards: it,
+                                                                minQuantityByProducts:
+                                                                        asJava(step.minQuantityByProducts()).collectEntries {
+                                                                            [it.key.toInteger(), it.value as Integer]
+                                                                        }
+                                                        )
+                                                ],
+                                                linkedProducts: asJava(promotion.linkedProducts()).collect { it.toInteger() }
+                                        )
+                                    }
+                        }
+            })
+                    .map { new CommercialPromotions(it) }
         }
 
         protected Supplier supplier(AvailableOption option) {

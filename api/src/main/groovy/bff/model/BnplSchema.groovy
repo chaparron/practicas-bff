@@ -7,6 +7,7 @@ import groovy.transform.ToString
 
 import java.time.Instant
 
+import static bff.model.CreditLineProvider.buildSuperMoneyCreditLineProvider
 import static bff.model.CreditProvider.SUPERMONEY
 
 //Begin CreditLine related classes ------------------------------------------------------
@@ -40,14 +41,19 @@ class CreditLines implements CreditLinesResult{
                             provider: SUPERMONEY
                     )
                 }.orElse(null),
-                provider: new CreditLineProvider(provider: SUPERMONEY)
+                provider: buildSuperMoneyCreditLineProvider()
         )
     }
 }
 
 @EqualsAndHashCode
-class CreditLineProvider {
+class CreditLineProvider implements PaymentProvider {
     CreditProvider provider
+    PaymentProviderCode providerCode
+
+    static buildSuperMoneyCreditLineProvider() {
+        new CreditLineProvider(provider: SUPERMONEY, providerCode: PaymentProviderCode.SUPERMONEY)
+    }
 }
 
 enum CreditProvider {

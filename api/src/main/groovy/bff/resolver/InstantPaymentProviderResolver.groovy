@@ -1,6 +1,6 @@
 package bff.resolver
 
-import bff.model.CreditLineProvider
+import bff.model.InstantPaymentProvider
 import bff.service.PaymentProviderTranslationService
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,14 +10,14 @@ import reactor.core.publisher.Mono
 import java.util.concurrent.CompletableFuture
 
 @Component
-class CreditLineProviderResolver implements GraphQLResolver<CreditLineProvider> {
+class InstantPaymentProviderResolver implements GraphQLResolver<InstantPaymentProvider> {
 
     @Autowired
     private PaymentProviderTranslationService paymentProviderTranslationService
 
-    CompletableFuture<String> poweredByLabel(CreditLineProvider creditLineProvider, String languageTag) {
+    CompletableFuture<String> poweredByLabel(InstantPaymentProvider instantPaymentProvider, String languageTag) {
         Mono.just(
-                paymentProviderTranslationService.poweredByLabel(creditLineProvider, languageTag)
+                paymentProviderTranslationService.poweredByLabel(instantPaymentProvider, languageTag)
         ).toFuture()
     }
 }

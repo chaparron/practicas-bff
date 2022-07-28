@@ -161,7 +161,10 @@ type Query {
 
   downloadPDFInvoice(input: DownloadInvoiceInput!): String!
 
+  findPaymentGatewayData(input: FindPaymentGatewayDataInput!): PaymentGatewayDataResult
+
   findMyCoupons(input: FindMyCouponsInput!): CouponResponse
+
 }
 
 type Mutation {
@@ -260,6 +263,7 @@ type Mutation {
   updateBranchOfficeProfile(input: UpdateBranchOfficeProfileInput!): Customer!
 
   loanPayment(input: LoanPaymentRequestInput!): LoanPaymentResult!
+
 }
 
 scalar NonEmptyString

@@ -6,7 +6,6 @@ import bff.bridge.CustomerBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.ConflictErrorException
 import bff.model.*
-import bnpl.sdk.model.InvoiceResponse
 import groovy.util.logging.Slf4j
 import io.ktor.client.features.ClientRequestException
 import org.apache.commons.lang3.NotImplementedException
@@ -36,7 +35,6 @@ class CustomerBridgeImpl implements CustomerBridge {
     CustomersSdk customersSdk
     @Autowired
     CustomerSdkMapper customerSdkMapper
-
 
     @Override
     Customer myProfile(String accessToken) {
@@ -719,13 +717,13 @@ class CustomerBridgeImpl implements CustomerBridge {
     InvoicesResponse findMyInvoices(FindMyInvoicesInput findMyInvoicesInput) {
 
         def retailDetail1 = new RetailDetail(
-                sku: "SKU 4225-776-3234",
-                quantity: 10
+                sku: "SKU - I_P_S_QA",
+                quantity: 1
         )
 
         def retailDetail2 = new RetailDetail(
-                sku: "SKU 4225-776-1201",
-                quantity: 5
+                sku: "SKU I_P_S_QA",
+                quantity: 3
         )
 
         List<RetailDetail> retailDetailComposedList = new ArrayList()
@@ -747,7 +745,7 @@ class CustomerBridgeImpl implements CustomerBridge {
         valueMoney1.symbol("in")
 
         def retailerInfoSummary1 = new RetailerInfoSummary(
-                volume: 30000,
+                volume: 4,
                 value: valueMoney1,
                 debit: money1
         )
@@ -761,7 +759,7 @@ class CustomerBridgeImpl implements CustomerBridge {
         money3.symbol("in")
 
         def retailerInfoSummary3 = new RetailerInfoSummary(
-                volume: 12000,
+                volume: invoicesPossibles.size(),
                 value: valueMoney3,
                 debit: money3
         )
@@ -775,7 +773,7 @@ class CustomerBridgeImpl implements CustomerBridge {
         valueMoney4.symbol("in")
 
         def retailerInfoSummary4 = new RetailerInfoSummary(
-                volume: 60000,
+                volume: 7,
                 value: valueMoney4,
                 debit: money4
         )
@@ -918,11 +916,11 @@ class CustomerBridgeImpl implements CustomerBridge {
 
         def uniqueDetail = new InvoicesResponse(
                 accessToken: findMyInvoicesInput.accessToken,
-                total: 10,
-                active: 1,
+                total: 33,
+                active: 10,
                 headers: new Headers(
-                        page: 1,
-                        page_size: 5,
+                        page: 44,
+                        page_size: 32,
                         total: 10,
                         sort: new SortResult(direction: SortResult.Direction.ASC)
                 ),

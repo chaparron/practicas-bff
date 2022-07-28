@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component
 class PaymentModeResolver implements GraphQLResolver<PaymentMode> {
 
     String text(PaymentMode paymentMode, String languageTag) {
+        // TODO: Use real implementation with MessageSource
         paymentMode.paymentType.name()
     }
 }

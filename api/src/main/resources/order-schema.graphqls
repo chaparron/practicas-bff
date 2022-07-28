@@ -189,6 +189,7 @@ type SupplierOrder {
   order: Order
   supplier: Supplier!
   status: SupplierOrderStatus!
+  payment: SupplierOrderPaymentV2
   created: TimestampOutput!
   updated: TimestampOutput
   shippedAt: TimestampOutput
@@ -223,8 +224,50 @@ type SupplierOrder {
   summary: [Summary!]
   appliedPromotions: [AppliedPromotionResponse!]!
   creditLineProviders: [CreditLineProvider!]
+  supportedPaymentProviders: SupportedPaymentProviders!
 }
 
+type SupportedPaymentProviders {
+  providers: [SupportedPaymentProvider!]
+  paymentMode: PaymentMode!
+}
+
+enum PaymentModeType {
+  PAY_NOW,
+  PAY_LATER,
+  PAY_NOW_OR_LATER,
+  NONE
+}
+
+type PaymentMode {
+  paymentType: PaymentModeType!,
+  text(languageTag: String!): String!
+}
+
+interface PaymentProvider {
+  providerCode: PaymentProviderCode!
+  poweredByLabel(languageTag: String!): String!
+}
+
+type SupportedPaymentProvider {
+  title(languageTag: String!): String!
+  description(languageTag: String!): String!
+  paymentProvider: PaymentProvider!
+  avatar: String!
+}
+
+type InstantPaymentProvider implements PaymentProvider {
+  providerCode: PaymentProviderCode!
+  poweredByLabel(languageTag: String!): String!
+}
+
+enum PaymentProviderCode {
+  JPMORGAN, SUPERMONEY
+}
+
+type SupplierOrderPaymentV2 {
+  paymentId: Long!
+}
 
 type SupplierOrderResult {
   id:Int!

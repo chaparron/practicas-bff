@@ -12,6 +12,19 @@ type CommercialPromotion {
   type: CommercialPromotionType!
   label(languageTag: LanguageTag!): String!
   remainingUses: Int!
+  applicationMode: ApplicationMode!
+  linkedProducts: [Int!]!
+}
+
+type MinProductQuantityByProduct {
+  product: Int!
+  quantity: Int!
+}
+
+enum ApplicationMode {
+  SLABBED,
+  PROGRESSIVE,
+  NON_PROGRESSIVE
 }
 
 type DiscountStep {
@@ -20,6 +33,7 @@ type DiscountStep {
   value: Money!
   unitValue: Money!
   percentage: Float!
+  minQuantityByProducts: [MinProductQuantityByProduct!]!
 }
 
 type Discount {
@@ -29,7 +43,9 @@ type Discount {
   label(languageTag: LanguageTag!): String!
   remainingUses: Int!
   progressive: Boolean!
+  applicationMode: ApplicationMode!
   steps: [DiscountStep!]!
+  linkedProducts: [Int!]!
 }
 
 type FixedQuantityFreeProduct {
@@ -62,6 +78,7 @@ type FreeProductStep {
   from: Int!
   to: Int!
   rewards: [RewardsNode!]!
+  minQuantityByProducts: [MinProductQuantityByProduct!]!
 }
 
 type FreeProduct {
@@ -70,9 +87,7 @@ type FreeProduct {
   expiration: TimestampOutput!
   label(languageTag: LanguageTag!): String!
   remainingUses: Int!
-  from: Int!
-  quantity: Int!
-  product: Product!
-  display: Display!
+  applicationMode: ApplicationMode!
   steps: [FreeProductStep!]!
+  linkedProducts: [Int!]!
 }

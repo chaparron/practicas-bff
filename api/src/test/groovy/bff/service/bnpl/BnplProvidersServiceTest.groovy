@@ -14,6 +14,7 @@ import wabi2b.payments.common.model.response.CheckSupportedProvidersResponse
 import wabi2b.payments.common.model.response.SupplierWalletResponse
 import wabi2b.payments.common.model.response.WalletResponse
 
+import static bff.model.CreditLineProvider.buildSuperMoneyCreditLineProvider
 import static bff.model.OrderStatus.*
 import static java.math.BigDecimal.ONE
 import static java.math.BigDecimal.ZERO
@@ -130,7 +131,7 @@ class BnplProvidersServiceTest {
                         valueMoney: new Money("ARS", BigDecimal.TEN)
                 )])
         assert sut.creditLineProvidersFor(orderSummary, new Money("ARS", BigDecimal.TEN)) ==
-                [new CreditLineProvider(provider: CreditProvider.SUPERMONEY)]
+                [buildSuperMoneyCreditLineProvider()]
 
         verify(walletBridge).getWallet(indianUserId, walletProvider, supplierWithAccessToken.accessToken)
         verify(walletBridge).getSupportedProvidersBetween(singletonList(supplier.id.toString()), wabipayCustomerWallet.userId, WalletProvider.@Companion.buyNowPayLater(), supplierWithAccessToken.accessToken)
@@ -187,7 +188,7 @@ class BnplProvidersServiceTest {
         when(orderBridge.getSupplierOrders(indianToken, supplierOrder.order)).thenReturn(singletonList(supplierOrder))
         when(bnplBridge.supportedMinimumAmount(Mockito.any(), Mockito.any())).thenReturn(new SupportedMinimumAmountResponse(supplierOrder.payment_pending, "in"))
 
-        assert sut.creditLineProvidersFor(supplierOrder) == [new CreditLineProvider(provider: CreditProvider.SUPERMONEY)]
+        assert sut.creditLineProvidersFor(supplierOrder) == [buildSuperMoneyCreditLineProvider()]
 
         verify(walletBridge).getWallet(indianUserId, walletProvider, indianToken)
         verify(walletBridge).getSupportedProvidersBetween(singletonList(supplier.id.toString()), wabipayCustomerWallet.userId, WalletProvider.@Companion.buyNowPayLater(), indianToken)
@@ -227,7 +228,7 @@ class BnplProvidersServiceTest {
         when(bnplBridge.supportedMinimumAmount(Mockito.any(), Mockito.any())).thenReturn(new SupportedMinimumAmountResponse(supplierOrder.payment_pending, "in"))
 
         assert sut.creditLineProvidersFor(supplierOrder) ==
-                [new CreditLineProvider(provider: CreditProvider.SUPERMONEY)]
+                [buildSuperMoneyCreditLineProvider()]
 
         verify(walletBridge).getWallet(indianUserId, walletProvider, indianToken)
         verify(walletBridge).getSupportedProvidersBetween(singletonList(supplier.id.toString()), bnplCustomerWallet.userId, WalletProvider.@Companion.buyNowPayLater(), indianToken)

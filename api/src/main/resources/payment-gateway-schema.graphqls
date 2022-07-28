@@ -1,0 +1,22 @@
+input FindPaymentGatewayDataInput {
+  accessToken: String!
+  paymentProviderCode: PaymentProviderCode!
+  amount: Float!
+}
+
+union PaymentGatewayDataResult = JpMorganPaymentGatewayData | PaymentGatewayDataFailed
+
+type PaymentGatewayDataFailed{
+  reason: PaymentGatewayDataFailedReason!
+}
+
+enum PaymentGatewayDataFailedReason {
+  GATEWAY_NOT_SUPPORTED
+}
+
+type JpMorganPaymentGatewayData {
+  merchantId: String!
+  terminalId: String!
+  encData: String!
+  bankId: String!
+}

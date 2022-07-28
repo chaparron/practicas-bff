@@ -83,6 +83,10 @@ class OrderBridgeImpl implements OrderBridge {
 
             it.supplierOrders.each {
                 it.accessToken = findOrdersInput.accessToken
+                it.payment = new SupplierOrderPaymentV2(
+                        supplierOrderId: it.id,
+                        paymentId: 1234
+                )
 
             }
         }
@@ -110,6 +114,13 @@ class OrderBridgeImpl implements OrderBridge {
         customerOrderResponse.supplierOrder.order.accessToken = findSupplierOrderInput.accessToken
         customerOrderResponse.customer.accessToken = findSupplierOrderInput.accessToken
         customerOrderResponse.supplierOrder.products.each { it.accessToken = findSupplierOrderInput.accessToken }
+
+        customerOrderResponse.supplierOrder.order.supplierOrders.each {
+            it.payment = new SupplierOrderPaymentV2(
+                    supplierOrderId: it.id,
+                    paymentId: 1234
+            )
+        }
 
         customerOrderResponse.supplierOrder.summary = customerOrderResponse.supplierOrder.metadata.summary.collect { sm ->
             new Summary(
