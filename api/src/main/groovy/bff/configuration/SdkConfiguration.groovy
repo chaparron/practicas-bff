@@ -8,6 +8,10 @@ import bff.bridge.sdk.GroceryListing
 import bff.bridge.sdk.credits.HttpCreditService
 import bnpl.sdk.BnPlSdk
 import bnpl.sdk.HttpBnPlSdk
+//TEST - Security QA
+import com.wabi2b.externalorders.sdk.ExternalOrderClient
+import com.wabi2b.externalorders.sdk.ExternalOrderHttpClient
+//TEST - Security QA
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -61,6 +65,14 @@ class SdkConfiguration {
     URI thirdPartyUrl
     @Value('${bnpl.credits.url:}')
     URI wabi2bBnplCreditsURI
+
+
+    //TEST QA _ Security
+    @Value('${external.orders.url}')
+    String externalOrdersUrl
+    // QA - security
+
+
 
     @Autowired
     CountryBridge countryBridge
@@ -121,6 +133,11 @@ class SdkConfiguration {
     @Bean
     CustomersSdk customersSdk() {
         return new HttpCustomersSdk(customersUrl)
+    }
+
+    @Bean
+    ExternalOrderClient externalOrderClient() {
+        return new ExternalOrderHttpClient(externalOrdersUrl)
     }
 
     @Bean

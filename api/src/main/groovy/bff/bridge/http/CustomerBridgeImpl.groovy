@@ -7,6 +7,9 @@ import bff.configuration.BadRequestErrorException
 import bff.configuration.ConflictErrorException
 import bff.model.*
 import bnpl.sdk.model.InvoiceResponse
+// TEST - Security - qa
+import com.wabi2b.externalorders.sdk.ExternalOrderClient
+// TEST - Security - qa
 import groovy.util.logging.Slf4j
 import io.ktor.client.features.ClientRequestException
 import org.apache.commons.lang3.NotImplementedException
@@ -37,6 +40,10 @@ class CustomerBridgeImpl implements CustomerBridge {
     @Autowired
     CustomerSdkMapper customerSdkMapper
 
+    //TEST - Security QA
+    @Autowired
+    ExternalOrderClient externalOrderClient
+    //TEST - Security QA
 
     @Override
     Customer myProfile(String accessToken) {
@@ -718,14 +725,22 @@ class CustomerBridgeImpl implements CustomerBridge {
     @Override
     InvoicesResponse findMyInvoices(FindMyInvoicesInput findMyInvoicesInput) {
 
+        def invoicesPossibles = externalOrderClient.findInvoice(findMyInvoicesInput.accessToken, "0")
+
+        invoicesPossibles.size()
+
+        def test = invoicesPossibles.forEach {
+            it.customerId
+        }
+
         def retailDetail1 = new RetailDetail(
-                sku: "SKU 4225-776-3234",
-                quantity: 10
+                sku: "SKU - I_P_S_QA",
+                quantity: invoicesPossibles.size()
         )
 
         def retailDetail2 = new RetailDetail(
-                sku: "SKU 4225-776-1201",
-                quantity: 5
+                sku: "SKU I_P_S_QA",
+                quantity: invoicesPossibles.size()
         )
 
         List<RetailDetail> retailDetailComposedList = new ArrayList()
@@ -747,7 +762,7 @@ class CustomerBridgeImpl implements CustomerBridge {
         valueMoney1.symbol("in")
 
         def retailerInfoSummary1 = new RetailerInfoSummary(
-                volume: 30000,
+                volume: invoicesPossibles.size(),
                 value: valueMoney1,
                 debit: money1
         )
@@ -761,7 +776,7 @@ class CustomerBridgeImpl implements CustomerBridge {
         money3.symbol("in")
 
         def retailerInfoSummary3 = new RetailerInfoSummary(
-                volume: 12000,
+                volume: invoicesPossibles.size(),
                 value: valueMoney3,
                 debit: money3
         )
@@ -775,7 +790,7 @@ class CustomerBridgeImpl implements CustomerBridge {
         valueMoney4.symbol("in")
 
         def retailerInfoSummary4 = new RetailerInfoSummary(
-                volume: 60000,
+                volume: invoicesPossibles.size(),
                 value: valueMoney4,
                 debit: money4
         )
@@ -918,12 +933,12 @@ class CustomerBridgeImpl implements CustomerBridge {
 
         def uniqueDetail = new InvoicesResponse(
                 accessToken: findMyInvoicesInput.accessToken,
-                total: 10,
-                active: 1,
+                total: invoicesPossibles.size(),
+                active: invoicesPossibles.size(),
                 headers: new Headers(
-                        page: 1,
-                        page_size: 5,
-                        total: 10,
+                        page: invoicesPossibles.size(),
+                        page_size: invoicesPossibles.size(),
+                        total: invoicesPossibles.size(),
                         sort: new SortResult(direction: SortResult.Direction.ASC)
                 ),
                 content: retailerInformationUniqueList,
