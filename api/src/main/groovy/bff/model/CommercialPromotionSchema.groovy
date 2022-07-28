@@ -56,6 +56,7 @@ class CommercialPromotion {
     CommercialPromotionType type
     Closure<String> label
     Integer remainingUses
+    ApplicationMode applicationMode
     Set<Integer> linkedProducts
 
     CommercialPromotion(Discount discount) {
@@ -65,6 +66,7 @@ class CommercialPromotion {
         type = discount
         label = discount.label
         remainingUses = discount.remainingUses
+        applicationMode = discount.applicationMode
         linkedProducts = discount.linkedProducts
     }
 
@@ -75,6 +77,7 @@ class CommercialPromotion {
         type = freeProduct
         label = freeProduct.label
         remainingUses = freeProduct.remainingUses
+        applicationMode = freeProduct.applicationMode
         linkedProducts = freeProduct.linkedProducts
     }
 
@@ -159,6 +162,12 @@ class DiscountStep {
     Map<Integer, Integer> minQuantityByProducts
 }
 
+enum ApplicationMode {
+    SLABBED,
+    PROGRESSIVE,
+    NON_PROGRESSIVE
+}
+
 @EqualsAndHashCode(includes = ["id"])
 class Discount implements CommercialPromotionType {
     String id
@@ -166,7 +175,7 @@ class Discount implements CommercialPromotionType {
     TimestampOutput expiration
     Closure<String> label
     Integer remainingUses
-    Boolean progressive
+    ApplicationMode applicationMode
     List<DiscountStep> steps
     Set<Integer> linkedProducts
 
@@ -202,7 +211,7 @@ class Discount implements CommercialPromotionType {
                 expiration: this.expiration,
                 label: label,
                 remainingUses: this.remainingUses,
-                progressive: this.progressive,
+                applicationMode: this.applicationMode,
                 steps: this.steps
         )
     }
@@ -253,6 +262,7 @@ class FreeProduct implements CommercialPromotionType {
     TimestampOutput expiration
     Closure<String> label
     Integer remainingUses
+    ApplicationMode applicationMode
     List<FreeProductStep> steps
     Set<Integer> linkedProducts
 
@@ -281,6 +291,7 @@ class FreeProduct implements CommercialPromotionType {
                 expiration:  this.expiration,
                 label:  label,
                 remainingUses:  this.remainingUses,
+                applicationMode: this.applicationMode,
                 steps:  this.steps,
                 linkedProducts: this.linkedProducts
         )

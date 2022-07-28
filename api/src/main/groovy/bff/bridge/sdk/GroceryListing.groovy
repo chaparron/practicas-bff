@@ -10,6 +10,8 @@ import scala.Option
 import sun.util.locale.LanguageTag
 import wabi2b.grocery.listing.sdk.*
 
+import static bff.model.ApplicationMode.NON_PROGRESSIVE
+import static bff.model.ApplicationMode.PROGRESSIVE
 import static bff.model.SortInput.DESC
 import static java.util.Locale.forLanguageTag
 import static java.util.Optional.*
@@ -925,7 +927,7 @@ class GroceryListing {
                                 expiration: new TimestampOutput(promotion.expiration().toString()),
                                 label: labelBuilder.discount(steps),
                                 remainingUses: promotion.remainingUses(),
-                                progressive: promotion.progressive(),
+                                applicationMode: promotion.progressive() ? PROGRESSIVE : NON_PROGRESSIVE,
                                 steps: steps,
                                 linkedProducts: asJava(promotion.linkedProducts()).collect { it.toInteger() }
                         )

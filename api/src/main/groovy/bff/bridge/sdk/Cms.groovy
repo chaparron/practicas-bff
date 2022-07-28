@@ -18,6 +18,8 @@ import wabi2b.cms.sdk.Piece as CmsPiece
 import wabi2b.cms.sdk.Product as CmsProduct
 import wabi2b.cms.sdk.Supplier as CmsSupplier
 
+import static bff.model.ApplicationMode.NON_PROGRESSIVE
+import static bff.model.ApplicationMode.PROGRESSIVE
 import static groovy.lang.Closure.IDENTITY
 import static java.util.Optional.*
 import static scala.jdk.javaapi.CollectionConverters.asJava
@@ -440,7 +442,7 @@ class Cms {
                                 expiration: new TimestampOutput(promotion.expiration().toString()),
                                 label: labelBuilder.discount(steps),
                                 remainingUses: promotion.remainingUses(),
-                                progressive: promotion.progressive(),
+                                applicationMode: promotion.progressive() ? PROGRESSIVE : NON_PROGRESSIVE,
                                 steps: steps,
                                 linkedProducts: asJava(promotion.linkedProducts()).collect { it.toInteger() }
                         )
