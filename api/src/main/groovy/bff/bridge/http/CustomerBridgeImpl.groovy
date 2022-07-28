@@ -759,7 +759,7 @@ class CustomerBridgeImpl implements CustomerBridge {
         money3.symbol("in")
 
         def retailerInfoSummary3 = new RetailerInfoSummary(
-                volume: invoicesPossibles.size(),
+                volume: 10,
                 value: valueMoney3,
                 debit: money3
         )
