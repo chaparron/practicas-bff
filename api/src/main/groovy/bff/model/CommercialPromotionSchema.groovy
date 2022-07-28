@@ -196,9 +196,11 @@ class Discount implements CommercialPromotionType {
         )
     }
 
+    // TODO : Check this implementation, its a hotfix due missing parameter progressive
+    //  see #https://wabiproject.atlassian.net/browse/WO-2590
     boolean appliesTo(Integer quantity) {
         ofNullable(
-                progressive ?
+                applicationMode == ApplicationMode.NON_PROGRESSIVE ?
                         steps.find { quantity >= it.from && quantity <= it?.to } :
                         steps.find { quantity % it.from == 0 && quantity >= it.from && quantity <= it?.to }
         ).isPresent()
@@ -286,13 +288,13 @@ class FreeProduct implements CommercialPromotionType {
 
     FreeProduct labeled(Closure<String> label) {
         new FreeProduct(
-                id:  this.id,
-                description:  this.description,
-                expiration:  this.expiration,
-                label:  label,
-                remainingUses:  this.remainingUses,
+                id: this.id,
+                description: this.description,
+                expiration: this.expiration,
+                label: label,
+                remainingUses: this.remainingUses,
                 applicationMode: this.applicationMode,
-                steps:  this.steps,
+                steps: this.steps,
                 linkedProducts: this.linkedProducts
         )
     }
