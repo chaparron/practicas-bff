@@ -1,14 +1,15 @@
 type Coupon {
-  code: String!
-  description: String!
-  expires: TimestampOutput!
+  code: NonEmptyString!
+  description: NonEmptyString!
+  validUntil: TimestampOutput!
 }
 
-type CouponResponse {
-  coupons: [Coupon!]!
-}
-input FindMyCouponsInput {
-  accessToken: String!
+input RedeemableCouponsRequest {
+  accessToken: NonEmptyString!
   items: [ProductCartItemInput!]!
   totalPrice: Float!
+}
+
+type RedeemableCouponsResponse {
+  coupons: [Coupon!]!
 }

@@ -163,7 +163,7 @@ type Query {
 
   findPaymentGatewayData(input: FindPaymentGatewayDataInput!): PaymentGatewayDataResult
 
-  findMyCoupons(input: FindMyCouponsInput!): CouponResponse
+  redeemableCoupons(request: RedeemableCouponsRequest!): RedeemableCouponsResponse
 
 }
 

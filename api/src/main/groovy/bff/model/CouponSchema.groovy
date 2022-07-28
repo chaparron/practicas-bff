@@ -2,19 +2,21 @@ package bff.model
 
 import groovy.transform.Immutable
 
+import java.time.OffsetDateTime
+
 @Immutable
-class FindMyCouponsInput {
+class RedeemableCouponsRequest {
     String accessToken
-    BigDecimal totalPrice
     List<ProductCartItemInput> items
+    BigDecimal totalPrice
 }
 
 class Coupon {
     String code
     String description
-    TimestampOutput expires
+    OffsetDateTime validUntil
 }
 
-class CouponResponse {
+class RedeemableCouponsResponse {
     List<Coupon> coupons
 }
