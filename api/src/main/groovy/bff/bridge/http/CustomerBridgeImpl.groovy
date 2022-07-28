@@ -6,10 +6,6 @@ import bff.bridge.CustomerBridge
 import bff.configuration.BadRequestErrorException
 import bff.configuration.ConflictErrorException
 import bff.model.*
-import bnpl.sdk.model.InvoiceResponse
-// TEST - Security - qa
-import com.wabi2b.externalorders.sdk.ExternalOrderClient
-// TEST - Security - qa
 import groovy.util.logging.Slf4j
 import io.ktor.client.features.ClientRequestException
 import org.apache.commons.lang3.NotImplementedException
@@ -39,11 +35,6 @@ class CustomerBridgeImpl implements CustomerBridge {
     CustomersSdk customersSdk
     @Autowired
     CustomerSdkMapper customerSdkMapper
-
-    //TEST - Security QA
-    @Autowired
-    ExternalOrderClient externalOrderClient
-    //TEST - Security QA
 
     @Override
     Customer myProfile(String accessToken) {
@@ -724,14 +715,6 @@ class CustomerBridgeImpl implements CustomerBridge {
 
     @Override
     InvoicesResponse findMyInvoices(FindMyInvoicesInput findMyInvoicesInput) {
-
-        def invoicesPossibles = externalOrderClient.findInvoice(findMyInvoicesInput.accessToken, "0")
-
-        invoicesPossibles.size()
-
-        def test = invoicesPossibles.forEach {
-            it.customerId
-        }
 
         def retailDetail1 = new RetailDetail(
                 sku: "SKU - I_P_S_QA",

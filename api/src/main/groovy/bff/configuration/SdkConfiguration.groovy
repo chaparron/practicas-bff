@@ -67,13 +67,6 @@ class SdkConfiguration {
     URI wabi2bBnplCreditsURI
 
 
-    //TEST QA _ Security
-    @Value('${external.orders.url}')
-    String externalOrdersUrl
-    // QA - security
-
-
-
     @Autowired
     CountryBridge countryBridge
     @Autowired
@@ -133,11 +126,6 @@ class SdkConfiguration {
     @Bean
     CustomersSdk customersSdk() {
         return new HttpCustomersSdk(customersUrl)
-    }
-
-    @Bean
-    ExternalOrderClient externalOrderClient() {
-        return new ExternalOrderHttpClient(externalOrdersUrl)
     }
 
     @Bean
