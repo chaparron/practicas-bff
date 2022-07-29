@@ -397,7 +397,7 @@ Resources:
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: external_orders_url
           Value:
-          Fn::ImportValue: !Sub "${EnvironmentStackName}-externalOrders-ApiRootURL"
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-externalOrders-ApiRootURL"
 
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
