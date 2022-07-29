@@ -394,6 +394,11 @@ Resources:
           OptionName: bnpl_enabled_countries
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, BnplEnabledCountries ]
 
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: external_orders_url
+          Value:
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-external-orders-ApiRootURL"
+
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
