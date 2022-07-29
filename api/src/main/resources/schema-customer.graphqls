@@ -269,8 +269,7 @@ input FindMyInvoicesInput {
   accessToken: String!
   fromEpochMillis: Long!
   toEpochMillis: Long!
-  page: Int
-  size: Int
+  cursor: String
 }
 
 
@@ -455,11 +454,9 @@ type ProfileSection{
 }
 
 type InvoicesResponse {
-  headers: Headers
   content: [RetailerInformation!]
   retailerInfoSummary: RetailerInfoSummary
-  total: Int!
-  active: Int!
+  cursor: String
 }
 
 type InvoiceRetailerResponse {

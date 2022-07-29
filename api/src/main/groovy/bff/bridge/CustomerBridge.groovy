@@ -86,4 +86,6 @@ interface CustomerBridge {
     InvoicesResponse findMyInvoices(FindMyInvoicesInput findMyInvoicesInput)
 
     InvoiceRetailerResponse findInvoice(FindInvoiceInput findInvoiceInput)
+
+    String downloadPDFInvoice(DownloadInvoiceInput downloadInvoiceInput)
 }

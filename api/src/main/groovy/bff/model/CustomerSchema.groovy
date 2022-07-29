@@ -587,11 +587,11 @@ class RetailDetail {
     Integer quantity
 }
 
-class InvoicesResponse extends PaginatedResponse<RetailerInformation> {
+class InvoicesResponse {
     String accessToken
-    Long total
-    Long active
     RetailerInfoSummary retailerInfoSummary
+    List<RetailerInformation> content
+    String cursor
 }
 
 class InvoiceRetailerResponse {
@@ -599,10 +599,11 @@ class InvoiceRetailerResponse {
     List<RetailerInformation> retailerInformation
 }
 
-class FindMyInvoicesInput extends PaginatedInput {
+class FindMyInvoicesInput {
     String accessToken
     Long fromEpochMillis
     Long toEpochMillis
+    String cursor
 }
 
 class FindInvoiceInput {
