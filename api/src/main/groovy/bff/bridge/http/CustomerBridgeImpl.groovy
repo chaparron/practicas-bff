@@ -729,21 +729,17 @@ class CustomerBridgeImpl implements CustomerBridge {
         )
 
         if (!dataPagination.values.isEmpty()) {
-            return mapInvoiceResponse(dataPagination)
+            return mapInvoiceResponse(dataPagination, findMyInvoicesInput)
         } else {
             return emptyInvoiceResponse()
         }
 
     }
 
-    private static InvoicesResponse mapInvoiceResponse(DataPagination<ExternalOrder> dataPagination) {
+    private static InvoicesResponse mapInvoiceResponse(DataPagination<ExternalOrder> dataPagination, FindMyInvoicesInput findMyInvoicesInput) {
         List<RetailerInformation> informationItems = new ArrayList()
-        def values = 0
-        def debit = 0
 
         dataPagination.values.forEach {
-            values += it.totalValue
-            debit += it.debit
             informationItems.add(
                     new RetailerInformation(
                             retailerInfoItems: new RetailerInformationItems(
@@ -757,21 +753,11 @@ class CustomerBridgeImpl implements CustomerBridge {
             )
         }
 
-        def valueMoney = new Money("INR", new BigDecimal(values))
-        valueMoney.text("en-US")
-        valueMoney.symbol("in")
-
-        def debitMoney = new Money("INR", new BigDecimal(debit))
-        debitMoney.text("en-US")
-        debitMoney.symbol("in")
-
         new InvoicesResponse(
+                accessToken: findMyInvoicesInput.accessToken,
+                from: findMyInvoicesInput.fromEpochMillis,
+                to: findMyInvoicesInput.toEpochMillis,
                 cursor: dataPagination.cursor,
-                retailerInfoSummary: new RetailerInfoSummary(
-                        value: valueMoney,
-                        debit: debitMoney,
-                        volume: dataPagination.values.size()
-                ),
                 content: informationItems
         )
     }
@@ -822,6 +808,33 @@ class CustomerBridgeImpl implements CustomerBridge {
         String supplierId = downloadInvoiceInput.id.substring(split + 1)
 
         return externalOrderClient.downloadExternalOrderPDF(invoiceNumber, supplierId, downloadInvoiceInput.accessToken)
+    }
+
+    @Override
+    RetailerInfoSummary retailerInfoSummary(String accessToken, Long from, Long to) {
+        def infoSummary = externalOrderClient.findSummaryInvoicesByDateRange(accessToken, from, to)
+
+        def values = 0
+        def debit = 0
+
+        infoSummary.forEach {
+            values += it.totalValue
+            debit += it.debit
+        }
+
+        def valueMoney = new Money("INR", new BigDecimal(values))
+        valueMoney.text("en-US")
+        valueMoney.symbol("in")
+
+        def debitMoney = new Money("INR", new BigDecimal(debit))
+        debitMoney.text("en-US")
+        debitMoney.symbol("in")
+
+        new RetailerInfoSummary(
+                value: valueMoney,
+                debit: debitMoney,
+                volume: infoSummary.size()
+        )
     }
 
     private static InvoiceRetailerResponse emptyInvoiceRetailerResponse() {

@@ -589,6 +589,8 @@ class RetailDetail {
 
 class InvoicesResponse {
     String accessToken
+    Long from
+    Long to
     RetailerInfoSummary retailerInfoSummary
     List<RetailerInformation> content
     String cursor

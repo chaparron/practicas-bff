@@ -88,4 +88,6 @@ interface CustomerBridge {
     InvoiceRetailerResponse findInvoice(FindInvoiceInput findInvoiceInput)
 
     String downloadPDFInvoice(DownloadInvoiceInput downloadInvoiceInput)
+
+    RetailerInfoSummary retailerInfoSummary(String accessToken, Long from, Long to)
 }
