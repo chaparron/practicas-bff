@@ -267,8 +267,8 @@ input AcceptTcInput {
 
 input FindMyInvoicesInput {
   accessToken: String!
-  fromEpochMillis: Long!
-  toEpochMillis: Long!
+  fromEpochMillis: Long
+  toEpochMillis: Long
   cursor: String
 }
 

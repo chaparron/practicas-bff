@@ -42,6 +42,8 @@ class CustomerBridgeImpl implements CustomerBridge {
     @Autowired
     ExternalOrderClient externalOrderClient
 
+    private static Long ONE_WEEK_EPOCH_MILLIS = 604800000
+
     @Override
     Customer myProfile(String accessToken) {
         def url = UriComponentsBuilder.fromUri(root.resolve("/customer/me")).toUriString()
@@ -721,22 +723,35 @@ class CustomerBridgeImpl implements CustomerBridge {
 
     @Override
     InvoicesResponse findMyInvoices(FindMyInvoicesInput findMyInvoicesInput) {
+
+        def fromMillis = findMyInvoicesInput.fromEpochMillis
+        def toMillis = findMyInvoicesInput.toEpochMillis
+
+        if (findMyInvoicesInput.fromEpochMillis == null && findMyInvoicesInput.toEpochMillis == null) {
+            fromMillis = new Date().getTime() - ONE_WEEK_EPOCH_MILLIS
+            toMillis = new Date().getTime()
+        } else if (findMyInvoicesInput.fromEpochMillis == null && findMyInvoicesInput.toEpochMillis != null) {
+            fromMillis = toMillis - ONE_WEEK_EPOCH_MILLIS
+        } else if(findMyInvoicesInput.fromEpochMillis != null && findMyInvoicesInput.toEpochMillis == null) {
+            toMillis = fromMillis + ONE_WEEK_EPOCH_MILLIS
+        }
+
         def dataPagination = externalOrderClient.findInvoices(
                 findMyInvoicesInput.accessToken,
-                findMyInvoicesInput.fromEpochMillis,
-                findMyInvoicesInput.toEpochMillis,
+                fromMillis,
+                toMillis,
                 findMyInvoicesInput.cursor == null ? "not-cursor": findMyInvoicesInput.cursor
         )
 
         if (!dataPagination.values.isEmpty()) {
-            return mapInvoiceResponse(dataPagination, findMyInvoicesInput)
+            return mapInvoiceResponse(dataPagination, findMyInvoicesInput.accessToken, fromMillis, toMillis)
         } else {
             return emptyInvoiceResponse()
         }
 
     }
 
-    private static InvoicesResponse mapInvoiceResponse(DataPagination<ExternalOrder> dataPagination, FindMyInvoicesInput findMyInvoicesInput) {
+    private static InvoicesResponse mapInvoiceResponse(DataPagination<ExternalOrder> dataPagination, String accessToken, Long fromMillis, Long toMillis) {
         List<RetailerInformation> informationItems = new ArrayList()
 
         dataPagination.values.forEach {
@@ -754,9 +769,9 @@ class CustomerBridgeImpl implements CustomerBridge {
         }
 
         new InvoicesResponse(
-                accessToken: findMyInvoicesInput.accessToken,
-                from: findMyInvoicesInput.fromEpochMillis,
-                to: findMyInvoicesInput.toEpochMillis,
+                accessToken: accessToken,
+                from: fromMillis,
+                to: toMillis,
                 cursor: dataPagination.cursor,
                 content: informationItems
         )
@@ -812,7 +827,7 @@ class CustomerBridgeImpl implements CustomerBridge {
 
     @Override
     RetailerInfoSummary retailerInfoSummary(String accessToken, Long from, Long to) {
-        List<ExternalOrder> infoSummary = new ArrayList<ExternalOrder>()
+        def infoSummary
         if (accessToken != null) {
             infoSummary = externalOrderClient.findSummaryInvoicesByDateRange(accessToken, from, to)
             def values = 0
