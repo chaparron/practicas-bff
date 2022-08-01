@@ -812,29 +812,31 @@ class CustomerBridgeImpl implements CustomerBridge {
 
     @Override
     RetailerInfoSummary retailerInfoSummary(String accessToken, Long from, Long to) {
-        def infoSummary = externalOrderClient.findSummaryInvoicesByDateRange(accessToken, from, to)
+        List<ExternalOrder> infoSummary = new ArrayList<ExternalOrder>()
+        if (accessToken != null) {
+            infoSummary = externalOrderClient.findSummaryInvoicesByDateRange(accessToken, from, to)
+            def values = 0
+            def debit = 0
 
-        def values = 0
-        def debit = 0
+            infoSummary.forEach {
+                values += it.totalValue
+                debit += it.debit
+            }
 
-        infoSummary.forEach {
-            values += it.totalValue
-            debit += it.debit
-        }
+            def valueMoney = new Money("INR", new BigDecimal(values))
+            valueMoney.text("en-US")
+            valueMoney.symbol("in")
 
-        def valueMoney = new Money("INR", new BigDecimal(values))
-        valueMoney.text("en-US")
-        valueMoney.symbol("in")
+            def debitMoney = new Money("INR", new BigDecimal(debit))
+            debitMoney.text("en-US")
+            debitMoney.symbol("in")
 
-        def debitMoney = new Money("INR", new BigDecimal(debit))
-        debitMoney.text("en-US")
-        debitMoney.symbol("in")
-
-        new RetailerInfoSummary(
-                value: valueMoney,
-                debit: debitMoney,
-                volume: infoSummary.size()
-        )
+            new RetailerInfoSummary(
+                    value: valueMoney,
+                    debit: debitMoney,
+                    volume: infoSummary.size()
+            )
+        } else null
     }
 
     private static InvoiceRetailerResponse emptyInvoiceRetailerResponse() {
