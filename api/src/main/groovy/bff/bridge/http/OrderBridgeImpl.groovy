@@ -81,13 +81,12 @@ class OrderBridgeImpl implements OrderBridge {
             it.accessToken = findOrdersInput.accessToken
 
 
-            it.supplierOrders.each {
-                it.accessToken = findOrdersInput.accessToken
-                it.payment = new SupplierOrderPaymentV2(
-                        supplierOrderId: it.id,
-                        paymentId: 1234
-                )
-
+            it.supplierOrders.each { supplierOrder ->
+                supplierOrder.accessToken = findOrdersInput.accessToken
+                supplierOrder.payment = Optional.ofNullable(supplierOrder.metadata?.payment_id).map { new SupplierOrderPaymentV2(
+                        supplierOrderId: supplierOrder.id,
+                        paymentId: it
+                )}.orElse(null)
             }
         }
         r
@@ -115,11 +114,12 @@ class OrderBridgeImpl implements OrderBridge {
         customerOrderResponse.customer.accessToken = findSupplierOrderInput.accessToken
         customerOrderResponse.supplierOrder.products.each { it.accessToken = findSupplierOrderInput.accessToken }
 
-        customerOrderResponse.supplierOrder.order.supplierOrders.each {
-            it.payment = new SupplierOrderPaymentV2(
-                    supplierOrderId: it.id,
-                    paymentId: 1234
-            )
+        customerOrderResponse.supplierOrder.order.supplierOrders.each { supplierOrder ->
+            supplierOrder.payment = Optional.ofNullable(supplierOrder.metadata?.payment_id).map { new SupplierOrderPaymentV2(
+                    supplierOrderId: supplierOrder.id,
+                    paymentId: it
+            )}.orElse(null)
+
         }
 
         customerOrderResponse.supplierOrder.summary = customerOrderResponse.supplierOrder.metadata.summary.collect { sm ->
