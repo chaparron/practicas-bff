@@ -225,13 +225,13 @@ class Discount implements CommercialPromotionType {
         // LINEAL -> un solo step
         // SLAVE -> multiplos de step
         log.info("La promo :: " + id + " :: " + description + " :: " + applicationMode + " es aplicable para la quantity " + quantity + "?")
-        if (applicationMode == ApplicationMode.SLABBED) {
+        if (applicationMode == ApplicationMode.NON_PROGRESSIVE) {
             final step = steps.find { quantity % it.from == 0 && quantity >= it.from && quantity <= it?.to }
             log.info("Applicable step :: " + step)
             return step
         }
 
-        if (applicationMode == ApplicationMode.NON_PROGRESSIVE) {
+        if (applicationMode == ApplicationMode.PROGRESSIVE) {
             final step = steps.find { quantity >= it.from && quantity <= it?.to }
             log.info("Applicable step :: " + step)
             return step
