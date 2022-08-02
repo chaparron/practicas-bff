@@ -1,6 +1,7 @@
 package bff.model
 
 import groovy.transform.EqualsAndHashCode
+import groovy.util.logging.Slf4j
 import org.springframework.context.MessageSource
 import sun.util.locale.LanguageTag
 
@@ -168,6 +169,23 @@ enum ApplicationMode {
     NON_PROGRESSIVE
 }
 
+interface RewardItem {}
+
+@EqualsAndHashCode
+class FixedQuantityFreeProduct implements RewardItem {
+    Product product
+    Display display
+    Integer quantity
+}
+
+@EqualsAndHashCode
+class ProportionalQuantityFreeProduct implements RewardItem {
+    Product product
+    Display display
+    Integer quantity
+}
+
+@Slf4j
 @EqualsAndHashCode(includes = ["id"])
 class Discount implements CommercialPromotionType {
     String id
@@ -196,14 +214,31 @@ class Discount implements CommercialPromotionType {
         )
     }
 
-    // TODO : Check this implementation, its a hotfix due missing parameter progressive
-    //  see #https://wabiproject.atlassian.net/browse/WO-2590
     boolean appliesTo(Integer quantity) {
-        ofNullable(
-                applicationMode == ApplicationMode.NON_PROGRESSIVE ?
-                        steps.find { quantity >= it.from && quantity <= it?.to } :
-                        steps.find { quantity % it.from == 0 && quantity >= it.from && quantity <= it?.to }
-        ).isPresent()
+        ofNullable(appliesToViaApplicationMode(quantity)).isPresent()
+    }
+
+    // TODO : Check this implementation, its a hotfix due missing parameter progressive
+    // see #https://wabiproject.atlassian.net/browse/WO-2590
+    private DiscountStep appliesToViaApplicationMode(int quantity) {
+        // PROGRESSIVE -> todos los step por los que pase
+        // LINEAL -> un solo step
+        // SLAVE -> multiplos de step
+        log.info("La promo :: " + id + " :: " + description + " :: " + applicationMode + " es aplicable para la quantity " + quantity + "?")
+        if (applicationMode == ApplicationMode.SLABBED) {
+            final step = steps.find { quantity % it.from == 0 && quantity >= it.from && quantity <= it?.to }
+            log.info("Applicable step :: " + step)
+            return step
+        }
+
+        if (applicationMode == ApplicationMode.NON_PROGRESSIVE) {
+            final step = steps.find { quantity >= it.from && quantity <= it?.to }
+            log.info("Applicable step :: " + step)
+            return step
+        }
+
+        log.info("No es aplicable !!!")
+        return null
     }
 
     Discount labeled(Closure<String> label) {
@@ -218,22 +253,6 @@ class Discount implements CommercialPromotionType {
         )
     }
 
-}
-
-interface RewardItem {}
-
-@EqualsAndHashCode
-class FixedQuantityFreeProduct implements RewardItem {
-    Product product
-    Display display
-    Integer quantity
-}
-
-@EqualsAndHashCode
-class ProportionalQuantityFreeProduct implements RewardItem {
-    Product product
-    Display display
-    Integer quantity
 }
 
 enum RewardsNodeType {
