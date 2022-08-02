@@ -487,6 +487,7 @@ class Cms {
                                                 expiration:  new TimestampOutput(promotion.expiration().toString()),
                                                 label:  labelBuilder.freeProduct(),
                                                 remainingUses:  promotion.remainingUses(),
+                                                applicationMode: promotion.progressive() ? PROGRESSIVE : NON_PROGRESSIVE,
                                                 steps: [
                                                         new FreeProductStep(
                                                                 from: step.from(),
