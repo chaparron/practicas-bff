@@ -34,7 +34,7 @@ class Brand implements Piece {
 }
 
 enum BannerLogoSize implements ImageSizeEnum {
-    SIZE_130x61, SIZE_96x40, SIZE_22x22
+    SIZE_170x130, SIZE_130x61, SIZE_96x40, SIZE_22x22
 
     @Override
     String value() {
