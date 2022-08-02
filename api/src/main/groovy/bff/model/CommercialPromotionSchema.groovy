@@ -223,7 +223,7 @@ class Discount implements CommercialPromotionType {
     private DiscountStep appliesToViaApplicationMode(int quantity) {
         // PROGRESSIVE -> todos los step por los que pase
         // LINEAL -> un solo step
-        // SLAVE -> multiplos de step
+        // SLABBED -> multiplos de step
         log.info("La promo :: " + id + " :: " + description + " :: " + applicationMode + " es aplicable para la quantity " + quantity + "?")
         if (applicationMode == ApplicationMode.SLABBED) {
             final step = steps.find { quantity % it.from == 0 && quantity >= it.from && quantity <= it?.to }
