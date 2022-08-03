@@ -79,15 +79,6 @@ class OrderBridgeImpl implements OrderBridge {
 
         r.content.each {
             it.accessToken = findOrdersInput.accessToken
-
-
-            it.supplierOrders.each { supplierOrder ->
-                supplierOrder.accessToken = findOrdersInput.accessToken
-                supplierOrder.payment = Optional.ofNullable(supplierOrder.metadata?.payment_id).map { new SupplierOrderPaymentV2(
-                        supplierOrderId: supplierOrder.id,
-                        paymentId: Long.valueOf(it.toString())
-                )}.orElse(null)
-            }
         }
         r
 
@@ -224,6 +215,10 @@ class OrderBridgeImpl implements OrderBridge {
                 )
             }
             it.summary = SummaryService.sortAndGetVisibleForMe(it.summary, JwtToken.countryFromString(accessToken))
+            it.payment = Optional.ofNullable(it.metadata?.payment_id).map { paymentId -> new SupplierOrderPaymentV2(
+                        supplierOrderId: it.id,
+                        paymentId: Long.valueOf(paymentId.toString())
+                )}.orElse(null)
             order.supplierOrders = r
             it.order = order
         }
