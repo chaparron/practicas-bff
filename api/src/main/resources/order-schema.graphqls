@@ -313,6 +313,7 @@ type SupplierOrderResult {
   availabilityDifference: Boolean!
   summary: [Summary]
   appliedPromotions: [AppliedPromotionResponse!]!
+  payment: SupplierOrderPaymentV2
 }
 
 type SupplierOrderAndOrderCancellations {

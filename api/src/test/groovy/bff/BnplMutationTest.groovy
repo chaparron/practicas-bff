@@ -44,7 +44,7 @@ class BnplMutationTest {
         def loanResponse = new LoanResponse("externalId", loanCreated)
         def invoiceResponse = new InvoiceResponse("code")
 
-        def sdkResponse = anyPaymentResponse(supplierOrderId, 2456, 5624,
+        def sdkResponse = anyPaymentResponse(666L,supplierOrderId, 2456, 5624,
                 moneyResponse, loanResponse, invoiceResponse)
 
         def sdkRequest = anyPaymentRequest(
@@ -77,7 +77,7 @@ class BnplMutationTest {
         def loanResponse = new LoanResponse("externalId", loanCreated)
         def invoiceResponse = new InvoiceResponse("code")
 
-        def sdkResponse = anyPaymentResponse(supplierOrderId, 2456, 5624,
+        def sdkResponse = anyPaymentResponse(666L, supplierOrderId, 2456, 5624,
                 moneyResponse, loanResponse, invoiceResponse)
 
         def sdkRequest = anyPaymentRequest(
@@ -110,7 +110,7 @@ class BnplMutationTest {
         def loanResponse = new LoanResponse("externalId", loanCreated)
         def invoiceResponse = new InvoiceResponse("code")
 
-        def sdkResponse = anyPaymentResponse(supplierOrderId, 2456, 5624,
+        def sdkResponse = anyPaymentResponse(666L, supplierOrderId, 2456, 5624,
                 moneyResponse, loanResponse, invoiceResponse)
 
         def sdkRequest = anyPaymentRequest(

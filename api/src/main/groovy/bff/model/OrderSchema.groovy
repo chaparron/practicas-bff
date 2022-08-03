@@ -345,6 +345,7 @@ class SupplierOrderResult {
     Map metadata
     List<Summary> summary
     List<AppliedPromotionResponse> appliedPromotions
+    SupplierOrderPaymentV2 payment
 }
 
 

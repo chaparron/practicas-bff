@@ -114,7 +114,7 @@ class LoanPayment implements LoanPaymentResult {
 
     static LoanPayment fromSdk(PaymentResponse response) {
         new LoanPayment(
-                paymentId: new Random().nextInt(90000000),
+                paymentId: response.paymentId,
                 supplierOrderId: response.supplierOrderId,
                 customerUserId: response.customerUserId,
                 supplierId: response.supplierId,
