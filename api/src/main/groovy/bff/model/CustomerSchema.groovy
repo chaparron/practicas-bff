@@ -613,6 +613,10 @@ class FindInvoiceInput {
     String id
 }
 
+class GetLatestInvoicesInput {
+    String accessToken
+}
+
 class DownloadInvoiceInput {
     String accessToken
     String id

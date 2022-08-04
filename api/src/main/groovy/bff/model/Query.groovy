@@ -379,6 +379,10 @@ class Query implements GraphQLQueryResolver {
         customerBridge.findInvoice(findInvoiceInput)
     }
 
+    InvoiceRetailerResponse getLatestInvoices(GetLatestInvoicesInput getLatestInvoicesInput) {
+        customerBridge.getLatestInvoices(getLatestInvoicesInput)
+    }
+
 
     String downloadPDFInvoice(DownloadInvoiceInput downloadInvoiceInput) {
         customerBridge.downloadPDFInvoice(downloadInvoiceInput)

@@ -87,6 +87,8 @@ interface CustomerBridge {
 
     InvoiceRetailerResponse findInvoice(FindInvoiceInput findInvoiceInput)
 
+    InvoiceRetailerResponse getLatestInvoices(GetLatestInvoicesInput getLatestInvoicesInput)
+
     String downloadPDFInvoice(DownloadInvoiceInput downloadInvoiceInput)
 
     RetailerInfoSummary retailerInfoSummary(String accessToken, Long from, Long to)

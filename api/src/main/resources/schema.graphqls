@@ -159,6 +159,8 @@ type Query {
 
   findInvoice(input: FindInvoiceInput!): InvoiceRetailerResponse
 
+  getLatestInvoices(input: GetLatestInvoicesInput!): InvoiceRetailerResponse
+
   downloadPDFInvoice(input: DownloadInvoiceInput!): String!
 
   findPaymentGatewayData(input: FindPaymentGatewayDataInput!): PaymentGatewayDataResult

@@ -278,6 +278,10 @@ input FindInvoiceInput {
   id: ID!
 }
 
+input GetLatestInvoicesInput {
+  accessToken: String!
+}
+
 input DownloadInvoiceInput {
   accessToken: String!
   id: String!

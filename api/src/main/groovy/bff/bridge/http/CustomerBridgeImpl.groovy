@@ -43,6 +43,7 @@ class CustomerBridgeImpl implements CustomerBridge {
     ExternalOrderClient externalOrderClient
 
     private static Long ONE_WEEK_EPOCH_MILLIS = 604800000
+    private static Long TWO_MONTH_EPOCH_MILLIS = ONE_WEEK_EPOCH_MILLIS * 60
 
     @Override
     Customer myProfile(String accessToken) {
@@ -811,6 +812,20 @@ class CustomerBridgeImpl implements CustomerBridge {
 
         if(!externalOrderList.isEmpty()) {
             return mapInvoiceRetailerResponse(externalOrderList)
+        } else {
+            return emptyInvoiceRetailerResponse()
+        }
+    }
+
+    @Override
+    InvoiceRetailerResponse getLatestInvoices(GetLatestInvoicesInput getLatestInvoicesInput) {
+        def fromEpochMills = new Date().getTime() - TWO_MONTH_EPOCH_MILLIS
+        def toEpochMillis = new Date().getTime()
+
+        def latestInvoices = externalOrderClient.findLatestExternalOrders(getLatestInvoicesInput.accessToken,fromEpochMills, toEpochMillis)
+
+        if(!latestInvoices.isEmpty()) {
+            return mapInvoiceRetailerResponse(latestInvoices)
         } else {
             return emptyInvoiceRetailerResponse()
         }
