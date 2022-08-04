@@ -479,7 +479,7 @@ type RetailerInformationItems {
   invoiceNumber: Long!
   totalValue: Money!
   invoicePrimaryId: String
-  detail: [RetailerDetail]!
+  detail: [RetailerDetail!]!
 }
 
 type RetailerDetail {
