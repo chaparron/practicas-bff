@@ -244,21 +244,16 @@ type PaymentMode {
   text(languageTag: String!): String!
 }
 
-interface PaymentProvider {
-  providerCode: PaymentProviderCode!
-  poweredByLabel(languageTag: String!): String!
-}
-
 type SupportedPaymentProvider {
   title(languageTag: String!): String!
   description(languageTag: String!): String!
-  paymentProvider: PaymentProvider!
   avatar: String!
+  poweredByLabel(languageTag: String!): String!
 }
 
-type InstantPaymentProvider implements PaymentProvider {
-  providerCode: PaymentProviderCode!
-  poweredByLabel(languageTag: String!): String!
+type PaymentConfiguration {
+  code: PaymentProviderCode,
+  modeType: PaymentModeType
 }
 
 enum PaymentProviderCode {
@@ -855,15 +850,3 @@ type SummaryFailed {
 union SupplierOrderResponse = SupplierOrder | SupplierOrderFailed
 
 union SummaryResult = OrderSummaryResponse | SummaryFailed
-
-enum PaymentModeType {
-  PAY_NOW,
-  PAY_LATER,
-  PAY_NOW_OR_LATER,
-  NONE
-}
-
-type PaymentMode {
-  paymentType: PaymentModeType!,
-  text(languageTag: String!): String!
-}

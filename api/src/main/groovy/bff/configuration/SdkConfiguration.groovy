@@ -10,6 +10,8 @@ import bnpl.sdk.BnPlSdk
 import bnpl.sdk.HttpBnPlSdk
 import com.wabi2b.externalorders.sdk.ExternalOrderClient
 import com.wabi2b.externalorders.sdk.ExternalOrderHttpClient
+import digitalpayments.sdk.DigitalPaymentsSdk
+import digitalpayments.sdk.HttpDigitalPaymentsSdk
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -65,6 +67,8 @@ class SdkConfiguration {
     URI thirdPartyUrl
     @Value('${bnpl.credits.url:}')
     URI wabi2bBnplCreditsURI
+    @Value('${digital.payments.url:}')
+    URI digitalPaymentsURI
 
 
     @Autowired
@@ -146,6 +150,11 @@ class SdkConfiguration {
     @Bean
     BnPlSdk bnplSdk() {
         return new HttpBnPlSdk(wabi2bBnplCreditsURI)
+    }
+
+    @Bean
+    DigitalPaymentsSdk digitalPaymentsSdk() {
+        return new HttpDigitalPaymentsSdk(digitalPaymentsURI)
     }
 
     @Bean

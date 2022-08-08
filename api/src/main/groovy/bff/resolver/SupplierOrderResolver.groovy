@@ -5,10 +5,10 @@ import bff.model.*
 import bff.service.MoneyService
 import bff.service.bnpl.BnplProvidersService
 import com.coxautodev.graphql.tools.GraphQLResolver
+import digitalpayments.sdk.DigitalPaymentsSdk
+import digitalpayments.sdk.model.Provider
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-
-import static bff.model.CreditLineProvider.buildSuperMoneyCreditLineProvider
 
 @Component
 class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
@@ -21,6 +21,9 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
 
     @Autowired
     BnplProvidersService bnplProvidersService
+
+    @Autowired
+    private DigitalPaymentsSdk digitalPaymentsSdk
 
     Supplier supplier(SupplierOrder supplierOrder) {
         supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
@@ -95,53 +98,37 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
     }
 
     SupportedPaymentProviders supportedPaymentProviders(SupplierOrder supplierOrder) {
-        switch (supplierOrder.total.toInteger()) {
-            case 0..100:
-                createSupportedPaymentProviders(PaymentType.DIGITAL)
+
+        def supplier = supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
+        def digitalPaymentProviders = digitalPaymentsSdk.getPaymentProviders(supplier.id.toString(), supplierOrder.accessToken).block()
+
+        def isJPMorganSupported = digitalPaymentProviders.any {it == Provider.JP_MORGAN}
+
+        List<SupportedPaymentProvider> internalSupportedPaymentProviders = []
+
+        if (isJPMorganSupported) {
+            internalSupportedPaymentProviders.add(SupportedPaymentProvider.jpmMorganBuild())
+        }
+
+        if(!bnplProvidersService.creditLineProvidersFor(supplierOrder).isEmpty()) {
+            internalSupportedPaymentProviders.add(SupportedPaymentProvider.supermoneyBuild())
+        }
+
+        switch (internalSupportedPaymentProviders.size()) {
+            case 2:
+                new SupportedPaymentProviders(
+                        providers: internalSupportedPaymentProviders,
+                        paymentMode: new PaymentMode(paymentType: PaymentModeType.PAY_NOW_OR_LATER))
                 break
-            case 101..200:
-                createSupportedPaymentProviders(PaymentType.SUPERMONEY)
-                break
-            case 201..300:
-                createSupportedPaymentProviders(PaymentType.BOTH)
+            case 1:
+                new SupportedPaymentProviders(
+                        providers: internalSupportedPaymentProviders,
+                        paymentMode: new PaymentMode(paymentType: PaymentModeType.valueOf(internalSupportedPaymentProviders.first().configuration.code.type.name())))
                 break
             default:
                 new SupportedPaymentProviders(providers: [], paymentMode: new PaymentMode(paymentType: PaymentModeType.NONE))
                 break
         }
-    }
-
-    private static SupportedPaymentProviders createSupportedPaymentProviders(PaymentType dummyType) {
-        switch (dummyType) {
-            case PaymentType.DIGITAL: return new SupportedPaymentProviders(
-                    providers: [digitalSupportedPaymentPaymentProvider()],
-                    paymentMode: new PaymentMode(paymentType: PaymentModeType.PAY_NOW))
-            case PaymentType.SUPERMONEY: return new SupportedPaymentProviders(
-                    providers: [superMoneySupportedPaymentPaymentProvider()],
-                    paymentMode: new PaymentMode(paymentType: PaymentModeType.PAY_LATER))
-            case PaymentType.BOTH: return new SupportedPaymentProviders(
-                    providers: [superMoneySupportedPaymentPaymentProvider(), digitalSupportedPaymentPaymentProvider()],
-                    paymentMode: new PaymentMode(paymentType: PaymentModeType.PAY_NOW_OR_LATER))
-        }
-    }
-    private static digitalSupportedPaymentPaymentProvider() {
-        return new SupportedPaymentProvider(
-                title: PaymentProviderCode.JPMORGAN.name(),
-                description: "desc",
-                paymentProvider: new InstantPaymentProvider(providerCode: PaymentProviderCode.JPMORGAN),
-                avatar: "69fbbf54-a2f4-441f-9f58-37f903a4e558.jpg")
-    }
-    private static superMoneySupportedPaymentPaymentProvider() {
-        return new SupportedPaymentProvider(
-                title: CreditProvider.SUPERMONEY.name(),
-                description: "desc",
-                paymentProvider: buildSuperMoneyCreditLineProvider(),
-                avatar: "f3b62099-10e3-4b94-bb5a-8401cb49f88d.png")
-    }
-
-    // TODO Delete when real implementation replaces the mock
-    private enum PaymentType {
-        DIGITAL, SUPERMONEY, BOTH
     }
 
 }

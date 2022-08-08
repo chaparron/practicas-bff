@@ -3,6 +3,10 @@ package bff
 import bff.model.*
 import bnpl.sdk.model.*
 import bnpl.sdk.model.requests.PaymentRequest
+import digitalpayments.sdk.model.CreatePaymentRequest
+import digitalpayments.sdk.model.CreatePaymentResponse
+import digitalpayments.sdk.model.UpdatePaymentRequest
+import digitalpayments.sdk.model.UpdatePaymentResponse
 import wabi2b.payments.common.model.request.WalletProvider
 import wabi2b.payments.common.model.response.SupplierWalletResponse
 import wabi2b.payments.common.model.response.WalletResponse
@@ -64,5 +68,45 @@ class TestExtensions {
 
     static Customer anyCustomerWithIdAndAccessToken(String country) {
         new Customer(id: randomString(), accessToken: randomString(), country_id: country)
+    }
+
+    static anyCreatePaymentResponse() {
+        new CreatePaymentResponse(randomString(), randomString(), randomString(), randomString())
+    }
+
+    static anyCreatePaymentRequest(String supplierOrderId, String amount, String totalAmount) {
+        new CreatePaymentRequest(supplierOrderId, amount, totalAmount)
+    }
+
+    static anyCreateDigitalPaymentInput(String supplierOrderId, String amount, String totalAmount, String accessToken) {
+        new CreateDigitalPaymentInput(
+                supplierOrderId: supplierOrderId,
+                amount: amount,
+                totalAmount: totalAmount,
+                accessToken: accessToken
+        )
+    }
+
+    static UpdatePaymentResponse anyUpdatePaymentResponse(String paymentId, String supplierOrderId, String amount, String totalAmount, String responseCode, String message) {
+        new UpdatePaymentResponse(
+                paymentId,
+                supplierOrderId,
+                amount,
+                totalAmount,
+                responseCode,
+                message
+        )
+    }
+
+    static FinalizeDigitalPaymentInput anyFinalizeDigitalPaymentInput(String encData, String accessToken) {
+        new FinalizeDigitalPaymentInput(encData: encData, accessToken: accessToken)
+    }
+
+    static Supplier anySupplier() {
+        new Supplier(id: 213)
+    }
+
+    static SupplierOrder anySupplierOrder() {
+        new SupplierOrder(id: 1)
     }
 }

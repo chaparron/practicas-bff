@@ -1,26 +1,37 @@
 package bff.resolver
 
-import bff.service.PaymentProviderTranslationService
+import bff.model.CreditLineProvider
+import bff.model.CreditProvider
+import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
-
-import static bff.model.CreditLineProvider.buildSuperMoneyCreditLineProvider
-import static org.mockito.Mockito.*
+import org.springframework.context.support.StaticMessageSource
 
 class CreditLineProviderResolverTest {
 
-    private final def poweredByMessage = "Powered by SUPERMONEY"
-    private def paymentProviderTranslationService = mock(PaymentProviderTranslationService)
-    private def creditLineProvider = buildSuperMoneyCreditLineProvider()
+    private final def code = "bnpl.creditProvider.poweredBy.label"
+    private final def poweredByMessage = "Powered by {0}"
+    private final def locale = Locale.forLanguageTag("en")
+    private def messageSource = new StaticMessageSource()
+    private def sut = new CreditLineProviderResolver(messageSource: messageSource)
 
-    private def sut = new CreditLineProviderResolver(paymentProviderTranslationService: paymentProviderTranslationService)
+    @Before
+    void setup() {
+        messageSource.addMessage(code, locale, poweredByMessage)
+    }
 
     @Test
-    void 'resolves poweredByLabel from using paymentProviderTranslationService'() {
-        when(paymentProviderTranslationService.poweredByLabel(Mockito.any(), Mockito.any())).thenReturn(poweredByMessage)
+    void 'resolves poweredByLabel from message source'() {
+        def provider = CreditProvider.SUPERMONEY
+        def creditLineProvider = new CreditLineProvider(provider: provider)
 
-        assert sut.poweredByLabel(creditLineProvider, "en").get() == poweredByMessage
+        assert sut.poweredByLabel(creditLineProvider, "en").get() == "Powered by $provider.poweredBy"
+    }
 
-        verify(paymentProviderTranslationService).poweredByLabel(creditLineProvider, "en")
+    @Test
+    void 'resolves poweredByLabel from given default value'() {
+        def provider = CreditProvider.SUPERMONEY
+        def creditLineProvider = new CreditLineProvider(provider: provider)
+
+        assert sut.poweredByLabel(creditLineProvider, "es").get() == provider.poweredBy
     }
 }

@@ -163,8 +163,6 @@ type Query {
 
   downloadPDFInvoice(input: DownloadInvoiceInput!): String!
 
-  findPaymentGatewayData(input: FindPaymentGatewayDataInput!): PaymentGatewayDataResult
-
   redeemableCoupons(request: RedeemableCouponsRequest!): RedeemableCouponsResponse
 
 }
@@ -265,6 +263,10 @@ type Mutation {
   updateBranchOfficeProfile(input: UpdateBranchOfficeProfileInput!): Customer!
 
   loanPayment(input: LoanPaymentRequestInput!): LoanPaymentResult!
+
+  createDigitalPayment(input: CreateDigitalPaymentInput!): CreateDigitalPaymentResult
+
+  finalizeDigitalPayment(input: FinalizeDigitalPaymentInput!): FinalizeDigitalPaymentResult
 
 }
 

@@ -16,6 +16,9 @@ class OrderResolver implements GraphQLResolver<Order> {
     @Autowired
     MoneyService moneyService
 
+    @Autowired
+    SupplierOrderResolver supplierOrderResolver
+
     Customer customer(Order order) {
         order.customer?: orderBridge.getCustomerOrder(order.accessToken, order.id)
     }
@@ -68,22 +71,25 @@ class OrderResolver implements GraphQLResolver<Order> {
         moneyService.getMoney(order.accessToken, order.total_money)
     }
 
-    static PaymentMode paymentMode(Order order) {
-        switch (order.total_money.toInteger()) {
-            case 0..100:
-                new PaymentMode(paymentType: PaymentModeType.PAY_NOW)
-                break
-            case 101..200:
-                new PaymentMode(paymentType: PaymentModeType.PAY_LATER)
-                break
-            case 201..300:
+    PaymentMode paymentMode(Order order) {
+
+        Set<SupportedPaymentProviders> internalSupportedPaymentProviders = []
+
+                order.supplierOrders.forEach {
+                    internalSupportedPaymentProviders.add(
+                            supplierOrderResolver.supportedPaymentProviders(it)
+                    )
+                }
+
+        switch (internalSupportedPaymentProviders.size()) {
+            case 2:
                 new PaymentMode(paymentType: PaymentModeType.PAY_NOW_OR_LATER)
                 break
-            case 301..400:
-                new PaymentMode(paymentType: PaymentModeType.NONE)
+            case 1:
+                new PaymentMode(paymentType: internalSupportedPaymentProviders.first().paymentMode.paymentType.name())
                 break
             default:
-                new PaymentMode(paymentType: PaymentModeType.PAY_NOW_OR_LATER)
+                new PaymentMode(paymentType: PaymentModeType.NONE)
                 break
         }
     }

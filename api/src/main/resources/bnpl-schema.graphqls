@@ -64,9 +64,8 @@ type Invoice {
 
 union LoanPaymentResult = LoanPayment | LoanPaymentFailed
 
-type CreditLineProvider implements PaymentProvider {
-  provider: CreditProvider! @deprecated(reason: "Use providerCode instead")
-  providerCode: PaymentProviderCode!
+type CreditLineProvider {
+  provider: CreditProvider!
   poweredByLabel(languageTag: String!): String!
 }
 

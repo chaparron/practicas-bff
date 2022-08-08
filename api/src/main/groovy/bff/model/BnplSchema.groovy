@@ -47,12 +47,11 @@ class CreditLines implements CreditLinesResult{
 }
 
 @EqualsAndHashCode
-class CreditLineProvider implements PaymentProvider {
+class CreditLineProvider {
     CreditProvider provider
-    PaymentProviderCode providerCode
 
     static buildSuperMoneyCreditLineProvider() {
-        new CreditLineProvider(provider: SUPERMONEY, providerCode: PaymentProviderCode.SUPERMONEY)
+        new CreditLineProvider(provider: SUPERMONEY)
     }
 }
 

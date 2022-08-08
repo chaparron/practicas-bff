@@ -2,6 +2,7 @@ package bff.model
 
 import bff.model.order.OrderInputV2
 import groovy.transform.EqualsAndHashCode
+import groovy.transform.Immutable
 import groovy.transform.InheritConstructors
 
 import static java.util.Optional.of
@@ -692,35 +693,55 @@ enum SummaryFailedReason {
         new SummaryFailed(reason: this)
     }
 }
-
+@Immutable
 class SupportedPaymentProviders {
     List<SupportedPaymentProvider> providers
     PaymentMode paymentMode
 }
 
-interface PaymentProvider {}
 
 @EqualsAndHashCode
 class SupportedPaymentProvider {
-    String title
-    String description
-    PaymentProvider paymentProvider
-    String avatar
+    URI avatar
+    PaymentProviderConfiguration configuration
+    static SupportedPaymentProvider jpmMorganBuild() {
+        new SupportedPaymentProvider(avatar: URI.create(""), configuration: new PaymentProviderConfiguration(PaymentProviderCode.JPMORGAN))
+    }
+
+    static SupportedPaymentProvider supermoneyBuild() {
+        new SupportedPaymentProvider(avatar: URI.create(""), configuration: new PaymentProviderConfiguration(PaymentProviderCode.SUPERMONEY))
+    }
 }
 
 @EqualsAndHashCode
-class InstantPaymentProvider implements PaymentProvider {
-    PaymentProviderCode providerCode
+class PaymentProviderConfiguration {
+
+    PaymentProviderCode code
+    PaymentProviderType type
+
+    PaymentProviderConfiguration(PaymentProviderCode code) {
+        this.code = code
+        this.type = code.type
+    }
 }
 
 enum PaymentProviderCode {
-    JPMORGAN("J.P.Morgan"), SUPERMONEY("Supermoney")
+    JPMORGAN("J.P.Morgan", PaymentProviderType.PAY_NOW), SUPERMONEY("Supermoney", PaymentProviderType.PAY_LATER)
 
     String poweredBy
+    PaymentProviderType type
 
-    PaymentProviderCode(String poweredBy) {
+    PaymentProviderCode(String poweredBy, PaymentProviderType type) {
         this.poweredBy = poweredBy
+        this.type = type
+
+
     }
+}
+
+enum PaymentProviderType {
+    PAY_NOW,
+    PAY_LATER
 }
 
 class OrderSummaryResponse implements SummaryResult {
@@ -933,6 +954,7 @@ enum PaymentModeType {
     NONE
 }
 
+@Immutable
 class PaymentMode {
     PaymentModeType paymentType
 }

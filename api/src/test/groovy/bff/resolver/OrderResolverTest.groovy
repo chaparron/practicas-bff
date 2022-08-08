@@ -1,26 +1,26 @@
 package bff.resolver
 
 import bff.bridge.OrderBridge
-import bff.model.Order
-import bff.model.PaymentModeType
+import bff.model.*
 import bff.service.MoneyService
-import com.coxautodev.graphql.tools.GraphQLResolver
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-
 import static bff.TestExtensions.anyOrder
+import static bff.TestExtensions.anySupplierOrder
 import static bff.model.OrderStatus.PENDING
-import static java.util.Collections.emptyList
+import static org.mockito.Mockito.*
 
 @RunWith(MockitoJUnitRunner)
-class OrderResolverTest implements GraphQLResolver<Order> {
+class OrderResolverTest {
     @Mock
     private OrderBridge orderBridge
     @Mock
     private MoneyService moneyService
+    @Mock
+    private SupplierOrderResolver supplierOrderResolver
 
     private OrderResolver sut
 
@@ -28,39 +28,60 @@ class OrderResolverTest implements GraphQLResolver<Order> {
     void setup() {
         sut = new OrderResolver(
                 orderBridge: orderBridge,
-                moneyService: moneyService
+                moneyService: moneyService,
+                supplierOrderResolver: supplierOrderResolver
         )
     }
 
     @Test
-    void 'given total_money between 1 and 100 when paymentMode then return PAY_NOW'() {
-        testPaymentMode(BigDecimal.valueOf(50.744), PaymentModeType.PAY_NOW)
+    void 'Should return PAY_NOW for JPMorgan provider'() {
+        def paymentType = PaymentModeType.PAY_NOW
+        def providers = [SupportedPaymentProvider.jpmMorganBuild()]
+        def supplierOrder = anySupplierOrder()
+        def supplierOrders = [supplierOrder]
+        when(supplierOrderResolver.supportedPaymentProviders(supplierOrder))
+                .thenReturn(new SupportedPaymentProviders(providers: providers, paymentMode: new PaymentMode(paymentType: paymentType)))
+        testPaymentMode(paymentType, supplierOrders)
     }
 
     @Test
-    void 'given total_money between 101 and 200 when paymentMode then return PAY_LATER'() {
-        testPaymentMode(BigDecimal.valueOf(150.744), PaymentModeType.PAY_LATER)
+    void 'Should return PAY_LATER for Supermoney provider'() {
+        def paymentType = PaymentModeType.PAY_LATER
+        def providers = [SupportedPaymentProvider.supermoneyBuild()]
+        def supplierOrder = anySupplierOrder()
+        def supplierOrders = [supplierOrder]
+        when(supplierOrderResolver.supportedPaymentProviders(supplierOrder))
+                .thenReturn(new SupportedPaymentProviders(providers: providers, paymentMode: new PaymentMode(paymentType: paymentType)))
+        testPaymentMode(paymentType, supplierOrders)
     }
 
     @Test
-    void 'given total_money between 201 and 300 when paymentMode then return PAY_NOW_OR_LATER'() {
-        testPaymentMode(BigDecimal.valueOf(250.744), PaymentModeType.PAY_NOW_OR_LATER)
+    void 'Should return PAY_NOW_OR_LATER for JPMorgan & Supermoney providers'() {
+        def providers = [SupportedPaymentProvider.jpmMorganBuild(), SupportedPaymentProvider.supermoneyBuild()]
+        def supplierOrder = anySupplierOrder()
+        def supplierOrders = [supplierOrder]
+        when(supplierOrderResolver.supportedPaymentProviders(supplierOrder))
+                .thenReturn(new SupportedPaymentProviders(providers: providers, paymentMode: new PaymentMode(paymentType: PaymentModeType.PAY_NOW_OR_LATER)))
+        testPaymentMode(PaymentModeType.PAY_NOW_OR_LATER, supplierOrders)
     }
+
 
     @Test
-    void 'given total_money between 301 and 400 when paymentMode then return NONE'() {
-        testPaymentMode(BigDecimal.valueOf(350.744), PaymentModeType.NONE)
+    void 'Should return NONE for none supported payment providers'() {
+        def paymentType = PaymentModeType.NONE
+        def providers = []
+        def supplierOrder = anySupplierOrder()
+        def supplierOrders = [supplierOrder]
+        when(supplierOrderResolver.supportedPaymentProviders(supplierOrder))
+                .thenReturn(new SupportedPaymentProviders(providers: providers, paymentMode: new PaymentMode(paymentType: paymentType)))
+        testPaymentMode(paymentType, supplierOrders)
     }
 
-    @Test
-    void 'given total_money greater than 400 when paymentMode then return PAY_NOW_OR_LATER'() {
-        testPaymentMode(BigDecimal.valueOf(4550.744), PaymentModeType.PAY_NOW_OR_LATER)
-    }
-
-    void testPaymentMode(BigDecimal amount, PaymentModeType paymentModeType) {
-        def order = anyOrder(PENDING, emptyList(), amount)
+    void testPaymentMode(PaymentModeType paymentModeType, List<SupplierOrder> supplierOrders) {
+        def order = anyOrder(PENDING, supplierOrders)
         def expected = paymentModeType
         def result = sut.paymentMode(order)
         assert expected == result.paymentType
+        verify(supplierOrderResolver, times(1)).supportedPaymentProviders(supplierOrders.first())
     }
 }

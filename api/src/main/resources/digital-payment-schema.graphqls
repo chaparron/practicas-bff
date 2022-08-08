@@ -1,0 +1,45 @@
+input CreateDigitalPaymentInput {
+  accessToken: String!
+  supplierOrderId: String!
+  amount: Float!
+  totalAmount: Float!
+  paymentProviderCode: PaymentProviderCode!
+}
+
+union CreateDigitalPaymentResult = JpMorganCreateDigitalPayment | CreateDigitalPaymentFailed
+
+type CreateDigitalPaymentFailed {
+  reason: CreateDigitalPaymentFailedReason!
+}
+
+enum CreateDigitalPaymentFailedReason {
+  GATEWAY_NOT_SUPPORTED
+}
+
+type JpMorganCreateDigitalPayment {
+  merchantId: String!
+  terminalId: String!
+  encData: String!
+  bankId: String!
+}
+
+input FinalizeDigitalPaymentInput {
+  encData: String!
+  accessToken: String!
+}
+
+union FinalizeDigitalPaymentResult = DigitalPayment | DigitalPaymentFailed
+
+type DigitalPayment {
+  paymentId: String!
+  supplierOrderId: String!
+  amount: Float!
+  totalAmount: Float!
+  responseCode: String!
+  message: String!
+}
+
+type DigitalPaymentFailed {
+  responseCode: String!
+  message: String!
+}

@@ -104,9 +104,10 @@ class Main {
                 .add(InvoiceRetailerResponse.class)
                 .add(FixedQuantityFreeProduct.class)
                 .add(ProportionalQuantityFreeProduct.class)
-                .add(InstantPaymentProvider.class)
-                .add(JpMorganPaymentGatewayData.class)
-                .add(PaymentGatewayDataFailed.class)
+                .add(JpMorganCreateDigitalPayment.class)
+                .add(CreateDigitalPaymentFailed.class)
+                .add(DigitalPayment.class)
+                .add(DigitalPaymentFailed.class)
     }
 
     /**
