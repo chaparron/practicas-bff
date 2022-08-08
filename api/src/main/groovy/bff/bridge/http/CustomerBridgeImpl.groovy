@@ -761,7 +761,7 @@ class CustomerBridgeImpl implements CustomerBridge {
                             retailerInfoItems: new RetailerInformationItems(
                                     deliveryDate: new TimestampOutput(new Date(it.deliveryDate).toInstant().toString()),
                                     invoiceNumber: it.invoiceNumber,
-                                    totalValue: toMoney(it.totalValue),
+                                    totalValue: toMoney(it.totalValue, it.currency),
                                     invoicePrimaryId: it.invoiceId,
                                     detail: mapRetailDetail(it.detail)
                             )
@@ -798,12 +798,9 @@ class CustomerBridgeImpl implements CustomerBridge {
     }
 
 
-    private static Money toMoney(Double totalValue) {
-        Money money =  new Money("INR", new BigDecimal(totalValue))
-        money.text("en-US")
-        money.symbol("in")
-
-        money
+    private static Money toMoney(Double totalValue, String currency) {
+        if (currency.size() < 3) currency = "INR"
+        new Money(currency, new BigDecimal(totalValue))
     }
 
     @Override
@@ -847,19 +844,17 @@ class CustomerBridgeImpl implements CustomerBridge {
             infoSummary = externalOrderClient.findSummaryInvoicesByDateRange(accessToken, from, to)
             def values = 0
             def debit = 0
+            def currency = infoSummary.first()?.currency
+
+            if (currency.size() < 3) currency = "INR"
 
             infoSummary.forEach {
                 values += it.totalValue
                 debit += it.debit
             }
 
-            def valueMoney = new Money("INR", new BigDecimal(values))
-            valueMoney.text("en-US")
-            valueMoney.symbol("in")
-
-            def debitMoney = new Money("INR", new BigDecimal(debit))
-            debitMoney.text("en-US")
-            debitMoney.symbol("in")
+            def valueMoney = new Money(currency, new BigDecimal(values))
+            def debitMoney = new Money(currency, new BigDecimal(debit))
 
             new RetailerInfoSummary(
                     value: valueMoney,
@@ -881,16 +876,20 @@ class CustomerBridgeImpl implements CustomerBridge {
         List<RetailerInformation> informationItems = new ArrayList()
         def values = 0
         def debit = 0
+        def currency = externalOrders.first().currency
+
+        if (currency.size() < 3) currency = "INR"
 
         externalOrders.forEach {
             values += it.totalValue
             debit += it.debit
+            it.countryId
             informationItems.add(
                     new RetailerInformation(
                             retailerInfoItems: new RetailerInformationItems(
                                     deliveryDate: new TimestampOutput(new Date(it.deliveryDate).toInstant().toString()),
                                     invoiceNumber: it.invoiceNumber,
-                                    totalValue: toMoney(it.totalValue),
+                                    totalValue: toMoney(it.totalValue, it.currency),
                                     invoicePrimaryId: it.invoiceId,
                                     detail: mapRetailDetail(it.detail)
                             )
@@ -898,13 +897,8 @@ class CustomerBridgeImpl implements CustomerBridge {
             )
         }
 
-        def valueMoney = new Money("INR", new BigDecimal(values))
-        valueMoney.text("en-US")
-        valueMoney.symbol("in")
-
-        def debitMoney = new Money("INR", new BigDecimal(debit))
-        debitMoney.text("en-US")
-        debitMoney.symbol("in")
+        def valueMoney = new Money(currency, new BigDecimal(values))
+        def debitMoney = new Money(currency, new BigDecimal(debit))
 
         new InvoiceRetailerResponse(
                 retailerInformation: informationItems,
