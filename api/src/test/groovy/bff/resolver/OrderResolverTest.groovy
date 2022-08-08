@@ -40,8 +40,8 @@ class OrderResolverTest {
         def supplierOrder = anySupplierOrder()
         def supplierOrders = [supplierOrder]
         when(supplierOrderResolver.supportedPaymentProviders(supplierOrder))
-                .thenReturn(new SupportedPaymentProviders(providers: providers, paymentMode: new PaymentMode(paymentType: paymentType)))
-        testPaymentMode(paymentType, supplierOrders)
+                .thenReturn(providers)
+        testPaymentMode([paymentType], supplierOrders)
     }
 
     @Test
@@ -51,37 +51,47 @@ class OrderResolverTest {
         def supplierOrder = anySupplierOrder()
         def supplierOrders = [supplierOrder]
         when(supplierOrderResolver.supportedPaymentProviders(supplierOrder))
-                .thenReturn(new SupportedPaymentProviders(providers: providers, paymentMode: new PaymentMode(paymentType: paymentType)))
-        testPaymentMode(paymentType, supplierOrders)
+                .thenReturn(providers)
+        testPaymentMode([paymentType], supplierOrders)
     }
 
     @Test
-    void 'Should return PAY_NOW_OR_LATER for JPMorgan & Supermoney providers'() {
+    void 'Should return both for JPMorgan & Supermoney providers'() {
         def providers = [SupportedPaymentProvider.jpmMorganBuild(), SupportedPaymentProvider.supermoneyBuild()]
         def supplierOrder = anySupplierOrder()
         def supplierOrders = [supplierOrder]
         when(supplierOrderResolver.supportedPaymentProviders(supplierOrder))
-                .thenReturn(new SupportedPaymentProviders(providers: providers, paymentMode: new PaymentMode(paymentType: PaymentModeType.PAY_NOW_OR_LATER)))
-        testPaymentMode(PaymentModeType.PAY_NOW_OR_LATER, supplierOrders)
+                .thenReturn(providers)
+        testPaymentMode([PaymentModeType.PAY_NOW, PaymentModeType.PAY_LATER], supplierOrders)
     }
 
-
     @Test
-    void 'Should return NONE for none supported payment providers'() {
-        def paymentType = PaymentModeType.NONE
+    void 'Should return empty list for none supported payment providers'() {
         def providers = []
         def supplierOrder = anySupplierOrder()
         def supplierOrders = [supplierOrder]
-        when(supplierOrderResolver.supportedPaymentProviders(supplierOrder))
-                .thenReturn(new SupportedPaymentProviders(providers: providers, paymentMode: new PaymentMode(paymentType: paymentType)))
-        testPaymentMode(paymentType, supplierOrders)
+        when(supplierOrderResolver.supportedPaymentProviders(supplierOrder)).thenReturn(providers)
+        testPaymentMode([], supplierOrders)
     }
 
-    void testPaymentMode(PaymentModeType paymentModeType, List<SupplierOrder> supplierOrders) {
+    @Test
+    void 'Should return only one PAY_NOW item for JPMorgan provider despite multiple suppliers supporting it'() {
+        def paymentType = PaymentModeType.PAY_NOW
+        def providers = [SupportedPaymentProvider.jpmMorganBuild(), SupportedPaymentProvider.jpmMorganBuild()]
+        def supplierOrder = anySupplierOrder()
+        def supplierOrders = [supplierOrder]
+        when(supplierOrderResolver.supportedPaymentProviders(supplierOrder))
+                .thenReturn(providers)
+        testPaymentMode([paymentType], supplierOrders)
+    }
+
+    void testPaymentMode(List<PaymentModeType> paymentModeTypes, List<SupplierOrder> supplierOrders) {
         def order = anyOrder(PENDING, supplierOrders)
-        def expected = paymentModeType
+        def expected = []
+        paymentModeTypes.forEach {expected.add(new PaymentMode(it)) }
         def result = sut.paymentMode(order)
-        assert expected == result.paymentType
+        assert result.size() == expected.size()
+        assert result.containsAll(expected)
         verify(supplierOrderResolver, times(1)).supportedPaymentProviders(supplierOrders.first())
     }
 }

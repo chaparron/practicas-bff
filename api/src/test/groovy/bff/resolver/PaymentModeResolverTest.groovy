@@ -37,16 +37,6 @@ class PaymentModeResolverTest {
     }
 
     @Test
-    void 'resolves text from message source for Pay Now or Later'() {
-        String code = codePrefix + PaymentModeType.PAY_NOW_OR_LATER.name()
-        String message = "Pay Now or Later"
-        messageSource.addMessage(code, locale, message)
-        def paymentMode = new PaymentMode(paymentType: PaymentModeType.PAY_NOW_OR_LATER)
-
-        assert sut.text(paymentMode, "en").get() == message
-    }
-
-    @Test
     void 'resolves text from given default value'() {
         def paymentMode = new PaymentMode(paymentType: PaymentModeType.PAY_NOW)
 

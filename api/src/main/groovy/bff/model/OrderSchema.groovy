@@ -693,12 +693,6 @@ enum SummaryFailedReason {
         new SummaryFailed(reason: this)
     }
 }
-@Immutable
-class SupportedPaymentProviders {
-    List<SupportedPaymentProvider> providers
-    PaymentMode paymentMode
-}
-
 
 @EqualsAndHashCode
 class SupportedPaymentProvider {
@@ -949,9 +943,7 @@ class MarkSuggestionInput {
 
 enum PaymentModeType {
     PAY_NOW,
-    PAY_LATER,
-    PAY_NOW_OR_LATER,
-    NONE
+    PAY_LATER
 }
 
 @Immutable

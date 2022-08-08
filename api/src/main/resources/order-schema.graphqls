@@ -224,19 +224,12 @@ type SupplierOrder {
   summary: [Summary!]
   appliedPromotions: [AppliedPromotionResponse!]!
   creditLineProviders: [CreditLineProvider!]
-  supportedPaymentProviders: SupportedPaymentProviders!
-}
-
-type SupportedPaymentProviders {
-  providers: [SupportedPaymentProvider!]
-  paymentMode: PaymentMode!
+  supportedPaymentProviders: [SupportedPaymentProvider!]
 }
 
 enum PaymentModeType {
   PAY_NOW,
-  PAY_LATER,
-  PAY_NOW_OR_LATER,
-  NONE
+  PAY_LATER
 }
 
 type PaymentMode {
@@ -406,7 +399,7 @@ type Order {
   discountsMoney: Money
   total: Float
   totalMoney: Money
-  paymentMode: PaymentMode!
+  paymentMode: [PaymentMode!]
 }
 
 enum CustomerOrderFindFailedReason {

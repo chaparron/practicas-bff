@@ -3,10 +3,7 @@ package bff.resolver
 import bff.bridge.SupplierOrderBridge
 import bff.model.CreditLineProvider
 import bff.model.CreditProvider
-import bff.model.PaymentMode
-import bff.model.PaymentModeType
 import bff.model.SupportedPaymentProvider
-import bff.model.SupportedPaymentProviders
 import bff.service.bnpl.BnplProvidersService
 import digitalpayments.sdk.DigitalPaymentsSdk
 import digitalpayments.sdk.model.Provider
@@ -47,11 +44,7 @@ class SupplierOrderResolverTest {
 
     @Test
     void 'Should return only JPMorgan provider'() {
-        def expectedSupportedPaymentProviders = new SupportedPaymentProviders(
-                providers: [SupportedPaymentProvider.jpmMorganBuild()],
-                paymentMode: new PaymentMode(paymentType: PaymentModeType.PAY_NOW)
-        )
-
+        def expectedSupportedPaymentProviders = [SupportedPaymentProvider.jpmMorganBuild()]
         def someSupplier = anySupplier()
         when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([])
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)
@@ -69,11 +62,7 @@ class SupplierOrderResolverTest {
 
     @Test
     void 'Should return only Supermoney provider'() {
-        def expectedSupportedPaymentProviders = new SupportedPaymentProviders(
-                providers: [SupportedPaymentProvider.supermoneyBuild()],
-                paymentMode: new PaymentMode(paymentType: PaymentModeType.PAY_LATER)
-        )
-
+        def expectedSupportedPaymentProviders = [SupportedPaymentProvider.supermoneyBuild()]
         def creditLineProvider = new CreditLineProvider(provider: CreditProvider.SUPERMONEY)
         def someSupplier = anySupplier()
         when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([creditLineProvider])
@@ -91,11 +80,8 @@ class SupplierOrderResolverTest {
 
     @Test
     void 'Should return JPMorgan and Supermoney providers'() {
-        def expectedSupportedPaymentProviders = new SupportedPaymentProviders(
-                providers: [SupportedPaymentProvider.jpmMorganBuild(), SupportedPaymentProvider.supermoneyBuild()],
-                paymentMode: new PaymentMode(paymentType: PaymentModeType.PAY_NOW_OR_LATER)
-        )
-
+        def expectedSupportedPaymentProviders =
+                [SupportedPaymentProvider.jpmMorganBuild(), SupportedPaymentProvider.supermoneyBuild()]
         def someSupplier = anySupplier()
         def creditLineProvider = new CreditLineProvider(provider: CreditProvider.SUPERMONEY)
         when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([creditLineProvider])
@@ -114,11 +100,7 @@ class SupplierOrderResolverTest {
 
     @Test
     void 'Should return empty list for none supported providers'() {
-        def expectedSupportedPaymentProviders = new SupportedPaymentProviders(
-                providers: [],
-                paymentMode: new PaymentMode(paymentType: PaymentModeType.NONE)
-        )
-
+        def expectedSupportedPaymentProviders = []
         def someSupplier = anySupplier()
         when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([])
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)

@@ -71,26 +71,15 @@ class OrderResolver implements GraphQLResolver<Order> {
         moneyService.getMoney(order.accessToken, order.total_money)
     }
 
-    PaymentMode paymentMode(Order order) {
-
-        Set<SupportedPaymentProviders> internalSupportedPaymentProviders = []
+    List<PaymentMode> paymentMode(Order order) {
+        List<PaymentMode> result = []
 
                 order.supplierOrders.forEach {
-                    internalSupportedPaymentProviders.add(
-                            supplierOrderResolver.supportedPaymentProviders(it)
-                    )
+                    result.addAll(supplierOrderResolver.supportedPaymentProviders(it).collect {
+                        new PaymentMode(PaymentModeType.valueOf(it.configuration.type.name()))
+                    })
                 }
 
-        switch (internalSupportedPaymentProviders.size()) {
-            case 2:
-                new PaymentMode(paymentType: PaymentModeType.PAY_NOW_OR_LATER)
-                break
-            case 1:
-                new PaymentMode(paymentType: internalSupportedPaymentProviders.first().paymentMode.paymentType.name())
-                break
-            default:
-                new PaymentMode(paymentType: PaymentModeType.NONE)
-                break
-        }
+        return result.unique()
     }
 }

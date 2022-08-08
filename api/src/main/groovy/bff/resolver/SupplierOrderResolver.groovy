@@ -97,38 +97,24 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
         bnplProvidersService.creditLineProvidersFor(supplierOrder)
     }
 
-    SupportedPaymentProviders supportedPaymentProviders(SupplierOrder supplierOrder) {
+    List<SupportedPaymentProvider> supportedPaymentProviders(SupplierOrder supplierOrder) {
 
         def supplier = supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
         def digitalPaymentProviders = digitalPaymentsSdk.getPaymentProviders(supplier.id.toString(), supplierOrder.accessToken).block()
 
         def isJPMorganSupported = digitalPaymentProviders.any {it == Provider.JP_MORGAN}
 
-        List<SupportedPaymentProvider> internalSupportedPaymentProviders = []
+        List<SupportedPaymentProvider> result = []
 
         if (isJPMorganSupported) {
-            internalSupportedPaymentProviders.add(SupportedPaymentProvider.jpmMorganBuild())
+            result.add(SupportedPaymentProvider.jpmMorganBuild())
         }
 
         if(!bnplProvidersService.creditLineProvidersFor(supplierOrder).isEmpty()) {
-            internalSupportedPaymentProviders.add(SupportedPaymentProvider.supermoneyBuild())
+            result.add(SupportedPaymentProvider.supermoneyBuild())
         }
 
-        switch (internalSupportedPaymentProviders.size()) {
-            case 2:
-                new SupportedPaymentProviders(
-                        providers: internalSupportedPaymentProviders,
-                        paymentMode: new PaymentMode(paymentType: PaymentModeType.PAY_NOW_OR_LATER))
-                break
-            case 1:
-                new SupportedPaymentProviders(
-                        providers: internalSupportedPaymentProviders,
-                        paymentMode: new PaymentMode(paymentType: PaymentModeType.valueOf(internalSupportedPaymentProviders.first().configuration.code.type.name())))
-                break
-            default:
-                new SupportedPaymentProviders(providers: [], paymentMode: new PaymentMode(paymentType: PaymentModeType.NONE))
-                break
-        }
+        return result
     }
 
 }
