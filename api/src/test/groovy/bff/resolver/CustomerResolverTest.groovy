@@ -7,20 +7,26 @@ import bff.model.Customer
 import bff.service.bnpl.BnplProvidersService
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
+import org.mockito.quality.Strictness
 import wabi2b.sdk.featureflags.FeatureFlagsSdk
 
 import static bff.TestExtensions.anyCustomerWithIdAndAccessToken
 import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertNull
+import static org.mockito.ArgumentMatchers.eq
 import static org.mockito.Mockito.when
 
-@RunWith(MockitoJUnitRunner)
 class CustomerResolverTest implements GraphQLResolver<Customer> {
+
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule().strictness(Strictness.STRICT_STUBS)
+
     @Mock
     private CustomerBridge customerBridge
     @Mock
@@ -35,7 +41,7 @@ class CustomerResolverTest implements GraphQLResolver<Customer> {
     def indianCustomer = anyCustomerWithIdAndAccessToken("in")
 
     @Before
-    void setup(){
+    void setup() {
         sut = new CustomerResolver(
                 customerBridge: customerBridge,
                 countryBridge: countryBridge,
@@ -47,22 +53,30 @@ class CustomerResolverTest implements GraphQLResolver<Customer> {
     }
 
     @Test
-    void 'user from india without bnpl provider shouldnt have creditLine section'(){
+    void 'user from india without bnpl provider shouldnt have creditLine section'() {
+        when(featureFlagsSdk.isActiveForCountry(Mockito.any(), Mockito.any())).thenReturn(true)
         when(bnplProvidersService.currentUserHasBnplWallet(indianCustomer.accessToken)).thenReturn(false)
         sut.profileSections(indianCustomer)
-        assertNull(sut.profileSections(indianCustomer).find {it.id == 'CREDIT_LINES'})
+        assertNull(sut.profileSections(indianCustomer).find { it.id == 'CREDIT_LINES' })
     }
 
     @Test
-    void 'user from india with bnpl provider should have creditLine section'(){
+    void 'CREDIT_LINES profileSection is returned whenever BNPL_FEATURE_FLAG is enabled'() {
+        when(featureFlagsSdk.isActiveForCountry(eq("BNPL_FEATURE_FLAG"), Mockito.any())).thenReturn(true)
         when(bnplProvidersService.currentUserHasBnplWallet(indianCustomer.accessToken)).thenReturn(true)
 
-        assertNotNull(sut.profileSections(indianCustomer).find {it.id == 'CREDIT_LINES'})
+        assertNotNull(sut.profileSections(indianCustomer).find { it.id == 'CREDIT_LINES' })
     }
 
     @Test
-    void 'user not from india shouldnt have creditLine section'(){
+    void 'CREDIT_LINES profileSection is not returned whenever BNPL_FEATURE_FLAG is disabled'() {
+        when(featureFlagsSdk.isActiveForCountry(eq("BNPL_FEATURE_FLAG"), Mockito.any())).thenReturn(false)
+        assertNull(sut.profileSections(indianCustomer).find { it.id == 'CREDIT_LINES' })
+    }
+
+    @Test
+    void 'user not from india shouldnt have creditLine section'() {
         def notIndianCustomer = anyCustomerWithIdAndAccessToken("ar")
-        assertNull(sut.profileSections(notIndianCustomer).find {it.id == 'CREDIT_LINES'})
+        assertNull(sut.profileSections(notIndianCustomer).find { it.id == 'CREDIT_LINES' })
     }
 }

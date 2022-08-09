@@ -42,7 +42,7 @@ class CustomerResolver implements GraphQLResolver<Customer> {
             ps.push(new ProfileSection(id: "INVOICES"))
         }
 
-        if (customer.country_id == 'in'){
+        if(featureFlagsSdk.isActiveForCountry("BNPL_FEATURE_FLAG", customer.country_id)){
             if (bnplProvidersService.currentUserHasBnplWallet(customer.accessToken)){
                 ps.push(new ProfileSection(id: "CREDIT_LINES"))
             }
