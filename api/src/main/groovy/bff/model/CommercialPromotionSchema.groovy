@@ -215,30 +215,18 @@ class Discount implements CommercialPromotionType {
     }
 
     boolean appliesTo(Integer quantity) {
-        ofNullable(appliesToViaApplicationMode(quantity)).isPresent()
-    }
-
-    // TODO : Check this implementation, its a hotfix due missing parameter progressive
-    // see #https://wabiproject.atlassian.net/browse/WO-2590
-    private DiscountStep appliesToViaApplicationMode(int quantity) {
-        // PROGRESSIVE -> todos los step por los que pase
-        // LINEAL -> un solo step
-        // SLAVE -> multiplos de step
-        log.info("La promo :: " + id + " :: " + description + " :: " + applicationMode + " es aplicable para la quantity " + quantity + "?")
-        if (applicationMode == ApplicationMode.LINEAL) {
-            final step = steps.find { quantity % it.from == 0 && quantity >= it.from && quantity <= it?.to }
-            log.info("Applicable step :: " + step)
-            return step
-        }
-
-        if (applicationMode == ApplicationMode.PROGRESSIVE) {
-            final step = steps.find { quantity >= it.from && quantity <= it?.to }
-            log.info("Applicable step :: " + step)
-            return step
-        }
-
-        log.info("No es aplicable !!!")
-        return null
+        ofNullable {
+            switch (applicationMode) {
+                case ApplicationMode.SLABBED:
+                    steps.find { quantity % it.from == 0 && quantity >= it.from && quantity <= it?.to }
+                    break
+                case ApplicationMode.LINEAL | ApplicationMode.PROGRESSIVE:
+                    steps.find { quantity >= it.from && quantity <= it?.to }
+                    break
+                default:
+                    null
+            }
+        }.isPresent()
     }
 
     Discount labeled(Closure<String> label) {
