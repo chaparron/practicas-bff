@@ -166,7 +166,7 @@ class DiscountStep {
 enum ApplicationMode {
     SLABBED,
     PROGRESSIVE,
-    NON_PROGRESSIVE
+    LINEAL
 }
 
 interface RewardItem {}
@@ -179,10 +179,10 @@ class FixedQuantityFreeProduct implements RewardItem {
 }
 
 @EqualsAndHashCode
-class ProportionalQuantityFreeProduct implements RewardItem {
+class MultipliedQuantityFreeProduct implements RewardItem {
     Product product
     Display display
-    Integer quantity
+    Float quantity
 }
 
 @Slf4j
@@ -225,7 +225,7 @@ class Discount implements CommercialPromotionType {
         // LINEAL -> un solo step
         // SLAVE -> multiplos de step
         log.info("La promo :: " + id + " :: " + description + " :: " + applicationMode + " es aplicable para la quantity " + quantity + "?")
-        if (applicationMode == ApplicationMode.NON_PROGRESSIVE) {
+        if (applicationMode == ApplicationMode.LINEAL) {
             final step = steps.find { quantity % it.from == 0 && quantity >= it.from && quantity <= it?.to }
             log.info("Applicable step :: " + step)
             return step

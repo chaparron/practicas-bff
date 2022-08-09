@@ -103,7 +103,7 @@ class Main {
                 .add(InvoicesResponse.class)
                 .add(InvoiceRetailerResponse.class)
                 .add(FixedQuantityFreeProduct.class)
-                .add(ProportionalQuantityFreeProduct.class)
+                .add(MultipliedQuantityFreeProduct.class)
                 .add(JpMorganCreateDigitalPayment.class)
                 .add(CreateDigitalPaymentFailed.class)
                 .add(DigitalPayment.class)

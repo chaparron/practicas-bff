@@ -12,14 +12,12 @@ import wabi2b.cms.sdk.Banner as CmsBanner
 import wabi2b.cms.sdk.Brand as CmsBrand
 import wabi2b.cms.sdk.CommercialPromotion as CmsCommercialPromotion
 import wabi2b.cms.sdk.Discount as CmsDiscount
-import wabi2b.cms.sdk.FixedQuantityFreeProduct as CmsFixedQuantityFreeProduct
+import wabi2b.cms.sdk.FreeProduct as CmsFreeProduct
 import wabi2b.cms.sdk.Module as CmsModule
 import wabi2b.cms.sdk.Piece as CmsPiece
 import wabi2b.cms.sdk.Product as CmsProduct
 import wabi2b.cms.sdk.Supplier as CmsSupplier
 
-import static bff.model.ApplicationMode.NON_PROGRESSIVE
-import static bff.model.ApplicationMode.PROGRESSIVE
 import static groovy.lang.Closure.IDENTITY
 import static java.util.Optional.*
 import static scala.jdk.javaapi.CollectionConverters.asJava
@@ -442,7 +440,7 @@ class Cms {
                                 expiration: new TimestampOutput(promotion.expiration().toString()),
                                 label: labelBuilder.discount(steps),
                                 remainingUses: promotion.remainingUses(),
-                                applicationMode: promotion.progressive() ? PROGRESSIVE : NON_PROGRESSIVE,
+                                applicationMode: ApplicationMode.valueOf(promotion.applicationMode()),
                                 steps: steps,
                                 linkedProducts: asJava(promotion.linkedProducts()).collect { it.toInteger() }
                         )
@@ -453,17 +451,29 @@ class Cms {
                                     asJava(step.rewards()).findResults { node ->
                                         of(
                                                 asJava(node.items()).findResults { reward ->
-                                                    if (reward instanceof CmsFixedQuantityFreeProduct) {
-                                                        def freeProduct = reward as CmsFixedQuantityFreeProduct
-                                                        new FixedQuantityFreeProduct(
-                                                                quantity: freeProduct.quantity(),
-                                                                product: new Product(product(freeProduct.product())),
-                                                                display: new Display(
-                                                                        id: freeProduct.display().id().toInteger(),
-                                                                        ean: freeProduct.display().ean(),
-                                                                        units: freeProduct.display().units()
-                                                                )
+                                                    if (reward instanceof CmsFreeProduct) {
+                                                        def freeProduct = reward as CmsFreeProduct
+                                                        def quantity = freeProduct.quantity()
+                                                        def product = new Product(product(freeProduct.product()))
+                                                        def display = new Display(
+                                                                id: freeProduct.display().id().toInteger(),
+                                                                ean: freeProduct.display().ean(),
+                                                                units: freeProduct.display().units()
                                                         )
+                                                        if (quantity instanceof FixedQuantity) {
+                                                            new FixedQuantityFreeProduct(
+                                                                    quantity: (quantity as FixedQuantity).amount(),
+                                                                    product: product,
+                                                                    display: display
+                                                            )
+                                                        } else {
+                                                            new MultipliedQuantityFreeProduct(
+                                                                    quantity: (quantity as MultipliedQuantity)
+                                                                            .factor().toFloat(),
+                                                                    product: product,
+                                                                    display: display
+                                                            )
+                                                        }
                                                     } else null
                                                 }.toList()
                                         )
@@ -472,7 +482,9 @@ class Cms {
                                                     new RewardsNode(
                                                             id: node.id(),
                                                             parent: toJava(node.parent()),
-                                                            type: (node.nodeType() instanceof AndOperator) ? RewardsNodeType.AND : RewardsNodeType.OR,
+                                                            type: (node.nodeType() instanceof AndOperator) ?
+                                                                    RewardsNodeType.AND :
+                                                                    RewardsNodeType.OR,
                                                             items: items
                                                     )
                                                 }
@@ -482,12 +494,12 @@ class Cms {
                                     .filter { !it.empty }
                                     .map {
                                         new FreeProduct(
-                                                id:  promotion.id(),
-                                                description:  promotion.description(),
-                                                expiration:  new TimestampOutput(promotion.expiration().toString()),
-                                                label:  labelBuilder.freeProduct(),
-                                                remainingUses:  promotion.remainingUses(),
-                                                applicationMode: promotion.progressive() ? PROGRESSIVE : NON_PROGRESSIVE,
+                                                id: promotion.id(),
+                                                description: promotion.description(),
+                                                expiration: new TimestampOutput(promotion.expiration().toString()),
+                                                label: labelBuilder.freeProduct(),
+                                                remainingUses: promotion.remainingUses(),
+                                                applicationMode: ApplicationMode.valueOf(promotion.applicationMode()),
                                                 steps: [
                                                         new FreeProductStep(
                                                                 from: step.from(),

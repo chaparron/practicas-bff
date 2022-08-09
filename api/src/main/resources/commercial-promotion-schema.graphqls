@@ -24,7 +24,7 @@ type MinProductQuantityByProduct {
 enum ApplicationMode {
   SLABBED,
   PROGRESSIVE,
-  NON_PROGRESSIVE
+  LINEAL
 }
 
 type DiscountStep {
@@ -54,13 +54,13 @@ type FixedQuantityFreeProduct {
   quantity: Int!
 }
 
-type ProportionalQuantityFreeProduct {
+type MultipliedQuantityFreeProduct {
   product: Product!
   display: Display!
   quantity: Float!
 }
 
-union RewardItem = FixedQuantityFreeProduct | ProportionalQuantityFreeProduct
+union RewardItem = FixedQuantityFreeProduct | MultipliedQuantityFreeProduct
 
 enum RewardsNodeType {
   AND

@@ -14,7 +14,17 @@ class DiscountResolver implements GraphQLResolver<Discount> {
     }
 
     Boolean progressive(Discount discount) {
-        discount.applicationMode == ApplicationMode.PROGRESSIVE
+        switch (discount.applicationMode) {
+            case ApplicationMode.SLABBED:
+                false
+                break
+            case ApplicationMode.PROGRESSIVE:
+                true
+                break
+            case ApplicationMode.LINEAL:
+                true
+                break
+        }
     }
 
 }

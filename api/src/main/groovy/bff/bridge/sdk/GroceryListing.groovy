@@ -10,8 +10,6 @@ import scala.Option
 import sun.util.locale.LanguageTag
 import wabi2b.grocery.listing.sdk.*
 
-import static bff.model.ApplicationMode.NON_PROGRESSIVE
-import static bff.model.ApplicationMode.PROGRESSIVE
 import static bff.model.SortInput.DESC
 import static java.util.Locale.forLanguageTag
 import static java.util.Optional.*
@@ -927,7 +925,7 @@ class GroceryListing {
                                 expiration: new TimestampOutput(promotion.expiration().toString()),
                                 label: labelBuilder.discount(steps),
                                 remainingUses: promotion.remainingUses(),
-                                applicationMode: promotion.progressive() ? PROGRESSIVE : NON_PROGRESSIVE,
+                                applicationMode: ApplicationMode.valueOf(promotion.applicationMode()),
                                 steps: steps,
                                 linkedProducts: asJava(promotion.linkedProducts()).collect { it.toInteger() }
                         )
@@ -938,17 +936,29 @@ class GroceryListing {
                                     asJava(step.rewards()).findResults { node ->
                                         of(
                                                 asJava(node.items()).findResults { reward ->
-                                                    if (reward instanceof AvailableFixedQuantityFreeProduct) {
-                                                        def freeProduct = reward as AvailableFixedQuantityFreeProduct
-                                                        new FixedQuantityFreeProduct(
-                                                                quantity: freeProduct.quantity(),
-                                                                product: new Product(product(freeProduct.product())),
-                                                                display: new Display(
-                                                                        id: freeProduct.display().id().toInteger(),
-                                                                        ean: freeProduct.display().ean(),
-                                                                        units: freeProduct.display().units()
-                                                                )
+                                                    if (reward instanceof AvailableFreeProduct) {
+                                                        def freeProduct = reward as AvailableFreeProduct
+                                                        def quantity = freeProduct.quantity()
+                                                        def product = new Product(product(freeProduct.product()))
+                                                        def display = new Display(
+                                                                id: freeProduct.display().id().toInteger(),
+                                                                ean: freeProduct.display().ean(),
+                                                                units: freeProduct.display().units()
                                                         )
+                                                        if (quantity instanceof FixedQuantity) {
+                                                            new FixedQuantityFreeProduct(
+                                                                    quantity: (quantity as FixedQuantity).amount(),
+                                                                    product: product,
+                                                                    display: display
+                                                            )
+                                                        } else {
+                                                            new MultipliedQuantityFreeProduct(
+                                                                    quantity: (quantity as MultipliedQuantity)
+                                                                            .factor().toFloat(),
+                                                                    product: product,
+                                                                    display: display
+                                                            )
+                                                        }
                                                     } else null
                                                 }.toList()
                                         )
@@ -957,7 +967,9 @@ class GroceryListing {
                                                     new RewardsNode(
                                                             id: node.id(),
                                                             parent: toJava(node.parent()),
-                                                            type: (node.nodeType() instanceof AvailableAndOperator) ? RewardsNodeType.AND : RewardsNodeType.OR,
+                                                            type: (node.nodeType() instanceof AvailableAndOperator) ?
+                                                                    RewardsNodeType.AND :
+                                                                    RewardsNodeType.OR,
                                                             items: items
                                                     )
                                                 }
@@ -967,11 +979,12 @@ class GroceryListing {
                                     .filter { !it.empty }
                                     .map {
                                         new FreeProduct(
-                                                id:  promotion.id(),
-                                                description:  promotion.description(),
-                                                expiration:  new TimestampOutput(promotion.expiration().toString()),
-                                                label:  labelBuilder.freeProduct(),
-                                                remainingUses:  promotion.remainingUses(),
+                                                id: promotion.id(),
+                                                description: promotion.description(),
+                                                expiration: new TimestampOutput(promotion.expiration().toString()),
+                                                label: labelBuilder.freeProduct(),
+                                                remainingUses: promotion.remainingUses(),
+                                                applicationMode: ApplicationMode.valueOf(promotion.applicationMode()),
                                                 steps: [
                                                         new FreeProductStep(
                                                                 from: step.from(),
