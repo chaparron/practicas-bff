@@ -950,3 +950,12 @@ enum PaymentModeType {
 class PaymentMode {
     PaymentModeType paymentType
 }
+
+@EqualsAndHashCode
+class PaymentButton {
+    Boolean isVisible
+
+    PaymentButton(Boolean isVisible) {
+        this.isVisible = isVisible
+    }
+}

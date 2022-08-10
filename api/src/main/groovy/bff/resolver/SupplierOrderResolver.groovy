@@ -117,5 +117,9 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
         return result
     }
 
+    PaymentButton paymentButton(SupplierOrder supplierOrder) {
+
+        new PaymentButton(true)
+    }
 }
 
