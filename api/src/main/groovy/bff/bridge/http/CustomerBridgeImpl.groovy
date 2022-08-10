@@ -44,6 +44,8 @@ class CustomerBridgeImpl implements CustomerBridge {
 
     private static Long ONE_WEEK_EPOCH_MILLIS = 604800000
     private static Long TWO_MONTH_EPOCH_MILLIS = ONE_WEEK_EPOCH_MILLIS * 60
+    private static String MAX = "MAX"
+    private static String MIN = "MIN"
 
     @Override
     Customer myProfile(String accessToken) {
@@ -737,15 +739,18 @@ class CustomerBridgeImpl implements CustomerBridge {
             toMillis = fromMillis + ONE_WEEK_EPOCH_MILLIS
         }
 
+        def fromAdjustment = timeAdjustment(fromMillis, MIN)
+        def toAdjustment = timeAdjustment(toMillis, MAX)
+
         def dataPagination = externalOrderClient.findInvoices(
                 findMyInvoicesInput.accessToken,
-                fromMillis,
-                toMillis,
+                fromAdjustment,
+                toAdjustment,
                 findMyInvoicesInput.cursor == null ? "not-cursor": findMyInvoicesInput.cursor
         )
 
         if (!dataPagination.values.isEmpty()) {
-            return mapInvoiceResponse(dataPagination, findMyInvoicesInput.accessToken, fromMillis, toMillis)
+            return mapInvoiceResponse(dataPagination, findMyInvoicesInput.accessToken, fromAdjustment, toAdjustment)
         } else {
             return emptyInvoiceResponse()
         }
@@ -801,6 +806,30 @@ class CustomerBridgeImpl implements CustomerBridge {
     private static Money toMoney(Double totalValue, String currency) {
         if (currency.size() < 3) currency = "INR"
         new Money(currency, new BigDecimal(totalValue))
+    }
+
+
+    private static Long timeAdjustment(Long timeEpochMillis, String dateBuilder) {
+        def dateConverter = new Date(timeEpochMillis)
+        def calendarInstance = Calendar.getInstance()
+        def calendarDate = dateConverter.toCalendar()
+
+        switch (dateBuilder) {
+            case MIN:
+                calendarDate.set(Calendar.HOUR_OF_DAY, calendarInstance.getMinimum(Calendar.HOUR_OF_DAY))
+                calendarDate.set(Calendar.MINUTE, calendarInstance.getMinimum(Calendar.MINUTE))
+                calendarDate.set(Calendar.SECOND, calendarInstance.getMinimum(Calendar.SECOND))
+                calendarDate.set(Calendar.MILLISECOND, calendarInstance.getMinimum(Calendar.MILLISECOND))
+            break
+            case MAX:
+                calendarDate.set(Calendar.HOUR_OF_DAY, calendarInstance.getMaximum(Calendar.HOUR_OF_DAY))
+                calendarDate.set(Calendar.MINUTE, calendarInstance.getMaximum(Calendar.MINUTE))
+                calendarDate.set(Calendar.SECOND, calendarInstance.getMaximum(Calendar.SECOND))
+                calendarDate.set(Calendar.MILLISECOND, calendarInstance.getMaximum(Calendar.MILLISECOND))
+            break
+        }
+
+        calendarDate.timeInMillis
     }
 
     @Override
