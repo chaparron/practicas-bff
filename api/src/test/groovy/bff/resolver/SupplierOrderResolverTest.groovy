@@ -103,7 +103,7 @@ class SupplierOrderResolverTest {
     void 'Should return empty list for none supported providers'() {
         def expectedSupportedPaymentProviders = []
         def someSupplier = anySupplier()
-        when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([])
+        when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn(null)
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)
         Mono<List<Provider>> jpMorganPaymentProvider = Mono.just([])
         when(digitalPaymentsSdk.getPaymentProviders(any(), any())).thenReturn(jpMorganPaymentProvider)
