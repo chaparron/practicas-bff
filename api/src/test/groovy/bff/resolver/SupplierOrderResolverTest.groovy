@@ -3,6 +3,7 @@ package bff.resolver
 import bff.bridge.SupplierOrderBridge
 import bff.model.CreditLineProvider
 import bff.model.CreditProvider
+import bff.model.PaymentButton
 import bff.model.SupportedPaymentProvider
 import bff.service.bnpl.BnplProvidersService
 import digitalpayments.sdk.DigitalPaymentsSdk
@@ -102,7 +103,7 @@ class SupplierOrderResolverTest {
     void 'Should return empty list for none supported providers'() {
         def expectedSupportedPaymentProviders = []
         def someSupplier = anySupplier()
-        when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([])
+        when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn(null)
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)
         Mono<List<Provider>> jpMorganPaymentProvider = Mono.just([])
         when(digitalPaymentsSdk.getPaymentProviders(any(), any())).thenReturn(jpMorganPaymentProvider)
@@ -114,5 +115,12 @@ class SupplierOrderResolverTest {
         verify(bnplProvidersService).creditLineProvidersFor(any())
         verify(supplierOrderBridge).getSupplierBySupplierOrderId(any(), any())
         verify(digitalPaymentsSdk).getPaymentProviders(any(), any())
+    }
+
+    @Test
+    void 'Should return payment button'() {
+        def expected = new PaymentButton(true)
+        def result = sut.paymentButton(anySupplierOrder())
+        assert result == expected
     }
 }

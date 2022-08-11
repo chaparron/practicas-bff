@@ -3,6 +3,7 @@ package bff.resolver
 import bff.bridge.OrderBridge
 import bff.model.*
 import bff.service.MoneyService
+import bff.service.bnpl.BnplProvidersService
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -10,7 +11,6 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import static bff.TestExtensions.anyOrder
 import static bff.TestExtensions.anySupplierOrder
-import static bff.model.OrderStatus.PENDING
 import static org.mockito.Mockito.*
 
 @RunWith(MockitoJUnitRunner)
@@ -39,9 +39,12 @@ class OrderResolverTest {
         def providers = [SupportedPaymentProvider.jpmMorganBuild()]
         def supplierOrder = anySupplierOrder()
         def supplierOrders = [supplierOrder]
-        when(supplierOrderResolver.supportedPaymentProviders(supplierOrder))
-                .thenReturn(providers)
-        testPaymentMode([paymentType], supplierOrders)
+        def order = anyOrder(OrderStatus.PENDING, supplierOrders)
+
+        when(supplierOrderResolver.supportedPaymentProviders(supplierOrder)).thenReturn(providers)
+        when(orderBridge.getSupplierOrders(order.accessToken, order)).thenReturn(supplierOrders)
+
+        testPaymentMode([paymentType], supplierOrders, order)
     }
 
     @Test
@@ -50,9 +53,12 @@ class OrderResolverTest {
         def providers = [SupportedPaymentProvider.supermoneyBuild()]
         def supplierOrder = anySupplierOrder()
         def supplierOrders = [supplierOrder]
-        when(supplierOrderResolver.supportedPaymentProviders(supplierOrder))
-                .thenReturn(providers)
-        testPaymentMode([paymentType], supplierOrders)
+        def order = anyOrder(OrderStatus.PENDING, supplierOrders)
+
+        when(supplierOrderResolver.supportedPaymentProviders(supplierOrder)).thenReturn(providers)
+        when(orderBridge.getSupplierOrders(order.accessToken, order)).thenReturn(supplierOrders)
+
+        testPaymentMode([paymentType], supplierOrders, order)
     }
 
     @Test
@@ -60,9 +66,12 @@ class OrderResolverTest {
         def providers = [SupportedPaymentProvider.jpmMorganBuild(), SupportedPaymentProvider.supermoneyBuild()]
         def supplierOrder = anySupplierOrder()
         def supplierOrders = [supplierOrder]
-        when(supplierOrderResolver.supportedPaymentProviders(supplierOrder))
-                .thenReturn(providers)
-        testPaymentMode([PaymentModeType.PAY_NOW, PaymentModeType.PAY_LATER], supplierOrders)
+        def order = anyOrder(OrderStatus.PENDING, supplierOrders)
+
+        when(supplierOrderResolver.supportedPaymentProviders(supplierOrder)).thenReturn(providers)
+        when(orderBridge.getSupplierOrders(order.accessToken, order)).thenReturn(supplierOrders)
+
+        testPaymentMode([PaymentModeType.PAY_NOW, PaymentModeType.PAY_LATER], supplierOrders, order)
     }
 
     @Test
@@ -70,8 +79,12 @@ class OrderResolverTest {
         def providers = []
         def supplierOrder = anySupplierOrder()
         def supplierOrders = [supplierOrder]
+        def order = anyOrder(OrderStatus.PENDING, supplierOrders)
+
         when(supplierOrderResolver.supportedPaymentProviders(supplierOrder)).thenReturn(providers)
-        testPaymentMode([], supplierOrders)
+        when(orderBridge.getSupplierOrders(order.accessToken, order)).thenReturn(supplierOrders)
+
+        testPaymentMode([], supplierOrders, order)
     }
 
     @Test
@@ -80,13 +93,15 @@ class OrderResolverTest {
         def providers = [SupportedPaymentProvider.jpmMorganBuild(), SupportedPaymentProvider.jpmMorganBuild()]
         def supplierOrder = anySupplierOrder()
         def supplierOrders = [supplierOrder]
-        when(supplierOrderResolver.supportedPaymentProviders(supplierOrder))
-                .thenReturn(providers)
-        testPaymentMode([paymentType], supplierOrders)
+        def order = anyOrder(OrderStatus.PENDING, supplierOrders)
+
+        when(supplierOrderResolver.supportedPaymentProviders(supplierOrder)).thenReturn(providers)
+        when(orderBridge.getSupplierOrders(order.accessToken, order)).thenReturn(supplierOrders)
+
+        testPaymentMode([paymentType], supplierOrders, order)
     }
 
-    void testPaymentMode(List<PaymentModeType> paymentModeTypes, List<SupplierOrder> supplierOrders) {
-        def order = anyOrder(PENDING, supplierOrders)
+    void testPaymentMode(List<PaymentModeType> paymentModeTypes, List<SupplierOrder> supplierOrders, Order order) {
         def expected = []
         paymentModeTypes.forEach {expected.add(new PaymentMode(it)) }
         def result = sut.paymentMode(order)

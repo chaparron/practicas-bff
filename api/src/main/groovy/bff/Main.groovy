@@ -108,6 +108,7 @@ class Main {
                 .add(CreateDigitalPaymentFailed.class)
                 .add(DigitalPayment.class)
                 .add(DigitalPaymentFailed.class)
+                .add(PaymentButton.class)
     }
 
     /**

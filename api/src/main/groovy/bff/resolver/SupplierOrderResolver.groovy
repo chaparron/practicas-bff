@@ -10,6 +10,8 @@ import digitalpayments.sdk.model.Provider
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import static java.util.Optional.ofNullable
+
 @Component
 class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
 
@@ -110,12 +112,16 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
             result.add(SupportedPaymentProvider.jpmMorganBuild())
         }
 
-        if(!bnplProvidersService.creditLineProvidersFor(supplierOrder).isEmpty()) {
+        if(ofNullable(creditLineProviders(supplierOrder)).map {!it.isEmpty()}.orElse(false)) {
             result.add(SupportedPaymentProvider.supermoneyBuild())
         }
 
         return result
     }
 
+    PaymentButton paymentButton(SupplierOrder supplierOrder) {
+
+        new PaymentButton(true)
+    }
 }
 

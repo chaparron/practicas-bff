@@ -225,6 +225,13 @@ type SupplierOrder {
   appliedPromotions: [AppliedPromotionResponse!]!
   creditLineProviders: [CreditLineProvider!]
   supportedPaymentProviders: [SupportedPaymentProvider!]
+  paymentButton: Button
+}
+
+union Button = PaymentButton
+
+type PaymentButton {
+  text(languageTag: String!): String
 }
 
 enum PaymentModeType {
