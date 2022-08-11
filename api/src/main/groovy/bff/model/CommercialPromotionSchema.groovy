@@ -215,18 +215,17 @@ class Discount implements CommercialPromotionType {
     }
 
     boolean appliesTo(Integer quantity) {
-        ofNullable {
-            switch (applicationMode) {
-                case ApplicationMode.SLABBED:
-                    steps.find { quantity % it.from == 0 && quantity >= it.from && quantity <= it?.to }
-                    break
-                case ApplicationMode.LINEAL | ApplicationMode.PROGRESSIVE:
-                    steps.find { quantity >= it.from && quantity <= it?.to }
-                    break
-                default:
-                    null
-            }
-        }.isPresent()
+        def maybeStep = null
+        switch (applicationMode) {
+            case ApplicationMode.SLABBED:
+                maybeStep = steps.find { quantity % it.from == 0 && quantity >= it.from && quantity <= it?.to }
+                break
+            case ApplicationMode.LINEAL:
+            case ApplicationMode.PROGRESSIVE:
+                maybeStep = steps.find { quantity >= it.from && quantity <= it?.to }
+                break
+        }
+        ofNullable(maybeStep).isPresent()
     }
 
     Discount labeled(Closure<String> label) {
