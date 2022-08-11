@@ -383,7 +383,7 @@ Resources:
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: feature_flags_url
           Value:
-            Fn::ImportValue: !Sub "${EnvironmentStackName}-feature-flags-ApiRootURL"
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-feature-flags-PrivateApiRootURL"
 
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: bnpl_credits_url
