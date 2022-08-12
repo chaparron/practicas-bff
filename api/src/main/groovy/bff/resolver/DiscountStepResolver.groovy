@@ -1,6 +1,5 @@
 package bff.resolver
 
-
 import bff.model.DiscountStep
 import bff.model.MinProductQuantityByProduct
 import bff.model.Money
@@ -9,11 +8,23 @@ import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import static java.lang.Integer.MAX_VALUE
+import static java.util.Optional.ofNullable
+
 @Component
 class DiscountStepResolver implements GraphQLResolver<DiscountStep> {
 
     @Autowired
     MoneyService moneyService
+
+    @Deprecated
+    Integer to(DiscountStep step) {
+        ofNullable(step.to).orElse(MAX_VALUE)
+    }
+
+    Integer maybeTo(DiscountStep step) {
+        step.to
+    }
 
     Money value(DiscountStep step) {
         moneyService.getMoneyByCountry(step.countryId, step.value)

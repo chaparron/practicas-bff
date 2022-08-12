@@ -30,6 +30,7 @@ enum ApplicationMode {
 type DiscountStep {
   from: Int!
   to: Int!
+  maybeTo: Int
   value: Money!
   unitValue: Money!
   percentage: Float!
@@ -77,6 +78,7 @@ type RewardsNode {
 type FreeProductStep {
   from: Int!
   to: Int!
+  maybeTo: Int
   rewards: [RewardsNode!]!
   minQuantityByProducts: [MinProductQuantityByProduct!]!
 }
