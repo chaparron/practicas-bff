@@ -586,7 +586,6 @@ input TriggerCartItem {
 input TriggerCartItemV2 {
   productId: Int!
   units: Int!
-  totalPrice: Float
 }
 
 input ProductFreeItemInput {
@@ -704,7 +703,10 @@ input CartLineInput {
   productId: Int!
   quantity: Int!
   units: Int!
+  #precio original
   price: Float!
+  #sumatoria de precio real (incluido con promociones)
+  totalPrice: Float!
 }
 
 enum SupplierFailedReason {

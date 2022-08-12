@@ -20,6 +20,7 @@ class CartLineInput {
     Long units
     Integer quantity
     BigDecimal price
+    BigDecimal totalPrice
 }
 
 class AppliedPromotionInputV2 {
@@ -32,5 +33,4 @@ class AppliedPromotionInputV2 {
 class TriggerCartItemV2 {
     Integer productId
     Integer units
-    BigDecimal totalPrice
 }

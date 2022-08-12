@@ -48,7 +48,8 @@ abstract class OrderBridgeImplTestData {
                             productId: 1,
                             units: 1,
                             quantity: 1,
-                            price: new BigDecimal(10)
+                            price: new BigDecimal(10),
+                            totalPrice: new BigDecimal(10)
                     )]
             )]
     )
