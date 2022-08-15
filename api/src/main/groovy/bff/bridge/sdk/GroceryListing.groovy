@@ -1,5 +1,6 @@
 package bff.bridge.sdk
 
+import bff.JwtToken
 import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
 import bff.configuration.EntityNotFoundException
@@ -7,8 +8,11 @@ import bff.model.*
 import groovy.util.logging.Slf4j
 import org.springframework.context.MessageSource
 import scala.Option
+import scala.math.BigDecimal
 import sun.util.locale.LanguageTag
 import wabi2b.grocery.listing.sdk.*
+
+import java.time.OffsetDateTime
 
 import static bff.model.SortInput.DESC
 import static java.util.Locale.forLanguageTag
@@ -18,6 +22,7 @@ import static scala.jdk.javaapi.CollectionConverters.asScala
 import static scala.jdk.javaapi.OptionConverters.toJava
 import static scala.jdk.javaapi.OptionConverters.toScala
 import static wabi2b.grocery.listing.sdk.BrandQueryRequest.availableBrandsIn
+import static wabi2b.grocery.listing.sdk.CouponQueryRequest.redeemableCouponsIn
 import static wabi2b.grocery.listing.sdk.MostSearchedTermsQueryRequest.mostSearchedTermsIn
 import static wabi2b.grocery.listing.sdk.ProductQueryRequest.availableProductsIn
 import static wabi2b.grocery.listing.sdk.ProductQueryRequest.similarProductsTo
@@ -351,6 +356,36 @@ class GroceryListing {
             return new PromotionResponseMapper().map(response)
         } catch (Exception ex) {
             log.error("Error fetching promotions for request {}", request, ex)
+            throw ex
+        }
+    }
+
+    RedeemableCouponsResponse findRedeemableCoupons(RedeemableCouponsRequest input) {
+        def country = JwtToken.countryFromString(input.accessToken)
+        def (customer, _) = getCustomerAndDeliveryAddress(input.accessToken)
+        def items = input.items.collect {
+            new CartItem(it.productId.toString(), it.supplierId.toString(), it.quantity)
+        }
+        def request =
+                redeemableCouponsIn(country)
+                        .availableOn(OffsetDateTime.now())
+                        .forCustomer(*customer)
+                        .ordering(items.head(), asScala(items.tail()).toSeq())
+                        .withTotalAmount(new BigDecimal(input.totalPrice))
+                        .sized(20)
+        try {
+            def response = sdk.query(request)
+            return new RedeemableCouponsResponse(
+                    coupons: asJava(response.hits()).collect {
+                        new Coupon(
+                                code: it.code(),
+                                description: it.description(),
+                                validUntil: toJava(it.validUntil()).orElse(OffsetDateTime.now().plusDays(360))
+                        )
+                    }
+            )
+        } catch (Exception ex) {
+            log.error("Error fetching redeemable coupons for request {}", request, ex)
             throw ex
         }
     }
