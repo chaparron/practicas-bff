@@ -173,16 +173,46 @@ interface RewardItem {}
 
 @EqualsAndHashCode
 class FixedQuantityFreeProduct implements RewardItem {
-    Product product
+    Long id
+    String name
+    String description
+    List<Image> images
     Display display
     Integer quantity
+
+    FixedQuantityFreeProduct(ProductSearch product,
+                             Display display,
+                             Integer quantity) {
+        this.id = product.id
+        this.name  = product.name
+        this.description = product.description
+        this.images = product.images
+        this.display = display
+        this.quantity = quantity
+    }
+
 }
 
 @EqualsAndHashCode
 class MultipliedQuantityFreeProduct implements RewardItem {
-    Product product
+    Long id
+    String name
+    String description
+    List<Image> images
     Display display
     Float quantity
+
+    MultipliedQuantityFreeProduct(ProductSearch product,
+                             Display display,
+                             Float quantity) {
+        this.id = product.id
+        this.name  = product.name
+        this.description = product.description
+        this.images = product.images
+        this.display = display
+        this.quantity = quantity
+    }
+
 }
 
 @Slf4j

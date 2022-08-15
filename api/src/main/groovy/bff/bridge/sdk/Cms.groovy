@@ -454,7 +454,7 @@ class Cms {
                                                     if (reward instanceof CmsFreeProduct) {
                                                         def freeProduct = reward as CmsFreeProduct
                                                         def quantity = freeProduct.quantity()
-                                                        def product = new Product(product(freeProduct.product()))
+                                                        def product = product(freeProduct.product())
                                                         def display = new Display(
                                                                 id: freeProduct.display().id().toInteger(),
                                                                 ean: freeProduct.display().ean(),
@@ -462,16 +462,15 @@ class Cms {
                                                         )
                                                         if (quantity instanceof FixedQuantity) {
                                                             new FixedQuantityFreeProduct(
-                                                                    quantity: (quantity as FixedQuantity).amount(),
-                                                                    product: product,
-                                                                    display: display
+                                                                    product,
+                                                                    display,
+                                                                    (quantity as FixedQuantity).amount()
                                                             )
                                                         } else {
                                                             new MultipliedQuantityFreeProduct(
-                                                                    quantity: (quantity as MultipliedQuantity)
-                                                                            .factor().toFloat(),
-                                                                    product: product,
-                                                                    display: display
+                                                                    product,
+                                                                    display,
+                                                                    (quantity as MultipliedQuantity).factor().toFloat()
                                                             )
                                                         }
                                                     } else null
