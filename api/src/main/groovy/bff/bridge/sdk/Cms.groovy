@@ -445,12 +445,19 @@ class Cms {
                                 linkedProducts: asJava(promotion.linkedProducts()).collect { it.toInteger() }
                         )
                     } | {
-                toJava(promotion.steps().headOption())
-                        .flatMap { step ->
-                            of(
-                                    asJava(step.rewards()).findResults { node ->
-                                        of(
-                                                asJava(node.items()).findResults { reward ->
+                of(
+                        asJava(promotion.steps()).collect { step ->
+                            new FreeProductStep(
+                                    from: step.from(),
+                                    to: toJava(step.to()).orElse(null),
+                                    rewards: asJava(step.rewards()).findResults { node ->
+                                        new RewardsNode(
+                                                id: node.id(),
+                                                parent: toJava(node.parent()),
+                                                type: (node.nodeType() instanceof AndOperator) ?
+                                                        RewardsNodeType.AND :
+                                                        RewardsNodeType.OR,
+                                                items: asJava(node.items()).collect { reward ->
                                                     if (reward instanceof CmsFreeProduct) {
                                                         def freeProduct = reward as CmsFreeProduct
                                                         def quantity = freeProduct.quantity()
@@ -474,45 +481,28 @@ class Cms {
                                                             )
                                                         }
                                                     } else null
-                                                }.toList()
-                                        )
-                                                .filter { !it.empty }
-                                                .map { items ->
-                                                    new RewardsNode(
-                                                            id: node.id(),
-                                                            parent: toJava(node.parent()),
-                                                            type: (node.nodeType() instanceof AndOperator) ?
-                                                                    RewardsNodeType.AND :
-                                                                    RewardsNodeType.OR,
-                                                            items: items
-                                                    )
                                                 }
-                                                .orElse(null)
-                                    }
-                            )
-                                    .filter { !it.empty }
-                                    .map {
-                                        new FreeProduct(
-                                                id: promotion.id(),
-                                                description: promotion.description(),
-                                                expiration: new TimestampOutput(promotion.expiration().toString()),
-                                                label: labelBuilder.freeProduct(),
-                                                remainingUses: promotion.remainingUses(),
-                                                applicationMode: ApplicationMode.valueOf(promotion.applicationMode()),
-                                                steps: [
-                                                        new FreeProductStep(
-                                                                from: step.from(),
-                                                                to: toJava(step.to()).orElse(null),
-                                                                rewards: it,
-                                                                minQuantityByProducts:
-                                                                        asJava(step.minQuantityByProducts()).collectEntries {
-                                                                            [it.key.toInteger(), it.value as Integer]
-                                                                        }
-                                                        )
-                                                ],
-                                                linkedProducts: asJava(promotion.linkedProducts()).collect { it.toInteger() }
                                         )
-                                    }
+                                    },
+                                    minQuantityByProducts:
+                                            asJava(step.minQuantityByProducts()).collectEntries {
+                                                [it.key.toInteger(), it.value as Integer]
+                                            }
+                            )
+                        }
+                )
+                        .filter { !it.empty }
+                        .map { steps ->
+                            new FreeProduct(
+                                    id: promotion.id(),
+                                    description: promotion.description(),
+                                    expiration: new TimestampOutput(promotion.expiration().toString()),
+                                    label: labelBuilder.freeProduct(),
+                                    remainingUses: promotion.remainingUses(),
+                                    applicationMode: ApplicationMode.valueOf(promotion.applicationMode()),
+                                    steps: steps,
+                                    linkedProducts: asJava(promotion.linkedProducts()).collect { it.toInteger() }
+                            )
                         }
             })
                     .map { new CommercialPromotions(it) }
