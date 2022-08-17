@@ -18,7 +18,7 @@ class CreditLinesRequestInput {
 }
 
 @EqualsAndHashCode
-class CreditLines implements CreditLinesResult{
+class CreditLines implements CreditLinesResult {
     List<CreditLine> credits
     CreditLinesAction action
     CreditLineProvider provider
@@ -35,7 +35,7 @@ class CreditLines implements CreditLinesResult{
                                 toRepay: new Money(currency: currency, amount: toRepay),
                         )
                 ],
-                action: Optional.ofNullable(creditLineResponse.getRepaymentLink()).map{
+                action: Optional.ofNullable(creditLineResponse.getRepaymentLink()).map {
                     new ButtonWithUrlCreditLinesAction(
                             redirectUrl: it,
                             provider: SUPERMONEY
@@ -65,10 +65,10 @@ enum CreditProvider {
     }
 }
 
-interface CreditLinesAction{}
+interface CreditLinesAction {}
 
 @EqualsAndHashCode
-class ButtonWithUrlCreditLinesAction implements CreditLinesAction{
+class ButtonWithUrlCreditLinesAction implements CreditLinesAction {
     CreditProvider provider
     URI redirectUrl
 }
@@ -145,17 +145,20 @@ class Invoice {
 interface LoanPaymentResult {}
 
 @EqualsAndHashCode
-class LoanPaymentFailed implements LoanPaymentResult{
+class LoanPaymentFailed implements LoanPaymentResult {
     LoanPaymentFailedReason reason
     String sourceErrorMessage
 }
 
 enum LoanPaymentFailedReason {
     INVALID_SUPPLIER_ORDER_ID,
+    ORDER_AMOUNT_OVER_LIMIT,
+    INVOICE_ALREADY_INFORMED,
+    ORDER_AMOUNT_BELOW_MINIMUM_LIMIT,
     UNKNOWN
 
-    static LoanPaymentFailedReason findByName(String name){
-        Optional.ofNullable(values().find {it.name() == name}).orElse(UNKNOWN)
+    static LoanPaymentFailedReason findByName(String name) {
+        Optional.ofNullable(values().find { it.name() == name }).orElse(UNKNOWN)
     }
 
     def build(String message) {
