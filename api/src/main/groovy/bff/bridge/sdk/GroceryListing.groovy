@@ -49,6 +49,37 @@ class GroceryListing {
                 }
     }
 
+    List<Category> rootCategories(AccessTokenInput input) {
+        def request =
+                availableProductsForCustomer(input.accessToken)
+                        .sized(0)
+                        .aggregatedByCategories(1, false)
+        try {
+            def response = sdk.query(request)
+            return new RootCategoriesMapper().map(response)
+        } catch (Exception ex) {
+            log.error("Error searching products for request {}", request, ex)
+            throw ex
+        }
+    }
+
+    List<Category> rootCategories(CoordinatesInput input) {
+        def request =
+                availableProductsIn(
+                        new Coordinate(input.lat.toDouble(), input.lng.toDouble()),
+                        Option.apply(input.countryId)
+                )
+                        .sized(0)
+                        .aggregatedByCategories(1, false)
+        try {
+            def response = sdk.query(request)
+            return new RootCategoriesMapper().map(response)
+        } catch (Exception ex) {
+            log.error("Error searching products for request {}", request, ex)
+            throw ex
+        }
+    }
+
     SearchResult search(SearchInput input) {
         def page = new Page(input)
         def request =
@@ -861,6 +892,27 @@ class GroceryListing {
 
     }
 
+    private class RootCategoriesMapper {
+
+        List<Category> map(ProductQueryResponse response) {
+            toJava(response.aggregations().categories())
+                    .map {
+                        asJava(it.hits()).collect {
+                            new Category(
+                                    id: it._1().id().toLong(),
+                                    parentId: null,
+                                    name: it._1().name().defaultEntry(),
+                                    enabled: true,
+                                    isLeaf: false
+                            )
+                        }
+                        .sort { it.id }
+                    }
+                    .orElse([])
+        }
+
+    }
+
     private class ProductQueryResponseMapper {
 
         ProductQueryRequest request
@@ -1544,7 +1596,7 @@ class GroceryListing {
                         new SuggestedBrand(
                                 id: it.id().toInteger(),
                                 name: it.name().defaultEntry(),
-                                logo: toJava(it.logo()).orElse(null)
+                                logo: toJava(it.logo()).orElse("08103094-1f10-11ed-861d-0242ac120002.svg")
                         )
                     },
                     categories: asJava(response.categories()).collect {

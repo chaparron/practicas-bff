@@ -241,17 +241,13 @@ class Query implements GraphQLQueryResolver {
     }
 
     List<Category> findRootCategories(AccessTokenInput accessTokenInput) {
-        categoryBridge.findRootCategories(accessTokenInput.accessToken)
+        groceryListing.rootCategories(accessTokenInput)
     }
 
     RootCategoriesResponse previewRootCategories(CoordinatesInput coordinatesInput) {
-        try {
-            categoryBridge.previewRootCategories(coordinatesInput)
-        }
-        catch (BadRequestErrorException ex) {
-            RootCategoriesFailedReasons.valueOf((String) ex.innerResponse).build()
-        }
-
+        new RootCategoriesResult(
+                categories: groceryListing.rootCategories(coordinatesInput)
+        )
     }
 
     PromotionResponse getPromotions(PromotionInput promotionInput) {
@@ -355,7 +351,7 @@ class Query implements GraphQLQueryResolver {
     }
 
     PhoneStatusResult getPhoneStatus(PhoneInput input, DataFetchingEnvironment env) {
-        validationsBridge.getPhoneStatus(input,  DeviceIdentifierService.identifySource(env))
+        validationsBridge.getPhoneStatus(input, DeviceIdentifierService.identifySource(env))
     }
 
     Boolean isCountryCodeAndPhoneValid(IsPhoneValidInput input) {
