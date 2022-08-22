@@ -11,7 +11,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @RunWith(SpringRunner)
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = [
-        "api.root=http://localhost","feature.flags.url=http://localhost","bnpl.enabled.countries=http://localhost","regional.config.url=http://localhost"
+        "api.root=http://localhost","feature.flags.url=http://localhost","bnpl.enabled.countries=http://localhost","regional.config.url=http://localhost","payments.url=http://localhost"
 ])
 class ApplicationTest {
 
