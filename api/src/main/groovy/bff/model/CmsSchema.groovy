@@ -7,6 +7,7 @@ import groovy.transform.ToString
 class HomeInput {
     String country
     Set<String> tags
+    Boolean fallback
 }
 
 @ToString

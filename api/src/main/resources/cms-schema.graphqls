@@ -1,6 +1,7 @@
 input HomeInput {
   country: String!
   tags: [String!]
+  fallback: Boolean
 }
 
 input ListingInput {

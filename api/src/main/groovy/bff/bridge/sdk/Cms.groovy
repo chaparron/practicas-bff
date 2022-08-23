@@ -38,7 +38,7 @@ class Cms {
         def request =
                 [tagged(input.tags)]
                         .inject(
-                                homeModulesIn(input.country, false),
+                                homeModulesIn(input.country, ofNullable(input.fallback).orElse(false)),
                                 { query, builder ->
                                     builder(query) as FindHomeModulesQuery
                                 }
