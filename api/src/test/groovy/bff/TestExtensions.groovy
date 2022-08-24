@@ -16,6 +16,14 @@ class TestExtensions {
         UUID.randomUUID().toString()
     }
 
+    static randomLong() {
+        new Random().nextLong()
+    }
+
+    static randomBigDecimal() {
+        new BigDecimal(new Random().nextFloat())
+    }
+
     static String validAccessToken() {
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmV2aW91c0xvZ2luIjoxNjU1MTI0MjU2MDAwLCJ1c2VyX25hbWUiOiIrNTQtMTI0NTc4IiwiZW50aXR5VHlwZSI6IkNVU1RPTUVSIiwic2NvcGUiOlsiYWxsIl0sInRvcyI6eyJhY2NlcHRlZCI6MTY0NDM1NDgzNzAwMH0sImVudGl0eUlkIjoiMTUwOSIsInN0YXRlIjoiQVItQiIsImV4cCI6MTY1NTE2OTEzNywidXNlciI6eyJpZCI6MjQ1NiwidXNlcm5hbWUiOiIrNTQtMTI0NTc4IiwiZmlyc3ROYW1lIjoiUUEiLCJsYXN0TmFtZSI6Ik1hbnVhbCIsImNvdW50cmllcyI6W3siaWQiOiJhciIsIm5hbWUiOiJBcmdlbnRpbmEifV19LCJhdXRob3JpdGllcyI6WyJGRV9XRUIiLCJGRV9CUkFOQ0hfT0ZGSUNFX0NIQU5HRSJdLCJqdGkiOiJiNjI0NDMyZS0zOTY3LTRjNWMtODAyNC03MjI2ODhjY2QyMDQiLCJjbGllbnRfaWQiOiJpbnRlcm5hbF9hcGkifQ.nxx7fMB_JNDvfjE6px3NrdgTcX83BIK7F_eTH5wsx14"
     }
@@ -106,7 +114,7 @@ class TestExtensions {
         new Supplier(id: 213)
     }
 
-    static SupplierOrder anySupplierOrder() {
-        new SupplierOrder(id: 1)
+    static SupplierOrder anySupplierOrder(SupplierOrderStatus status = SupplierOrderStatus.CONFIRMED) {
+        new SupplierOrder(id: 1, accessToken: randomString(), status: status)
     }
 }

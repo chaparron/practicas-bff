@@ -36,7 +36,7 @@ class OrderResolverTest {
     @Test
     void 'Should return PAY_NOW for JPMorgan provider'() {
         def paymentType = PaymentModeType.PAY_NOW
-        def providers = [SupportedPaymentProvider.jpmMorganBuild()]
+        def providers = [new JPMorganPaymentProvider()]
         def supplierOrder = anySupplierOrder()
         def supplierOrders = [supplierOrder]
         def order = anyOrder(OrderStatus.PENDING, supplierOrders)
@@ -50,7 +50,7 @@ class OrderResolverTest {
     @Test
     void 'Should return PAY_LATER for Supermoney provider'() {
         def paymentType = PaymentModeType.PAY_LATER
-        def providers = [SupportedPaymentProvider.supermoneyBuild()]
+        def providers = [new SupermoneyPaymentProvider()]
         def supplierOrder = anySupplierOrder()
         def supplierOrders = [supplierOrder]
         def order = anyOrder(OrderStatus.PENDING, supplierOrders)
@@ -63,7 +63,7 @@ class OrderResolverTest {
 
     @Test
     void 'Should return both for JPMorgan & Supermoney providers'() {
-        def providers = [SupportedPaymentProvider.jpmMorganBuild(), SupportedPaymentProvider.supermoneyBuild()]
+        def providers = [new SupermoneyPaymentProvider(), new JPMorganPaymentProvider()]
         def supplierOrder = anySupplierOrder()
         def supplierOrders = [supplierOrder]
         def order = anyOrder(OrderStatus.PENDING, supplierOrders)
@@ -90,7 +90,7 @@ class OrderResolverTest {
     @Test
     void 'Should return only one PAY_NOW item for JPMorgan provider despite multiple suppliers supporting it'() {
         def paymentType = PaymentModeType.PAY_NOW
-        def providers = [SupportedPaymentProvider.jpmMorganBuild(), SupportedPaymentProvider.jpmMorganBuild()]
+        def providers = [new JPMorganPaymentProvider(), new JPMorganPaymentProvider()]
         def supplierOrder = anySupplierOrder()
         def supplierOrders = [supplierOrder]
         def order = anyOrder(OrderStatus.PENDING, supplierOrders)

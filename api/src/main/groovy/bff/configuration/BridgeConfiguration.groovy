@@ -186,4 +186,14 @@ class BridgeConfiguration {
         new ThirdPartyBridgeImpl()
     }
 
+    @Bean
+    DigitalPaymentsBridge digitalPaymentsBridge() {
+        new DigitalPaymentsBridgeImpl()
+    }
+
+    @Bean
+    PaymentsBridge paymentsBridge() {
+        new PaymentsBridgeImpl()
+    }
+
 }

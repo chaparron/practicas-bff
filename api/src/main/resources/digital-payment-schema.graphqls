@@ -3,7 +3,6 @@ input CreateDigitalPaymentInput {
   supplierOrderId: String!
   amount: Float!
   totalAmount: Float!
-  paymentProviderCode: PaymentProviderCode!
 }
 
 union CreateDigitalPaymentResult = JpMorganCreateDigitalPayment | CreateDigitalPaymentFailed

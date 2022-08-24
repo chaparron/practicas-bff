@@ -108,7 +108,16 @@ class Main {
                 .add(CreateDigitalPaymentFailed.class)
                 .add(DigitalPayment.class)
                 .add(DigitalPaymentFailed.class)
-                .add(PaymentButton.class)
+                .add(SimpleTextButton.class)
+                .add(JPMorganPaymentProvider.class)
+                .add(SupermoneyPaymentProvider.class)
+                .add(DigitalPaymentPaymentData.class)
+                .add(BuyNowPayLaterPaymentData.class)
+                .add(BankTransfer.class)
+                .add(UPI.class)
+                .add(CreditCard.class)
+                .add(DigitalWallet.class)
+                .add(BuyNowPayLaterPaymentMethod.class)
     }
 
     /**

@@ -9,7 +9,6 @@ class CreateDigitalPaymentInput {
     String supplierOrderId
     String amount
     String totalAmount
-    PaymentProviderCode paymentProviderCode
 }
 
 interface CreateDigitalPaymentResult {}

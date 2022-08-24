@@ -76,7 +76,7 @@ class OrderResolver implements GraphQLResolver<Order> {
 
                 supplierOrders(order).forEach {
                     result.addAll(supplierOrderResolver.supportedPaymentProviders(it).collect {
-                        new PaymentMode(PaymentModeType.valueOf(it.configuration.type.name()))
+                        new PaymentMode(PaymentModeType.valueOf(it.code.name()))
                     })
                 }
 

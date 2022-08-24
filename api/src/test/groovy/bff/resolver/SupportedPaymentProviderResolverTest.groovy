@@ -1,7 +1,7 @@
 package bff.resolver
 
-
-import bff.model.SupportedPaymentProvider
+import bff.model.JPMorganPaymentProvider
+import bff.model.SupermoneyPaymentProvider
 import org.junit.Test
 import org.springframework.context.support.StaticMessageSource
 
@@ -16,8 +16,8 @@ class SupportedPaymentProviderResolverTest {
 
     @Test
     void 'resolves title from message source for JPMorgan'() {
-        def supportedPaymentProvider = SupportedPaymentProvider.jpmMorganBuild()
-        String code = titleCodePrefix + supportedPaymentProvider.configuration.code.name()
+        def supportedPaymentProvider = new JPMorganPaymentProvider()
+        String code = titleCodePrefix + "JPMorganPaymentProvider"
         String message = "J.P.Morgan"
         messageSource.addMessage(code, locale, message)
 
@@ -26,8 +26,8 @@ class SupportedPaymentProviderResolverTest {
 
     @Test
     void 'resolves title from message source for Supermoney'() {
-        def supportedPaymentProvider = SupportedPaymentProvider.supermoneyBuild()
-        String code = titleCodePrefix + supportedPaymentProvider.configuration.code.name()
+        def supportedPaymentProvider = new SupermoneyPaymentProvider()
+        String code = titleCodePrefix + "SupermoneyPaymentProvider"
         String message = "Supermoney"
         messageSource.addMessage(code, locale, message)
 
@@ -36,8 +36,8 @@ class SupportedPaymentProviderResolverTest {
 
     @Test
     void 'resolves description from message source for JPMorgan'() {
-        def supportedPaymentProvider = SupportedPaymentProvider.jpmMorganBuild()
-        String code = descriptionCodePrefix + supportedPaymentProvider.configuration.code.name()
+        def supportedPaymentProvider = new JPMorganPaymentProvider()
+        String code = descriptionCodePrefix + "JPMorganPaymentProvider"
         String message = "J.P.Morgan description"
         messageSource.addMessage(code, locale, message)
 
@@ -46,8 +46,8 @@ class SupportedPaymentProviderResolverTest {
 
     @Test
     void 'resolves description from message source for Supermoney'() {
-        def supportedPaymentProvider = SupportedPaymentProvider.supermoneyBuild()
-        String code = descriptionCodePrefix + supportedPaymentProvider.configuration.code.name()
+        def supportedPaymentProvider = new SupermoneyPaymentProvider()
+        String code = descriptionCodePrefix + "SupermoneyPaymentProvider"
         String message = "Supermoney description"
         messageSource.addMessage(code, locale, message)
 
@@ -56,15 +56,15 @@ class SupportedPaymentProviderResolverTest {
 
     @Test
     void 'resolves default title'() {
-        def supportedPaymentProvider = SupportedPaymentProvider.jpmMorganBuild()
+        def supportedPaymentProvider = new JPMorganPaymentProvider()
 
-        assert sut.title(supportedPaymentProvider, "es").get() == supportedPaymentProvider.configuration.code.name()
+        assert sut.title(supportedPaymentProvider, "es").get() == "payment.provider.title"
     }
 
     @Test
     void 'resolves poweredByLabel from message source for JPMorgan'() {
-        def supportedPaymentProvider = SupportedPaymentProvider.jpmMorganBuild()
-        String code = poweredByLabelCodePrefix + supportedPaymentProvider.configuration.code.name()
+        def supportedPaymentProvider = new JPMorganPaymentProvider()
+        String code = poweredByLabelCodePrefix + "JPMorganPaymentProvider"
         String message = "J.P.Morgan"
         messageSource.addMessage(code, locale, message)
 
@@ -73,8 +73,8 @@ class SupportedPaymentProviderResolverTest {
 
     @Test
     void 'resolves poweredByLabel from message source for Supermoney'() {
-        def supportedPaymentProvider = SupportedPaymentProvider.supermoneyBuild()
-        String code = poweredByLabelCodePrefix + supportedPaymentProvider.configuration.code.name()
+        def supportedPaymentProvider = new SupermoneyPaymentProvider()
+        String code = poweredByLabelCodePrefix + "SupermoneyPaymentProvider"
         String message = "Supermoney"
         messageSource.addMessage(code, locale, message)
 

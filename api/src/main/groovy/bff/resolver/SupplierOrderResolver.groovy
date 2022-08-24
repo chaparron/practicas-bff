@@ -1,14 +1,18 @@
 package bff.resolver
 
+import bff.bridge.PaymentsBridge
+import bff.bridge.DigitalPaymentsBridge
 import bff.bridge.SupplierOrderBridge
 import bff.model.*
 import bff.service.MoneyService
 import bff.service.bnpl.BnplProvidersService
 import com.coxautodev.graphql.tools.GraphQLResolver
-import digitalpayments.sdk.DigitalPaymentsSdk
 import digitalpayments.sdk.model.Provider
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Mono
+import wabi2b.payments.common.model.request.GetSupplierOrderPaymentRequest
+import wabi2b.payments.common.model.response.GetSupplierOrderPaymentResponse
 
 import static java.util.Optional.ofNullable
 
@@ -25,7 +29,10 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
     BnplProvidersService bnplProvidersService
 
     @Autowired
-    private DigitalPaymentsSdk digitalPaymentsSdk
+    private DigitalPaymentsBridge digitalPaymentsBridge
+
+    @Autowired
+    private PaymentsBridge paymentsBridge
 
     Supplier supplier(SupplierOrder supplierOrder) {
         supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
@@ -102,26 +109,285 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
     List<SupportedPaymentProvider> supportedPaymentProviders(SupplierOrder supplierOrder) {
 
         def supplier = supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
-        def digitalPaymentProviders = digitalPaymentsSdk.getPaymentProviders(supplier.id.toString(), supplierOrder.accessToken).block()
+        def digitalPaymentProviders = digitalPaymentsBridge.getPaymentProviders(supplier.id.toString(), supplierOrder.accessToken).block()
 
         def isJPMorganSupported = digitalPaymentProviders.any {it == Provider.JP_MORGAN}
 
         List<SupportedPaymentProvider> result = []
 
         if (isJPMorganSupported) {
-            result.add(SupportedPaymentProvider.jpmMorganBuild())
+            result.add(new JPMorganPaymentProvider())
         }
 
         if(ofNullable(creditLineProviders(supplierOrder)).map {!it.isEmpty()}.orElse(false)) {
-            result.add(SupportedPaymentProvider.supermoneyBuild())
+            result.add(new SupermoneyPaymentProvider())
         }
 
         return result
     }
 
-    PaymentButton paymentButton(SupplierOrder supplierOrder) {
+    SimpleTextButton paymentButton(SupplierOrder supplierOrder) {
+        Mono.just(supplierOrder).filter {it.isPayable() }.<GetSupplierOrderPaymentResponse>zipWhen {
+            paymentsBridge.getSupplierOrderPayments(new GetSupplierOrderPaymentRequest(supplierOrder.id), supplierOrder.accessToken)
+        }.map {
+            SimpleTextButtonBuilder.buildFrom(supportedPaymentProviders(it.t1), it.t2)
+        }.defaultIfEmpty(SimpleTextButton.hidden()).block()
+    }
 
-        new PaymentButton(true)
+    List<SupplierOrderPaymentV2> payments(SupplierOrder supplierOrder) {
+        paymentsBridge.getSupplierOrderPayments(new GetSupplierOrderPaymentRequest(supplierOrder.id), supplierOrder.accessToken).map { response ->
+            response.payments.collect {it ->
+                new SupplierOrderPaymentV2(
+                        supplierOrderId: supplierOrder.id,
+                        paymentId: it.paymentId,
+                        paymentData: PaymentDataBuilder.buildFrom(it.paymentMethod)
+                )
+            }
+        }.block()
+    }
+
+    BigDecimal defaultPaymentAmount(SupplierOrder supplierOrder) {
+        def request = new GetSupplierOrderPaymentRequest(supplierOrder.id)
+        def response = paymentsBridge.getSupplierOrderPayments(request, supplierOrder.accessToken).block()
+        response.totalAmount - response.lockedAmount
+    }
+}
+
+abstract class SimpleTextButtonBuilder {
+
+    protected GetSupplierOrderPaymentResponse response
+    protected List<SupportedPaymentProvider> providers
+
+    SimpleTextButtonBuilder(List<SupportedPaymentProvider> providers, GetSupplierOrderPaymentResponse response) {
+        this.response = response
+        this.providers = providers
+    }
+
+    static SimpleTextButton buildFrom(List<SupportedPaymentProvider> providers, GetSupplierOrderPaymentResponse response) {
+        return [new JPMCSimpleTextButtonBuilder(providers, response), new SuperMoneySimpleTextButtonBuilder(providers, response)].find {
+            it.isSupported()
+        }?.build() ?: SimpleTextButton.hidden()
+    }
+
+    abstract SimpleTextButtonBehavior behavior()
+    abstract boolean isSupported()
+
+    protected SimpleTextButton build() {
+        def textKey = isFull() ? PaymentStatus.TOTALLY_PAID.name() : paymentStatus().name()
+        return new SimpleTextButton(behavior(), textKey)
+    }
+
+    protected Boolean isFull() {
+        response.totalAmount == response.lockedAmount
+    }
+
+    private PaymentStatus paymentStatus() {
+        !response.payments.isEmpty() ? PaymentStatus.PARTIALLY_PAID : PaymentStatus.UNPAID
+    }
+}
+
+class SuperMoneySimpleTextButtonBuilder extends SimpleTextButtonBuilder {
+
+    SuperMoneySimpleTextButtonBuilder(List<SupportedPaymentProvider> providers, GetSupplierOrderPaymentResponse payments) {
+        super(providers, payments)
+    }
+
+    @Override
+    SimpleTextButtonBehavior behavior() {
+        response.payments.isEmpty() ? SimpleTextButtonBehavior.VISIBLE : SimpleTextButtonBehavior.HIDDEN
+    }
+
+    @Override
+    boolean isSupported() {
+        providers
+                .any {
+                    it.getClassName() == SupermoneyPaymentProvider.class.simpleName
+                }
+    }
+}
+
+class JPMCSimpleTextButtonBuilder extends SimpleTextButtonBuilder {
+
+    JPMCSimpleTextButtonBuilder(List<SupportedPaymentProvider> providers, GetSupplierOrderPaymentResponse payments) {
+        super(providers, payments)
+    }
+
+    @Override
+    SimpleTextButtonBehavior behavior() {
+        !isFull() ? SimpleTextButtonBehavior.VISIBLE : SimpleTextButtonBehavior.HIDDEN
+    }
+
+    @Override
+    boolean isSupported() {
+        providers
+                .any {
+                    it.getClassName() == JPMorganPaymentProvider.class.simpleName
+                }
+    }
+}
+
+abstract class PaymentDataBuilder {
+
+    protected wabi2b.payments.common.model.dto.type.PaymentMethod paymentMethod
+
+    PaymentDataBuilder(wabi2b.payments.common.model.dto.type.PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod
+    }
+
+    static PaymentData buildFrom(wabi2b.payments.common.model.dto.type.PaymentMethod paymentMethod) {
+        return [
+                new BankTransferBuilder(paymentMethod),
+                new UPIBuilder(paymentMethod),
+                new DigitalWalletBuilder(paymentMethod),
+                new CreditCardBuilder(paymentMethod),
+                new DefaultPaymentMethodBuilder(paymentMethod),
+                new BuyNowPayLaterPaymentMethodBuilder(paymentMethod)
+        ].find { it.isSupported() }.doBuild()
+
+    }
+
+    protected abstract Boolean isSupported()
+    protected abstract PaymentMethod paymentMethod()
+    protected abstract PaymentData doBuild()
+
+    protected DigitalPaymentPaymentData buildForDigitalPayment() {
+        new DigitalPaymentPaymentData(
+                paymentMethod: paymentMethod()
+        )
+    }
+}
+
+class BankTransferBuilder extends PaymentDataBuilder {
+
+    BankTransferBuilder(wabi2b.payments.common.model.dto.type.PaymentMethod paymentMethod) {
+        super(paymentMethod)
+    }
+
+    @Override
+    protected Boolean isSupported() {
+        paymentMethod == wabi2b.payments.common.model.dto.type.PaymentMethod.BANK_TRANSFER
+    }
+
+    @Override
+    protected PaymentMethod paymentMethod() {
+        new BankTransfer()
+    }
+
+    @Override
+    protected PaymentData doBuild() {
+        buildForDigitalPayment()
+    }
+}
+
+class UPIBuilder extends PaymentDataBuilder {
+
+    UPIBuilder(wabi2b.payments.common.model.dto.type.PaymentMethod paymentMethod) {
+        super(paymentMethod)
+    }
+
+    @Override
+    protected Boolean isSupported() {
+        paymentMethod == wabi2b.payments.common.model.dto.type.PaymentMethod.UPI
+    }
+
+    @Override
+    protected PaymentMethod paymentMethod() {
+        new UPI()
+    }
+
+    @Override
+    protected PaymentData doBuild() {
+        buildForDigitalPayment()
+    }
+}
+
+class CreditCardBuilder extends PaymentDataBuilder {
+
+    CreditCardBuilder(wabi2b.payments.common.model.dto.type.PaymentMethod paymentMethod) {
+        super(paymentMethod)
+    }
+
+    @Override
+    protected Boolean isSupported() {
+        paymentMethod == wabi2b.payments.common.model.dto.type.PaymentMethod.CREDIT_CARD
+    }
+
+    @Override
+    protected PaymentMethod paymentMethod() {
+        new CreditCard()
+    }
+
+    @Override
+    protected PaymentData doBuild() {
+        buildForDigitalPayment()
+    }
+}
+
+class DigitalWalletBuilder extends PaymentDataBuilder {
+
+    DigitalWalletBuilder(wabi2b.payments.common.model.dto.type.PaymentMethod paymentMethod) {
+        super(paymentMethod)
+    }
+
+    @Override
+    protected Boolean isSupported() {
+        paymentMethod == wabi2b.payments.common.model.dto.type.PaymentMethod.DIGITAL_WALLET
+    }
+
+    @Override
+    protected PaymentMethod paymentMethod() {
+        new BankTransfer()
+    }
+
+    @Override
+    protected PaymentData doBuild() {
+        buildForDigitalPayment()
+    }
+}
+
+class BuyNowPayLaterPaymentMethodBuilder extends  PaymentDataBuilder {
+
+    BuyNowPayLaterPaymentMethodBuilder(wabi2b.payments.common.model.dto.type.PaymentMethod paymentMethod) {
+        super(paymentMethod)
+    }
+
+    @Override
+    protected Boolean isSupported() {
+        paymentMethod == wabi2b.payments.common.model.dto.type.PaymentMethod.BUY_NOW_PAY_LATER
+    }
+
+    @Override
+    protected PaymentMethod paymentMethod() {
+        new BuyNowPayLaterPaymentMethod()
+    }
+
+    @Override
+    protected PaymentData doBuild() {
+        new BuyNowPayLaterPaymentData(
+                paymentMethod: paymentMethod()
+        )
+    }
+}
+
+class DefaultPaymentMethodBuilder extends PaymentDataBuilder {
+
+    DefaultPaymentMethodBuilder(wabi2b.payments.common.model.dto.type.PaymentMethod paymentMethod) {
+        super(paymentMethod)
+    }
+
+    @Override
+    protected Boolean isSupported() {
+        true
+    }
+
+    @Override
+    protected PaymentMethod paymentMethod() {
+        new DefaultPaymentMethod()
+    }
+
+    @Override
+    protected PaymentData doBuild() {
+        buildForDigitalPayment()
     }
 }
 

@@ -35,7 +35,6 @@ enum OrderUpdateReason {
     }
 }
 
-
 enum SupplierOrderStatus {
     PENDING,
     CONFIRMED,
@@ -292,11 +291,17 @@ class SupplierOrder implements SupplierOrderResponse {
     Map metadata
     List<Summary> summary
     List<AppliedPromotionResponse> appliedPromotions
+
+    Boolean isPayable() {
+        this.status == SupplierOrderStatus.CONFIRMED
+    }
 }
 
+@EqualsAndHashCode
 class SupplierOrderPaymentV2 {
     Long supplierOrderId
     Long paymentId
+    PaymentData paymentData
 }
 
 class SupplierOrderResult {
@@ -697,39 +702,23 @@ enum SummaryFailedReason {
 @EqualsAndHashCode
 class SupportedPaymentProvider {
     URI avatar
-    PaymentProviderConfiguration configuration
-    static SupportedPaymentProvider jpmMorganBuild() {
-        new SupportedPaymentProvider(avatar: URI.create(""), configuration: new PaymentProviderConfiguration(PaymentProviderCode.JPMORGAN))
-    }
-
-    static SupportedPaymentProvider supermoneyBuild() {
-        new SupportedPaymentProvider(avatar: URI.create(""), configuration: new PaymentProviderConfiguration(PaymentProviderCode.SUPERMONEY))
+    PaymentProviderType code
+    String getClassName() {
+        this.getClass().getSimpleName()
     }
 }
-
 @EqualsAndHashCode
-class PaymentProviderConfiguration {
-
-    PaymentProviderCode code
-    PaymentProviderType type
-
-    PaymentProviderConfiguration(PaymentProviderCode code) {
-        this.code = code
-        this.type = code.type
+class JPMorganPaymentProvider extends SupportedPaymentProvider {
+    JPMorganPaymentProvider() {
+        this.avatar = URI.create("")
+        this.code = PaymentProviderType.PAY_NOW
     }
 }
-
-enum PaymentProviderCode {
-    JPMORGAN("J.P.Morgan", PaymentProviderType.PAY_NOW), SUPERMONEY("Supermoney", PaymentProviderType.PAY_LATER)
-
-    String poweredBy
-    PaymentProviderType type
-
-    PaymentProviderCode(String poweredBy, PaymentProviderType type) {
-        this.poweredBy = poweredBy
-        this.type = type
-
-
+@EqualsAndHashCode
+class SupermoneyPaymentProvider extends SupportedPaymentProvider {
+    SupermoneyPaymentProvider() {
+        this.avatar = URI.create("")
+        this.code = PaymentProviderType.PAY_LATER
     }
 }
 
@@ -946,16 +935,64 @@ enum PaymentModeType {
     PAY_LATER
 }
 
+enum PaymentStatus {
+    TOTALLY_PAID,
+    PARTIALLY_PAID,
+    UNPAID
+}
+
 @Immutable
 class PaymentMode {
     PaymentModeType paymentType
 }
 
 @EqualsAndHashCode
-class PaymentButton {
-    Boolean isVisible
+class SimpleTextButton {
+    SimpleTextButtonBehavior behavior
+    String textKey
 
-    PaymentButton(Boolean isVisible) {
-        this.isVisible = isVisible
+    SimpleTextButton(SimpleTextButtonBehavior behavior, String textKey) {
+        this.behavior = behavior
+        this.textKey = textKey
+    }
+
+    static SimpleTextButton hidden() {
+        new SimpleTextButton(SimpleTextButtonBehavior.HIDDEN, "")
     }
 }
+
+enum SimpleTextButtonBehavior {
+    VISIBLE, HIDDEN, DISABLE
+}
+
+interface PaymentData {}
+
+@EqualsAndHashCode
+class DigitalPaymentPaymentData implements PaymentData {
+    PaymentMethod paymentMethod
+}
+
+@EqualsAndHashCode
+class BuyNowPayLaterPaymentData implements PaymentData {
+    PaymentMethod paymentMethod
+}
+
+interface PaymentMethod {}
+
+@EqualsAndHashCode
+class BankTransfer implements PaymentMethod {}
+
+@EqualsAndHashCode
+class CreditCard implements PaymentMethod {}
+
+@EqualsAndHashCode
+class UPI implements PaymentMethod {}
+
+@EqualsAndHashCode
+class DigitalWallet implements PaymentMethod {}
+
+@EqualsAndHashCode
+class BuyNowPayLaterPaymentMethod implements PaymentMethod {}
+
+@EqualsAndHashCode
+class DefaultPaymentMethod implements PaymentMethod {}
