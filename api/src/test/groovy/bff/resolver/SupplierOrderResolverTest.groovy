@@ -3,7 +3,8 @@ package bff.resolver
 import bff.bridge.DigitalPaymentsBridge
 import bff.bridge.PaymentsBridge
 import bff.bridge.SupplierOrderBridge
-import bff.model.BankTransfer
+import bff.model.DebitCard
+import bff.model.NetBanking
 import bff.model.CreditCard
 import bff.model.CreditLineProvider
 import bff.model.CreditProvider
@@ -324,7 +325,7 @@ class SupplierOrderResolverTest {
 
         def result = sut.payments(anySupplierOrder)
         assert expected == result
-        verify(paymentBridge, times(1)).getSupplierOrderPayments(request, anySupplierOrder.accessToken)
+        verify(paymentBridge).getSupplierOrderPayments(request, anySupplierOrder.accessToken)
     }
 
     @Test
@@ -375,13 +376,15 @@ class SupplierOrderResolverTest {
 
     private static bff.model.PaymentMethod getPaymentMethod(PaymentMethod dtoPaymentMethod) {
         switch (dtoPaymentMethod) {
-            case PaymentMethod.BANK_TRANSFER: new BankTransfer()
+            case PaymentMethod.NET_BANKING: new NetBanking()
                 break
             case PaymentMethod.UPI: new UPI()
                 break
             case PaymentMethod.CREDIT_CARD: new CreditCard()
                 break
             case PaymentMethod.DIGITAL_WALLET: new DigitalWallet()
+                break
+            case PaymentMethod.DEBIT_CARD: new DebitCard()
                 break
             default: new DefaultPaymentMethod()
         }

@@ -1,6 +1,6 @@
 package bff.resolver
 
-import bff.model.BankTransfer
+import bff.model.NetBanking
 import org.junit.Test
 import org.springframework.context.support.StaticMessageSource
 
@@ -13,10 +13,10 @@ class PaymentMethodResolverTest {
 
     @Test
     void 'resolves payment method text from message source'() {
-        def paymentMethod = new BankTransfer()
+        def paymentMethod = new NetBanking()
 
-        String message = "Bank Transfer"
-        messageSource.addMessage(codePrefix + "BankTransfer", locale, message)
+        String message = "Net Banking"
+        messageSource.addMessage(codePrefix + "NetBanking", locale, message)
 
         assert sut.paymentMethodText(paymentMethod, "en").get() == message
     }

@@ -236,10 +236,11 @@ abstract class PaymentDataBuilder {
 
     static PaymentData buildFrom(wabi2b.payments.common.model.dto.type.PaymentMethod paymentMethod) {
         return [
-                new BankTransferBuilder(paymentMethod),
+                new NetBankingBuilder(paymentMethod),
                 new UPIBuilder(paymentMethod),
                 new DigitalWalletBuilder(paymentMethod),
                 new CreditCardBuilder(paymentMethod),
+                new DebitCardBuilder(paymentMethod),
                 new DefaultPaymentMethodBuilder(paymentMethod),
                 new BuyNowPayLaterPaymentMethodBuilder(paymentMethod)
         ].find { it.isSupported() }.doBuild()
@@ -257,20 +258,20 @@ abstract class PaymentDataBuilder {
     }
 }
 
-class BankTransferBuilder extends PaymentDataBuilder {
+class NetBankingBuilder extends PaymentDataBuilder {
 
-    BankTransferBuilder(wabi2b.payments.common.model.dto.type.PaymentMethod paymentMethod) {
+    NetBankingBuilder(wabi2b.payments.common.model.dto.type.PaymentMethod paymentMethod) {
         super(paymentMethod)
     }
 
     @Override
     protected Boolean isSupported() {
-        paymentMethod == wabi2b.payments.common.model.dto.type.PaymentMethod.BANK_TRANSFER
+        paymentMethod == wabi2b.payments.common.model.dto.type.PaymentMethod.NET_BANKING
     }
 
     @Override
     protected PaymentMethod paymentMethod() {
-        new BankTransfer()
+        new NetBanking()
     }
 
     @Override
@@ -323,6 +324,28 @@ class CreditCardBuilder extends PaymentDataBuilder {
     }
 }
 
+class DebitCardBuilder extends  PaymentDataBuilder {
+
+    DebitCardBuilder(wabi2b.payments.common.model.dto.type.PaymentMethod paymentMethod) {
+        super(paymentMethod)
+    }
+
+    @Override
+    protected Boolean isSupported() {
+        paymentMethod == wabi2b.payments.common.model.dto.type.PaymentMethod.DEBIT_CARD
+    }
+
+    @Override
+    protected PaymentMethod paymentMethod() {
+        new DebitCard()
+    }
+
+    @Override
+    protected PaymentData doBuild() {
+        buildForDigitalPayment()
+    }
+}
+
 class DigitalWalletBuilder extends PaymentDataBuilder {
 
     DigitalWalletBuilder(wabi2b.payments.common.model.dto.type.PaymentMethod paymentMethod) {
@@ -336,7 +359,7 @@ class DigitalWalletBuilder extends PaymentDataBuilder {
 
     @Override
     protected PaymentMethod paymentMethod() {
-        new BankTransfer()
+        new NetBanking()
     }
 
     @Override

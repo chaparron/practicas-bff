@@ -980,10 +980,13 @@ class BuyNowPayLaterPaymentData implements PaymentData {
 interface PaymentMethod {}
 
 @EqualsAndHashCode
-class BankTransfer implements PaymentMethod {}
+class NetBanking implements PaymentMethod {}
 
 @EqualsAndHashCode
 class CreditCard implements PaymentMethod {}
+
+@EqualsAndHashCode
+class DebitCard implements PaymentMethod {}
 
 @EqualsAndHashCode
 class UPI implements PaymentMethod {}

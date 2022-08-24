@@ -298,9 +298,9 @@ type BuyNowPayLaterPaymentData {
   paymentMethod: PaymentMethod!
 }
 
-union PaymentMethod = BankTransfer | UPI | CreditCard | DigitalWallet | BuyNowPayLaterPaymentMethod
+union PaymentMethod = NetBanking | UPI | CreditCard | DigitalWallet | DebitCard | BuyNowPayLaterPaymentMethod
 
-type BankTransfer {
+type NetBanking {
   paymentMethodText(languageTag: String!): String!
 }
 
@@ -309,6 +309,10 @@ type UPI {
 }
 
 type CreditCard {
+  paymentMethodText(languageTag: String!): String!
+}
+
+type DebitCard {
   paymentMethodText(languageTag: String!): String!
 }
 

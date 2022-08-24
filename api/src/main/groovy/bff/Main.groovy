@@ -113,9 +113,10 @@ class Main {
                 .add(SupermoneyPaymentProvider.class)
                 .add(DigitalPaymentPaymentData.class)
                 .add(BuyNowPayLaterPaymentData.class)
-                .add(BankTransfer.class)
+                .add(NetBanking.class)
                 .add(UPI.class)
                 .add(CreditCard.class)
+                .add(DebitCard.class)
                 .add(DigitalWallet.class)
                 .add(BuyNowPayLaterPaymentMethod.class)
     }

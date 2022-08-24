@@ -1,6 +1,7 @@
 package bff.resolver
 
-import bff.model.BankTransfer
+import bff.model.DebitCard
+import bff.model.NetBanking
 import bff.model.BuyNowPayLaterPaymentMethod
 import bff.model.CreditCard
 import bff.model.DefaultPaymentMethod
@@ -38,7 +39,7 @@ class CreditCardResolver extends PaymentMethodResolver<CreditCard> implements Gr
 }
 
 @Component
-class BankTransferResolver extends PaymentMethodResolver<BankTransfer> implements GraphQLResolver<BankTransfer> {
+class BankTransferResolver extends PaymentMethodResolver<NetBanking> implements GraphQLResolver<NetBanking> {
     BankTransferResolver() {
         super()
     }
@@ -54,6 +55,13 @@ class UPIResolver extends PaymentMethodResolver<UPI> implements GraphQLResolver<
 @Component
 class DigitalWalletResolver extends PaymentMethodResolver<DigitalWallet> implements GraphQLResolver<DigitalWallet> {
     DigitalWalletResolver() {
+        super()
+    }
+}
+
+@Component
+class DebitCardResolver extends PaymentMethodResolver<DebitCard> implements GraphQLResolver<DebitCard> {
+    DebitCardResolver() {
         super()
     }
 }
