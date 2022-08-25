@@ -74,8 +74,8 @@ class TestExtensions {
         new Order(id: 007, status: status, supplierOrders: supplierOrders, total_money: total_money)
     }
 
-    static Customer anyCustomerWithIdAndAccessToken(String country) {
-        new Customer(id: randomString(), accessToken: randomString(), country_id: country)
+    static Customer anyCustomerWithIdAndAccessToken(String country, CustomerStatus customerStatus = CustomerStatus.APPROVED) {
+        new Customer(id: randomString(), accessToken: randomString(), country_id: country, customerStatus: customerStatus)
     }
 
     static anyCreatePaymentResponse() {

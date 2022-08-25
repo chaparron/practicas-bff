@@ -4,6 +4,7 @@ import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.ThirdPartyBridge
 import bff.model.Customer
+import bff.model.CustomerStatus
 import bff.service.bnpl.BnplProvidersService
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.junit.Before
@@ -53,7 +54,7 @@ class CustomerResolverTest implements GraphQLResolver<Customer> {
     }
 
     @Test
-    void 'user from india without bnpl provider shouldnt have creditLine section'() {
+    void 'approved user from india without bnpl provider shouldnt have creditLine section'() {
         when(featureFlagsSdk.isActiveForCountry(Mockito.any(), Mockito.any())).thenReturn(true)
         when(bnplProvidersService.currentUserHasBnplWallet(indianCustomer.accessToken)).thenReturn(false)
         sut.profileSections(indianCustomer)
@@ -75,8 +76,8 @@ class CustomerResolverTest implements GraphQLResolver<Customer> {
     }
 
     @Test
-    void 'user not from india shouldnt have creditLine section'() {
-        def notIndianCustomer = anyCustomerWithIdAndAccessToken("ar")
+    void 'approved user not from india shouldnt have creditLine section'() {
+        def notIndianCustomer = anyCustomerWithIdAndAccessToken("ar", CustomerStatus.APPROVED)
         assertNull(sut.profileSections(notIndianCustomer).find { it.id == 'CREDIT_LINES' })
     }
 }
