@@ -35,6 +35,15 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     List<ProfileSection> profileSections(Customer customer) {
         if (!customer.country_id) return []
         List<ProfileSection> ps = new ArrayList<ProfileSection>()
+
+        ps.push(new ProfileSection(id: "STORE_INFORMATION"))
+        ps.push(new ProfileSection(id: "PERSONAL_INFORMATION"))
+        ps.push(new ProfileSection(id: "DOCUMENTS"))
+
+        if (customer.customerStatus != CustomerStatus.APPROVED){
+            return ps
+        }
+
         ps.push(new ProfileSection(id: "ORDERS"))
         ps.push(new ProfileSection(id: "SUGGESTED_ORDER"))
         
@@ -47,9 +56,7 @@ class CustomerResolver implements GraphQLResolver<Customer> {
                 ps.push(new ProfileSection(id: "CREDIT_LINES"))
             }
         }
-        ps.push(new ProfileSection(id: "STORE_INFORMATION"))
-        ps.push(new ProfileSection(id: "PERSONAL_INFORMATION"))
-        ps.push(new ProfileSection(id: "DOCUMENTS"))
+
         if(featureFlagsSdk.isActiveForCountry("BRANCHES_FUNCTION", customer.country_id)
                 && customer.storeType == StoreType.MAIN_OFFICE){
             ps.push(new ProfileSection(id: "BRANCH_OFFICE"))
