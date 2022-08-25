@@ -116,7 +116,8 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
         List<SupportedPaymentProvider> result = []
 
         if (isJPMorganSupported) {
-            result.add(new JPMorganPaymentProvider())
+            result.add(new JPMorganMainPaymentProvider())
+            result.add(new JPMorganUPIPaymentProvider())
         }
 
         if(ofNullable(creditLineProviders(supplierOrder)).map {!it.isEmpty()}.orElse(false)) {
@@ -221,7 +222,7 @@ class JPMCSimpleTextButtonBuilder extends SimpleTextButtonBuilder {
     boolean isSupported() {
         providers
                 .any {
-                    it.getClassName() == JPMorganPaymentProvider.class.simpleName
+                    it.getClassName() == JPMorganMainPaymentProvider.class.simpleName
                 }
     }
 }

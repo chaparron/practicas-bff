@@ -1,6 +1,6 @@
 package bff.resolver
 
-import bff.model.JPMorganPaymentProvider
+import bff.model.JPMorganMainPaymentProvider
 import bff.model.SupermoneyPaymentProvider
 import org.junit.Test
 import org.springframework.context.support.StaticMessageSource
@@ -16,8 +16,8 @@ class SupportedPaymentProviderResolverTest {
 
     @Test
     void 'resolves title from message source for JPMorgan'() {
-        def supportedPaymentProvider = new JPMorganPaymentProvider()
-        String code = titleCodePrefix + "JPMorganPaymentProvider"
+        def supportedPaymentProvider = new JPMorganMainPaymentProvider()
+        String code = titleCodePrefix + "JPMorganMainPaymentProvider"
         String message = "J.P.Morgan"
         messageSource.addMessage(code, locale, message)
 
@@ -36,8 +36,8 @@ class SupportedPaymentProviderResolverTest {
 
     @Test
     void 'resolves description from message source for JPMorgan'() {
-        def supportedPaymentProvider = new JPMorganPaymentProvider()
-        String code = descriptionCodePrefix + "JPMorganPaymentProvider"
+        def supportedPaymentProvider = new JPMorganMainPaymentProvider()
+        String code = descriptionCodePrefix + "JPMorganMainPaymentProvider"
         String message = "J.P.Morgan description"
         messageSource.addMessage(code, locale, message)
 
@@ -56,15 +56,15 @@ class SupportedPaymentProviderResolverTest {
 
     @Test
     void 'resolves default title'() {
-        def supportedPaymentProvider = new JPMorganPaymentProvider()
+        def supportedPaymentProvider = new JPMorganMainPaymentProvider()
 
         assert sut.title(supportedPaymentProvider, "es").get() == "payment.provider.title"
     }
 
     @Test
     void 'resolves poweredByLabel from message source for JPMorgan'() {
-        def supportedPaymentProvider = new JPMorganPaymentProvider()
-        String code = poweredByLabelCodePrefix + "JPMorganPaymentProvider"
+        def supportedPaymentProvider = new JPMorganMainPaymentProvider()
+        String code = poweredByLabelCodePrefix + "JPMorganMainPaymentProvider"
         String message = "J.P.Morgan"
         messageSource.addMessage(code, locale, message)
 

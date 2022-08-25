@@ -4,6 +4,7 @@ import bff.bridge.DigitalPaymentsBridge
 import bff.bridge.PaymentsBridge
 import bff.bridge.SupplierOrderBridge
 import bff.model.DebitCard
+import bff.model.JPMorganUPIPaymentProvider
 import bff.model.NetBanking
 import bff.model.CreditCard
 import bff.model.CreditLineProvider
@@ -11,7 +12,7 @@ import bff.model.CreditProvider
 import bff.model.DefaultPaymentMethod
 import bff.model.DigitalPaymentPaymentData
 import bff.model.DigitalWallet
-import bff.model.JPMorganPaymentProvider
+import bff.model.JPMorganMainPaymentProvider
 import bff.model.PaymentStatus
 import bff.model.SimpleTextButton
 import bff.model.SimpleTextButtonBehavior
@@ -66,8 +67,8 @@ class SupplierOrderResolverTest {
     }
 
     @Test
-    void 'Should return only JPMorgan provider'() {
-        def expectedSupportedPaymentProviders = [new JPMorganPaymentProvider()]
+    void 'Should return only JPMorgan providers'() {
+        def expectedSupportedPaymentProviders = [new JPMorganMainPaymentProvider(), new JPMorganUPIPaymentProvider()]
         def someSupplier = anySupplier()
         when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([])
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)
@@ -104,7 +105,7 @@ class SupplierOrderResolverTest {
     @Test
     void 'Should return JPMorgan and Supermoney providers'() {
         def expectedSupportedPaymentProviders =
-                [new JPMorganPaymentProvider(), new SupermoneyPaymentProvider()]
+                [new JPMorganMainPaymentProvider(), new JPMorganUPIPaymentProvider(), new SupermoneyPaymentProvider()]
         def someSupplier = anySupplier()
         def creditLineProvider = new CreditLineProvider(provider: CreditProvider.SUPERMONEY)
         when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([creditLineProvider])

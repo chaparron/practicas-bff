@@ -708,8 +708,8 @@ class SupportedPaymentProvider {
     }
 }
 @EqualsAndHashCode
-class JPMorganPaymentProvider extends SupportedPaymentProvider {
-    JPMorganPaymentProvider() {
+class JPMorganMainPaymentProvider extends SupportedPaymentProvider {
+    JPMorganMainPaymentProvider() {
         this.avatar = URI.create("")
         this.code = PaymentProviderType.PAY_NOW
     }
@@ -719,6 +719,14 @@ class SupermoneyPaymentProvider extends SupportedPaymentProvider {
     SupermoneyPaymentProvider() {
         this.avatar = URI.create("")
         this.code = PaymentProviderType.PAY_LATER
+    }
+}
+
+@EqualsAndHashCode
+class JPMorganUPIPaymentProvider extends SupportedPaymentProvider {
+    JPMorganUPIPaymentProvider() {
+        this.avatar = URI.create("")
+        this.code = PaymentProviderType.PAY_NOW
     }
 }
 

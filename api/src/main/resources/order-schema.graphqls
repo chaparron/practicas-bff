@@ -251,7 +251,7 @@ type PaymentMode {
   text(languageTag: String!): String!
 }
 
-union SupportedPaymentProvider = JPMorganPaymentProvider | SupermoneyPaymentProvider
+union SupportedPaymentProvider = JPMorganMainPaymentProvider | SupermoneyPaymentProvider | JPMorganUPIPaymentProvider
 
 interface ISupportedPaymentProvider {
   title(languageTag: String!): String!
@@ -260,7 +260,7 @@ interface ISupportedPaymentProvider {
   poweredByLabel(languageTag: String!): String!
 }
 
-type JPMorganPaymentProvider implements ISupportedPaymentProvider {
+type JPMorganMainPaymentProvider implements ISupportedPaymentProvider {
   title(languageTag: String!): String!
   description(languageTag: String!): String!
   avatar: String!
@@ -268,6 +268,13 @@ type JPMorganPaymentProvider implements ISupportedPaymentProvider {
 }
 
 type SupermoneyPaymentProvider implements ISupportedPaymentProvider {
+  title(languageTag: String!): String!
+  description(languageTag: String!): String!
+  avatar: String!
+  poweredByLabel(languageTag: String!): String!
+}
+
+type JPMorganUPIPaymentProvider implements ISupportedPaymentProvider {
   title(languageTag: String!): String!
   description(languageTag: String!): String!
   avatar: String!

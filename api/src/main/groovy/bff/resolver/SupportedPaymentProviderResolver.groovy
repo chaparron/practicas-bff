@@ -1,6 +1,7 @@
 package bff.resolver
 
-import bff.model.JPMorganPaymentProvider
+import bff.model.JPMorganMainPaymentProvider
+import bff.model.JPMorganUPIPaymentProvider
 import bff.model.SupermoneyPaymentProvider
 import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
@@ -45,8 +46,8 @@ class SupportedPaymentProviderResolver <T> {
 }
 
 @Component
-class JPMorganPaymentProviderResolver extends SupportedPaymentProviderResolver<JPMorganPaymentProvider> implements GraphQLResolver<JPMorganPaymentProvider> {
-    JPMorganPaymentProviderResolver() {
+class JPMorganMainPaymentProviderResolver extends SupportedPaymentProviderResolver<JPMorganMainPaymentProvider> implements GraphQLResolver<JPMorganMainPaymentProvider> {
+    JPMorganMainPaymentProviderResolver() {
         super()
     }
 }
@@ -54,6 +55,13 @@ class JPMorganPaymentProviderResolver extends SupportedPaymentProviderResolver<J
 @Component
 class SupermoneyPaymentProviderResolver extends SupportedPaymentProviderResolver<SupermoneyPaymentProvider> implements GraphQLResolver<SupermoneyPaymentProvider> {
     SupermoneyPaymentProviderResolver() {
+        super()
+    }
+}
+
+@Component
+class JPMorganUPIPaymentProviderResolver extends SupportedPaymentProviderResolver<JPMorganUPIPaymentProvider> implements GraphQLResolver<JPMorganUPIPaymentProvider> {
+    JPMorganUPIPaymentProviderResolver() {
         super()
     }
 }
