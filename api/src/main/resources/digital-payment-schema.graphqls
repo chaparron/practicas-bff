@@ -12,7 +12,7 @@ type CreateDigitalPaymentFailed {
 }
 
 enum CreateDigitalPaymentFailedReason {
-  GATEWAY_NOT_SUPPORTED
+  GATEWAY_NOT_SUPPORTED, SDK_ERROR
 }
 
 type JpMorganCreateDigitalPayment {
