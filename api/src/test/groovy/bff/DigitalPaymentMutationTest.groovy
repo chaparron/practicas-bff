@@ -36,16 +36,17 @@ class DigitalPaymentMutationTest {
     void 'should create digital payment'() {
         def supplierOrderId = randomLong()
         def amount = randomBigDecimal()
+        def invoiceId = randomString()
         def accessToken = validAccessToken()
         def sdkResponse = anyCreatePaymentResponse()
-        def sdkRequest = new CreatePaymentRequest(supplierOrderId, amount)
+        def sdkRequest = new CreatePaymentRequest(supplierOrderId, amount, invoiceId)
 
         def expectedResponse = JpMorganCreateDigitalPayment.fromSdk(sdkResponse)
 
         when(digitalPaymentSdk.createPayment(sdkRequest, accessToken)).thenReturn(Mono.just(sdkResponse))
 
         def actualResponse = sut.createDigitalPayment(
-                anyCreateDigitalPaymentInput(supplierOrderId, amount, accessToken)
+                anyCreateDigitalPaymentInput(supplierOrderId, amount, accessToken, invoiceId)
         ).get()
 
         assert expectedResponse == actualResponse
@@ -56,15 +57,16 @@ class DigitalPaymentMutationTest {
     void 'should return sdk error when sdk fail on create payment'() {
         def supplierOrderId = randomLong()
         def amount = randomBigDecimal()
+        def invoiceId = randomString()
         def accessToken = validAccessToken()
-        def sdkRequest = new CreatePaymentRequest(supplierOrderId, amount)
+        def sdkRequest = new CreatePaymentRequest(supplierOrderId, amount, invoiceId)
 
         def sdkException = new CustomSdkException(new DetailedError(randomString(), randomString()))
 
         when(digitalPaymentSdk.createPayment(sdkRequest, accessToken)).thenReturn(Mono.error(sdkException))
 
         def actualResponse = sut.createDigitalPayment(
-                anyCreateDigitalPaymentInput(supplierOrderId, amount, accessToken)
+                anyCreateDigitalPaymentInput(supplierOrderId, amount, accessToken, invoiceId)
         ).get()
 
         assert CreateDigitalPaymentFailedReason.SDK_ERROR.build() == actualResponse

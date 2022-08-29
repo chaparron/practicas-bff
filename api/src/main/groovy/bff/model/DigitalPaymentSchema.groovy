@@ -8,6 +8,7 @@ class CreateDigitalPaymentInput {
     String accessToken
     Long supplierOrderId
     BigDecimal amount
+    String invoiceId
 }
 
 interface CreateDigitalPaymentResult {}
@@ -63,7 +64,6 @@ class DigitalPayment  implements FinalizeDigitalPaymentResult{
     String paymentId
     String supplierOrderId
     String amount
-    String totalAmount
     String responseCode
     String message
 

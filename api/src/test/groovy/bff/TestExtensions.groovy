@@ -82,15 +82,16 @@ class TestExtensions {
         new CreatePaymentResponse(randomString(), randomString(), randomString(), randomString())
     }
 
-    static anyCreatePaymentRequest(Long supplierOrderId, BigDecimal amount) {
-        new CreatePaymentRequest(supplierOrderId, amount)
+    static anyCreatePaymentRequest(Long supplierOrderId, BigDecimal amount, String invoiceId) {
+        new CreatePaymentRequest(supplierOrderId, amount, invoiceId)
     }
 
-    static anyCreateDigitalPaymentInput(Long supplierOrderId, BigDecimal amount, String accessToken) {
+    static anyCreateDigitalPaymentInput(Long supplierOrderId, BigDecimal amount, String accessToken, String invoiceId) {
         new CreateDigitalPaymentInput(
                 supplierOrderId: supplierOrderId,
                 amount: amount,
-                accessToken: accessToken
+                accessToken: accessToken,
+                invoiceId: invoiceId
         )
     }
 
