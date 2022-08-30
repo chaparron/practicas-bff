@@ -319,7 +319,7 @@ class FreeProduct implements CommercialPromotionType {
 
     boolean appliesTo(Integer quantity) {
         quantity >= steps.min { it.from }.from &&
-                quantity < of(steps.max { it.to }.to).orElse(Integer.MAX_VALUE)
+                quantity <= of(steps.max { it.to }.to).orElse(Integer.MAX_VALUE)
     }
 
     FreeProduct labeled(Closure<String> label) {

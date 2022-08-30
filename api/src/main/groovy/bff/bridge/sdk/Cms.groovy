@@ -242,6 +242,11 @@ class Cms {
                                 .map { b.queryParam("discount", it.min()) }
                                 .getOrElse { b }
                     }
+                    def filteredByBottler = { UriBuilder b ->
+                        request.filtering().byBottler()
+                                .map { b.queryParam("bottler", it.id()) }
+                                .getOrElse { b }
+                    }
                     def sortedByPrice = { UriBuilder b ->
                         toJava(request.sorting())
                                 .filter { it instanceof ByUnitPrice }
@@ -278,6 +283,7 @@ class Cms {
                                     filteredByPurchased,
                                     filteredByCollection,
                                     filteredByDiscount,
+                                    filteredByBottler,
                                     sortedByPrice,
                                     sortedAlphabetically,
                                     sortedByRecent

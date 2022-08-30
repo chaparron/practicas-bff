@@ -483,6 +483,7 @@ class GroceryListing {
         Optional<String> maybeCommercialPromotion
         Optional<Boolean> maybePurchased
         Optional<String> maybeCollection
+        Optional<Integer> maybeBottler
 
         ProductQueryRequestFilteringBuilder(SearchInput input) {
             this(
@@ -497,7 +498,8 @@ class GroceryListing {
                     input.discount,
                     input.commercialPromotion,
                     input.purchased,
-                    input.collection
+                    input.collection,
+                    input.bottler
             )
         }
 
@@ -514,7 +516,8 @@ class GroceryListing {
                     input.discount,
                     input.commercialPromotion,
                     null,
-                    input.collection
+                    input.collection,
+                    input.bottler
             )
         }
 
@@ -529,7 +532,8 @@ class GroceryListing {
                                                     Integer discount,
                                                     String commercialPromotion,
                                                     Boolean purchased,
-                                                    String collection) {
+                                                    String collection,
+                                                    Integer bottler) {
             this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }
             this.maybeCategory = ofNullable(category)
             this.maybeBrand = ofNullable(brand)
@@ -542,6 +546,7 @@ class GroceryListing {
             this.maybeCommercialPromotion = ofNullable(commercialPromotion)
             this.maybePurchased = ofNullable(purchased)
             this.maybeCollection = ofNullable(collection).filter { !it.isEmpty() }
+            this.maybeBottler = ofNullable(bottler)
         }
 
         ProductQueryRequest apply(ProductQueryRequest request) {
@@ -556,7 +561,8 @@ class GroceryListing {
                             discountFiltering(),
                             commercialPromotionFiltering(),
                             purchasedFiltering(),
-                            collectionFiltering()
+                            collectionFiltering(),
+                            bottlerFiltering()
                     ] + featuresFiltering()
             )
                     .inject(request, { acc, filter -> filter(acc) })
@@ -690,6 +696,19 @@ class GroceryListing {
                     .map { collection ->
                         { ProductQueryRequest r ->
                             r.filteredByCollection(collection) as ProductQueryRequest
+                        }
+                    }
+                    .orElse(identity)
+        }
+
+        private Closure<ProductQueryRequest> bottlerFiltering() {
+            maybeBottler
+                    .map { bottler ->
+                        { ProductQueryRequest r ->
+                            r.filteredByBottler(
+                                    bottler.toString(),
+                                    asScala([] as List<String>).toSeq()
+                            ) as ProductQueryRequest
                         }
                     }
                     .orElse(identity)
@@ -906,7 +925,7 @@ class GroceryListing {
                                     isLeaf: false
                             )
                         }
-                        .sort { it.id }
+                                .sort { it.id }
                     }
                     .orElse([])
         }
