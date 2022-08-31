@@ -19,6 +19,7 @@ input SearchInput {
   purchased: Boolean
   collection: String
   bottler: Int
+  manufacturer: Int
 }
 
 input SearchScrollInput {
@@ -46,6 +47,7 @@ input PreviewSearchInput {
   commercialPromotion: String
   collection: String
   bottler: Int
+  manufacturer: Int
 }
 
 input PreviewSearchScrollInput {
