@@ -63,6 +63,10 @@ class CustomerSdkMapper {
     }
 
     Address toAddress(AddressDto addressDto, String countryId, String accessToken){
+        State state = null
+        if (addressDto.state){
+          state = new State(id: addressDto.state.id, countryId: countryId, accessToken: accessToken)
+        }
         return new Address(
                 id: addressDto.id,
                 formatted: addressDto.formatted,
@@ -72,7 +76,7 @@ class CustomerSdkMapper {
                 preferred: addressDto.preferred,
                 addressType: AddressMode.valueOf(addressDto.addressType),
                 enabled: true,
-                state: new State(id: addressDto.state.id, countryId: countryId, accessToken: accessToken),
+                state: state,
                 postalCode: addressDto.postalCode
         )
     }
