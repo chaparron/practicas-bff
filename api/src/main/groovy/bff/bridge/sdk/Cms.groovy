@@ -125,7 +125,7 @@ class Cms {
                         .map { it.first as Customer }
                         .map {
                             { BuildModulePiecesQuery query ->
-                                query.forCustomer(it.id.toString(), it.customerType.code)
+                                query.forCustomer(it.id.toString(), it.customerType.code, Option.empty())
                             }
                         }
                         .orElse(IDENTITY)
@@ -252,6 +252,11 @@ class Cms {
                                 .map { b.queryParam("manufacturer", it.id()) }
                                 .getOrElse { b }
                     }
+                    def filteredByFreeProduct = { UriBuilder b ->
+                        request.filtering().byFreeProduct()
+                                .map { b.queryParam("freeProduct", true) }
+                                .getOrElse { b }
+                    }
                     def sortedByPrice = { UriBuilder b ->
                         toJava(request.sorting())
                                 .filter { it instanceof ByUnitPrice }
@@ -290,6 +295,7 @@ class Cms {
                                     filteredByDiscount,
                                     filteredByBottler,
                                     filteredByManufacturer,
+                                    filteredByFreeProduct,
                                     sortedByPrice,
                                     sortedAlphabetically,
                                     sortedByRecent

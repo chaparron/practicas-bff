@@ -161,6 +161,7 @@ class PreviewSearchInput {
     String collection
     Integer bottler
     Integer manufacturer
+    Boolean freeProduct
 }
 
 @ToString(excludes = ["accessToken"])
@@ -186,6 +187,7 @@ class SearchInput {
     String collection
     Integer bottler
     Integer manufacturer
+    Boolean freeProduct
 }
 
 @ToString(excludes = ["accessToken"])

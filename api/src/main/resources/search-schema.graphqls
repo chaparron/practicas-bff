@@ -20,6 +20,7 @@ input SearchInput {
   collection: String
   bottler: Int
   manufacturer: Int
+  freeProduct: Boolean
 }
 
 input SearchScrollInput {
@@ -48,6 +49,7 @@ input PreviewSearchInput {
   collection: String
   bottler: Int
   manufacturer: Int
+  freeProduct: Boolean
 }
 
 input PreviewSearchScrollInput {
