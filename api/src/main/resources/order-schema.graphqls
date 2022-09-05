@@ -225,6 +225,7 @@ type SupplierOrder {
   appliedPromotions: [AppliedPromotionResponse!]!
   creditLineProviders: [CreditLineProvider!]
   supportedPaymentProviders: [SupportedPaymentProvider!]
+  payLaterButton: Button!
   paymentButton: Button!
   payments: [SupplierOrderPaymentV2]!
   defaultPaymentAmount: Float!
@@ -233,7 +234,8 @@ type SupplierOrder {
 union Button = SimpleTextButton
 
 type SimpleTextButton {
-  text(languageTag: String!): String
+  text(languageTag: String!): String!
+  message(languageTag: String!): String
   behavior: SimpleTextButtonBehavior!
 }
 

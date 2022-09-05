@@ -1,26 +1,13 @@
 package bff.resolver
 
+import bff.bridge.BnplBridge
 import bff.bridge.DigitalPaymentsBridge
 import bff.bridge.PaymentsBridge
 import bff.bridge.SupplierOrderBridge
-import bff.model.DebitCard
-import bff.model.JPMorganUPIPaymentProvider
-import bff.model.NetBanking
-import bff.model.CreditCard
-import bff.model.CreditLineProvider
-import bff.model.CreditProvider
-import bff.model.DefaultPaymentMethod
-import bff.model.DigitalPaymentPaymentData
-import bff.model.DigitalWallet
-import bff.model.JPMorganMainPaymentProvider
-import bff.model.PaymentStatus
-import bff.model.SimpleTextButton
-import bff.model.SimpleTextButtonBehavior
-import bff.model.SupermoneyPaymentProvider
-import bff.model.SupplierOrderPaymentV2
-import bff.model.SupplierOrderStatus
-import bff.model.UPI
+import bff.model.*
 import bff.service.bnpl.BnplProvidersService
+import bnpl.sdk.model.SupportedMinimumAmountResponse
+import com.google.common.collect.Lists
 import digitalpayments.sdk.model.Provider
 import org.junit.Before
 import org.junit.Test
@@ -33,14 +20,9 @@ import wabi2b.payments.common.model.request.GetSupplierOrderPaymentRequest
 import wabi2b.payments.common.model.response.GetSupplierOrderPaymentResponse
 import wabi2b.payments.common.model.response.SupplierOrderPaymentResponse
 
-import static bff.TestExtensions.anySupplierOrder
-import static bff.TestExtensions.randomLong
-import static bff.TestExtensions.randomBigDecimal
+import static bff.TestExtensions.*
 import static org.mockito.ArgumentMatchers.any
-import static org.mockito.Mockito.verify
-import static org.mockito.Mockito.when
-import static org.mockito.Mockito.times
-import static bff.TestExtensions.anySupplier
+import static org.mockito.Mockito.*
 
 @RunWith(MockitoJUnitRunner)
 class SupplierOrderResolverTest {
@@ -53,6 +35,8 @@ class SupplierOrderResolverTest {
     private BnplProvidersService bnplProvidersService
     @Mock
     private PaymentsBridge paymentBridge
+    @Mock
+    private BnplBridge bnplBridge
 
     private SupplierOrderResolver sut
 
@@ -62,7 +46,8 @@ class SupplierOrderResolverTest {
                 supplierOrderBridge: supplierOrderBridge,
                 digitalPaymentsBridge: digitalPaymentsBridge,
                 bnplProvidersService: bnplProvidersService,
-                paymentsBridge: paymentBridge
+                paymentsBridge: paymentBridge,
+                bnplBridge: bnplBridge
         )
     }
 
@@ -390,4 +375,101 @@ class SupplierOrderResolverTest {
             default: new DefaultPaymentMethod()
         }
     }
+
+    private SupplierOrder givenPayableOrder(GetSupplierOrderPaymentResponse paymentResponse,
+                                            boolean supplierOnboarded = true,
+                                            boolean bnplSupported = true,
+                                            BigDecimal minExpected = BigDecimal.TEN,
+                                            SupplierOrderStatus orderStatus = SupplierOrderStatus.CONFIRMED) {
+        def supplier = anySupplier()
+        def supplierOrder = anySupplierOrder()
+        def customer = anyCustomerWithIdAndAccessToken("IN")
+        def order = anyOrder(OrderStatus.IN_PROGRESS, Lists.newArrayList(supplierOrder))
+        order.customer = customer
+        supplierOrder.status = orderStatus
+        supplierOrder.total = paymentResponse.totalAmount
+        when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(supplier)
+        when(supplierOrderBridge.getOrderBySupplierOrderId(any(), any())).thenReturn(order)
+        when(bnplBridge.supportedMinimumAmount(any(), any())).thenReturn(new SupportedMinimumAmountResponse(minExpected, "IN"))
+
+        if (supplierOrder.isPayable()) {
+            when(bnplBridge.isSupplierOnboarded(any(), any())).thenReturn(supplierOnboarded)
+            if (supplierOnboarded) {
+                when(paymentBridge.getSupplierOrderPayments(any(), any())).thenReturn(Mono.just(paymentResponse))
+                if (bnplSupported) {
+                    def creditLineProvider = new CreditLineProvider(provider: CreditProvider.SUPERMONEY)
+                    when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([creditLineProvider])
+                } else {
+                    when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([])
+                }
+                when(bnplBridge.userBalance(any())).thenReturn(
+                        new CreditLines(
+                                credits: Lists.newArrayList(
+                                        new SuperMoneyCreditLine(
+                                                approvedLimit: new Money("INR", BigDecimal.TEN + BigDecimal.TEN),
+                                                toRepay: new Money("INR", BigDecimal.TEN),
+                                                remaining: new Money("INR", BigDecimal.TEN)
+                                        )
+                                )
+                        )
+                )
+            }
+        }
+        return supplierOrder
+    }
+
+    @Test
+    void 'payLaterButton should return a hidden SimpleTextButton when supplierNotOnboarded'() {
+        def response = new GetSupplierOrderPaymentResponse(BigDecimal.valueOf(40), new BigDecimal("0"), [])
+        def supplierOrder = givenPayableOrder(response, false)
+
+        def result = sut.payLaterButton(supplierOrder)
+        assert result.behavior == SimpleTextButtonBehavior.HIDDEN
+    }
+
+    @Test
+    void 'payLaterButton should return a hidden SimpleTextButton when status is not confirmed'() {
+        def response = new GetSupplierOrderPaymentResponse(BigDecimal.valueOf(40), new BigDecimal("0"), [])
+        def supplierOrder = givenPayableOrder(response, true, true, BigDecimal.TEN, SupplierOrderStatus.PENDING)
+
+        def result = sut.payLaterButton(supplierOrder)
+        assert result.behavior == SimpleTextButtonBehavior.HIDDEN
+    }
+
+    @Test
+    void 'payLaterButton should return a hidden SimpleTextButton when bnpl is not supported'() {
+        def response = new GetSupplierOrderPaymentResponse(BigDecimal.valueOf(40), new BigDecimal("0"), [])
+        def supplierOrder = givenPayableOrder(response, true, false, BigDecimal.TEN, SupplierOrderStatus.CONFIRMED)
+
+        def result = sut.payLaterButton(supplierOrder)
+        assert result.behavior == SimpleTextButtonBehavior.HIDDEN
+    }
+
+    @Test
+    void 'payLaterButton should return a hidden SimpleTextButton bnpl is not applicable'() {
+        def response = new GetSupplierOrderPaymentResponse(BigDecimal.valueOf(1), new BigDecimal("0"), [])
+        def supplierOrder = givenPayableOrder(response, true, true, BigDecimal.TEN, SupplierOrderStatus.CONFIRMED)
+
+        def result = sut.payLaterButton(supplierOrder)
+        assert result.behavior == SimpleTextButtonBehavior.HIDDEN
+    }
+
+    @Test
+    void 'payLaterButton should return a visible SimpleTextButton when a payableOrder is confirmed'() {
+        def response = new GetSupplierOrderPaymentResponse(BigDecimal.valueOf(40), new BigDecimal("0"), [])
+        def supplierOrder = givenPayableOrder(response, true, true, BigDecimal.TEN, SupplierOrderStatus.CONFIRMED)
+
+        def result = sut.payLaterButton(supplierOrder)
+        assert result.behavior == SimpleTextButtonBehavior.VISIBLE
+    }
+
+    @Test
+    void 'payLaterButton should return a disabled SimpleTextButton when customer available credit does not reach minimum allowed'() {
+        def response = new GetSupplierOrderPaymentResponse(BigDecimal.valueOf(40), new BigDecimal("0"), [])
+        def supplierOrder = givenPayableOrder(response, true, true, BigDecimal.valueOf(20), SupplierOrderStatus.CONFIRMED)
+
+        def result = sut.payLaterButton(supplierOrder)
+        assert result.behavior == SimpleTextButtonBehavior.DISABLE
+    }
+
 }

@@ -1,7 +1,9 @@
 package bff.resolver
 
-import bff.bridge.PaymentsBridge
+
+import bff.bridge.BnplBridge
 import bff.bridge.DigitalPaymentsBridge
+import bff.bridge.PaymentsBridge
 import bff.bridge.SupplierOrderBridge
 import bff.model.*
 import bff.service.MoneyService
@@ -34,6 +36,9 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
     @Autowired
     private PaymentsBridge paymentsBridge
 
+    @Autowired
+    private BnplBridge bnplBridge
+
     Supplier supplier(SupplierOrder supplierOrder) {
         supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
     }
@@ -55,7 +60,7 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
                     CUSTOMER: customerRating
             )
         }
-        supplierOrder.rating?:supplierOrderBridge.getRatingBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
+        supplierOrder.rating ?: supplierOrderBridge.getRatingBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
     }
 
     Order order(SupplierOrder supplierOrder) {
@@ -111,7 +116,7 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
         def supplier = supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
         def digitalPaymentProviders = digitalPaymentsBridge.getPaymentProviders(supplier.id.toString(), supplierOrder.accessToken).block()
 
-        def isJPMorganSupported = digitalPaymentProviders.any {it == Provider.JP_MORGAN}
+        def isJPMorganSupported = digitalPaymentProviders.any { it == Provider.JP_MORGAN }
 
         List<SupportedPaymentProvider> result = []
 
@@ -120,15 +125,38 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
             result.add(new JPMorganUPIPaymentProvider())
         }
 
-        if(ofNullable(creditLineProviders(supplierOrder)).map {!it.isEmpty()}.orElse(false)) {
+        if (ofNullable(creditLineProviders(supplierOrder)).map { !it.isEmpty() }.orElse(false)) {
             result.add(new SupermoneyPaymentProvider())
         }
 
         return result
     }
 
+    SimpleTextButton payLaterButton(SupplierOrder supplierOrder) {
+        def order = supplierOrderBridge.getOrderBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
+        def supplier = supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
+        def isSupplierOnboarded = bnplBridge.isSupplierOnboarded(supplier.id, supplierOrder.accessToken)
+        def isBnplSupported = ofNullable(creditLineProviders(supplierOrder)).map { !it.isEmpty() }.orElse(false)
+        def minAllowedBySM = bnplBridge.supportedMinimumAmount(order.customer.country_id, supplierOrder.accessToken).amount
+        def isBnplApplicable = supplierOrder.total > minAllowedBySM
+        def textKey = "bnpl.textButton"
+
+        if (!supplierOrder.isPayable() || !isBnplSupported || !isSupplierOnboarded || !isBnplApplicable) {
+            new SimpleTextButton(SimpleTextButtonBehavior.HIDDEN, textKey)
+        } else {
+            def balance = bnplBridge.userBalance(supplierOrder.accessToken)
+            def creditLine = balance.credits.first() as SuperMoneyCreditLine
+            def notReachMinimumAllowed = creditLine.remaining.amount < minAllowedBySM
+            if (notReachMinimumAllowed) {
+                new SimpleTextButton(SimpleTextButtonBehavior.DISABLE, textKey, "bnpl.insufficientFunds")
+            } else {
+                new SimpleTextButton(SimpleTextButtonBehavior.VISIBLE, textKey)
+            }
+        }
+    }
+
     SimpleTextButton paymentButton(SupplierOrder supplierOrder) {
-        Mono.just(supplierOrder).filter {it.isPayable() }.<GetSupplierOrderPaymentResponse>zipWhen {
+        Mono.just(supplierOrder).filter { it.isPayable() }.<GetSupplierOrderPaymentResponse> zipWhen {
             paymentsBridge.getSupplierOrderPayments(new GetSupplierOrderPaymentRequest(supplierOrder.id), supplierOrder.accessToken)
         }.map {
             SimpleTextButtonBuilder.buildFrom(supportedPaymentProviders(it.t1), it.t2)
@@ -137,7 +165,7 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
 
     List<SupplierOrderPaymentV2> payments(SupplierOrder supplierOrder) {
         paymentsBridge.getSupplierOrderPayments(new GetSupplierOrderPaymentRequest(supplierOrder.id), supplierOrder.accessToken).map { response ->
-            response.payments.collect {it ->
+            response.payments.collect { it ->
                 new SupplierOrderPaymentV2(
                         supplierOrderId: supplierOrder.id,
                         paymentId: it.paymentId,
@@ -171,6 +199,7 @@ abstract class SimpleTextButtonBuilder {
     }
 
     abstract SimpleTextButtonBehavior behavior()
+
     abstract boolean isSupported()
 
     protected SimpleTextButton build() {
@@ -249,7 +278,9 @@ abstract class PaymentDataBuilder {
     }
 
     protected abstract Boolean isSupported()
+
     protected abstract PaymentMethod paymentMethod()
+
     protected abstract PaymentData doBuild()
 
     protected DigitalPaymentPaymentData buildForDigitalPayment() {
@@ -325,7 +356,7 @@ class CreditCardBuilder extends PaymentDataBuilder {
     }
 }
 
-class DebitCardBuilder extends  PaymentDataBuilder {
+class DebitCardBuilder extends PaymentDataBuilder {
 
     DebitCardBuilder(wabi2b.payments.common.model.dto.type.PaymentMethod paymentMethod) {
         super(paymentMethod)
@@ -369,7 +400,7 @@ class DigitalWalletBuilder extends PaymentDataBuilder {
     }
 }
 
-class BuyNowPayLaterPaymentMethodBuilder extends  PaymentDataBuilder {
+class BuyNowPayLaterPaymentMethodBuilder extends PaymentDataBuilder {
 
     BuyNowPayLaterPaymentMethodBuilder(wabi2b.payments.common.model.dto.type.PaymentMethod paymentMethod) {
         super(paymentMethod)
