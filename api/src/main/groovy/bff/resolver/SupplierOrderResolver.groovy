@@ -1,10 +1,7 @@
 package bff.resolver
 
-
-import bff.bridge.BnplBridge
-import bff.bridge.DigitalPaymentsBridge
-import bff.bridge.PaymentsBridge
-import bff.bridge.SupplierOrderBridge
+import bff.JwtToken
+import bff.bridge.*
 import bff.model.*
 import bff.service.MoneyService
 import bff.service.bnpl.BnplProvidersService
@@ -133,11 +130,11 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
     }
 
     SimpleTextButton payLaterButton(SupplierOrder supplierOrder) {
-        def order = supplierOrderBridge.getOrderBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
+        def countryId = JwtToken.countryFromString(supplierOrder.accessToken)
         def supplier = supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
         def isSupplierOnboarded = bnplBridge.isSupplierOnboarded(supplier.id, supplierOrder.accessToken)
         def isBnplSupported = ofNullable(creditLineProviders(supplierOrder)).map { !it.isEmpty() }.orElse(false)
-        def minAllowedBySM = bnplBridge.supportedMinimumAmount(order.customer.country_id, supplierOrder.accessToken).amount
+        def minAllowedBySM = bnplBridge.supportedMinimumAmount(countryId, supplierOrder.accessToken).amount
         def isBnplApplicable = supplierOrder.total > minAllowedBySM
         def textKey = "bnpl.textButton"
 

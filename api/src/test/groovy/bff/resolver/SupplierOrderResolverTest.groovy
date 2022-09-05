@@ -383,13 +383,13 @@ class SupplierOrderResolverTest {
                                             SupplierOrderStatus orderStatus = SupplierOrderStatus.CONFIRMED) {
         def supplier = anySupplier()
         def supplierOrder = anySupplierOrder()
+        supplierOrder.accessToken = validAccessToken()
         def customer = anyCustomerWithIdAndAccessToken("IN")
         def order = anyOrder(OrderStatus.IN_PROGRESS, Lists.newArrayList(supplierOrder))
         order.customer = customer
         supplierOrder.status = orderStatus
         supplierOrder.total = paymentResponse.totalAmount
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(supplier)
-        when(supplierOrderBridge.getOrderBySupplierOrderId(any(), any())).thenReturn(order)
         when(bnplBridge.supportedMinimumAmount(any(), any())).thenReturn(new SupportedMinimumAmountResponse(minExpected, "IN"))
 
         if (supplierOrder.isPayable()) {
