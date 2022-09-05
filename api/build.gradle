@@ -23,13 +23,12 @@ dependencies {
     implementation "com.wabi2b:phone-notifier-sdk:10144-76744096d3a1c81c01910dfeb44eff235aa2f690"
     implementation "wabi2b.sdk:wabi2b-api-sdk:1959-e12cbc005dc532f26157749159e9835369511a45"
     implementation "com.wabi2b:customers-sdk:1160-8d83dca52d5945f9807bf8c46d37bfad44460cba"
-    implementation "wabi2b:payments-sdk:1357-4e5945aba1d88c29e5f6ff8b86954ec21037d280"
+    implementation "wabi2b:payments-sdk:1365-409dfc2f12cfa6008a7d33e37b7da7bf70f3d830"
     implementation "wabi2b:third-party-integration:10032-174a757eb2148e06cd2af7a5d543e47ec89778b4"
     implementation "wabi2b:feature-flags:10037-dcc43a1b3566323e441c71e972a670640a0b1480"
     implementation "wabi2b:bnpl-credits-sdk:1103-58b6eae7cd6d01ec7bc7efb80f4717c3e397acaf"
     implementation "com.wabi2b:external-orders-sdk:1056-1d382fd21e481ac5b4cc8d830fb00631b7f48b22"
-    implementation "wabi2b:digital-payments-sdk:1108-9eb29da15ab3b8260d56b49a46135c13184d94f0"
-
+    implementation "wabi2b:digital-payments-sdk:1118-04089b1343daab7780c50f48c819dd0c14e5358a"
 
     implementation "io.ktor:ktor-client-cio:1.6.5"
 
