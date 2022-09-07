@@ -120,6 +120,7 @@ class Main {
                 .add(DebitCard.class)
                 .add(DigitalWallet.class)
                 .add(BuyNowPayLaterPaymentMethod.class)
+                .add(DefaultPaymentMethod.class)
     }
 
     /**

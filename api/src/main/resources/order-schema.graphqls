@@ -307,7 +307,7 @@ type BuyNowPayLaterPaymentData {
   paymentMethod: PaymentMethod!
 }
 
-union PaymentMethod = NetBanking | UPI | CreditCard | DigitalWallet | DebitCard | BuyNowPayLaterPaymentMethod
+union PaymentMethod = NetBanking | UPI | CreditCard | DigitalWallet | DebitCard | BuyNowPayLaterPaymentMethod | DefaultPaymentMethod
 
 type NetBanking {
   paymentMethodText(languageTag: String!): String!
@@ -330,6 +330,10 @@ type DigitalWallet {
 }
 
 type BuyNowPayLaterPaymentMethod {
+  paymentMethodText(languageTag: String!): String!
+}
+
+type DefaultPaymentMethod {
   paymentMethodText(languageTag: String!): String!
 }
 
