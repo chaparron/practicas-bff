@@ -39,8 +39,6 @@ class SupplierOrderResolverTest {
 
     private SupplierOrderResolver sut
 
-    private PAYMENT_BUTTON_PREFIX = "payment."
-
     @Before
     void setup() {
         sut = new SupplierOrderResolver(
@@ -141,7 +139,7 @@ class SupplierOrderResolverTest {
         when(digitalPaymentsBridge.getPaymentProviders(any(), any())).thenReturn(jpMorganPaymentProvider)
         when(paymentBridge.getSupplierOrderPayments(request, anySupplierOrder.accessToken)).thenReturn(supplierOrderPayments)
 
-        def expected = new SimpleTextButton(SimpleTextButtonBehavior.VISIBLE, PAYMENT_BUTTON_PREFIX + PaymentStatus.UNPAID.name())
+        def expected = new SimpleTextButton(SimpleTextButtonBehavior.VISIBLE, PaymentStatus.UNPAID.name())
         def result = sut.paymentButton(anySupplierOrder)
         assert expected == result
     }
@@ -165,7 +163,7 @@ class SupplierOrderResolverTest {
         when(digitalPaymentsBridge.getPaymentProviders(any(), any())).thenReturn(jpMorganPaymentProvider)
         when(paymentBridge.getSupplierOrderPayments(request, anySupplierOrder.accessToken)).thenReturn(supplierOrderPayments)
 
-        def expected = new SimpleTextButton(SimpleTextButtonBehavior.VISIBLE, PAYMENT_BUTTON_PREFIX + PaymentStatus.PARTIALLY_PAID.name())
+        def expected = new SimpleTextButton(SimpleTextButtonBehavior.VISIBLE, PaymentStatus.PARTIALLY_PAID.name())
         def result = sut.paymentButton(anySupplierOrder)
         assert expected == result
     }
@@ -188,7 +186,7 @@ class SupplierOrderResolverTest {
         when(digitalPaymentsBridge.getPaymentProviders(any(), any())).thenReturn(jpMorganPaymentProvider)
         when(paymentBridge.getSupplierOrderPayments(request, anySupplierOrder.accessToken)).thenReturn(supplierOrderPayments)
 
-        def expected = new SimpleTextButton(SimpleTextButtonBehavior.VISIBLE, PAYMENT_BUTTON_PREFIX + PaymentStatus.PARTIALLY_PAID.name())
+        def expected = new SimpleTextButton(SimpleTextButtonBehavior.VISIBLE, PaymentStatus.PARTIALLY_PAID.name())
         def result = sut.paymentButton(anySupplierOrder)
         assert expected == result
     }
@@ -229,7 +227,7 @@ class SupplierOrderResolverTest {
         when(digitalPaymentsBridge.getPaymentProviders(any(), any())).thenReturn([])
         when(paymentBridge.getSupplierOrderPayments(request, anySupplierOrder.accessToken)).thenReturn(supplierOrderPayments)
 
-        def expected = new SimpleTextButton(SimpleTextButtonBehavior.VISIBLE, PAYMENT_BUTTON_PREFIX + PaymentStatus.UNPAID.name())
+        def expected = new SimpleTextButton(SimpleTextButtonBehavior.VISIBLE, PaymentStatus.UNPAID.name())
         def result = sut.paymentButton(anySupplierOrder)
         assert expected == result
     }
@@ -250,7 +248,7 @@ class SupplierOrderResolverTest {
         when(digitalPaymentsBridge.getPaymentProviders(any(), any())).thenReturn([])
         when(paymentBridge.getSupplierOrderPayments(request, anySupplierOrder.accessToken)).thenReturn(supplierOrderPayments)
 
-        def expected = new SimpleTextButton(SimpleTextButtonBehavior.HIDDEN, PAYMENT_BUTTON_PREFIX + PaymentStatus.PARTIALLY_PAID.name())
+        def expected = new SimpleTextButton(SimpleTextButtonBehavior.HIDDEN, PaymentStatus.PARTIALLY_PAID.name())
         def result = sut.paymentButton(anySupplierOrder)
         assert expected == result
     }
@@ -268,7 +266,7 @@ class SupplierOrderResolverTest {
         when(digitalPaymentsBridge.getPaymentProviders(any(), any())).thenReturn(jpMorganPaymentProvider)
         when(paymentBridge.getSupplierOrderPayments(request, anySupplierOrder.accessToken)).thenReturn(supplierOrderPayments)
 
-        def expected = new SimpleTextButton(SimpleTextButtonBehavior.VISIBLE, PAYMENT_BUTTON_PREFIX + PaymentStatus.UNPAID.name())
+        def expected = new SimpleTextButton(SimpleTextButtonBehavior.VISIBLE, PaymentStatus.UNPAID.name())
         def result = sut.paymentButton(anySupplierOrder)
         assert expected == result
     }

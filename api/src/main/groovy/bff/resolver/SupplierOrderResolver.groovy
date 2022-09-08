@@ -9,6 +9,7 @@ import com.coxautodev.graphql.tools.GraphQLResolver
 import digitalpayments.sdk.model.Provider
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Mono
 import wabi2b.payments.common.model.request.GetSupplierOrderPaymentRequest
 import wabi2b.payments.common.model.response.GetSupplierOrderPaymentResponse
 
@@ -191,7 +192,6 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
 
 abstract class SimpleTextButtonBuilder {
 
-    final PAYMENT_BUTTON_PREFIX = "payment."
     protected GetSupplierOrderPaymentResponse response
     protected List<SupportedPaymentProvider> providers
 
@@ -211,7 +211,7 @@ abstract class SimpleTextButtonBuilder {
     abstract boolean isSupported()
 
     protected SimpleTextButton build() {
-        def textKey = PAYMENT_BUTTON_PREFIX + (isFull() ? PaymentStatus.TOTALLY_PAID.name() : paymentStatus().name())
+        def textKey = isFull() ? PaymentStatus.TOTALLY_PAID.name() : paymentStatus().name()
         return new SimpleTextButton(behavior(), textKey)
     }
 
