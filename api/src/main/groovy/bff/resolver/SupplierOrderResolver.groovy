@@ -109,76 +109,84 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
     }
 
     List<SupportedPaymentProvider> supportedPaymentProviders(SupplierOrder supplierOrder) {
-        retrievePaymentMethodProviders(supplierOrder).defaultIfEmpty([]).block()
+
+        def supplier = supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
+        def digitalPaymentProviders = digitalPaymentsBridge.getPaymentProviders(supplier.id.toString(), supplierOrder.accessToken)
+
+        def isJPMorganSupported = digitalPaymentProviders.any { it == Provider.JP_MORGAN }
+
+        List<SupportedPaymentProvider> result = []
+
+        if (isJPMorganSupported) {
+            result.add(new JPMorganMainPaymentProvider())
+            result.add(new JPMorganUPIPaymentProvider())
+        }
+
+        if (ofNullable(creditLineProviders(supplierOrder)).map { !it.isEmpty() }.orElse(false)) {
+            result.add(new SupermoneyPaymentProvider())
+        }
+
+        return result
     }
 
     SimpleTextButton payLaterButton(SupplierOrder supplierOrder) {
         def countryId = JwtToken.countryFromString(supplierOrder.accessToken)
-        def supplier = supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
-        def isSupplierOnboarded = bnplBridge.isSupplierOnboarded(supplier.id, supplierOrder.accessToken)
-        def isBnplSupported = ofNullable(creditLineProviders(supplierOrder)).map { !it.isEmpty() }.orElse(false)
         def minAllowedBySM = bnplBridge.supportedMinimumAmount(countryId, supplierOrder.accessToken).amount
-        def isBnplApplicable = supplierOrder.total > minAllowedBySM
         def textKey = "bnpl.textButton"
 
-        if (!supplierOrder.isPayable() || !isBnplSupported || !isSupplierOnboarded || !isBnplApplicable) {
-            new SimpleTextButton(SimpleTextButtonBehavior.HIDDEN, textKey)
-        } else {
-            def balance = bnplBridge.userBalance(supplierOrder.accessToken)
-            def creditLine = balance.credits.first() as SuperMoneyCreditLine
-            def notReachMinimumAllowed = creditLine.remaining.amount < minAllowedBySM
-            if (notReachMinimumAllowed) {
-                new SimpleTextButton(SimpleTextButtonBehavior.DISABLE, textKey, "bnpl.insufficientFunds")
-            } else {
-                new SimpleTextButton(SimpleTextButtonBehavior.VISIBLE, textKey)
-            }
+        if (checkHiddenPaymentButtonCreation(supplierOrder, minAllowedBySM)) {
+           return new SimpleTextButton(SimpleTextButtonBehavior.HIDDEN, textKey)
         }
+
+        if (isReachMinimumAllowed(supplierOrder, minAllowedBySM)) {
+            new SimpleTextButton(SimpleTextButtonBehavior.VISIBLE, textKey)
+        } else {
+            new SimpleTextButton(SimpleTextButtonBehavior.DISABLE, textKey, "bnpl.insufficientFunds")
+        }
+
     }
 
     SimpleTextButton paymentButton(SupplierOrder supplierOrder) {
-        Mono.just(supplierOrder).filter { it.isPayable() }.<GetSupplierOrderPaymentResponse> zipWhen {
-            paymentsBridge.getSupplierOrderPayments(new GetSupplierOrderPaymentRequest(supplierOrder.id), supplierOrder.accessToken)
-        }.<List<SupportedPaymentProvider>>zipWhen {
-            retrievePaymentMethodProviders(it.t1)
-        }.map {
-            SimpleTextButtonBuilder.buildFrom(it.t2, it.t1.t2)
-        }.defaultIfEmpty(SimpleTextButton.hidden()).block()
+        if (!supplierOrder.isPayable()) {
+          return   SimpleTextButton.hidden()
+        }
+
+        SimpleTextButtonBuilder.buildFrom(
+                supportedPaymentProviders(supplierOrder),
+                paymentsBridge.getSupplierOrderPayments(new GetSupplierOrderPaymentRequest(supplierOrder.id), supplierOrder.accessToken)
+        )
     }
 
     List<SupplierOrderPaymentV2> payments(SupplierOrder supplierOrder) {
-        paymentsBridge.getSupplierOrderPayments(new GetSupplierOrderPaymentRequest(supplierOrder.id), supplierOrder.accessToken).map { response ->
-            response.payments.collect { it ->
+        paymentsBridge.getSupplierOrderPayments(
+                new GetSupplierOrderPaymentRequest(supplierOrder.id), supplierOrder.accessToken
+        ).payments.collect { it ->
                 new SupplierOrderPaymentV2(
                         supplierOrderId: supplierOrder.id,
                         paymentId: it.paymentId,
                         paymentData: PaymentDataBuilder.buildFrom(it.paymentMethod)
                 )
             }
-        }.block()
     }
 
     BigDecimal defaultPaymentAmount(SupplierOrder supplierOrder) {
         def request = new GetSupplierOrderPaymentRequest(supplierOrder.id)
-        def response = paymentsBridge.getSupplierOrderPayments(request, supplierOrder.accessToken).block()
+        def response = paymentsBridge.getSupplierOrderPayments(request, supplierOrder.accessToken)
         response.totalAmount - response.lockedAmount
     }
 
-    private Mono<List<SupportedPaymentProvider>> retrievePaymentMethodProviders(SupplierOrder supplierOrder) {
-        Mono.just(supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id))
-                .<List<Provider>>flatMap { supplier ->
-                    digitalPaymentsBridge.getPaymentProviders(supplier.id.toString(), supplierOrder.accessToken)
-                }
-                .<List<SupportedPaymentProvider>>map { providers ->
-                    retrieveJPMorganPaymentProviders(providers) + retrieveCreditLineProviders(supplierOrder)
-                }
+    private Boolean checkHiddenPaymentButtonCreation(SupplierOrder supplierOrder, BigDecimal minAllowedBySM){
+        def supplier = supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
+        def isSupplierOnboarded = bnplBridge.isSupplierOnboarded(supplier.id, supplierOrder.accessToken)
+        def isBnplSupported = ofNullable(creditLineProviders(supplierOrder)).map { !it.isEmpty() }.orElse(false)
+        def isBnplApplicable = supplierOrder.total > minAllowedBySM
+        return !supplierOrder.isPayable() || !isBnplSupported || !isSupplierOnboarded || !isBnplApplicable
     }
 
-    private static List<SupportedPaymentProvider> retrieveJPMorganPaymentProviders(List<Provider> providers) {
-        providers.any { it == Provider.JP_MORGAN } ? [new JPMorganMainPaymentProvider(), new JPMorganUPIPaymentProvider()] : []
-    }
-
-    private List<SupportedPaymentProvider> retrieveCreditLineProviders(SupplierOrder supplierOrder) {
-        ofNullable(creditLineProviders(supplierOrder)).map { !it.isEmpty() }.orElse(false) ? [new SupermoneyPaymentProvider()] : []
+    private Boolean isReachMinimumAllowed(SupplierOrder supplierOrder, BigDecimal minAllowedBySM){
+        def balance = bnplBridge.userBalance(supplierOrder.accessToken)
+        def creditLine = balance.credits.first() as SuperMoneyCreditLine
+        return creditLine.remaining.amount >= minAllowedBySM
     }
 }
 

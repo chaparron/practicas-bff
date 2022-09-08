@@ -32,9 +32,9 @@ class PaymentsBridgeImpl implements PaymentsBridge {
     }
 
     @Override
-    Mono<GetSupplierOrderPaymentResponse> getSupplierOrderPayments(GetSupplierOrderPaymentRequest getSupplierOrderPaymentRequest, String apiClientToken) {
+    GetSupplierOrderPaymentResponse getSupplierOrderPayments(GetSupplierOrderPaymentRequest getSupplierOrderPaymentRequest, String apiClientToken) {
         supplierOrderPaymentCache.get(getSupplierOrderPaymentRequest.supplierOrderId) {
             wabiPaymentSdkClient.getSupplierOrderPayments(getSupplierOrderPaymentRequest, apiClientToken)
-        }
+        }.block()
     }
 }

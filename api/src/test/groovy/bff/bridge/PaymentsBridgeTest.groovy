@@ -50,8 +50,8 @@ class PaymentsBridgeTest {
 
         Mockito.when(wabiPaymentSdkClient.getSupplierOrderPayments(request, accessToken)).thenReturn(Mono.just(supplierOrderPayments))
 
-        def actual = paymentBridge.getSupplierOrderPayments(request, accessToken).block()
-        def otherActual = paymentBridge.getSupplierOrderPayments(request, accessToken).block()
+        def actual = paymentBridge.getSupplierOrderPayments(request, accessToken)
+        def otherActual = paymentBridge.getSupplierOrderPayments(request, accessToken)
 
         assert otherActual == actual
         assert actual == supplierOrderPayments

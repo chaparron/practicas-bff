@@ -31,9 +31,9 @@ class DigitalPaymentsBridgeImpl implements  DigitalPaymentsBridge {
     }
 
     @Override
-    Mono<List<Provider>> getPaymentProviders(String supplierId, String accessToken) {
+    List<Provider> getPaymentProviders(String supplierId, String accessToken) {
         providersCache.get(supplierId) {
             digitalPaymentsSdk.getPaymentProviders(it, accessToken)
-        }
+        }.block()
     }
 }

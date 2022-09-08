@@ -41,8 +41,8 @@ class DigitalPaymentsBridgeTest {
 
         Mockito.when(digitalPaymentsSdk.getPaymentProviders(anySupplierId, accessToken)).thenReturn(Mono.just(providers))
 
-        def actual = digitalPaymentsBridge.getPaymentProviders(anySupplierId, accessToken).block()
-        def otherActual = digitalPaymentsBridge.getPaymentProviders(anySupplierId, accessToken).block()
+        def actual = digitalPaymentsBridge.getPaymentProviders(anySupplierId, accessToken)
+        def otherActual = digitalPaymentsBridge.getPaymentProviders(anySupplierId, accessToken)
 
         assert otherActual == actual
         assert actual == providers.toList()
