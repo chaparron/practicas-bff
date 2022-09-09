@@ -13,7 +13,9 @@ import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 import reactor.core.publisher.Mono
 
+import static bff.TestExtensions.anotherValidAccessToken
 import static bff.TestExtensions.randomString
+import static bff.TestExtensions.validAccessToken
 
 @RunWith(MockitoJUnitRunner.class)
 class DigitalPaymentsBridgeTest {
@@ -34,9 +36,9 @@ class DigitalPaymentsBridgeTest {
     }
 
     @Test
-    void 'Should return cached payment providers'() {
+    void 'when calling twice with same supplierId and accessToken should call bridge once'() {
         def anySupplierId = randomString()
-        def accessToken = randomString()
+        def accessToken = validAccessToken()
         def providers = [Provider.JP_MORGAN]
 
         Mockito.when(digitalPaymentsSdk.getPaymentProviders(anySupplierId, accessToken)).thenReturn(Mono.just(providers))
@@ -47,6 +49,50 @@ class DigitalPaymentsBridgeTest {
         assert otherActual == actual
         assert actual == providers.toList()
 
-        Mockito.verify(digitalPaymentsSdk, Mockito.times(1)).getPaymentProviders(anySupplierId, accessToken)
+        Mockito.verify(digitalPaymentsSdk).getPaymentProviders(anySupplierId, accessToken)
+    }
+
+    @Test
+    void 'when calling twice with different supplierId and same accessToken should call bridge twice'() {
+        def anySupplierId = randomString()
+        def anotherSupplierId = randomString()
+        def accessToken = validAccessToken()
+
+        def providers = [Provider.JP_MORGAN]
+        def anotherProviders = []
+
+        Mockito.when(digitalPaymentsSdk.getPaymentProviders(anySupplierId, accessToken)).thenReturn(Mono.just(providers))
+        Mockito.when(digitalPaymentsSdk.getPaymentProviders(anotherSupplierId, accessToken)).thenReturn(Mono.just(anotherProviders))
+
+        def actual = digitalPaymentsBridge.getPaymentProviders(anySupplierId, accessToken)
+        def otherActual = digitalPaymentsBridge.getPaymentProviders(anotherSupplierId, accessToken)
+
+        assert otherActual == anotherProviders
+        assert actual == providers.toList()
+
+        Mockito.verify(digitalPaymentsSdk).getPaymentProviders(anySupplierId, accessToken)
+        Mockito.verify(digitalPaymentsSdk).getPaymentProviders(anotherSupplierId, accessToken)
+    }
+
+    @Test
+    void 'when calling twice with same supplierId and different accessToken should call bridge twice'() {
+        def anySupplierId = randomString()
+        def accessToken = validAccessToken()
+        def anotherAccessToken = anotherValidAccessToken()
+
+        def providers = [Provider.JP_MORGAN]
+        def anotherProviders = []
+
+        Mockito.when(digitalPaymentsSdk.getPaymentProviders(anySupplierId, accessToken)).thenReturn(Mono.just(providers))
+        Mockito.when(digitalPaymentsSdk.getPaymentProviders(anySupplierId, anotherAccessToken)).thenReturn(Mono.just(anotherProviders))
+
+        def actual = digitalPaymentsBridge.getPaymentProviders(anySupplierId, accessToken)
+        def otherActual = digitalPaymentsBridge.getPaymentProviders(anySupplierId, anotherAccessToken)
+
+        assert otherActual == anotherProviders
+        assert actual == providers.toList()
+
+        Mockito.verify(digitalPaymentsSdk).getPaymentProviders(anySupplierId, accessToken)
+        Mockito.verify(digitalPaymentsSdk).getPaymentProviders(anySupplierId, anotherAccessToken)
     }
 }
