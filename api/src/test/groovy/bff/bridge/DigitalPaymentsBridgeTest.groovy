@@ -1,4 +1,4 @@
-package bff.bridge
+/*package bff.bridge
 
 import bff.bridge.http.DigitalPaymentsBridgeImpl
 import bff.configuration.CacheConfigurationProperties
@@ -49,4 +49,4 @@ class DigitalPaymentsBridgeTest {
 
         Mockito.verify(digitalPaymentsSdk, Mockito.times(1)).getPaymentProviders(anySupplierId, accessToken)
     }
-}
+}*/

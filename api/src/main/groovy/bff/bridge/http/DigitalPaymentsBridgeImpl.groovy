@@ -14,13 +14,13 @@ import java.util.concurrent.TimeUnit
 
 class DigitalPaymentsBridgeImpl implements  DigitalPaymentsBridge {
 
-    @Autowired
-    private CacheConfigurationProperties cacheConfiguration
+    /*@Autowired
+    private CacheConfigurationProperties cacheConfiguration*/
 
     @Autowired
     private DigitalPaymentsSdk digitalPaymentsSdk
 
-    private Cache<String, Mono<List<Provider>>> providersCache
+    /*private Cache<String, Mono<List<Provider>>> providersCache
 
     @PostConstruct
     void init() {
@@ -28,12 +28,10 @@ class DigitalPaymentsBridgeImpl implements  DigitalPaymentsBridge {
                 .newBuilder()
                 .expireAfterWrite(cacheConfiguration.providers, TimeUnit.MINUTES)
                 .build()
-    }
+    }*/
 
     @Override
     List<Provider> getPaymentProviders(String supplierId, String accessToken) {
-        providersCache.get(supplierId) {
-            digitalPaymentsSdk.getPaymentProviders(it, accessToken)
-        }.block()
+        digitalPaymentsSdk.getPaymentProviders(supplierId, accessToken).block()
     }
 }
