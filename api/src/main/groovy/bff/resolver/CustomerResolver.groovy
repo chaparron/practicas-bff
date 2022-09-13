@@ -44,6 +44,7 @@ class CustomerResolver implements GraphQLResolver<Customer> {
             return ps
         }
 
+        ps.push(new ProfileSection(id: "NOTIFICATIONS"))
         ps.push(new ProfileSection(id: "ORDERS"))
         ps.push(new ProfileSection(id: "SUGGESTED_ORDER"))
         
