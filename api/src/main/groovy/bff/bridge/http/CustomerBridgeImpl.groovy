@@ -811,7 +811,8 @@ class CustomerBridgeImpl implements CustomerBridge {
 
     private static Long timeAdjustment(Long timeEpochMillis, String dateBuilder) {
         def dateConverter = new Date(timeEpochMillis)
-        def calendarInstance = Calendar.getInstance()
+        def timeZone = TimeZone.getTimeZone("GMT")
+        def calendarInstance = Calendar.getInstance(timeZone)
         def calendarDate = dateConverter.toCalendar()
 
         switch (dateBuilder) {

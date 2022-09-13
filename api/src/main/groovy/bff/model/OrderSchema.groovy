@@ -703,22 +703,34 @@ enum SummaryFailedReason {
 class SupportedPaymentProvider {
     URI avatar
     PaymentProviderType code
+
     String getClassName() {
         this.getClass().getSimpleName()
     }
 }
+
 @EqualsAndHashCode
-class JPMorganPaymentProvider extends SupportedPaymentProvider {
-    JPMorganPaymentProvider() {
+class JPMorganMainPaymentProvider extends SupportedPaymentProvider {
+    JPMorganMainPaymentProvider() {
         this.avatar = URI.create("")
         this.code = PaymentProviderType.PAY_NOW
     }
 }
+
 @EqualsAndHashCode
 class SupermoneyPaymentProvider extends SupportedPaymentProvider {
+
     SupermoneyPaymentProvider() {
         this.avatar = URI.create("")
         this.code = PaymentProviderType.PAY_LATER
+    }
+}
+
+@EqualsAndHashCode
+class JPMorganUPIPaymentProvider extends SupportedPaymentProvider {
+    JPMorganUPIPaymentProvider() {
+        this.avatar = URI.create("")
+        this.code = PaymentProviderType.PAY_NOW
     }
 }
 
@@ -950,10 +962,18 @@ class PaymentMode {
 class SimpleTextButton {
     SimpleTextButtonBehavior behavior
     String textKey
+    String messageKey
 
     SimpleTextButton(SimpleTextButtonBehavior behavior, String textKey) {
         this.behavior = behavior
         this.textKey = textKey
+        this.messageKey = null
+    }
+
+    SimpleTextButton(SimpleTextButtonBehavior behavior, String textKey, String messageKey) {
+        this.behavior = behavior
+        this.textKey = textKey
+        this.messageKey = messageKey
     }
 
     static SimpleTextButton hidden() {

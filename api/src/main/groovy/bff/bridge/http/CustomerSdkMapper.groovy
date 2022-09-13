@@ -1,36 +1,9 @@
 package bff.bridge.http
 
-import bff.model.AddBranchOfficeInput
-import bff.model.Address
-import bff.model.AddressInput
-import bff.model.AddressMode
-import bff.model.Country
-import bff.model.Customer
-import bff.model.CustomerStatus
-import bff.model.CustomerType
-import bff.model.Day
-import bff.model.HourRange
-import bff.model.RatingScore
-import bff.model.State
-import bff.model.StoreType
-import bff.model.UpdateBranchOfficeProfileInput
-import bff.model.User
-import bff.model.VerificationDocument
-import bff.model.VerificationDocumentInput
-import bff.model.VerificationDocumentType
-import bff.model.WorkingDays
+import bff.model.*
 import org.springframework.stereotype.Component
 import wabi2b.dtos.customers.branchoffice.CreateBranchOfficeOrganicRequestDto
-import wabi2b.dtos.customers.shared.AddressDto
-import wabi2b.dtos.customers.shared.CreateCustomerAddressDto
-import wabi2b.dtos.customers.shared.CreateCustomerUserDto
-import wabi2b.dtos.customers.shared.CustomerDto
-import wabi2b.dtos.customers.shared.DayDto
-import wabi2b.dtos.customers.shared.HourRangeDto
-import wabi2b.dtos.customers.shared.UpdateCustomerProfileRequestDto
-import wabi2b.dtos.customers.shared.VerificationDocumentDto
-import wabi2b.dtos.customers.shared.WorkingDaysDto
-
+import wabi2b.dtos.customers.shared.*
 
 @Component
 class CustomerSdkMapper {
@@ -63,6 +36,10 @@ class CustomerSdkMapper {
     }
 
     Address toAddress(AddressDto addressDto, String countryId, String accessToken){
+        State state = null
+        if (addressDto.state){
+          state = new State(id: addressDto.state.id, countryId: countryId, accessToken: accessToken)
+        }
         return new Address(
                 id: addressDto.id,
                 formatted: addressDto.formatted,
@@ -72,7 +49,7 @@ class CustomerSdkMapper {
                 preferred: addressDto.preferred,
                 addressType: AddressMode.valueOf(addressDto.addressType),
                 enabled: true,
-                state: new State(id: addressDto.state.id, countryId: countryId, accessToken: accessToken),
+                state: state,
                 postalCode: addressDto.postalCode
         )
     }
@@ -182,8 +159,8 @@ class CustomerSdkMapper {
         }
     }
 
-    CreateCustomerUserDto toDtoUser(AddBranchOfficeInput addBranchOfficeInput){
-        return new CreateCustomerUserDto(
+    CustomerUserDto toDtoUser(AddBranchOfficeInput addBranchOfficeInput){
+        return new CustomerUserDto(
                 addBranchOfficeInput.firstName,
                 addBranchOfficeInput.lastName,
                 addBranchOfficeInput.countryCode,

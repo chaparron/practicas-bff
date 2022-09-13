@@ -109,7 +109,8 @@ class Main {
                 .add(DigitalPayment.class)
                 .add(DigitalPaymentFailed.class)
                 .add(SimpleTextButton.class)
-                .add(JPMorganPaymentProvider.class)
+                .add(JPMorganMainPaymentProvider.class)
+                .add(JPMorganUPIPaymentProvider.class)
                 .add(SupermoneyPaymentProvider.class)
                 .add(DigitalPaymentPaymentData.class)
                 .add(BuyNowPayLaterPaymentData.class)
@@ -119,6 +120,7 @@ class Main {
                 .add(DebitCard.class)
                 .add(DigitalWallet.class)
                 .add(BuyNowPayLaterPaymentMethod.class)
+                .add(DefaultPaymentMethod.class)
     }
 
     /**

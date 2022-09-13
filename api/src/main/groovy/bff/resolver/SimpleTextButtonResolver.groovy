@@ -16,11 +16,17 @@ class SimpleTextButtonResolver implements GraphQLResolver<SimpleTextButton> {
     MessageSource messageSource
 
     CompletableFuture<String> text(SimpleTextButton button, String languageTag) {
-        Mono.just(messageSource.getMessage(
-                "button.$button.textKey",
-                null,
-                "button.key",
-                Locale.forLanguageTag(languageTag)
-        )).toFuture()
+        def key = "button.$button.textKey"
+        Mono.just(messageSource.getMessage(key, null, "!!$key!!", Locale.forLanguageTag(languageTag))).toFuture()
     }
+
+    CompletableFuture<String> message(SimpleTextButton button, String languageTag) {
+        if (button.messageKey == null) {
+            return Mono.<String> justOrEmpty(null).toFuture()
+        } else {
+            def key = "button.message.$button.messageKey"
+            return Mono.just(messageSource.getMessage(key, null, "!!$key!!", Locale.forLanguageTag(languageTag))).toFuture()
+        }
+    }
+
 }

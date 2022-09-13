@@ -6,9 +6,9 @@ import groovy.transform.EqualsAndHashCode
 
 class CreateDigitalPaymentInput {
     String accessToken
-    String supplierOrderId
-    String amount
-    String totalAmount
+    Long supplierOrderId
+    BigDecimal amount
+    String invoiceId
 }
 
 interface CreateDigitalPaymentResult {}
@@ -64,7 +64,6 @@ class DigitalPayment  implements FinalizeDigitalPaymentResult{
     String paymentId
     String supplierOrderId
     String amount
-    String totalAmount
     String responseCode
     String message
 
@@ -73,7 +72,6 @@ class DigitalPayment  implements FinalizeDigitalPaymentResult{
                 paymentId: response.paymentId,
                 supplierOrderId: response.supplierOrderId,
                 amount: response.amount,
-                totalAmount: response.totalAmount,
                 responseCode: response.responseCode,
                 message: response.message
         )

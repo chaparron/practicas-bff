@@ -34,51 +34,50 @@ class DigitalPaymentMutationTest {
 
     @Test
     void 'should create digital payment'() {
-        def supplierOrderId = randomString()
-        def amount = randomString()
-        def totalAmount = randomString()
+        def supplierOrderId = randomLong()
+        def amount = randomBigDecimal()
+        def invoiceId = randomString()
         def accessToken = validAccessToken()
         def sdkResponse = anyCreatePaymentResponse()
-        def sdkRequest = new CreatePaymentRequest(supplierOrderId, amount, totalAmount)
+        def sdkRequest = new CreatePaymentRequest(supplierOrderId, amount, invoiceId)
 
         def expectedResponse = JpMorganCreateDigitalPayment.fromSdk(sdkResponse)
 
         when(digitalPaymentSdk.createPayment(sdkRequest, accessToken)).thenReturn(Mono.just(sdkResponse))
 
         def actualResponse = sut.createDigitalPayment(
-                anyCreateDigitalPaymentInput(supplierOrderId, amount, totalAmount, accessToken)
+                anyCreateDigitalPaymentInput(supplierOrderId, amount, accessToken, invoiceId)
         ).get()
 
         assert expectedResponse == actualResponse
-        verify(digitalPaymentSdk, times(1)).createPayment(sdkRequest, accessToken)
+        verify(digitalPaymentSdk).createPayment(sdkRequest, accessToken)
     }
 
     @Test
     void 'should return sdk error when sdk fail on create payment'() {
-        def supplierOrderId = randomString()
-        def amount = randomString()
-        def totalAmount = randomString()
+        def supplierOrderId = randomLong()
+        def amount = randomBigDecimal()
+        def invoiceId = randomString()
         def accessToken = validAccessToken()
-        def sdkRequest = new CreatePaymentRequest(supplierOrderId, amount, totalAmount)
+        def sdkRequest = new CreatePaymentRequest(supplierOrderId, amount, invoiceId)
 
         def sdkException = new CustomSdkException(new DetailedError(randomString(), randomString()))
 
         when(digitalPaymentSdk.createPayment(sdkRequest, accessToken)).thenReturn(Mono.error(sdkException))
 
         def actualResponse = sut.createDigitalPayment(
-                anyCreateDigitalPaymentInput(supplierOrderId, amount, totalAmount, accessToken)
+                anyCreateDigitalPaymentInput(supplierOrderId, amount, accessToken, invoiceId)
         ).get()
 
         assert CreateDigitalPaymentFailedReason.SDK_ERROR.build() == actualResponse
-        verify(digitalPaymentSdk, times(1)).createPayment(sdkRequest, accessToken)
+        verify(digitalPaymentSdk).createPayment(sdkRequest, accessToken)
     }
 
     @Test
     void 'should finalize digital payment'() {
-        def paymentId = randomString()
-        def supplierOrderId = randomString()
-        def amount = randomString()
-        def totalAmount = randomString()
+        def paymentId = randomLong()
+        def supplierOrderId = randomLong()
+        def amount = randomBigDecimal()
         def responseCode = randomString()
         def message = randomString()
         def encData = randomString()
@@ -89,7 +88,6 @@ class DigitalPaymentMutationTest {
                 paymentId,
                 supplierOrderId,
                 amount,
-                totalAmount,
                 responseCode,
                 message
         )

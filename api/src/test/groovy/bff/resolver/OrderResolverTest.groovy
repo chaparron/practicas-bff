@@ -3,7 +3,6 @@ package bff.resolver
 import bff.bridge.OrderBridge
 import bff.model.*
 import bff.service.MoneyService
-import bff.service.bnpl.BnplProvidersService
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,7 +35,7 @@ class OrderResolverTest {
     @Test
     void 'Should return PAY_NOW for JPMorgan provider'() {
         def paymentType = PaymentModeType.PAY_NOW
-        def providers = [new JPMorganPaymentProvider()]
+        def providers = [new JPMorganMainPaymentProvider()]
         def supplierOrder = anySupplierOrder()
         def supplierOrders = [supplierOrder]
         def order = anyOrder(OrderStatus.PENDING, supplierOrders)
@@ -63,7 +62,7 @@ class OrderResolverTest {
 
     @Test
     void 'Should return both for JPMorgan & Supermoney providers'() {
-        def providers = [new SupermoneyPaymentProvider(), new JPMorganPaymentProvider()]
+        def providers = [new SupermoneyPaymentProvider(), new JPMorganMainPaymentProvider()]
         def supplierOrder = anySupplierOrder()
         def supplierOrders = [supplierOrder]
         def order = anyOrder(OrderStatus.PENDING, supplierOrders)
@@ -90,7 +89,7 @@ class OrderResolverTest {
     @Test
     void 'Should return only one PAY_NOW item for JPMorgan provider despite multiple suppliers supporting it'() {
         def paymentType = PaymentModeType.PAY_NOW
-        def providers = [new JPMorganPaymentProvider(), new JPMorganPaymentProvider()]
+        def providers = [new JPMorganMainPaymentProvider(), new JPMorganMainPaymentProvider()]
         def supplierOrder = anySupplierOrder()
         def supplierOrders = [supplierOrder]
         def order = anyOrder(OrderStatus.PENDING, supplierOrders)

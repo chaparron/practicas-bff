@@ -2,7 +2,7 @@ input CreateDigitalPaymentInput {
   accessToken: String!
   supplierOrderId: String!
   amount: Float!
-  totalAmount: Float!
+  invoiceId: String!
 }
 
 union CreateDigitalPaymentResult = JpMorganCreateDigitalPayment | CreateDigitalPaymentFailed
@@ -12,7 +12,7 @@ type CreateDigitalPaymentFailed {
 }
 
 enum CreateDigitalPaymentFailedReason {
-  GATEWAY_NOT_SUPPORTED
+  GATEWAY_NOT_SUPPORTED, SDK_ERROR
 }
 
 type JpMorganCreateDigitalPayment {
@@ -33,7 +33,6 @@ type DigitalPayment {
   paymentId: String!
   supplierOrderId: String!
   amount: Float!
-  totalAmount: Float!
   responseCode: String!
   message: String!
 }

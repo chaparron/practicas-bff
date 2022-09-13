@@ -1,7 +1,7 @@
 package bff.model
 
 import bff.JwtToken
-import bnpl.sdk.BnPlSdk
+import bff.bridge.BnplBridge
 import bnpl.sdk.model.CreditLineResponse
 import bnpl.sdk.model.MoneyResponse
 import org.junit.Test
@@ -10,7 +10,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
-import reactor.core.publisher.Mono
 
 import static bff.TestExtensions.validAccessToken
 import static java.math.BigDecimal.TEN
@@ -18,13 +17,14 @@ import static java.math.BigDecimal.TEN
 @RunWith(MockitoJUnitRunner.class)
 class BnplCreditLineQueryTest {
     @Mock
-    BnPlSdk bnPlSdk
+    BnplBridge bnplBridge
+
     @InjectMocks
     BnplCreditLineQuery sut
 
     @Test
     void 'when getCreditLines should request it to the sdk'() {
-        def input  = new CreditLinesRequestInput(accessToken: validAccessToken())
+        def input = new CreditLinesRequestInput(accessToken: validAccessToken())
         def customerUserId = JwtToken.userIdFromToken(input.accessToken).toLong()
         def sdkResponse = new CreditLineResponse(
                 customerUserId,
@@ -32,9 +32,10 @@ class BnplCreditLineQueryTest {
                 new MoneyResponse("INR", TEN),
                 null
         )
+        def creditLines = CreditLines.fromSdk(sdkResponse)
 
-        Mockito.when(bnPlSdk.fetchBalance(customerUserId, input.accessToken)).thenReturn(Mono.just(sdkResponse))
+        Mockito.when(bnplBridge.userBalance(input.accessToken)).thenReturn(creditLines)
 
-        assert sut.getCreditLines(input).get() == CreditLines.fromSdk(sdkResponse)
+        assert sut.getCreditLines(input).get() == creditLines
     }
 }

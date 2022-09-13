@@ -176,7 +176,8 @@ class GroceryListing {
     }
 
     Suggestions suggest(SuggestInput input) {
-        def (customer, deliveryAddress) = getCustomerAndDeliveryAddress(input.accessToken)
+        def (customer, deliveryAddress) =
+        getCustomerAndDeliveryAddress(input.accessToken)
         def request =
                 new SuggestionQueryRequestBuilder(input)
                         .apply(
@@ -217,7 +218,8 @@ class GroceryListing {
     }
 
     List<MostSearchedTerm> mostSearchedTerms(MostSearchedTermsInput input) {
-        def (customer, deliveryAddress) = getCustomerAndDeliveryAddress(input.accessToken)
+        def (customer, deliveryAddress) =
+        getCustomerAndDeliveryAddress(input.accessToken)
         def request = mostSearchedTermsIn(*deliveryAddress)
                 .since(30)
                 .forCustomer(*customer)
@@ -367,7 +369,8 @@ class GroceryListing {
     }
 
     PromotionResponse getPromotions(PromotionInput input) {
-        def (customer, deliveryAddress) = getCustomerAndDeliveryAddress(input.accessToken)
+        def (customer, deliveryAddress) =
+        getCustomerAndDeliveryAddress(input.accessToken)
         def request = availablePromotionsIn(*deliveryAddress).forCustomer(*customer)
         try {
             def response = sdk.query(request)
@@ -400,7 +403,7 @@ class GroceryListing {
         def request =
                 redeemableCouponsIn(country)
                         .availableOn(OffsetDateTime.now())
-                        .forCustomer(*customer)
+                        .forCustomer(*customer.dropRight(1))
                         .ordering(items.head(), asScala(items.tail()).toSeq())
                         .withTotalAmount(new BigDecimal(input.totalPrice))
                         .sized(20)
@@ -422,7 +425,8 @@ class GroceryListing {
     }
 
     private def availableProductsForCustomer(String accessToken) {
-        def (customer, deliveryAddress) = getCustomerAndDeliveryAddress(accessToken)
+        def (customer, deliveryAddress) =
+        getCustomerAndDeliveryAddress(accessToken)
         return availableProductsIn(*deliveryAddress).forCustomer(*customer)
     }
 
@@ -432,7 +436,8 @@ class GroceryListing {
         [
                 [
                         customer.id.toString(),
-                        customer.customerType.code
+                        customer.customerType.code,
+                        Option.empty()
                 ],
                 [
                         new Coordinate(deliveryAddress.lat.toDouble(), deliveryAddress.lon.toDouble()),
@@ -483,6 +488,9 @@ class GroceryListing {
         Optional<String> maybeCommercialPromotion
         Optional<Boolean> maybePurchased
         Optional<String> maybeCollection
+        Optional<Integer> maybeBottler
+        Optional<Integer> maybeManufacturer
+        Optional<Boolean> maybeFreeProduct
 
         ProductQueryRequestFilteringBuilder(SearchInput input) {
             this(
@@ -497,7 +505,10 @@ class GroceryListing {
                     input.discount,
                     input.commercialPromotion,
                     input.purchased,
-                    input.collection
+                    input.collection,
+                    input.bottler,
+                    input.manufacturer,
+                    input.freeProduct
             )
         }
 
@@ -514,7 +525,10 @@ class GroceryListing {
                     input.discount,
                     input.commercialPromotion,
                     null,
-                    input.collection
+                    input.collection,
+                    input.bottler,
+                    input.manufacturer,
+                    input.freeProduct
             )
         }
 
@@ -529,19 +543,25 @@ class GroceryListing {
                                                     Integer discount,
                                                     String commercialPromotion,
                                                     Boolean purchased,
-                                                    String collection) {
+                                                    String collection,
+                                                    Integer bottler,
+                                                    Integer manufacturer,
+                                                    Boolean freeProduct) {
             this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }
             this.maybeCategory = ofNullable(category)
             this.maybeBrand = ofNullable(brand)
             this.maybeSupplier = ofNullable(supplier)
             this.maybePromotion = ofNullable(promotion).filter { !it.isEmpty() }
             this.features = features
-            this.maybeFavourites = ofNullable(favourites)
-            this.maybePromoted = ofNullable(promoted)
+            this.maybeFavourites = ofNullable(favourites).filter { it }
+            this.maybePromoted = ofNullable(promoted).filter { it }
             this.maybeDiscount = ofNullable(discount)
             this.maybeCommercialPromotion = ofNullable(commercialPromotion)
             this.maybePurchased = ofNullable(purchased)
             this.maybeCollection = ofNullable(collection).filter { !it.isEmpty() }
+            this.maybeBottler = ofNullable(bottler)
+            this.maybeManufacturer = ofNullable(manufacturer)
+            this.maybeFreeProduct = ofNullable(freeProduct).filter { it }
         }
 
         ProductQueryRequest apply(ProductQueryRequest request) {
@@ -556,7 +576,10 @@ class GroceryListing {
                             discountFiltering(),
                             commercialPromotionFiltering(),
                             purchasedFiltering(),
-                            collectionFiltering()
+                            collectionFiltering(),
+                            bottlerFiltering(),
+                            manufacturerFiltering(),
+                            freeProductFiltering()
                     ] + featuresFiltering()
             )
                     .inject(request, { acc, filter -> filter(acc) })
@@ -622,7 +645,6 @@ class GroceryListing {
                     }
                     .orElseGet {
                         maybePromoted
-                                .filter { it }
                                 .map {
                                     { ProductQueryRequest r ->
                                         r.filteredByAnyPromotion() as ProductQueryRequest
@@ -634,7 +656,6 @@ class GroceryListing {
 
         private Closure<ProductQueryRequest> favouritesFiltering() {
             maybeFavourites
-                    .filter { it }
                     .map {
                         { ProductQueryRequest r ->
                             r.favourites() as ProductQueryRequest
@@ -690,6 +711,39 @@ class GroceryListing {
                     .map { collection ->
                         { ProductQueryRequest r ->
                             r.filteredByCollection(collection) as ProductQueryRequest
+                        }
+                    }
+                    .orElse(identity)
+        }
+
+        private Closure<ProductQueryRequest> bottlerFiltering() {
+            maybeBottler
+                    .map { bottler ->
+                        { ProductQueryRequest r ->
+                            r.filteredByBottler(
+                                    bottler.toString(),
+                                    asScala([] as List<String>).toSeq()
+                            ) as ProductQueryRequest
+                        }
+                    }
+                    .orElse(identity)
+        }
+
+        private Closure<ProductQueryRequest> manufacturerFiltering() {
+            maybeManufacturer
+                    .map { manufacturer ->
+                        { ProductQueryRequest r ->
+                            r.filteredByManufacturer(manufacturer.toString()) as ProductQueryRequest
+                        }
+                    }
+                    .orElse(identity)
+        }
+
+        private Closure<ProductQueryRequest> freeProductFiltering() {
+            maybeFreeProduct
+                    .map {
+                        { ProductQueryRequest r ->
+                            r.withFreeProducts() as ProductQueryRequest
                         }
                     }
                     .orElse(identity)
@@ -858,7 +912,7 @@ class GroceryListing {
             this.maybeBrands = maybeBrands
             this.maybeCategories = maybeCategories
             this.maybeSuppliers = maybeSuppliers
-            this.maybeFavourites = ofNullable(favourites)
+            this.maybeFavourites = ofNullable(favourites).filter { it }
             this.maybeCategory = ofNullable(category)
         }
 
@@ -877,7 +931,6 @@ class GroceryListing {
                             .map { { b -> b.fetchingSuppliers(it, ByRelevance$.MODULE$) } }
                             .orElse(identity),
                     maybeFavourites
-                            .filter { it }
                             .map { { b -> b.favourites() } }
                             .orElse(identity),
                     maybeCategory
@@ -906,7 +959,7 @@ class GroceryListing {
                                     isLeaf: false
                             )
                         }
-                        .sort { it.id }
+                                .sort { it.id }
                     }
                     .orElse([])
         }
@@ -1130,7 +1183,8 @@ class GroceryListing {
                     discountFilter() +
                     supplierFilter(response) +
                     featuresFilter(response) +
-                    purchasedFilter()
+                    purchasedFilter() +
+                    freeProductFilter()
         }
 
         protected List<Filter> termFilter() {
@@ -1291,6 +1345,28 @@ class GroceryListing {
                                         value: { LanguageTag languageTag ->
                                             messageSource.getMessage(
                                                     "search.PURCHASED_FILTER",
+                                                    [].toArray(),
+                                                    forLanguageTag(
+                                                            ofNullable(languageTag.toString()).
+                                                                    orElse("en")
+                                                    )
+                                            )
+                                        }
+                                )
+                        ]
+                    }
+                    .orElse([])
+        }
+
+        protected List<Filter> freeProductFilter() {
+            toJava(request.filtering().byFreeProduct())
+                    .map {
+                        [
+                                new Filter(
+                                        key: "freeProduct",
+                                        value: { LanguageTag languageTag ->
+                                            messageSource.getMessage(
+                                                    "search.FREE_PRODUCT_FILTER",
                                                     [].toArray(),
                                                     forLanguageTag(
                                                             ofNullable(languageTag.toString()).

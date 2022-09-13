@@ -125,7 +125,7 @@ class Cms {
                         .map { it.first as Customer }
                         .map {
                             { BuildModulePiecesQuery query ->
-                                query.forCustomer(it.id.toString(), it.customerType.code)
+                                query.forCustomer(it.id.toString(), it.customerType.code, Option.empty())
                             }
                         }
                         .orElse(IDENTITY)
@@ -242,6 +242,21 @@ class Cms {
                                 .map { b.queryParam("discount", it.min()) }
                                 .getOrElse { b }
                     }
+                    def filteredByBottler = { UriBuilder b ->
+                        request.filtering().byBottler()
+                                .map { b.queryParam("bottler", it.id()) }
+                                .getOrElse { b }
+                    }
+                    def filteredByManufacturer = { UriBuilder b ->
+                        request.filtering().byManufacturer()
+                                .map { b.queryParam("manufacturer", it.id()) }
+                                .getOrElse { b }
+                    }
+                    def filteredByFreeProduct = { UriBuilder b ->
+                        request.filtering().byFreeProduct()
+                                .map { b.queryParam("freeProduct", true) }
+                                .getOrElse { b }
+                    }
                     def sortedByPrice = { UriBuilder b ->
                         toJava(request.sorting())
                                 .filter { it instanceof ByUnitPrice }
@@ -278,6 +293,9 @@ class Cms {
                                     filteredByPurchased,
                                     filteredByCollection,
                                     filteredByDiscount,
+                                    filteredByBottler,
+                                    filteredByManufacturer,
+                                    filteredByFreeProduct,
                                     sortedByPrice,
                                     sortedAlphabetically,
                                     sortedByRecent
