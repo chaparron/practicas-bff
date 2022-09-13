@@ -14,12 +14,12 @@ class PreviewPriceResolver implements GraphQLResolver<PreviewPrice> {
     @Autowired
     MoneyService moneyService
 
-    Money valueMoney(PreviewPrice previewPrice) {
-        moneyService.getMoneyByCountry(previewPrice.countryId, previewPrice.value)
+    Money valueMoney(PreviewPrice price) {
+        moneyService.getMoneyByCountry(price.countryId, price.value)
     }
 
-    Money unitValueMoney(PreviewPrice previewPrice) {
-        moneyService.getMoneyByCountry(previewPrice.countryId, previewPrice.unitValue)
+    Money unitValueMoney(PreviewPrice price) {
+        moneyService.getMoneyByCountry(price.countryId, price.unitValue)
     }
 
     @Deprecated
@@ -31,6 +31,10 @@ class PreviewPriceResolver implements GraphQLResolver<PreviewPrice> {
                     .flatMap { it.freeProduct }
                     .map { new CommercialPromotion(it) }
         }).orElse(null)
+    }
+
+    Boolean displayable(PreviewPrice price) {
+        price.countryId != "pt"
     }
 
 }

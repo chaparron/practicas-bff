@@ -224,6 +224,7 @@ type PreviewPrice {
   minUnits: Int
   commercialPromotion: CommercialPromotion
   commercialPromotions: CommercialPromotions
+  displayable: Boolean!
 }
 
 enum SupplierAvatarSize {
