@@ -1,5 +1,6 @@
 package bff.resolver
 
+import bff.bridge.CountryBridge
 import bff.model.CommercialPromotion
 import bff.model.Money
 import bff.model.PreviewPrice
@@ -8,11 +9,15 @@ import com.coxautodev.graphql.tools.GraphQLResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
+import static java.util.Optional.ofNullable
+
 @Component
 class PreviewPriceResolver implements GraphQLResolver<PreviewPrice> {
 
     @Autowired
     MoneyService moneyService
+    @Autowired
+    CountryBridge countryBridge
 
     Money valueMoney(PreviewPrice price) {
         moneyService.getMoneyByCountry(price.countryId, price.value)
@@ -34,7 +39,13 @@ class PreviewPriceResolver implements GraphQLResolver<PreviewPrice> {
     }
 
     Boolean displayable(PreviewPrice price) {
-        price.countryId != "pt"
+        ofNullable(
+                countryBridge
+                        .getCountryConfiguration(price.countryId)
+                        .find { it.key == "shopping_display_price_guest_customer" }
+        )
+                .map { it.value.toBoolean() }
+                .orElse(true)
     }
 
 }
