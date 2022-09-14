@@ -400,10 +400,12 @@ class GroceryListing {
         def country = JwtToken.countryFromString(input.accessToken)
         def accessToken = new AccessTokenInput(accessToken:  input.accessToken)
 
-        def (customerAndDeliveryAddress, firstTimeOrdering) = Mono.zip(
+        def (customerAndDeliveryAddress, customerHasOrders) = Mono.zip(
                 Mono.just(getCustomerAndDeliveryAddress(input.accessToken)) as Mono<?>,
                 Mono.just(customerBridge.customerHasOrders(accessToken))
         ).block()
+
+        def firstTimeOrdering = !customerHasOrders
 
         def (customer, _) = customerAndDeliveryAddress
 
