@@ -12,6 +12,8 @@ import scala.math.BigDecimal
 import sun.util.locale.LanguageTag
 import wabi2b.grocery.listing.sdk.*
 
+import reactor.core.publisher.Mono
+
 import java.time.OffsetDateTime
 
 import static bff.model.SortInput.DESC
@@ -396,17 +398,31 @@ class GroceryListing {
 
     RedeemableCouponsResponse findRedeemableCoupons(RedeemableCouponsRequest input) {
         def country = JwtToken.countryFromString(input.accessToken)
-        def (customer, _) = getCustomerAndDeliveryAddress(input.accessToken)
+        def accessToken = new AccessTokenInput(accessToken:  input.accessToken)
+
+        def (customerAndDeliveryAddress, firstTimeOrdering) = Mono.zip(
+                Mono.just(getCustomerAndDeliveryAddress(input.accessToken)) as Mono<?>,
+                Mono.just(customerBridge.customerHasOrders(accessToken))
+        ).block()
+
+        def (customer, _) = customerAndDeliveryAddress
+
         def items = input.items.collect {
             new CartItem(it.productId.toString(), it.supplierId.toString(), it.quantity)
         }
-        def request =
+
+        def request = [
+                { CouponQueryRequest r -> if (firstTimeOrdering) r.forTheFirstTime() else r }
+        ].inject(
                 redeemableCouponsIn(country)
                         .availableOn(OffsetDateTime.now())
                         .forCustomer(*customer.dropRight(1))
                         .ordering(items.head(), asScala(items.tail()).toSeq())
                         .withTotalAmount(new BigDecimal(input.totalPrice))
-                        .sized(20)
+                        .sized(20),
+                { builder, filter -> filter(builder) }
+        )
+
         try {
             def response = sdk.query(request)
             return new RedeemableCouponsResponse(
