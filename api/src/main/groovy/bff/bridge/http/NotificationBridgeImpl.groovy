@@ -47,7 +47,8 @@ class NotificationBridgeImpl implements NotificationBridge {
     private NotificationMessage mapNotificationMessage(com.wabi2b.notifications.common.Message message) {
         return new NotificationMessage(
                 body: message.getBody(),
-                title: message.getTitle()
+                title: message.getTitle(),
+                logo: "https://www.wabi2b.com/assets/images/wabi2b/logo.svg"
         )
     }
 

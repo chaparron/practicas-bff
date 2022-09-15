@@ -332,4 +332,5 @@ class NotificationResult {
 class NotificationMessage {
     String body
     String title
+    String logo
 }
