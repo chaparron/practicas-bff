@@ -325,7 +325,7 @@ class NotificationResult {
     String creationDate
     Boolean isRead
     String templateId
-    Map<String, String> params
+    List<NotificationParams> params
     NotificationMessage message
 }
 
@@ -333,4 +333,9 @@ class NotificationMessage {
     String body
     String title
     String logo
+}
+
+class NotificationParams {
+    String key
+    String value
 }

@@ -5,7 +5,7 @@ import bff.model.NotificationResult
 import bff.model.ReadNotificationInput
 
 interface NotificationBridge {
-    List<NotificationResult> getAllNotifications(GetMyNotificationsInput input)
+    List<NotificationResult> getAllMyNotifications(GetMyNotificationsInput input)
 
     NotificationResult readNotification(ReadNotificationInput input)
 }

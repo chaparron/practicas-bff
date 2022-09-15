@@ -3,6 +3,7 @@ package bff.bridge.http
 import bff.bridge.NotificationBridge
 import bff.model.GetMyNotificationsInput
 import bff.model.NotificationMessage
+import bff.model.NotificationParams
 import bff.model.NotificationResult
 import bff.model.ReadNotificationInput
 import com.wabi2b.notifications.common.NotificationResponse
@@ -20,7 +21,7 @@ class NotificationBridgeImpl implements NotificationBridge {
     }
 
     @Override
-    List<NotificationResult> getAllNotifications(GetMyNotificationsInput input) {
+    List<NotificationResult> getAllMyNotifications(GetMyNotificationsInput input) {
         List<NotificationResponse> notifications = client.getAllNotifications(input.getPageSize(), input.getStartKey(), input.getToken())
         return notifications?.collect(){
             mapNotification(it)
@@ -39,9 +40,19 @@ class NotificationBridgeImpl implements NotificationBridge {
                 creationDate: notification.getCreationDate(),
                 isRead: notification.isRead(),
                 templateId: notification.getTemplateId(),
-                params: notification.getParams(),
+                params: toMap(notification.getParams()),
                 message: mapNotificationMessage(notification.getMessage())
         )
+    }
+
+    private List<NotificationParams> toMap(Map<String, String> params) {
+        List<NotificationParams> list = new ArrayList<NotificationParams>()
+
+        params.forEach{k, v ->
+            NotificationParams param = new NotificationParams(key: k, value: v)
+            list.add(param)
+        }
+        return list
     }
 
     private NotificationMessage mapNotificationMessage(com.wabi2b.notifications.common.Message message) {

@@ -386,12 +386,12 @@ class Query implements GraphQLQueryResolver {
         customerBridge.downloadPDFInvoice(downloadInvoiceInput)
     }
 
-    NotificationResponse readNotification(ReadNotificationInput input) {
+    NotificationResult readNotification(ReadNotificationInput input) {
         notificationBridge.readNotification(input)
     }
 
-    List<NotificationResponse> getAllMyNotifications(GetMyNotificationsInput input) {
-        notificationBridge.getAllNotifications(input)
+    List<NotificationResult> getAllMyNotifications(GetMyNotificationsInput input) {
+        notificationBridge.getAllMyNotifications(input)
     }
 }
 
