@@ -275,6 +275,37 @@ type User {
   trackingId: String!
 }
 
+input ReadNotificationInput {
+  notificationId: String
+  token: String
+}
+
+input GetMyNotificationsInput {
+  startKey: String
+  pageSize: String
+  token: String
+}
+
+type NotificationResponse {
+  id: String
+  url: String
+  creationDate: String
+  isRead: Boolean
+  templateId: String
+  params: [NotificationParams]
+  message: NotificationMessage
+}
+
+type NotificationMessage {
+  body: String
+  title: String
+  logo: String
+}
+
+type NotificationParams {
+  key: String
+  value: String
+}
 
 union ChangePasswordResult = ChangePasswordFailed | Void
 
