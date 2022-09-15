@@ -59,7 +59,7 @@ class NotificationBridgeImpl implements NotificationBridge {
         return new NotificationMessage(
                 body: message.getBody(),
                 title: message.getTitle(),
-                logo: "https://www.wabi2b.com/assets/images/wabi2b/logo.svg"
+                logo: message.getLogo()
         )
     }
 
