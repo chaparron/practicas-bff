@@ -21,6 +21,9 @@ class BridgeConfiguration {
     @Value('${phone.notifier.url}')
     String phone_notifier_url
 
+    @Value('${notifications.url}')
+    String notifications_url
+
     @Value('${marketing.bridge.url}')
     URI marketing_bridge_url
 
@@ -159,6 +162,11 @@ class BridgeConfiguration {
     @Bean
     PhoneNotifierBridge phoneNotifierBridge() {
         new PhoneNotifierBridgeImpl(phone_notifier_url)
+    }
+
+    @Bean
+    NotificationBridge notificationBridge() {
+        new NotificationBridgeImpl(notifications_url)
     }
 
     @Bean

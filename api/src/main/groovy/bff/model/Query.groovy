@@ -7,6 +7,7 @@ import bff.configuration.EntityNotFoundException
 import bff.model.order.ValidateOrderInputV2
 import bff.service.DeviceIdentifierService
 import com.coxautodev.graphql.tools.GraphQLQueryResolver
+import com.wabi2b.notifications.common.NotificationResponse
 import graphql.schema.DataFetchingEnvironment
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
@@ -47,6 +48,8 @@ class Query implements GraphQLQueryResolver {
     RecommendedOrderBridge recommendOrderBridge
     @Autowired
     PhoneNotifierBridge phoneNotifierBridge
+    @Autowired
+    NotificationBridge notificationBridge
     @Autowired
     GroceryListing groceryListing
 
@@ -379,9 +382,16 @@ class Query implements GraphQLQueryResolver {
         customerBridge.getLatestInvoices(getLatestInvoicesInput)
     }
 
-
     String downloadPDFInvoice(DownloadInvoiceInput downloadInvoiceInput) {
         customerBridge.downloadPDFInvoice(downloadInvoiceInput)
+    }
+
+    NotificationResponse readNotification(ReadNotificationInput input) {
+        notificationBridge.readNotification(input)
+    }
+
+    List<NotificationResponse> getAllMyNotifications(GetMyNotificationsInput input) {
+        notificationBridge.getAllNotifications(input)
     }
 }
 

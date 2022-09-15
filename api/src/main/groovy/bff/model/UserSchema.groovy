@@ -308,12 +308,28 @@ class PhoneInput {
     String phone
 }
 
+class GetMyNotificationsInput {
+    String startKey
+    String pageSize
+    String token
+}
 
+class ReadNotificationInput {
+    String notificationId
+    String token
+}
 
+class NotificationResult {
+    String id
+    String url
+    String creationDate
+    Boolean isRead
+    String templateId
+    Map<String, String> params
+    NotificationMessage message
+}
 
-
-
-
-
-
-
+class NotificationMessage {
+    String body
+    String title
+}
