@@ -399,7 +399,7 @@ class DigitalWalletBuilder extends PaymentDataBuilder {
 
     @Override
     protected PaymentMethod paymentMethod() {
-        new NetBanking()
+        new DigitalWallet()
     }
 
     @Override
