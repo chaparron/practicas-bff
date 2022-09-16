@@ -5,8 +5,9 @@ import bff.model.GetMyNotificationsInput
 import bff.model.NotificationMessage
 import bff.model.NotificationParams
 import bff.model.NotificationResult
+import bff.model.PaginatedNotificationResult
 import bff.model.ReadNotificationInput
-import com.wabi2b.notifications.common.NotificationResponse
+import com.wabi2b.notifications.common.PaginatedNotificationResponse
 import com.wabi2b.notifications.sdk.NotificationClient
 import com.wabi2b.notifications.sdk.NotificationHttpClient
 import groovy.util.logging.Slf4j
@@ -21,16 +22,17 @@ class NotificationBridgeImpl implements NotificationBridge {
     }
 
     @Override
-    List<NotificationResult> getAllMyNotifications(GetMyNotificationsInput input) {
-        List<NotificationResponse> notifications = client.getAllNotifications(input.getPageSize(), input.getStartKey(), input.getToken())
-        return notifications?.collect(){
+    PaginatedNotificationResult getAllMyNotifications(GetMyNotificationsInput input) {
+        PaginatedNotificationResponse notifications = client.getAllNotifications(input.getPageSize(), input.getStartKey(), input.getAccessToken())
+        List<NotificationResult> resultList = notifications.content?.collect() {
             mapNotification(it)
         }
+        return new PaginatedNotificationResult(cursor: notifications.cursor, content: resultList)
     }
 
     @Override
     NotificationResult readNotification(ReadNotificationInput input) {
-        return mapNotification(client.readNotification(input.getNotificationId(), input.getToken()))
+        return mapNotification(client.readNotification(input.getNotificationId(), input.getAccessToken()))
     }
 
     private NotificationResult mapNotification(com.wabi2b.notifications.common.NotificationResponse notification) {

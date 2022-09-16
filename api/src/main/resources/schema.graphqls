@@ -165,9 +165,9 @@ type Query {
 
   redeemableCoupons(request: RedeemableCouponsRequest!): RedeemableCouponsResponse
 
-  readNotification(input: ReadNotificationInput!): NotificationResponse
+  readNotification(input: ReadNotificationInput!): NotificationResult
 
-  getAllMyNotifications(input: GetMyNotificationsInput!): [NotificationResponse]
+  getAllMyNotifications(input: GetMyNotificationsInput!): PaginatedNotificationResult
 }
 
 type Mutation {

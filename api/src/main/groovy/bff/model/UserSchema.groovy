@@ -311,13 +311,19 @@ class PhoneInput {
 class GetMyNotificationsInput {
     String startKey
     String pageSize
-    String token
+    String accessToken
 }
 
 class ReadNotificationInput {
     String notificationId
-    String token
+    String accessToken
 }
+
+class PaginatedNotificationResult {
+    String cursor
+    List<NotificationResult> content
+}
+
 
 class NotificationResult {
     String id
