@@ -397,30 +397,9 @@ Resources:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-feature-flags-PrivateApiRootURL"
 
         - Namespace: aws:elasticbeanstalk:application:environment
-          OptionName: digital_payments_url
-          Value:
-            Fn::ImportValue: !Sub "${EnvironmentStackName}-digital-payments-ApiRootURL"
-
-        - Namespace: aws:elasticbeanstalk:application:environment
-          OptionName: bnpl_enabled_countries
-          Value: !FindInMap [ Config, !Ref EnvironmentStackName, BnplEnabledCountries ]
-
-        - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: external_orders_url
           Value:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-external-orders-ApiRootURL"
-
-        - Namespace: aws:elasticbeanstalk:application:environment
-          OptionName: upi_logo_id
-          Value: !FindInMap [ Config, !Ref EnvironmentStackName, UpiLogoId ]
-
-        - Namespace: aws:elasticbeanstalk:application:environment
-          OptionName: dp_logo_id
-          Value: !FindInMap [ Config, !Ref EnvironmentStackName, DpLogoId ]
-
-        - Namespace: aws:elasticbeanstalk:application:environment
-          OptionName: bnpl_logo_id
-          Value: !FindInMap [ Config, !Ref EnvironmentStackName, BnplLogoId ]
 
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: ssm
@@ -486,6 +465,43 @@ Resources:
       Type: String
       Value:
         Fn::ImportValue: !Sub "${EnvironmentStackName}-bnpl-credits-ApiRootURL"
+
+  DigitalPaymentsRestApiDnsParameter:
+    Type: "AWS::SSM::Parameter"
+    Properties:
+      Name: !Sub "/${EnvironmentStackName}/bff/digital.payments.url"
+      Type: String
+      Value:
+        Fn::ImportValue: !Sub "${EnvironmentStackName}-digital-payments-ApiRootURL"
+
+  BnplCreditsEnabledCountriesParameter:
+    Type: "AWS::SSM::Parameter"
+    Properties:
+      Name: !Sub "/${EnvironmentStackName}/bff/bnpl.enabled.countries"
+      Type: String
+      Value: !FindInMap [ Config, !Ref EnvironmentStackName, BnplEnabledCountries ]
+
+  UpiLogoIdParameter:
+    Type: "AWS::SSM::Parameter"
+    Properties:
+      Name: !Sub "/${EnvironmentStackName}/bff/upi.logo.id"
+      Type: String
+      Value: !FindInMap [ Config, !Ref EnvironmentStackName, UpiLogoId ]
+
+  DpLogoIdParameter:
+    Type: "AWS::SSM::Parameter"
+    Properties:
+      Name: !Sub "/${EnvironmentStackName}/bff/dp.logo.id"
+      Type: String
+      Value: !FindInMap [ Config, !Ref EnvironmentStackName, DpLogoId ]
+
+  BnplLogoIdParameter:
+    Type: "AWS::SSM::Parameter"
+    Properties:
+      Name: !Sub "/${EnvironmentStackName}/bff/bnpl.logo.id"
+      Type: String
+      Value: !FindInMap [ Config, !Ref EnvironmentStackName, BnplLogoId ]
+
 Outputs:
 
   Wabi2bCertificateOutput:
