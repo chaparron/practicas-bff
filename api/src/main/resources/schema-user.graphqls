@@ -276,14 +276,14 @@ type User {
 }
 
 input ReadNotificationInput {
-  notificationId: String
-  accessToken: String
+  notificationId: String!
+  accessToken: String!
 }
 
 input GetMyNotificationsInput {
-  startKey: String!
-  pageSize: String!
-  accessToken: String
+  startKey: String
+  pageSize: String
+  accessToken: String!
 }
 
 type PaginatedNotificationResult {
