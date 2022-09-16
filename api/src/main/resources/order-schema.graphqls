@@ -258,8 +258,9 @@ union SupportedPaymentProvider = JPMorganMainPaymentProvider | SupermoneyPayment
 interface ISupportedPaymentProvider {
   title(languageTag: String!): String!
   description(languageTag: String!): String!
-  avatar: String!
+  avatar: String! @deprecated(reason: "Use logo instead")
   poweredByLabel(languageTag: String!): String!
+  logo(size: PaymentProviderLogoSize): String!
 }
 
 type JPMorganMainPaymentProvider implements ISupportedPaymentProvider {
@@ -267,6 +268,7 @@ type JPMorganMainPaymentProvider implements ISupportedPaymentProvider {
   description(languageTag: String!): String!
   avatar: String!
   poweredByLabel(languageTag: String!): String!
+  logo(size: PaymentProviderLogoSize): String!
 }
 
 type SupermoneyPaymentProvider implements ISupportedPaymentProvider {
@@ -274,6 +276,7 @@ type SupermoneyPaymentProvider implements ISupportedPaymentProvider {
   description(languageTag: String!): String!
   avatar: String!
   poweredByLabel(languageTag: String!): String!
+  logo(size: PaymentProviderLogoSize): String!
 }
 
 type JPMorganUPIPaymentProvider implements ISupportedPaymentProvider {
@@ -281,6 +284,11 @@ type JPMorganUPIPaymentProvider implements ISupportedPaymentProvider {
   description(languageTag: String!): String!
   avatar: String!
   poweredByLabel(languageTag: String!): String!
+  logo(size: PaymentProviderLogoSize): String!
+}
+
+enum PaymentProviderLogoSize {
+  SIZE_30x20
 }
 
 type PaymentConfiguration {

@@ -25,6 +25,9 @@ Mappings:
       JwtSigningKeyId: "qa/jwt-signingKey"
       WabipayUrl: 'https://www-qa.wabipay.com/'
       BnplEnabledCountries: "in"
+      UpiLogoId: 'b47a777d-e6a4-4538-94f7-d7fe5d9ed38a.png'
+      DpLogoId: '6da1c9dc-cd9b-414a-b5b9-097945537b97.png'
+      BnplLogoId: '1bfd3538-1bd6-4f03-aba0-282c4b249ea6.png'
     prod:
       MinPoolSize: '2'
       MaxPoolSize: '4'
@@ -43,6 +46,9 @@ Mappings:
       JwtSigningKeyId: "prod/jwt-signingKey"
       WabipayUrl: 'https://www.wabipay.com/'
       BnplEnabledCountries: "in"
+      UpiLogoId: 'b47a777d-e6a4-4538-94f7-d7fe5d9ed38a.png'
+      DpLogoId: '6da1c9dc-cd9b-414a-b5b9-097945537b97.png'
+      BnplLogoId: '1bfd3538-1bd6-4f03-aba0-282c4b249ea6.png'
 
 Resources:
   Wabi2bCertificate:
@@ -408,6 +414,18 @@ Resources:
           OptionName: external_orders_url
           Value:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-external-orders-ApiRootURL"
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: upi_logo_id
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, UpiLogoId ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: dp_logo_id
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, DpLogoId ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: bnpl_logo_id
+          Value: !FindInMap [ Config, !Ref EnvironmentStackName, BnplLogoId ]
 
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile

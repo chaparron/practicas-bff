@@ -1,6 +1,7 @@
 package bff.model
 
 import bff.model.order.OrderInputV2
+import bff.service.ImageSizeEnum
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.Immutable
 import groovy.transform.InheritConstructors
@@ -737,6 +738,15 @@ class JPMorganUPIPaymentProvider extends SupportedPaymentProvider {
 enum PaymentProviderType {
     PAY_NOW,
     PAY_LATER
+}
+
+enum PaymentProviderLogoSize implements ImageSizeEnum{
+    SIZE_30x20
+
+    @Override
+    String value() {
+        name().substring("SIZE_".length())
+    }
 }
 
 class OrderSummaryResponse implements SummaryResult {
