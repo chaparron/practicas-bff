@@ -281,7 +281,7 @@ input ReadNotificationInput {
 }
 
 input GetMyNotificationsInput {
-  startKey: String
+  cursor: String
   pageSize: String
   accessToken: String!
 }

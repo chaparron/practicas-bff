@@ -309,7 +309,7 @@ class PhoneInput {
 }
 
 class GetMyNotificationsInput {
-    String startKey
+    String cursor
     String pageSize
     String accessToken
 }
