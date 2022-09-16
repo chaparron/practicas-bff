@@ -397,11 +397,6 @@ Resources:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-feature-flags-PrivateApiRootURL"
 
         - Namespace: aws:elasticbeanstalk:application:environment
-          OptionName: bnpl_credits_url
-          Value:
-            Fn::ImportValue: !Sub "${EnvironmentStackName}-bnpl-credits-ApiRootURL"
-
-        - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: digital_payments_url
           Value:
             Fn::ImportValue: !Sub "${EnvironmentStackName}-digital-payments-ApiRootURL"
