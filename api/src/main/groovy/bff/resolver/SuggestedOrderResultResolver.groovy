@@ -47,6 +47,7 @@ class SuggestedOrderResultResolver implements GraphQLResolver<SuggestedOrderResu
                 suggestedOrderProducts.add(
                         new SuggestedOrderProduct(
                                 id: productSearch.id,
+                                ean: productSearch.ean,
                                 name: productSearch.name,
                                 category: productSearch.category,
                                 brand: productSearch.brand,

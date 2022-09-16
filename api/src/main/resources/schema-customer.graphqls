@@ -422,6 +422,7 @@ type SuggestedOrderItem {
 
 type SuggestedOrderProduct {
   id: Long!
+  ean: String!
   name: String!
   category: Category!
   brand: Brand!

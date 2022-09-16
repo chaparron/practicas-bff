@@ -491,6 +491,7 @@ class SuggestedOrderItem {
 class SuggestedOrderProduct {
     Long id
     String name
+    String ean
     Category category
     Brand brand
     List<Image> images
