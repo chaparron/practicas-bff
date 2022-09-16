@@ -41,20 +41,22 @@ dependencies {
     compile "com.graphql-java-kickstart:graphql-spring-boot-starter:$graphQL"
     compile "com.graphql-java-kickstart:graphiql-spring-boot-starter:$graphQL"
 
-    compile 'com.newrelic.agent.java:newrelic-api:5.14.0'
-    compile 'com.pubnub:pubnub-gson:4.18.0'
-    compile 'org.codehaus.groovy:groovy-all'
-    compile 'org.springframework.boot:spring-boot-starter-web'
-    compile 'org.springframework.boot:spring-boot-starter-actuator'
-    compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
-    compile 'org.springframework.cloud:spring-cloud-starter-zipkin'
-    compile 'org.springframework.security.oauth:spring-security-oauth2:2.3.1.RELEASE'
+    compile "com.newrelic.agent.java:newrelic-api:5.14.0"
+    compile "com.pubnub:pubnub-gson:4.18.0"
+    compile "org.codehaus.groovy:groovy-all"
+    compile "org.springframework.boot:spring-boot-starter-web"
+    compile "org.springframework.boot:spring-boot-starter-actuator"
+    compile "org.springframework.cloud:spring-cloud-starter-sleuth"
+    compile "org.springframework.cloud:spring-cloud-starter-zipkin"
+    compile "org.springframework.security.oauth:spring-security-oauth2:2.3.1.RELEASE"
+    compile "org.springframework.cloud:spring-cloud-aws-parameter-store-config"
 
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
     implementation("com.amazonaws:aws-lambda-java-events:3.10.0")
     implementation("com.amazonaws:aws-java-sdk-sqs:1.12.112")
+    implementation('com.amazonaws:aws-java-sdk-core:1.12.300')
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.github.tomakehurst:wiremock:2.24.1'

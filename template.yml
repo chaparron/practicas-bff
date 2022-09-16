@@ -427,6 +427,10 @@ Resources:
           OptionName: bnpl_logo_id
           Value: !FindInMap [ Config, !Ref EnvironmentStackName, BnplLogoId ]
 
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: ssm
+          Value: !Sub "${EnvironmentStackName}"
+
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -480,6 +484,13 @@ Resources:
         - arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess
         - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
 
+  BnplCreditsRestApiDnsParameter:
+    Type: "AWS::SSM::Parameter"
+    Properties:
+      Name: !Sub "/${EnvironmentStackName}/bff/bnpl.credits.url"
+      Type: String
+      Value:
+        Fn::ImportValue: !Sub "${EnvironmentStackName}-bnpl-credits-ApiRootURL"
 Outputs:
 
   Wabi2bCertificateOutput:

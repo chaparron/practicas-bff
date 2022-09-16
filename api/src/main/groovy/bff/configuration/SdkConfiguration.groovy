@@ -150,6 +150,7 @@ class SdkConfiguration {
 
     @Bean
     BnPlSdk bnplSdk() {
+        log.info("configuring HttpBnPlSdk for $wabi2bBnplCreditsURI")
         return new HttpBnPlSdk(wabi2bBnplCreditsURI)
     }
 
