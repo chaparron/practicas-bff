@@ -390,7 +390,7 @@ class Query implements GraphQLQueryResolver {
         notificationBridge.readNotification(input)
     }
 
-    List<NotificationResult> getAllMyNotifications(GetMyNotificationsInput input) {
+    PaginatedNotificationResult getAllMyNotifications(GetMyNotificationsInput input) {
         notificationBridge.getAllMyNotifications(input)
     }
 }

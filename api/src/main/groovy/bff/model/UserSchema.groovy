@@ -324,7 +324,6 @@ class PaginatedNotificationResult {
     List<NotificationResult> content
 }
 
-
 class NotificationResult {
     String id
     String url
