@@ -344,3 +344,11 @@ class NotificationParams {
     String key
     String value
 }
+
+class UnreadNotificationsInput {
+    String accessToken
+}
+
+class UnreadNotificationsResult {
+    Boolean unread
+}

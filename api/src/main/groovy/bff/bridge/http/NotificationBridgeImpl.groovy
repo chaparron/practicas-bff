@@ -7,6 +7,8 @@ import bff.model.NotificationParams
 import bff.model.NotificationResult
 import bff.model.PaginatedNotificationResult
 import bff.model.ReadNotificationInput
+import bff.model.UnreadNotificationsInput
+import bff.model.UnreadNotificationsResult
 import com.wabi2b.notifications.common.PaginatedNotificationResponse
 import com.wabi2b.notifications.sdk.NotificationClient
 import com.wabi2b.notifications.sdk.NotificationHttpClient
@@ -33,6 +35,11 @@ class NotificationBridgeImpl implements NotificationBridge {
     @Override
     NotificationResult readNotification(ReadNotificationInput input) {
         return mapNotification(client.readNotification(input.getNotificationId(), input.getAccessToken()))
+    }
+
+    @Override
+    UnreadNotificationsResult unreadNotifications(UnreadNotificationsInput input) {
+        return UnreadNotificationsResult(unread: client.unreadNotification(input.getAccessToken()).unread)
     }
 
     private NotificationResult mapNotification(com.wabi2b.notifications.common.NotificationResponse notification) {

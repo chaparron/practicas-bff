@@ -312,6 +312,14 @@ type NotificationParams {
   value: String
 }
 
+input UnreadNotificationsInput {
+  accessToken: String!
+}
+
+type UnreadNotificationsResult {
+  unread: Boolean
+}
+
 union ChangePasswordResult = ChangePasswordFailed | Void
 
 union ConfirmPasswordResult = ConfirmPasswordFailed | Void

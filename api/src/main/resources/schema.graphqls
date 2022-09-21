@@ -168,6 +168,8 @@ type Query {
   readNotification(input: ReadNotificationInput!): NotificationResult
 
   getAllMyNotifications(input: GetMyNotificationsInput!): PaginatedNotificationResult
+
+  unreadNotifications(input: UnreadNotificationsInput!): UnreadNotificationsResult
 }
 
 type Mutation {
