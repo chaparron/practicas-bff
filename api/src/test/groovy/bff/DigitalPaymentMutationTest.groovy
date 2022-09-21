@@ -3,6 +3,7 @@ package bff
 import bff.model.CreateDigitalPaymentFailedReason
 import bff.model.DigitalPayment
 import bff.model.DigitalPaymentFailed
+import bff.model.DigitalPaymentFailedReason
 import bff.model.DigitalPaymentMutation
 import bff.model.JpMorganCreateDigitalPayment
 import digitalpayments.sdk.DigitalPaymentsSdk
@@ -69,7 +70,7 @@ class DigitalPaymentMutationTest {
                 anyCreateDigitalPaymentInput(supplierOrderId, amount, accessToken, invoiceId)
         ).get()
 
-        assert CreateDigitalPaymentFailedReason.SDK_ERROR.build() == actualResponse
+        assert DigitalPaymentFailedReason.UNKNOWN.build(sdkException.getError().getDetail()) == actualResponse
         verify(digitalPaymentSdk).createPayment(sdkRequest, accessToken)
     }
 
@@ -106,8 +107,8 @@ class DigitalPaymentMutationTest {
 
     @Test
     void 'should return sdk error when sdk fail on finalize payment'() {
-        def expectedResponse = new DigitalPaymentFailed()
         def sdkException = new CustomSdkException(new DetailedError(randomString(), randomString()))
+        def expectedResponse =  DigitalPaymentFailedReason.UNKNOWN.build(sdkException.getError().getDetail())
         def accessToken = validAccessToken()
         def encData = randomString()
         def sdkRequest = new UpdatePaymentRequest(encData)
@@ -117,7 +118,6 @@ class DigitalPaymentMutationTest {
         def actualResponse = sut.finalizeDigitalPayment(
                 anyFinalizeDigitalPaymentInput(encData, accessToken)
         ).get()
-
         assert expectedResponse == actualResponse
         verify(digitalPaymentSdk, times(1)).updatePayment(sdkRequest, accessToken)
     }
