@@ -105,7 +105,6 @@ class Main {
                 .add(FixedQuantityFreeProduct.class)
                 .add(MultipliedQuantityFreeProduct.class)
                 .add(JpMorganCreateDigitalPayment.class)
-                .add(CreateDigitalPaymentFailed.class)
                 .add(DigitalPayment.class)
                 .add(DigitalPaymentFailed.class)
                 .add(SimpleTextButton.class)

@@ -5,15 +5,7 @@ input CreateDigitalPaymentInput {
   invoiceId: String!
 }
 
-union CreateDigitalPaymentResult = JpMorganCreateDigitalPayment | CreateDigitalPaymentFailed
-
-type CreateDigitalPaymentFailed {
-  reason: CreateDigitalPaymentFailedReason!
-}
-
-enum CreateDigitalPaymentFailedReason {
-  GATEWAY_NOT_SUPPORTED, SDK_ERROR
-}
+union CreateDigitalPaymentResult = JpMorganCreateDigitalPayment | DigitalPaymentFailed
 
 type JpMorganCreateDigitalPayment {
   merchantId: String!

@@ -1,8 +1,6 @@
 package bff
 
-import bff.model.CreateDigitalPaymentFailedReason
 import bff.model.DigitalPayment
-import bff.model.DigitalPaymentFailed
 import bff.model.DigitalPaymentFailedReason
 import bff.model.DigitalPaymentMutation
 import bff.model.JpMorganCreateDigitalPayment

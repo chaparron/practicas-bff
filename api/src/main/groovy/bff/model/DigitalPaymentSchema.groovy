@@ -32,20 +32,6 @@ class JpMorganCreateDigitalPayment implements CreateDigitalPaymentResult {
 }
 
 @EqualsAndHashCode
-class CreateDigitalPaymentFailed implements CreateDigitalPaymentResult {
-    CreateDigitalPaymentFailedReason reason
-}
-
-enum CreateDigitalPaymentFailedReason {
-    GATEWAY_NOT_SUPPORTED,
-    SDK_ERROR
-
-    def build() {
-        new CreateDigitalPaymentFailed(reason: this)
-    }
-}
-
-@EqualsAndHashCode
 class FinalizeDigitalPaymentInput {
     String encData
     String accessToken
