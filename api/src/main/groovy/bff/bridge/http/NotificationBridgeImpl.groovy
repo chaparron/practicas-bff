@@ -39,7 +39,7 @@ class NotificationBridgeImpl implements NotificationBridge {
 
     @Override
     UnreadNotificationsResult unreadNotifications(UnreadNotificationsInput input) {
-        return UnreadNotificationsResult(unread: client.unreadNotification(input.getAccessToken()).unread)
+        return new UnreadNotificationsResult(unread: client.unreadNotification(input.getAccessToken()).unread)
     }
 
     private NotificationResult mapNotification(com.wabi2b.notifications.common.NotificationResponse notification) {
