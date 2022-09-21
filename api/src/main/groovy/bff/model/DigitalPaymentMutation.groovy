@@ -23,7 +23,7 @@ class DigitalPaymentMutation implements GraphQLMutationResolver {
                     JpMorganCreateDigitalPayment.fromSdk(response)
                 }
                 .onErrorResume(CustomSdkException) {
-                    Mono.just(CreateDigitalPaymentFailedReason.SDK_ERROR.build())
+                    Mono.just(DigitalPaymentFailedReason.findByName(it.error.reason).build(it.error.detail))
                 }
                 .toFuture()
     }
@@ -35,7 +35,7 @@ class DigitalPaymentMutation implements GraphQLMutationResolver {
                     DigitalPayment.fromSdk(response)
                 }
                 .onErrorResume(CustomSdkException) {
-                    Mono.just(new DigitalPaymentFailed())
+                    Mono.just(DigitalPaymentFailedReason.findByName(it.error.reason).build(it.error.detail))
                 }
                 .toFuture()
 

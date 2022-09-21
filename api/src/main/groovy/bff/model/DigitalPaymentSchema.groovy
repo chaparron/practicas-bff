@@ -60,7 +60,7 @@ class DigitalPaymentFailed implements FinalizeDigitalPaymentResult {
 }
 
 @EqualsAndHashCode
-class DigitalPayment  implements FinalizeDigitalPaymentResult{
+class DigitalPayment implements FinalizeDigitalPaymentResult {
     String paymentId
     String supplierOrderId
     String amount
@@ -75,5 +75,28 @@ class DigitalPayment  implements FinalizeDigitalPaymentResult{
                 responseCode: response.responseCode,
                 message: response.message
         )
+    }
+
+}
+
+
+enum DigitalPaymentFailedReason {
+
+    FUNCTIONALITY_NOT_AVAILABLE,
+    CLIENT_TOKEN_EXCEPTION,
+    MISSING_FIELD_EXCEPTION,
+    MISSING_ENC_DATA_EXCEPTION,
+    UPDATE_PAYMENT_EXCEPTION,
+    PAYMENT_NOT_FOUND_EXCEPTION,
+    UNKNOWN,
+    TOTAL_AMOUNT_REACHED,
+    SUPPLIER_ORDER_NOT_FOUND;
+
+    static DigitalPaymentFailedReason findByName(String name) {
+        Optional.ofNullable(values().find { it.name() == name }).orElse(UNKNOWN)
+    }
+
+    def build(String message) {
+        new DigitalPaymentFailed(responseCode: this, message: message)
     }
 }
