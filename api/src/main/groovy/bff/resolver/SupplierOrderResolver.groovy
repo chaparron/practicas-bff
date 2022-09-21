@@ -8,6 +8,7 @@ import bff.service.bnpl.BnplProvidersService
 import com.coxautodev.graphql.tools.GraphQLResolver
 import digitalpayments.sdk.model.Provider
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import wabi2b.payments.common.model.request.GetSupplierOrderPaymentRequest
 import wabi2b.payments.common.model.response.GetSupplierOrderPaymentResponse
@@ -34,6 +35,9 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
 
     @Autowired
     private BnplBridge bnplBridge
+
+    @Value('${bnpl.enabled.countries:[]}')
+    private List<String> enabledCountries
 
     Supplier supplier(SupplierOrder supplierOrder) {
         supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
@@ -130,7 +134,7 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
 
     SimpleTextButton payLaterButton(SupplierOrder supplierOrder) {
         def countryId = JwtToken.countryFromString(supplierOrder.accessToken)
-        def minAllowedBySM = bnplBridge.supportedMinimumAmount(countryId, supplierOrder.accessToken).amount
+        def minAllowedBySM = enabledCountries.contains(countryId) ? bnplBridge.supportedMinimumAmount(countryId, supplierOrder.accessToken).amount : BigDecimal.ZERO
         def textKey = "bnpl.textButton"
 
         if (checkHiddenPaymentButtonCreation(supplierOrder, minAllowedBySM)) {

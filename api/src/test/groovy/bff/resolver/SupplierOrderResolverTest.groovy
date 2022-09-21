@@ -41,6 +41,8 @@ class SupplierOrderResolverTest {
 
     private PAYMENT_BUTTON_PREFIX = "payment."
 
+    private final def enabledCountries = ["in", "ar"]
+
     @Before
     void setup() {
         sut = new SupplierOrderResolver(
@@ -48,7 +50,8 @@ class SupplierOrderResolverTest {
                 digitalPaymentsBridge: digitalPaymentsBridge,
                 bnplProvidersService: bnplProvidersService,
                 paymentsBridge: paymentBridge,
-                bnplBridge: bnplBridge
+                bnplBridge: bnplBridge,
+                enabledCountries: enabledCountries
         )
     }
 
@@ -467,10 +470,28 @@ class SupplierOrderResolverTest {
     @Test
     void 'payLaterButton should return a disabled SimpleTextButton when customer available credit does not reach minimum allowed'() {
         def response = new GetSupplierOrderPaymentResponse(BigDecimal.valueOf(40), new BigDecimal("0"), [])
-        def supplierOrder = givenPayableOrder(response, true, true, BigDecimal.valueOf(20), SupplierOrderStatus.CONFIRMED)
+        def supplierOrder = givenPayableOrder(response,true,true, BigDecimal.valueOf(20), SupplierOrderStatus.CONFIRMED)
 
         def result = sut.payLaterButton(supplierOrder)
         assert result.behavior == SimpleTextButtonBehavior.DISABLE
+    }
+
+    @Test
+    void 'payLaterButton should return a hidden SimpleTextButton when supplier order country is not supported'() {
+        def response = new GetSupplierOrderPaymentResponse(BigDecimal.valueOf(20), new BigDecimal("0"), [])
+        def russianToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJyb21hbi1wcm9rQHlhbmRleC5ydSIsInNjb3BlIjpbImFsbCJdLCJ0b3MiOnsidXNlciI6eyJpZCI6MjQ1NywidXNlcm5hbWUiOm51bGwsImZpcnN0TmFtZSI6bnVsbCwibGFzdE5hbWUiOm51bGwsInBob25lIjpudWxsLCJjcmVkZW50aWFscyI6bnVsbCwicHJvZmlsZXMiOm51bGwsImNvdW50cmllcyI6bnVsbCwiY3JlYXRlZCI6bnVsbCwiYWNjZXB0V2hhdHNBcHAiOnRydWV9LCJhY2NlcHRlZCI6MTYxMzgwOTkwOTAwMH0sImVudGl0eUlkIjoiMTU1ODUiLCJzdGF0ZSI6bnVsbCwiZXhwIjoxNjIwOTU3NTE3LCJ1c2VyIjp7ImlkIjoyNDU3LCJ1c2VybmFtZSI6InJvbWFuLXByb2tAeWFuZGV4LnJ1IiwicHJvZmlsZXMiOlt7ImlkIjo4LCJuYW1lIjoiRkVfQ1VTVE9NRVIiLCJhdXRob3JpdGllcyI6bnVsbH1dLCJmaXJzdE5hbWUiOiLQotC10YHRgiIsImxhc3ROYW1lIjoi0KLQtdGB0YLQvtCy0YvQuSIsImNvdW50cmllcyI6W3siaWQiOiJydSIsIm5hbWUiOiJSdXNpYSJ9XX0sImF1dGhvcml0aWVzIjpbIkZFX1dFQiJdLCJqdGkiOiI0YTA2YjU0MS1hODhhLTRkMTMtODU4MS1kYjc1OTAzNWIxZGEiLCJjbGllbnRfaWQiOiJpbnRlcm5hbF9hcGkifQ.XN1Uuy89PYEcxxTSWvrvKe0VH5yPV16clwWl6llx2WM"
+        def supplier = anySupplier()
+        def supplierOrder = anySupplierOrder()
+        supplierOrder.accessToken = russianToken
+        supplierOrder.status = SupplierOrderStatus.CONFIRMED
+        supplierOrder.total = response.totalAmount
+
+        when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(supplier)
+        when(bnplBridge.supportedMinimumAmount(any(), any())).thenReturn(new SupportedMinimumAmountResponse(BigDecimal.TEN, "in"))
+        when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([])
+
+        def result = sut.payLaterButton(supplierOrder)
+        assert result.behavior == SimpleTextButtonBehavior.HIDDEN
     }
 
 }
