@@ -19,7 +19,7 @@ dependencies {
     implementation "wabi2b.sdk:grocery-listing:1253-df1df26a3420de72005f7cef8409140996c6986f"
     implementation "wabi2b.sdk:supplier-credits:10013-5b3ebcb2efd390ddb0fffcc003762f30b7f16055"
     implementation "wabi2b.sdk:cms:1132-52df12077acd9999ee4d1b915b3e700550e73d5c"
-    implementation "wabi2b:regional-config:1008-9deba33f39ada9e816711a9cbf9fdd88a75b9a9f"
+    implementation "wabi2b:regional-config:1009-548778e508e256f16446721342ea7035a8fced20"
     implementation "com.wabi2b:phone-notifier-sdk:10144-76744096d3a1c81c01910dfeb44eff235aa2f690"
     implementation "com.wabi2b:notifications-sdk:1035-c5d514c1dd9e9586e2e6f644304fea43ccb0ff1b"
     implementation "wabi2b.sdk:wabi2b-api-sdk:1959-e12cbc005dc532f26157749159e9835369511a45"
