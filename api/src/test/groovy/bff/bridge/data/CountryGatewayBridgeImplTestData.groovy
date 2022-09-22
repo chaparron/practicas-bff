@@ -8,8 +8,10 @@ import wabi2b.sdk.regional.FeeConfiguration
 import wabi2b.sdk.regional.Geolocation
 import wabi2b.sdk.regional.KeyValueResponse
 import wabi2b.sdk.regional.Language
+import wabi2b.sdk.regional.LegalDocumentFile
 import wabi2b.sdk.regional.LegalDocumentInformation
 import wabi2b.sdk.regional.LegalLink
+import wabi2b.sdk.regional.ShoppingConfiguration
 import wabi2b.sdk.regional.Translation
 import wabi2b.sdk.regional.WabipayConfiguration
 
@@ -38,7 +40,7 @@ abstract class CountryGatewayBridgeImplTestData {
                             "CUIT",
                             "999999999999",
                             "^\\\\d{1,12}\$",
-                            []
+                            [new LegalDocumentFile("legalIdFront", "Imagen DNI (frente)")]
                     ),
                     new FeeConfiguration("WABICREDITS_PERCENTAGE", 1),
                     new Language(
@@ -48,7 +50,8 @@ abstract class CountryGatewayBridgeImplTestData {
                             [new Translation("en", "Spain")]
                     ),
                     new WabipayConfiguration(true, true, true),
-                    new Geolocation(new Double(-38.416097), new Double(-63.616672))
+                    new Geolocation(new Double(-38.416097), new Double(-63.616672)),
+                    new ShoppingConfiguration(true)
             )
 
     protected static Country regionalCountryAr =
@@ -65,7 +68,7 @@ abstract class CountryGatewayBridgeImplTestData {
                             "CUIT",
                             "999999999999",
                             "^\\\\d{1,12}\$",
-                            []
+                            [new LegalDocumentFile("legalIdFront", "Imagen DNI (frente)")]
                     ),
                     new FeeConfiguration("WABICREDITS_PERCENTAGE", 1),
                     new Language(
@@ -75,7 +78,8 @@ abstract class CountryGatewayBridgeImplTestData {
                             [new Translation("en", "Argentina")]
                     ),
                     new WabipayConfiguration(true, true, true),
-                    new Geolocation(new Double(-38.416097), new Double(-63.616672))
+                    new Geolocation(new Double(-38.416097), new Double(-63.616672)),
+                    new ShoppingConfiguration(true)
             )
 
     protected static List<Country> homeCountriesResponse =
@@ -97,7 +101,7 @@ abstract class CountryGatewayBridgeImplTestData {
                                     new LegalLink("operation.com", "operation"),
                                     new LegalLink("complaint.com", "complaint")
                             ],
-                            new LegalDocumentInformation("TIN", "D*", "^[a-zA-Z0-9]*\$", []),
+                            new LegalDocumentInformation("TIN", "D*", "^[a-zA-Z0-9]*\$", [new LegalDocumentFile("legalIdFront", "Imagen DNI (frente)")]),
                             new FeeConfiguration("xxx", 1),
                             new Language("xxx", "xxx", "xxx",
                                     [
@@ -107,7 +111,8 @@ abstract class CountryGatewayBridgeImplTestData {
                                     ]
                             ),
                             new WabipayConfiguration(true, true, true),
-                            new Geolocation(new Double(-38.416097), new Double(-63.616672))
+                            new Geolocation(new Double(-38.416097), new Double(-63.616672)),
+                            new ShoppingConfiguration(true)
                     ),
                     new Country(
                             "ph",
@@ -118,7 +123,7 @@ abstract class CountryGatewayBridgeImplTestData {
                             "xxx",
                             "xxx",
                             [new LegalLink("tyc.com", "tyc")],
-                            new LegalDocumentInformation("TIN", "000000009999", "^\\d{8,12}\$", []),
+                            new LegalDocumentInformation("TIN", "000000009999", "^\\d{8,12}\$", [new LegalDocumentFile("legalIdFront", "Imagen DNI (frente)")]),
                             new FeeConfiguration("xxx", 1),
                             new Language("xxx", "xxx", "xxx",
                                     [
@@ -128,7 +133,8 @@ abstract class CountryGatewayBridgeImplTestData {
                                     ]
                             ),
                             new WabipayConfiguration(true, true, true),
-                            new Geolocation(new Double(-38.416097), new Double(-63.616672))
+                            new Geolocation(new Double(-38.416097), new Double(-63.616672)),
+                            new ShoppingConfiguration(true)
                     ),
                     new Country(
                             "ma",
@@ -139,7 +145,7 @@ abstract class CountryGatewayBridgeImplTestData {
                             "xxx",
                             "xxx",
                             [],
-                            new LegalDocumentInformation("ICE", "000000000000000", "^\\d{15}\$", []),
+                            new LegalDocumentInformation("ICE", "000000000000000", "^\\d{15}\$", [new LegalDocumentFile("legalIdFront", "Imagen DNI (frente)")]),
                             new FeeConfiguration("xxx", 1),
                             new Language("xxx", "xxx", "xxx",
                                     [
@@ -149,7 +155,8 @@ abstract class CountryGatewayBridgeImplTestData {
                                     ]
                             ),
                             new WabipayConfiguration(true, true, true),
-                            new Geolocation(new Double(-38.416097), new Double(-63.616672))
+                            new Geolocation(new Double(-38.416097), new Double(-63.616672)),
+                            new ShoppingConfiguration(true)
                     )
             ]
 
@@ -163,7 +170,7 @@ abstract class CountryGatewayBridgeImplTestData {
                     "xxx",
                     "+7",
                     [new LegalLink("xxx", "xxx")],
-                    new LegalDocumentInformation("xxx", "xxx", "xxx", []),
+                    new LegalDocumentInformation("xxx", "xxx", "xxx", [new LegalDocumentFile("legalIdFront", "Imagen DNI (frente)")]),
                     new FeeConfiguration("WABICREDITS_PERCENTAGE", 1),
                     new Language("xxx", "ru-RU", "xxx",
                             [
@@ -178,6 +185,7 @@ abstract class CountryGatewayBridgeImplTestData {
                             ]
                     ),
                     new WabipayConfiguration(true, true, true),
-                    new Geolocation(new Double(-38.416097), new Double(-63.616672))
+                    new Geolocation(new Double(-38.416097), new Double(-63.616672)),
+                    new ShoppingConfiguration(true)
             )
 }

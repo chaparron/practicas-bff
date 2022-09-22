@@ -71,8 +71,13 @@ class LegalDocumentInformation {
     String id
     String mask
     String maskRegex
+    List<LegalDocumentFile> legalDocumentFiles
 }
 
+class LegalDocumentFile{
+    String id
+    String label
+}
 class LegalUrl {
     LegalUrlType type
     String value

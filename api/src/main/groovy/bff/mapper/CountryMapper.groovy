@@ -111,7 +111,7 @@ class CountryMapper {
         )
     }
 
-    private static Geolocation buildGeolocation(wabi2b.sdk.regional.Geolocation geoLocation){
+    private static Geolocation buildGeolocation(wabi2b.sdk.regional.Geolocation geoLocation) {
         return new Geolocation(lat: geoLocation.lat, lng: geoLocation.lng)
     }
 
@@ -125,8 +125,15 @@ class CountryMapper {
         return new LegalDocumentInformation(
                 id: legalDocumentInformation.id,
                 mask: legalDocumentInformation.mask,
-                maskRegex: legalDocumentInformation.maskRegex
+                maskRegex: legalDocumentInformation.maskRegex,
+                legalDocumentFiles: buildLegalDocumentFiles(legalDocumentInformation.files)
         )
+    }
+
+    private static List<LegalDocumentFile> buildLegalDocumentFiles(List<wabi2b.sdk.regional.LegalDocumentFile> files) {
+        files.collect {
+            new LegalDocumentFile(id: it.id, label: it.name)
+        }
     }
 
     def private buildLegalUrls(String languageTag, List<LegalLink> legalLinks) {

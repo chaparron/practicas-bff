@@ -75,6 +75,11 @@ type LegalDocumentInformation{
   id:String!
   mask:String!
   maskRegex:String!
+  legalDocumentFiles: [LegalDocumentFile!]
+}
+type LegalDocumentFile{
+  id: String!
+  label: String!
 }
 
 type Geolocation{
