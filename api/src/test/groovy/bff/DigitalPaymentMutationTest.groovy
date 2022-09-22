@@ -36,17 +36,16 @@ class DigitalPaymentMutationTest {
         def supplierOrderId = randomLong()
         def amount = randomBigDecimal()
         def invoiceId = randomString()
-        def supplierId = randomLong()
         def accessToken = validAccessToken()
         def sdkResponse = anyCreatePaymentResponse()
-        def sdkRequest = new CreatePaymentRequest(supplierOrderId, amount, invoiceId, supplierId)
+        def sdkRequest = new CreatePaymentRequest(supplierOrderId, amount, invoiceId)
 
         def expectedResponse = JpMorganCreateDigitalPayment.fromSdk(sdkResponse)
 
         when(digitalPaymentSdk.createPayment(sdkRequest, accessToken)).thenReturn(Mono.just(sdkResponse))
 
         def actualResponse = sut.createDigitalPayment(
-                anyCreateDigitalPaymentInput(supplierOrderId, amount, accessToken, invoiceId, supplierId)
+                anyCreateDigitalPaymentInput(supplierOrderId, amount, accessToken, invoiceId)
         ).get()
 
         assert expectedResponse == actualResponse
@@ -58,16 +57,15 @@ class DigitalPaymentMutationTest {
         def supplierOrderId = randomLong()
         def amount = randomBigDecimal()
         def invoiceId = randomString()
-        def supplierId = randomLong()
         def accessToken = validAccessToken()
-        def sdkRequest = new CreatePaymentRequest(supplierOrderId, amount, invoiceId, supplierId)
+        def sdkRequest = new CreatePaymentRequest(supplierOrderId, amount, invoiceId)
 
         def sdkException = new CustomSdkException(new DetailedError(randomString(), randomString()))
 
         when(digitalPaymentSdk.createPayment(sdkRequest, accessToken)).thenReturn(Mono.error(sdkException))
 
         def actualResponse = sut.createDigitalPayment(
-                anyCreateDigitalPaymentInput(supplierOrderId, amount, accessToken, invoiceId, supplierId)
+                anyCreateDigitalPaymentInput(supplierOrderId, amount, accessToken, invoiceId)
         ).get()
 
         assert DigitalPaymentFailedReason.UNKNOWN.build(sdkException.getError().getDetail()) == actualResponse
