@@ -332,7 +332,7 @@ Resources:
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: notifications_url
           Value:
-            Fn::ImportValue: !Sub "${EnvironmentStackName}-phoneNotifier-ApiRootURL"
+            Fn::ImportValue: !Sub "${EnvironmentStackName}-notifications-ApiRootURL"
 
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: marketing_bridge_url
