@@ -9,6 +9,7 @@ class CreateDigitalPaymentInput {
     Long supplierOrderId
     BigDecimal amount
     String invoiceId
+    Long supplierId
 }
 
 interface CreateDigitalPaymentResult {}
