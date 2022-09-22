@@ -4,15 +4,15 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.web.client.RestTemplate
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 
 @RunWith(SpringRunner)
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = [
-        "api.root=http://localhost","feature.flags.url=http://localhost","bnpl.enabled.countries=http://localhost","regional.config.url=http://localhost","payments.url=http://localhost"
-])
+@SpringBootTest(webEnvironment = RANDOM_PORT)
+@ActiveProfiles("integration")
 class ApplicationTest {
 
     @LocalServerPort
