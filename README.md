@@ -1,6 +1,18 @@
 ## Configuration for running bff on localhost
 
 Edit Configurations for bff.Main </br>
-Environment Variables:
+Program Arguments:
 ```
-api.root=https://api-qa.wabi2b.com;feature.flags.url=https://78qpszqz2i.execute-api.eu-central-1.amazonaws.com/qa;regional.config.url=https://rd4gv4bb0a.execute-api.eu-central-1.amazonaws.com/qa;server.port=8082 ;bnpl.credits.url=https://h5etldqc7e.execute-api.eu-central-1.amazonaws.com/qa;payments.url=https://3w0eckbjoc.execute-api.eu-central-1.amazonaws.com/qa;digital.payments.url=https://rrucojpzv0.execute-api.eu-central-1.amazonaws.com/qa```
+--server.port=8082
+--ssm=local
+--spring.profiles.active=localstack,qa
+```
+### start localstack
+```bash
+$ docker compose up &
+```
+In case you want to use parameter store locally to add a property
+```bash
+AWS_PROFILE=local aws ssm put-parameter --name "/local/bff/<name of the property as you put it in @Value>" --value "true" --type "String" --region us-west-2 --endpoint-url=http://localhost:4566
+```
+###` stop localstack
