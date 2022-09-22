@@ -1,16 +1,21 @@
 package bff.resolver
 
+import bff.bridge.BnplBridge
 import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.ThirdPartyBridge
 import bff.model.*
 import bff.service.bnpl.BnplProvidersService
 import com.coxautodev.graphql.tools.GraphQLResolver
+import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.AutoConfigureOrder
 import org.springframework.stereotype.Component
+import wabi.sdk.impl.CustomSdkException
 import wabi2b.sdk.featureflags.FeatureFlagsSdk
 
 @Component
+@Slf4j
 class CustomerResolver implements GraphQLResolver<Customer> {
 
     @Autowired
@@ -23,6 +28,8 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     FeatureFlagsSdk featureFlagsSdk
     @Autowired
     BnplProvidersService bnplProvidersService
+    @AutoConfigureOrder
+    BnplBridge bnplBridge
 
     List<VerificationDocument> verificationDocuments(Customer customer) {
         customer.verificationDocuments ?: customerBridge.findVerificationDocs(customer.accessToken)
@@ -53,9 +60,15 @@ class CustomerResolver implements GraphQLResolver<Customer> {
         }
 
         if(featureFlagsSdk.isActiveForCountry("BNPL_FEATURE_FLAG", customer.country_id)){
-            if (bnplProvidersService.currentUserHasBnplWallet(customer.accessToken)){
-                ps.push(new ProfileSection(id: "CREDIT_LINES"))
+            try {
+                bnplBridge.userBalance(customer.accessToken)
+                if (bnplProvidersService.currentUserHasBnplWallet(customer.accessToken)){
+                    ps.push(new ProfileSection(id: "CREDIT_LINES"))
+                }
+            } catch(CustomSdkException e) {
+                log.trace("Exception has been captured from bnpl getCustomerStatus", e)
             }
+
         }
 
         if(featureFlagsSdk.isActiveForCountry("BRANCHES_FUNCTION", customer.country_id)
