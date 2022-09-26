@@ -152,7 +152,8 @@ input SignedChallengeAnswer {
 
 enum ChannelType {
   SMS,
-  WHATSAPP
+  WHATSAPP,
+  ZALO
 }
 
 input PhoneInput {
