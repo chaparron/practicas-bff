@@ -26,4 +26,8 @@ class BrandResolver implements GraphQLResolver<Brand> {
                 .orElse(null)
     }
 
+    Boolean discount(Brand brand) {
+        brand.discount.orElse(null)
+    }
+
 }

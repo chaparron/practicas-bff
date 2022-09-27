@@ -393,7 +393,8 @@ class Cms {
             new Brand(
                     id: brand.id().toLong(),
                     name: brand.name().defaultEntry(),
-                    logo: toJava(brand.logo()).orElse(null)
+                    logo: toJava(brand.logo()).orElse(null),
+                    discount: toJava(brand.discount()).map { it as Boolean }
             )
         }
 
@@ -401,7 +402,8 @@ class Cms {
             new PreviewSupplier(
                     id: supplier.id().toLong(),
                     name: supplier.name(),
-                    avatar: toJava(supplier.avatar()).orElse(null)
+                    avatar: toJava(supplier.avatar()).orElse(null),
+                    discount: toJava(supplier.discount()).map { it as Boolean }
             )
         }
 

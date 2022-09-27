@@ -8,6 +8,7 @@ type Brand {
     enabled: Boolean
     logo(size: BrandLogoSize): String
     country_id: String
+    discount: Boolean
 }
 
 

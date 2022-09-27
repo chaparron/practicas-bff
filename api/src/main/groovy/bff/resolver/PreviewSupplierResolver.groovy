@@ -1,6 +1,5 @@
 package bff.resolver
 
-
 import bff.model.PreviewSupplier
 import bff.model.SupplierAvatarSize
 import bff.service.ImageService
@@ -24,6 +23,10 @@ class PreviewSupplierResolver implements GraphQLResolver<PreviewSupplier> {
                     ofNullable(size).map { imageService.url(avatar, it) }.orElse(avatar)
                 }
                 .orElse(null)
+    }
+
+    Boolean discount(PreviewSupplier supplier) {
+        supplier.discount.orElse(null)
     }
 
 }
