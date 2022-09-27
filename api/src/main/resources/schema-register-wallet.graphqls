@@ -1,0 +1,32 @@
+extend type Mutation {
+  registerPayLaterWallets(input: RegisterPayLaterWalletInput!) : RegisterPayLaterResponse
+  registerPayLaterSupplierWallets(input:RegisterPayLaterSupplierWalletInput!): RegisterPayLaterResponse
+}
+
+input RegisterPayLaterWalletInput {
+  apiClientToken: String!
+  walletRequests: [RegisterPayLaterWalletRequestInput]!
+}
+
+input RegisterPayLaterWalletRequestInput{
+  userId:String!
+  walletId:String!
+}
+
+input RegisterPayLaterSupplierWalletInput {
+  apiClientToken: String!
+  walletRequests: [RegisterPayLaterWalletRequestInput]!
+}
+
+input RegisterPayLaterSupplierWalletRequestInput{
+  supplierId:String!
+  walletId:String!
+}
+
+union RegisterPayLaterResponse = RegisterPayLaterFailure
+
+type RegisterPayLaterFailure{
+  reason:String!
+}
+
+
