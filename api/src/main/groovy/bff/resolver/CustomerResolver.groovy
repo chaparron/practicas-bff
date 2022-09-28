@@ -64,7 +64,7 @@ class CustomerResolver implements GraphQLResolver<Customer> {
                 if (bnplProvidersService.currentUserHasBnplWallet(customer.accessToken)){
                     ps.push(new ProfileSection(id: "CREDIT_LINES"))
                 }
-            } catch(CustomSdkException e) {
+            } catch(Exception e) {
                 log.trace("Exception has been captured from bnpl getCustomerStatus", e)
             }
 
