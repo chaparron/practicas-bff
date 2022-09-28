@@ -2,7 +2,7 @@ package bff
 
 import bff.configuration.BridgeRestTemplateResponseErrorHandler
 import bff.model.*
-import bff.mutation.wallet.result.RegisterPayLaterFailure
+import bff.mutation.wallet.result.WalletPayLaterFailure
 import com.coxautodev.graphql.tools.SchemaParserDictionary
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration
@@ -121,7 +121,7 @@ class Main {
                 .add(DigitalWallet.class)
                 .add(BuyNowPayLaterPaymentMethod.class)
                 .add(DefaultPaymentMethod.class)
-                .add(RegisterPayLaterFailure.class)
+                .add(WalletPayLaterFailure.class)
     }
 
     /**

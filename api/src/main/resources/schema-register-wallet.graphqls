@@ -1,6 +1,8 @@
 extend type Mutation {
   registerPayLaterWallets(input: RegisterPayLaterWalletInput!) : RegisterPayLaterResponse
   registerPayLaterSupplierWallets(input:RegisterPayLaterSupplierWalletInput!): RegisterPayLaterResponse
+  unlinkPayLaterWallet(input: UnlinkPayLaterWalletInput!) : RegisterPayLaterResponse
+  unlinkPayLaterSupplierWallet(input: UnlinkPayLaterSupplierWalletInput!): RegisterPayLaterResponse
 }
 
 input RegisterPayLaterWalletInput {
@@ -23,9 +25,20 @@ input RegisterPayLaterSupplierWalletRequestInput{
   walletId:String!
 }
 
-union RegisterPayLaterResponse = RegisterPayLaterFailure
+input UnlinkPayLaterWalletInput {
+  apiClientToken: String!
+  customerId: Long!
+}
 
-type RegisterPayLaterFailure{
+
+input UnlinkPayLaterSupplierWalletInput {
+  apiClientToken: String!
+  supplierId: Long!
+}
+
+union RegisterPayLaterResponse = WalletPayLaterFailure
+
+type WalletPayLaterFailure{
   reason:String!
 }
 

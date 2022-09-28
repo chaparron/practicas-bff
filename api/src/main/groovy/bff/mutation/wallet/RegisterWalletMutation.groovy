@@ -2,8 +2,11 @@ package bff.mutation.wallet
 
 import bff.mutation.wallet.input.RegisterPayLaterSupplierWalletInput
 import bff.mutation.wallet.input.RegisterPayLaterWalletInput
-import bff.mutation.wallet.result.RegisterPayLaterFailure
+import bff.mutation.wallet.input.UnlinkPayLaterSupplierWalletInput
+import bff.mutation.wallet.input.UnlinkPayLaterWalletInput
+import bff.mutation.wallet.result.WalletPayLaterFailure
 import bff.mutation.wallet.result.RegisterPayLaterResponse
+
 import com.coxautodev.graphql.tools.GraphQLMutationResolver
 import groovy.util.logging.Slf4j
 import org.springframework.stereotype.Component
@@ -24,7 +27,7 @@ class RegisterWalletMutation implements GraphQLMutationResolver {
             adminWalletSdk.registerPayLaterWallet(input.walletRequests, input.apiClientToken)
         } catch (Exception ex) {
             log.error(ex.getMessage())
-            new RegisterPayLaterFailure(reason: ex.getMessage())
+            new WalletPayLaterFailure(reason: ex.getMessage())
         }
     }
 
@@ -33,7 +36,25 @@ class RegisterWalletMutation implements GraphQLMutationResolver {
             adminWalletSdk.registerPayLaterSupplierWallet(input.walletSupplierRequests, input.apiClientToken)
         } catch (Exception ex) {
             log.error(ex.getMessage())
-            new RegisterPayLaterFailure(reason: ex.getMessage())
+            new WalletPayLaterFailure(reason: ex.getMessage())
+        }
+    }
+
+    RegisterPayLaterResponse unlinkPayLaterWallet(UnlinkPayLaterWalletInput input) {
+        try {
+            adminWalletSdk.unlinkCustomerWallet(input.customerId, input.apiClientToken)
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            new WalletPayLaterFailure(reason: ex.getMessage())
+        }
+    }
+
+    RegisterPayLaterResponse unlinkPayLaterSupplierWallet(UnlinkPayLaterSupplierWalletInput input) {
+        try {
+            adminWalletSdk.unlinkSupplierWallet(input.supplierId, input.apiClientToken)
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            new WalletPayLaterFailure(reason: ex.getMessage())
         }
     }
 
