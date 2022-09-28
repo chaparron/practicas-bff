@@ -49,6 +49,11 @@ class BnplProvidersService {
     }
 
     List<CreditLineProvider> creditLineProvidersFor(SupplierOrder supplierOrder) {
+        if (supplierOrder.order == null) {
+            log.error("Not enough information for order in supplierOrder: {}", supplierOrder)
+            return null
+        }
+
         def order = supplierOrder.order
         def supplierOrders = order.supplierOrders
         def suppliers = supplierOrders.collect { supplierOrderBridge.getSupplierBySupplierOrderId(it.accessToken, it.id) }
