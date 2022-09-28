@@ -22,9 +22,12 @@ type MinProductQuantityByProduct {
 }
 
 enum ApplicationMode {
-  SLABBED,
-  PROGRESSIVE,
+  SLABBED
+  SLABBED_GLOBAL
+  PROGRESSIVE
+  PROGRESSIVE_GLOBAL
   LINEAL
+  LINEAL_GLOBAL
 }
 
 type DiscountStep {
