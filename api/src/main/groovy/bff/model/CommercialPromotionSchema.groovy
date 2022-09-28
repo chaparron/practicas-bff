@@ -5,6 +5,7 @@ import groovy.util.logging.Slf4j
 import org.springframework.context.MessageSource
 import sun.util.locale.LanguageTag
 
+import static bff.model.ApplicationModeUtils.*
 import static java.text.NumberFormat.getNumberInstance
 import static java.util.Locale.forLanguageTag
 import static java.util.Optional.*
@@ -153,20 +154,101 @@ class MinProductQuantityByProduct {
     Integer quantity
 }
 
-class DiscountStep {
+abstract class RewardsStep {
     Integer from
     Integer to
+    Map<Integer, Integer> minQuantityByProducts
+
+    RewardsStep(Integer from, Integer to, Map<Integer, Integer> minQuantityByProducts) {
+        this.from = from
+        this.to = to
+        this.minQuantityByProducts = minQuantityByProducts
+    }
+}
+
+class DiscountStep extends RewardsStep {
+
     BigDecimal value
     BigDecimal unitValue
     BigDecimal percentage
     String countryId
-    Map<Integer, Integer> minQuantityByProducts
+
+    DiscountStep(Integer from,
+                 Integer to,
+                 Map<Integer, Integer> minQuantityByProducts,
+                 BigDecimal value,
+                 BigDecimal unitValue,
+                 BigDecimal percentage,
+                 String countryId) {
+        super(from, to, minQuantityByProducts)
+        this.value = value
+        this.unitValue = unitValue
+        this.percentage = percentage
+        this.countryId = countryId
+    }
+}
+
+class ApplicationModeUtils {
+
+    private static final def quantity(Closure<Integer> f) {
+        { List<ProductCart> selection ->
+            { RewardsStep step ->
+                if (step.minQuantityByProducts.every { product, quantity ->
+                    selection.find { it.product.id.toInteger() == product && it.quantity >= quantity }
+                }) selection.collect { f(it) }.sum()
+                else 0
+            } as Closure<Integer>
+        }
+    }
+
+    static final Closure<Closure<Integer>> simpleQuantifier =
+            quantity { ProductCart item -> item.quantity }
+    static final Closure<Closure<Integer>> quantityByUnitsQuantifier =
+            quantity { ProductCart item -> item.quantity * item.price.display.units }
+    static final Closure<Boolean> slabbedValidator =
+            { List<RewardsStep> steps, Closure<Integer> quantifier ->
+                ofNullable(
+                        steps.find {
+                            def quantity = quantifier(it)
+                            quantity % it.from == 0 &&
+                                    quantity >= it.from &&
+                                    quantity <= ofNullable(it.to).orElse(Integer.MAX_VALUE)
+                        }
+                ).isPresent()
+            }
+    static final Closure<Boolean> linealOrProgressiveValidator =
+            { List<RewardsStep> steps, Closure<Integer> quantifier ->
+                ofNullable(
+                        steps.find {
+                            def quantity = quantifier(it)
+                            quantity >= it.from &&
+                                    quantity <= ofNullable(it.to).orElse(Integer.MAX_VALUE)
+                        }
+                ).isPresent()
+            }
 }
 
 enum ApplicationMode {
-    SLABBED,
-    PROGRESSIVE,
-    LINEAL
+
+    SLABBED(simpleQuantifier, slabbedValidator),
+    SLABBED_GLOBAL(quantityByUnitsQuantifier, slabbedValidator),
+    PROGRESSIVE(simpleQuantifier, linealOrProgressiveValidator),
+    PROGRESSIVE_GLOBAL(quantityByUnitsQuantifier, linealOrProgressiveValidator),
+    LINEAL(simpleQuantifier, linealOrProgressiveValidator),
+    LINEAL_GLOBAL(quantityByUnitsQuantifier, linealOrProgressiveValidator)
+
+    private final Closure<Closure<Integer>> quantifier
+    private final Closure<Boolean> validator
+
+    ApplicationMode(Closure<Closure<Integer>> quantifier, Closure<Boolean> validator) {
+        this.quantifier = quantifier
+        this.validator = validator
+    }
+
+    final Boolean appliesTo(List<RewardsStep> steps, List<ProductCart> selection) {
+        return validator(steps, quantifier(selection))
+    }
+
 }
 
 interface RewardItem {}
@@ -184,7 +266,7 @@ class FixedQuantityFreeProduct implements RewardItem {
                              Display display,
                              Integer quantity) {
         this.id = product.id
-        this.name  = product.name
+        this.name = product.name
         this.description = product.description
         this.images = product.images
         this.display = display
@@ -203,10 +285,10 @@ class MultipliedQuantityFreeProduct implements RewardItem {
     Float quantity
 
     MultipliedQuantityFreeProduct(ProductSearch product,
-                             Display display,
-                             Float quantity) {
+                                  Display display,
+                                  Float quantity) {
         this.id = product.id
-        this.name  = product.name
+        this.name = product.name
         this.description = product.description
         this.images = product.images
         this.display = display
@@ -233,29 +315,15 @@ class Discount implements CommercialPromotionType {
 
     @Override
     boolean appliesTo(List<ProductCart> selection) {
-        this.appliesTo(
+        this.applicationMode.appliesTo(
+                this.steps,
                 selection
-                        .findResults {
+                        .findAll {
                             (it.price.commercialPromotions
                                     .flatMap { it.discount }
-                                    .orElse(null)?.id == this.id) ? it.quantity : null
+                                    .orElse(null)?.id == this.id)
                         }
-                        .sum() as Integer
         )
-    }
-
-    boolean appliesTo(Integer quantity) {
-        def maybeStep = null
-        switch (applicationMode) {
-            case ApplicationMode.SLABBED:
-                maybeStep = steps.find { quantity % it.from == 0 && quantity >= it.from && quantity <= it?.to }
-                break
-            case ApplicationMode.LINEAL:
-            case ApplicationMode.PROGRESSIVE:
-                maybeStep = steps.find { quantity >= it.from && quantity <= it?.to }
-                break
-        }
-        ofNullable(maybeStep).isPresent()
     }
 
     Discount labeled(Closure<String> label) {
@@ -286,11 +354,16 @@ class RewardsNode {
 }
 
 @EqualsAndHashCode
-class FreeProductStep {
-    Integer from
-    Integer to
+class FreeProductStep extends RewardsStep {
     List<RewardsNode> rewards
-    Map<Integer, Integer> minQuantityByProducts
+
+    FreeProductStep(Integer from,
+                    Integer to,
+                    Map<Integer, Integer> minQuantityByProducts,
+                    List<RewardsNode> rewards) {
+        super(from, to, minQuantityByProducts)
+        this.rewards = rewards
+    }
 }
 
 @EqualsAndHashCode(includes = ["id"])
@@ -306,20 +379,15 @@ class FreeProduct implements CommercialPromotionType {
 
     @Override
     boolean appliesTo(List<ProductCart> selection) {
-        this.appliesTo(
+        this.applicationMode.appliesTo(
+                this.steps,
                 selection
-                        .findResults {
+                        .findAll {
                             (it.price.commercialPromotions
                                     .flatMap { it.freeProduct }
-                                    .orElse(null)?.id == this.id) ? it.quantity : null
+                                    .orElse(null)?.id == this.id)
                         }
-                        .sum() as Integer
         )
-    }
-
-    boolean appliesTo(Integer quantity) {
-        quantity >= steps.min { it.from }.from &&
-                quantity <= ofNullable(steps.max { it.to }.to).orElse(Integer.MAX_VALUE)
     }
 
     FreeProduct labeled(Closure<String> label) {

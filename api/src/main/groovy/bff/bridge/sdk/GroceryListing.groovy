@@ -398,7 +398,7 @@ class GroceryListing {
 
     RedeemableCouponsResponse findRedeemableCoupons(RedeemableCouponsRequest input) {
         def country = JwtToken.countryFromString(input.accessToken)
-        def accessToken = new AccessTokenInput(accessToken:  input.accessToken)
+        def accessToken = new AccessTokenInput(accessToken: input.accessToken)
 
         def (customerAndDeliveryAddress, customerHasOrders) = Mono.zip(
                 Mono.just(getCustomerAndDeliveryAddress(input.accessToken)) as Mono<?>,
@@ -1060,16 +1060,15 @@ class GroceryListing {
                                 .map {
                                     def discount = (it as AvailableDiscount)
                                     new DiscountStep(
-                                            from: step.from(),
-                                            to: toJava(step.to()).orElse(null),
-                                            value: option.price().toBigDecimal() - discount.amount().toBigDecimal(),
-                                            unitValue: option.price() / option.display().units() - discount.amount() / option.display().units(),
-                                            percentage: discount.percentage().toBigDecimal(),
-                                            countryId: countryId,
-                                            minQuantityByProducts:
-                                                    asJava(step.minQuantityByProducts()).collectEntries {
-                                                        [it.key.toInteger(), it.value as Integer]
-                                                    }
+                                            step.from(),
+                                            toJava(step.to()).orElse(null),
+                                            asJava(step.minQuantityByProducts()).collectEntries {
+                                                [it.key.toInteger(), it.value as Integer]
+                                            },
+                                            option.price().toBigDecimal() - discount.amount().toBigDecimal(),
+                                            option.price() / option.display().units() - discount.amount() / option.display().units(),
+                                            discount.percentage().toBigDecimal(),
+                                            countryId
                                     )
                                 }
                                 .orElse(null)
@@ -1091,9 +1090,12 @@ class GroceryListing {
                 of(
                         asJava(promotion.steps()).collect { step ->
                             new FreeProductStep(
-                                    from: step.from(),
-                                    to: toJava(step.to()).orElse(null),
-                                    rewards: asJava(step.rewards()).findResults { node ->
+                                    step.from(),
+                                    toJava(step.to()).orElse(null),
+                                    asJava(step.minQuantityByProducts()).collectEntries {
+                                        [it.key.toInteger(), it.value as Integer]
+                                    },
+                                    asJava(step.rewards()).findResults { node ->
                                         new RewardsNode(
                                                 id: node.id(),
                                                 parent: toJava(node.parent()),
@@ -1126,11 +1128,7 @@ class GroceryListing {
                                                     } else null
                                                 }
                                         )
-                                    },
-                                    minQuantityByProducts:
-                                            asJava(step.minQuantityByProducts()).collectEntries {
-                                                [it.key.toInteger(), it.value as Integer]
-                                            }
+                                    }
                             )
                         }
                 )
