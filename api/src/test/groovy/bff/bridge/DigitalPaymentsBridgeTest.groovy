@@ -40,7 +40,7 @@ class DigitalPaymentsBridgeTest {
     }
 
     @Test
-    void 'when calling twice with same supplierId and accessToken and feature flag enabled should call bridge once'() {
+    void 'when calling twice with same supplierId and accessToken and feature flag is enabled, the first bridge call is cached'() {
         def anySupplierId = randomString()
         def accessToken = validAccessToken()
         def providers = [Provider.JP_MORGAN]
@@ -59,7 +59,7 @@ class DigitalPaymentsBridgeTest {
     }
 
     @Test
-    void 'when calling twice with different supplierId and same accessToken and feature flag enabled should call bridge twice'() {
+    void 'when calling twice with different supplierId and same accessToken and feature flag is enabled should call bridge twice'() {
         def anySupplierId = randomString()
         def anotherSupplierId = randomString()
         def accessToken = validAccessToken()
@@ -83,7 +83,7 @@ class DigitalPaymentsBridgeTest {
     }
 
     @Test
-    void 'when calling twice with same supplierId and different accessToken and feature flag enabled should call bridge twice'() {
+    void 'when calling twice with same supplierId and different accessToken and feature flag is enabled should call bridge twice'() {
         def anySupplierId = randomString()
         def accessToken = validAccessToken()
         def anotherAccessToken = anotherValidAccessToken()
