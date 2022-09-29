@@ -17,7 +17,7 @@ input RegisterPayLaterWalletRequestInput{
 
 input RegisterPayLaterSupplierWalletInput {
   apiClientToken: String!
-  walletRequests: [RegisterPayLaterWalletRequestInput]!
+  walletSupplierRequests: [RegisterPayLaterSupplierWalletRequestInput]!
 }
 
 input RegisterPayLaterSupplierWalletRequestInput{
