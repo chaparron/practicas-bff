@@ -7,6 +7,7 @@ import org.springframework.context.MessageSource
 import org.springframework.web.util.DefaultUriBuilderFactory
 import org.springframework.web.util.UriBuilder
 import scala.Option
+import sun.util.locale.LanguageTag
 import wabi2b.cms.sdk.*
 import wabi2b.cms.sdk.Banner as CmsBanner
 import wabi2b.cms.sdk.Brand as CmsBrand
@@ -19,6 +20,8 @@ import wabi2b.cms.sdk.Product as CmsProduct
 import wabi2b.cms.sdk.Supplier as CmsSupplier
 
 import static groovy.lang.Closure.IDENTITY
+import static java.text.NumberFormat.getNumberInstance
+import static java.util.Locale.forLanguageTag
 import static java.util.Optional.*
 import static scala.jdk.javaapi.CollectionConverters.asJava
 import static scala.jdk.javaapi.OptionConverters.toJava
@@ -389,21 +392,61 @@ class Cms {
             new PreviewProductSearch(this.product(product))
         }
 
-        private static Brand brand(CmsBrand brand) {
+        private Brand brand(CmsBrand brand) {
             new Brand(
                     id: brand.id().toLong(),
                     name: brand.name().defaultEntry(),
                     logo: toJava(brand.logo()).orElse(null),
-                    discount: toJava(brand.discount()).map { it as Boolean }
+                    badges: [
+                            toJava(brand.discount()).filter { it == true }.map {
+                                new Badge(
+                                        image: "",
+                                        tooltip: of(
+                                                { LanguageTag languageTag ->
+                                                    def locale = forLanguageTag(
+                                                            ofNullable(languageTag.toString())
+                                                                    .orElse("en")
+                                                    )
+                                                    messageSource.getMessage(
+                                                            "brand.badges.DISCOUNT",
+                                                            [].toArray(),
+                                                            locale
+                                                    )
+                                                }
+                                        ),
+                                        overlayPosition: of(OverlayPosition.TOP_LEFT)
+                                )
+                            }.orElse(null)
+                    ].findResults { it }
             )
         }
 
-        private static PreviewSupplier supplier(CmsSupplier supplier) {
+        private PreviewSupplier supplier(CmsSupplier supplier) {
             new PreviewSupplier(
                     id: supplier.id().toLong(),
                     name: supplier.name(),
                     avatar: toJava(supplier.avatar()).orElse(null),
-                    discount: toJava(supplier.discount()).map { it as Boolean }
+                    badges: [
+                            toJava(supplier.discount()).filter { it == true }.map {
+                                new Badge(
+                                        image: "",
+                                        tooltip: of(
+                                                { LanguageTag languageTag ->
+                                                    def locale = forLanguageTag(
+                                                            ofNullable(languageTag.toString())
+                                                                    .orElse("en")
+                                                    )
+                                                    messageSource.getMessage(
+                                                            "supplier.badges.DISCOUNT",
+                                                            [].toArray(),
+                                                            locale
+                                                    )
+                                                }
+                                        ),
+                                        overlayPosition: of(OverlayPosition.TOP_LEFT)
+                                )
+                            }.orElse(null)
+                    ].findResults { it }
             )
         }
 

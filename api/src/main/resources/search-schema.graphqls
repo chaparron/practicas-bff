@@ -236,7 +236,7 @@ type PreviewSupplier {
   name: String!
   legalName: String
   avatar(size: SupplierAvatarSize): String
-  discount: Boolean
+  badges: [Badge!]!
 }
 
 enum ProductImageSize {

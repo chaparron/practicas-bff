@@ -1,5 +1,6 @@
 package bff.resolver
 
+import bff.model.Badge
 import bff.model.PreviewSupplier
 import bff.model.SupplierAvatarSize
 import bff.service.ImageService
@@ -25,8 +26,8 @@ class PreviewSupplierResolver implements GraphQLResolver<PreviewSupplier> {
                 .orElse(null)
     }
 
-    Boolean discount(PreviewSupplier supplier) {
-        supplier.discount.orElse(null)
+    List<Badge> badges(PreviewSupplier supplier) {
+        ofNullable(supplier.badges).orElse([])
     }
 
 }
