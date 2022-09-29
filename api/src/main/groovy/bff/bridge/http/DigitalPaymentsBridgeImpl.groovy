@@ -11,6 +11,7 @@ import groovy.transform.EqualsAndHashCode
 import groovy.transform.Immutable
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
+import wabi2b.sdk.featureflags.FeatureFlagsSdk
 
 import javax.annotation.PostConstruct
 import java.util.concurrent.TimeUnit
@@ -24,7 +25,12 @@ class DigitalPaymentsBridgeImpl implements  DigitalPaymentsBridge {
     @Autowired
     private DigitalPaymentsSdk digitalPaymentsSdk
 
+    @Autowired
+    private FeatureFlagsSdk featureFlagsSdk
+
     private Cache<PaymentProviderListKey, List<Provider>> providersCache
+
+    private static String JPMC_ENABLED_FEATURE_FLAG_KEY = "JPMC_ENABLED"
 
     @PostConstruct
     void init() {
@@ -36,11 +42,15 @@ class DigitalPaymentsBridgeImpl implements  DigitalPaymentsBridge {
 
     @Override
     List<Provider> getPaymentProviders(String supplierId, String accessToken) {
+        if(!featureFlagsSdk.isActive(JPMC_ENABLED_FEATURE_FLAG_KEY))
+            return []
+
         def userIdFromToken = JwtToken.userIdFromToken(accessToken)
         log.trace("getting paymentProviders for supplierId=$supplierId, userIdFromToken=$userIdFromToken")
         providersCache.get(new PaymentProviderListKey(supplierId: supplierId, customerUserId: userIdFromToken)) {
-            digitalPaymentsSdk.getPaymentProviders(it.supplierId, accessToken).block()
+            return digitalPaymentsSdk.getPaymentProviders(it.supplierId, accessToken).block()
         }
+
     }
 }
 

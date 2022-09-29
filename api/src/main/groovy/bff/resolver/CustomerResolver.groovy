@@ -9,7 +9,6 @@ import bff.service.bnpl.BnplProvidersService
 import com.coxautodev.graphql.tools.GraphQLResolver
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.AutoConfigureOrder
 import org.springframework.stereotype.Component
 import wabi.sdk.impl.CustomSdkException
 import wabi2b.sdk.featureflags.FeatureFlagsSdk
@@ -28,7 +27,7 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     FeatureFlagsSdk featureFlagsSdk
     @Autowired
     BnplProvidersService bnplProvidersService
-    @AutoConfigureOrder
+    @Autowired
     BnplBridge bnplBridge
 
     List<VerificationDocument> verificationDocuments(Customer customer) {
@@ -65,7 +64,7 @@ class CustomerResolver implements GraphQLResolver<Customer> {
                 if (bnplProvidersService.currentUserHasBnplWallet(customer.accessToken)){
                     ps.push(new ProfileSection(id: "CREDIT_LINES"))
                 }
-            } catch(CustomSdkException e) {
+            } catch(Exception e) {
                 log.trace("Exception has been captured from bnpl getCustomerStatus", e)
             }
 

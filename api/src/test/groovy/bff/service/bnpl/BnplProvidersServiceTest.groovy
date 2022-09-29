@@ -235,4 +235,12 @@ class BnplProvidersServiceTest {
         verifyNoMoreInteractions(walletBridge)
     }
 
+    @Test
+    void 'bnpl provider is null if order of supplierOrder is null'() {
+        def supplierOrder = new SupplierOrder(id: 1L)
+
+        assert sut.creditLineProvidersFor(supplierOrder) == null
+
+        verifyZeroInteractions(walletBridge)
+    }
 }

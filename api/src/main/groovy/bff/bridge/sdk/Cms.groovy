@@ -437,16 +437,15 @@ class Cms {
                                 .map {
                                     def discount = (it as CmsDiscount)
                                     new DiscountStep(
-                                            from: step.from(),
-                                            to: toJava(step.to()).orElse(null),
-                                            value: option.price().toBigDecimal() - discount.amount().toBigDecimal(),
-                                            unitValue: option.price() / option.display().units() - discount.amount() / option.display().units(),
-                                            percentage: discount.percentage().toBigDecimal(),
-                                            countryId: countryId,
-                                            minQuantityByProducts:
-                                                    asJava(step.minQuantityByProducts()).collectEntries {
-                                                        [it.key.toInteger(), it.value as Integer]
-                                                    }
+                                            step.from(),
+                                            toJava(step.to()).orElse(null),
+                                            asJava(step.minQuantityByProducts()).collectEntries {
+                                                [it.key.toInteger(), it.value as Integer]
+                                            },
+                                            option.price().toBigDecimal() - discount.amount().toBigDecimal(),
+                                            option.price() / option.display().units() - discount.amount() / option.display().units(),
+                                            discount.percentage().toBigDecimal(),
+                                            countryId
                                     )
                                 }
                                 .orElse(null)
@@ -468,9 +467,12 @@ class Cms {
                 of(
                         asJava(promotion.steps()).collect { step ->
                             new FreeProductStep(
-                                    from: step.from(),
-                                    to: toJava(step.to()).orElse(null),
-                                    rewards: asJava(step.rewards()).findResults { node ->
+                                    step.from(),
+                                    toJava(step.to()).orElse(null),
+                                    asJava(step.minQuantityByProducts()).collectEntries {
+                                        [it.key.toInteger(), it.value as Integer]
+                                    },
+                                    asJava(step.rewards()).findResults { node ->
                                         new RewardsNode(
                                                 id: node.id(),
                                                 parent: toJava(node.parent()),
@@ -503,11 +505,8 @@ class Cms {
                                                     } else null
                                                 }
                                         )
-                                    },
-                                    minQuantityByProducts:
-                                            asJava(step.minQuantityByProducts()).collectEntries {
-                                                [it.key.toInteger(), it.value as Integer]
-                                            }
+                                    }
+
                             )
                         }
                 )
