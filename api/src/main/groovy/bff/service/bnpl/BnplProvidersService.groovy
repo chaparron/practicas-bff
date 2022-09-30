@@ -11,11 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import wabi2b.payments.common.model.request.WalletProvider
+
 import java.util.stream.Collectors
 
-import static bff.model.CreditLineProvider.*
+import static bff.model.CreditLineProvider.buildSuperMoneyCreditLineProvider
 
-@Slf4j
+@Slf4j()
 @Service
 class BnplProvidersService {
 
@@ -41,7 +42,7 @@ class BnplProvidersService {
         new BnplCreditLineProvidersProcess()
                 .nextCondition { enabledCountries.contains(country) }
                 .nextCondition { total.amount >= bnplBridge.supportedMinimumAmount(country, accessToken).amount }
-                .nextCondition { currentUserHasBnplWallet(accessToken) }
+                .nextCondition { bnplBridge.customerStatus(accessToken).active }
                 .nextCondition { supplierHasBnplWallet(Collections.singletonList(supplier), accessToken, supplier.id.toString()) }
                 .successfullyValue([buildSuperMoneyCreditLineProvider()])
                 .unsuccessfullyValue(null)
@@ -65,23 +66,15 @@ class BnplProvidersService {
                 .nextCondition { enabledCountries.contains(country) }
                 .nextCondition { [OrderStatus.PENDING, OrderStatus.IN_PROGRESS].contains(order.status) }
                 .nextCondition { supplierOrder.payment_pending >= bnplBridge.supportedMinimumAmount(country, accessToken).amount }
-                .nextCondition { currentUserHasBnplWallet(accessToken) }
+                .nextCondition { bnplBridge.customerStatus(accessToken).active }
                 .nextCondition { supplierHasBnplWallet(suppliers, accessToken, supplierId) }
                 .successfullyValue([buildSuperMoneyCreditLineProvider()])
                 .unsuccessfullyValue(null)
                 .execute()
     }
 
-    boolean currentUserHasBnplWallet(String accessToken) {
-        def userId = JwtToken.userIdFromToken(accessToken)
-        log.debug("About to find BNPL wallet for user {}", userId)
-
-        walletBridge
-                .getWallet(userId.toLong(), WalletProvider.@Companion.buyNowPayLater(), accessToken) != null
-    }
-
     private boolean supplierHasBnplWallet(List<Supplier> suppliers, String accessToken, String supplierId) {
-        def suppliersId = suppliers.stream().map {it.id.toString() }.collect(Collectors.toList())
+        def suppliersId = suppliers.stream().map { it.id.toString() }.collect(Collectors.toList())
         log.debug("About to find BNPL wallet for suppliers {}", suppliersId)
         def userId = JwtToken.userIdFromToken(accessToken)
 

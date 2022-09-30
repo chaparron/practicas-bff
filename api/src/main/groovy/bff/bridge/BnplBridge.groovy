@@ -1,5 +1,6 @@
 package bff.bridge
 
+import bff.model.BnPlCustomerStatus
 import bff.model.CreditLines
 import bnpl.sdk.model.SupportedMinimumAmountResponse
 
@@ -10,4 +11,5 @@ interface BnplBridge {
 
     Boolean isSupplierOnboarded(Long supplierId, String accessToken)
 
+    BnPlCustomerStatus customerStatus(String accessToken)
 }

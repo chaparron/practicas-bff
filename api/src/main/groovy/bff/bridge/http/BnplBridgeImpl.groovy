@@ -3,11 +3,13 @@ package bff.bridge.http
 import bff.JwtToken
 import bff.bridge.BnplBridge
 import bff.configuration.CacheConfigurationProperties
+import bff.model.BnPlCustomerStatus
 import bff.model.CreditLines
 import bnpl.sdk.BnPlSdk
 import bnpl.sdk.model.SupportedMinimumAmountResponse
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
+import groovy.util.logging.Slf4j
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,6 +19,7 @@ import java.util.concurrent.TimeUnit
 
 import static bff.model.CreditLines.fromSdk
 
+@Slf4j
 class BnplBridgeImpl implements BnplBridge {
 
     @Autowired
@@ -63,8 +66,24 @@ class BnplBridgeImpl implements BnplBridge {
                 .map {
                     fromSdk(it)
                 }
-                .toFuture().get()
+                .block()
     }
+
+    @Override
+    BnPlCustomerStatus customerStatus(String accessToken) {
+        def userId = JwtToken.userIdFromToken(accessToken).toLong()
+        try {
+            bnPlSdk.customerStatus(userId, accessToken)
+                    .map {
+                        new BnPlCustomerStatus(it.userId, it.active)
+                    }
+                    .block()
+        } catch (Exception e) {
+            log.error("Exception has been captured from bnpl customerStatus", e)
+            new BnPlCustomerStatus(userId, false) // Default as non-active user status.
+        }
+    }
+
 }
 
 

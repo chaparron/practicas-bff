@@ -1,7 +1,9 @@
 package bff.service.bnpl
 
 import bff.model.CreditLineProvider
+import groovy.util.logging.Slf4j
 
+@Slf4j
 class BnplCreditLineProvidersProcess {
     private List<Closure<Boolean>> conditions
     private List<CreditLineProvider> successfullyValue
@@ -29,11 +31,14 @@ class BnplCreditLineProvidersProcess {
     List<CreditLineProvider> execute() {
         def result = successfullyValue
 
-        for(def condition : conditions) {
-            if(!condition()) {
+        int index = 1
+        for (def condition : conditions) {
+            if (!condition()) {
+                log.trace("Unsatisfied condition $index")
                 result = unsuccessfullyValue
                 break
             }
+            index++
         }
 
         result

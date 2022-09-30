@@ -65,6 +65,24 @@ enum CreditProvider {
     }
 }
 
+class BnPlCustomerStatus {
+    private Long userId
+    private boolean active
+
+    BnPlCustomerStatus(Long userId, boolean active) {
+        this.userId = userId
+        this.active = active
+    }
+
+    Long getUserId() {
+        return userId
+    }
+
+    boolean getActive() {
+        return active
+    }
+}
+
 interface CreditLinesAction {}
 
 @EqualsAndHashCode
