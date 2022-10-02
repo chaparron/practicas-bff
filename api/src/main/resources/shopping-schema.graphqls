@@ -1,0 +1,17 @@
+enum BadgeImageSize {
+  SIZE_16x16,
+  SIZE_24x24
+}
+
+enum OverlayPosition {
+  TOP_LEFT,
+  TOP_RIGHT,
+  BOTTOM_LEFT,
+  BOTTOM_RIGHT
+}
+
+type Badge {
+  image(size: BadgeImageSize): String
+  tooltip(languageTag: LanguageTag!): String
+  overlayPosition: OverlayPosition
+}

@@ -31,6 +31,7 @@ class Brand implements Piece {
     Boolean enabled
     String logo
     String country_id
+    List<Badge> badges
 }
 
 enum BannerLogoSize implements ImageSizeEnum {

@@ -389,19 +389,31 @@ class Cms {
             new PreviewProductSearch(this.product(product))
         }
 
-        private static Brand brand(CmsBrand brand) {
+        private Brand brand(CmsBrand brand) {
             new Brand(
                     id: brand.id().toLong(),
                     name: brand.name().defaultEntry(),
-                    logo: toJava(brand.logo()).orElse(null)
+                    logo: toJava(brand.logo()).orElse(null),
+                    badges: [
+                            toJava(brand.discount())
+                                    .filter { it == true }
+                                    .map { DiscountBadge.create(messageSource) }
+                                    .orElse(null)
+                    ].findResults { it }
             )
         }
 
-        private static PreviewSupplier supplier(CmsSupplier supplier) {
+        private PreviewSupplier supplier(CmsSupplier supplier) {
             new PreviewSupplier(
                     id: supplier.id().toLong(),
                     name: supplier.name(),
-                    avatar: toJava(supplier.avatar()).orElse(null)
+                    avatar: toJava(supplier.avatar()).orElse(null),
+                    badges: [
+                            toJava(supplier.discount())
+                                    .filter { it == true }
+                                    .map { DiscountBadge.create(messageSource) }
+                                    .orElse(null)
+                    ].findResults { it }
             )
         }
 

@@ -1,6 +1,6 @@
 package bff.resolver
 
-
+import bff.model.Badge
 import bff.model.BannerLogoSize
 import bff.model.Brand
 import bff.service.ImageService
@@ -24,6 +24,10 @@ class BrandResolver implements GraphQLResolver<Brand> {
                     ofNullable(size).map { imageService.url(logo, it) }.orElse(logo)
                 }
                 .orElse(null)
+    }
+
+    List<Badge> badges(Brand brand) {
+        ofNullable(brand.badges).orElse([])
     }
 
 }

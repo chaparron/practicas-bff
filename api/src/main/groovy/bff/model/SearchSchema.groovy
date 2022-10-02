@@ -391,6 +391,7 @@ class PreviewSupplier implements Piece {
     String name
     String legalName
     String avatar
+    List<Badge> badges
 }
 
 enum ProductImageSize implements ImageSizeEnum {
