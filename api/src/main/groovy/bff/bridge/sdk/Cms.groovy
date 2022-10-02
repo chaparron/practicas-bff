@@ -7,7 +7,6 @@ import org.springframework.context.MessageSource
 import org.springframework.web.util.DefaultUriBuilderFactory
 import org.springframework.web.util.UriBuilder
 import scala.Option
-import sun.util.locale.LanguageTag
 import wabi2b.cms.sdk.*
 import wabi2b.cms.sdk.Banner as CmsBanner
 import wabi2b.cms.sdk.Brand as CmsBrand
@@ -20,8 +19,6 @@ import wabi2b.cms.sdk.Product as CmsProduct
 import wabi2b.cms.sdk.Supplier as CmsSupplier
 
 import static groovy.lang.Closure.IDENTITY
-import static java.text.NumberFormat.getNumberInstance
-import static java.util.Locale.forLanguageTag
 import static java.util.Optional.*
 import static scala.jdk.javaapi.CollectionConverters.asJava
 import static scala.jdk.javaapi.OptionConverters.toJava
@@ -398,25 +395,10 @@ class Cms {
                     name: brand.name().defaultEntry(),
                     logo: toJava(brand.logo()).orElse(null),
                     badges: [
-                            toJava(brand.discount()).filter { it == true }.map {
-                                new Badge(
-                                        image: "",
-                                        tooltip: of(
-                                                { LanguageTag languageTag ->
-                                                    def locale = forLanguageTag(
-                                                            ofNullable(languageTag.toString())
-                                                                    .orElse("en")
-                                                    )
-                                                    messageSource.getMessage(
-                                                            "brand.badges.DISCOUNT",
-                                                            [].toArray(),
-                                                            locale
-                                                    )
-                                                }
-                                        ),
-                                        overlayPosition: of(OverlayPosition.TOP_LEFT)
-                                )
-                            }.orElse(null)
+                            toJava(brand.discount())
+                                    .filter { it == true }
+                                    .map { DiscountBadge.create(messageSource) }
+                                    .orElse(null)
                     ].findResults { it }
             )
         }
@@ -427,25 +409,10 @@ class Cms {
                     name: supplier.name(),
                     avatar: toJava(supplier.avatar()).orElse(null),
                     badges: [
-                            toJava(supplier.discount()).filter { it == true }.map {
-                                new Badge(
-                                        image: "",
-                                        tooltip: of(
-                                                { LanguageTag languageTag ->
-                                                    def locale = forLanguageTag(
-                                                            ofNullable(languageTag.toString())
-                                                                    .orElse("en")
-                                                    )
-                                                    messageSource.getMessage(
-                                                            "supplier.badges.DISCOUNT",
-                                                            [].toArray(),
-                                                            locale
-                                                    )
-                                                }
-                                        ),
-                                        overlayPosition: of(OverlayPosition.TOP_LEFT)
-                                )
-                            }.orElse(null)
+                            toJava(supplier.discount())
+                                    .filter { it == true }
+                                    .map { DiscountBadge.create(messageSource) }
+                                    .orElse(null)
                     ].findResults { it }
             )
         }
