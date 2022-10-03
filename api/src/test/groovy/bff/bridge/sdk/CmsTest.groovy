@@ -31,7 +31,7 @@ class CmsTest {
 
     @Test
     void 'home modules should be fetched for the given country'() {
-        when(sdk.query(homeModulesIn("ar", false)))
+        when(sdk.query(homeModulesIn("ar", false, Option.empty())))
                 .thenReturn(asScala([] as List<CmsModule>).toList())
 
         assertTrue(cms.find(new HomeInput(country: "ar")).isEmpty())
@@ -39,7 +39,7 @@ class CmsTest {
 
     @Test
     void 'home modules can be filtered by tag'() {
-        when(sdk.query(homeModulesIn("ar", false).tagged("tag_1").tagged("tag_2")))
+        when(sdk.query(homeModulesIn("ar", false, Option.empty()).tagged("tag_1").tagged("tag_2")))
                 .thenReturn(asScala([] as List<CmsModule>).toList())
 
         assertTrue(cms.find(new HomeInput(country: "ar", tags: ["tag_1", "tag_2"])).isEmpty())
@@ -47,7 +47,7 @@ class CmsTest {
 
     @Test
     void 'listing modules should be fetched for the given country'() {
-        when(sdk.query(listingModulesIn("ar")))
+        when(sdk.query(listingModulesIn("ar", Option.empty())))
                 .thenReturn(asScala([] as List<CmsModule>).toList())
 
         assertTrue(cms.find(new ListingInput(country: "ar")).isEmpty())
@@ -55,7 +55,7 @@ class CmsTest {
 
     @Test
     void 'listing modules can be filtered by tag'() {
-        when(sdk.query(listingModulesIn("ar").tagged("tag_1").tagged("tag_2")))
+        when(sdk.query(listingModulesIn("ar", Option.empty()).tagged("tag_1").tagged("tag_2")))
                 .thenReturn(asScala([] as List<CmsModule>).toList())
 
         assertTrue(cms.find(new ListingInput(country: "ar", tags: ["tag_1", "tag_2"])).isEmpty())
@@ -63,7 +63,7 @@ class CmsTest {
 
     @Test
     void 'listing modules can be filtered by brand'() {
-        when(sdk.query(listingModulesIn("ar").filteredByBrand("5")))
+        when(sdk.query(listingModulesIn("ar", Option.empty()).filteredByBrand("5")))
                 .thenReturn(asScala([] as List<CmsModule>).toList())
 
         assertTrue(cms.find(new ListingInput(country: "ar", brand: 5)).isEmpty())
@@ -71,7 +71,7 @@ class CmsTest {
 
     @Test
     void 'listing modules can be filtered by category'() {
-        when(sdk.query(listingModulesIn("ar").filteredByCategory("1")))
+        when(sdk.query(listingModulesIn("ar", Option.empty()).filteredByCategory("1")))
                 .thenReturn(asScala([] as List<CmsModule>).toList())
 
         assertTrue(cms.find(new ListingInput(country: "ar", category: 1)).isEmpty())
@@ -79,7 +79,7 @@ class CmsTest {
 
     @Test
     void 'listing modules can be filtered by term'() {
-        when(sdk.query(listingModulesIn("ar").filteredByTerm("coca", Option.empty(), FullText$.MODULE$)))
+        when(sdk.query(listingModulesIn("ar", Option.empty()).filteredByTerm("coca", Option.empty(), FullText$.MODULE$)))
                 .thenReturn(asScala([] as List<CmsModule>).toList())
 
         assertTrue(cms.find(new ListingInput(country: "ar", keyword: "coca")).isEmpty())
@@ -87,7 +87,7 @@ class CmsTest {
 
     @Test
     void 'listing modules can be filtered by promotion'() {
-        when(sdk.query(listingModulesIn("ar").filteredByPromotion("promo")))
+        when(sdk.query(listingModulesIn("ar", Option.empty()).filteredByPromotion("promo")))
                 .thenReturn(asScala([] as List<CmsModule>).toList())
 
         assertTrue(cms.find(new ListingInput(country: "ar", tag: "promo")).isEmpty())
@@ -95,7 +95,7 @@ class CmsTest {
 
     @Test
     void 'listing modules can be filtered by any promotion'() {
-        when(sdk.query(listingModulesIn("ar").filteredByAnyPromotion()))
+        when(sdk.query(listingModulesIn("ar", Option.empty()).filteredByAnyPromotion()))
                 .thenReturn(asScala([] as List<CmsModule>).toList())
 
         assertTrue(cms.find(new ListingInput(country: "ar", promoted: true)).isEmpty())
@@ -103,7 +103,7 @@ class CmsTest {
 
     @Test
     void 'listing modules can be filtered by favourite'() {
-        when(sdk.query(listingModulesIn("ar").filteredByFavourite()))
+        when(sdk.query(listingModulesIn("ar", Option.empty()).filteredByFavourite()))
                 .thenReturn(asScala([] as List<CmsModule>).toList())
 
         assertTrue(cms.find(new ListingInput(country: "ar", favourites: true)).isEmpty())

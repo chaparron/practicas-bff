@@ -8,6 +8,7 @@ class HomeInput {
     String country
     Set<String> tags
     Boolean fallback
+    String accessToken
 }
 
 @ToString
@@ -20,6 +21,7 @@ class ListingInput {
     String tag
     Boolean favourites
     Boolean promoted
+    String accessToken
 }
 
 @ToString(excludes = ["accessToken"])

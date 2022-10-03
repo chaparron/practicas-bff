@@ -2,6 +2,7 @@ input HomeInput {
   country: String!
   tags: [String!]
   fallback: Boolean
+  accessToken: String
 }
 
 input ListingInput {
@@ -14,6 +15,7 @@ input ListingInput {
   supplier: Int,
   favourites: Boolean
   promoted: Boolean
+  accessToken: String
 }
 
 input ContextInput {

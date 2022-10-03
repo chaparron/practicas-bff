@@ -38,7 +38,7 @@ class Cms {
         def request =
                 [tagged(input.tags)]
                         .inject(
-                                homeModulesIn(input.country, ofNullable(input.fallback).orElse(false)),
+                                homeModulesIn(input.country, ofNullable(input.fallback).orElse(false), Option.empty()),
                                 { query, builder ->
                                     builder(query) as FindHomeModulesQuery
                                 }
@@ -98,7 +98,7 @@ class Cms {
                         filteredByFavourite
                 ]
                         .inject(
-                                listingModulesIn(input.country),
+                                listingModulesIn(input.country, Option.empty()),
                                 { query, builder ->
                                     builder(query) as FindListingModulesQuery
                                 }
