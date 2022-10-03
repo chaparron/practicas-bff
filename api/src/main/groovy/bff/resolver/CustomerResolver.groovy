@@ -4,6 +4,7 @@ import bff.bridge.BnplBridge
 import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.ThirdPartyBridge
+import bff.bridge.http.CountryGatewayBridgeImpl
 import bff.model.*
 import bff.service.bnpl.BnplProvidersService
 import com.coxautodev.graphql.tools.GraphQLResolver
@@ -30,7 +31,7 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     @Autowired
     BnplBridge bnplBridge
     @Autowired
-    RegionalConfigSdk regionalConfigSdk
+    CountryGatewayBridgeImpl countryGatewayBridgeImpl
 
     List<VerificationDocument> verificationDocuments(Customer customer) {
         customer.verificationDocuments ?: customerBridge.findVerificationDocs(customer.accessToken)
@@ -67,7 +68,7 @@ class CustomerResolver implements GraphQLResolver<Customer> {
             }
         }
 
-        if (featureFlagsSdk.isActiveForCountry("BRANCHES_FUNCTION", customer.country_id)
+        if (countryGatewayBridgeImpl.getCountry(customer.country_id).customerBranchesEnabled
                 && customer.storeType == StoreType.MAIN_OFFICE) {
             ps.push(new ProfileSection(id: "BRANCH_OFFICE"))
         } else {
