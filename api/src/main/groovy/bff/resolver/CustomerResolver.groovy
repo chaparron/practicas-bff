@@ -11,6 +11,7 @@ import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import wabi2b.sdk.featureflags.FeatureFlagsSdk
+import wabi2b.sdk.regional.RegionalConfigSdk
 
 @Component
 @Slf4j
@@ -28,6 +29,8 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     BnplProvidersService bnplProvidersService
     @Autowired
     BnplBridge bnplBridge
+    @Autowired
+    RegionalConfigSdk regionalConfigSdk
 
     List<VerificationDocument> verificationDocuments(Customer customer) {
         customer.verificationDocuments ?: customerBridge.findVerificationDocs(customer.accessToken)

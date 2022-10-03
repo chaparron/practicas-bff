@@ -24,6 +24,7 @@ class Country {
     WabiPay wabiPay
     LegalDocumentInformation legalDocumentInformation
     Geolocation geolocation
+    boolean customerBranchesEnabled
 }
 
 class Detail {
