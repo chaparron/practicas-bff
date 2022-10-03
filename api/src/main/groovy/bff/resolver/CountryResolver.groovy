@@ -24,9 +24,4 @@ class CountryResolver implements GraphQLResolver<Country> {
         return imageService.url(item.flag, size)
     }
 
-    Boolean customerBranchesEnabled(Country country){
-        return country.customerBranchesEnabled ? country.customerBranchesEnabled : countryGatewayBridgeImpl.getCountry(country.id).customerBranchesEnabled
-
-    }
-
 }
