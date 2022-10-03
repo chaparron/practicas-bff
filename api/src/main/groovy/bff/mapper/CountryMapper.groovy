@@ -41,7 +41,8 @@ class CountryMapper {
                 fee: buildFee(country.feeConfiguration),
                 wabiPay: buildWabiPay(country.wabipayConfiguration),
                 legalDocumentInformation: buildLegalDocumentInformation(country.legalDocumentInformation),
-                geolocation: buildGeolocation(country.geolocation)
+                geolocation: buildGeolocation(country.geolocation),
+                customerBranchesEnabled: country.branchOfficeConfiguration.enabled
         )
     }
 
@@ -63,7 +64,7 @@ class CountryMapper {
                 wabiPay: buildWabiPay(country.wabipayConfiguration),
                 legalDocumentInformation: buildLegalDocumentInformation(country.legalDocumentInformation),
                 geolocation: buildGeolocation(country.geolocation),
-                customerBranchesEnabled: country.branchOfficeConfiguration
+                customerBranchesEnabled: country.branchOfficeConfiguration.enabled
         )
     }
 
