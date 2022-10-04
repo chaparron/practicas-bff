@@ -697,7 +697,9 @@ class GroceryListing {
             maybeDiscount
                     .map { discount ->
                         { ProductQueryRequest r ->
-                            r.filteredByDiscount(discount) as ProductQueryRequest
+                            (discount == 0 ?
+                                    r.filteredByAnyDiscount() :
+                                    r.filteredByPercentageDiscount(discount)) as ProductQueryRequest
                         }
                     }
                     .orElse(identity)
@@ -1264,19 +1266,20 @@ class GroceryListing {
 
         protected List<Filter> discountFilter() {
             toJava(request.filtering().byDiscount())
+                    .map { it.min().getOrElse { 0 } as Integer }
                     .map {
                         [
                                 new Filter(
                                         key: "discount",
                                         values: [
                                                 new FilterItem(
-                                                        id: it.min() as Integer,
+                                                        id: it,
                                                         name: { LanguageTag languageTag ->
                                                             messageSource.getMessage(
-                                                                    it.min() == 0 ?
+                                                                    it == 0 ?
                                                                             "search.WITH_DISCOUNTS_SLICE" :
                                                                             "search.DISCOUNT_SLICE",
-                                                                    [it.min()].toArray(),
+                                                                    [it].toArray(),
                                                                     forLanguageTag(
                                                                             ofNullable(languageTag.toString()).
                                                                                     orElse("en")

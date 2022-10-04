@@ -77,9 +77,9 @@ class RegisterWalletMutationTest {
     @Test
     void 'Unlink Pay later wallets nominal case'() {
         def token = 'token'
-        def customerId = 123456L
-        def unlinkPayLaterSupplierWalletInput = [apiClientToken: token, customerId: customerId] as UnlinkPayLaterWalletInput
-        when(adminWalletSdk.unlinkCustomerWallet(eq(customerId), eq(token)))
+        def userId = 123456L
+        def unlinkPayLaterSupplierWalletInput = [apiClientToken: token, userId: userId] as UnlinkPayLaterWalletInput
+        when(adminWalletSdk.unlinkCustomerWallet(eq(userId), eq(token)))
         registerWalletMutation.unlinkPayLaterWallet(unlinkPayLaterSupplierWalletInput)
     }
 
@@ -87,9 +87,9 @@ class RegisterWalletMutationTest {
     void 'Unlink Pay later wallets handle exceptions'() {
         def exceptionMessage = 'generic exception'
         def token = 'token'
-        def customerId = 123456L
-        def unlinkPayLaterSupplierWalletInput = [apiClientToken: token, customerId: customerId] as UnlinkPayLaterWalletInput
-        when(adminWalletSdk.unlinkCustomerWallet(eq(customerId), eq(token))).thenThrow(new RuntimeException(exceptionMessage))
+        def userId = 123456L
+        def unlinkPayLaterSupplierWalletInput = [apiClientToken: token, userId: userId] as UnlinkPayLaterWalletInput
+        when(adminWalletSdk.unlinkCustomerWallet(eq(userId), eq(token))).thenThrow(new RuntimeException(exceptionMessage))
         def response = registerWalletMutation.unlinkPayLaterWallet(unlinkPayLaterSupplierWalletInput) as WalletPayLaterFailure
         assert response.reason == exceptionMessage
     }

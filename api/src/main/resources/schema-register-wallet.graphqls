@@ -27,7 +27,7 @@ input RegisterPayLaterSupplierWalletRequestInput{
 
 input UnlinkPayLaterWalletInput {
   apiClientToken: String!
-  customerId: Long!
+  userId: Long!
 }
 
 

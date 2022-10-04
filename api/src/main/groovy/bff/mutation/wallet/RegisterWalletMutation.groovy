@@ -42,7 +42,7 @@ class RegisterWalletMutation implements GraphQLMutationResolver {
 
     RegisterPayLaterResponse unlinkPayLaterWallet(UnlinkPayLaterWalletInput input) {
         try {
-            adminWalletSdk.unlinkCustomerWallet(input.customerId, input.apiClientToken)
+            adminWalletSdk.unlinkCustomerWallet(input.userId, input.apiClientToken)
         } catch (Exception ex) {
             log.error(ex.getMessage())
             new WalletPayLaterFailure(reason: ex.getMessage())
