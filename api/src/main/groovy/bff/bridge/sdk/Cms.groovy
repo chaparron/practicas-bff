@@ -239,7 +239,7 @@ class Cms {
                     }
                     def filteredByDiscount = { UriBuilder b ->
                         request.filtering().byDiscount()
-                                .map { b.queryParam("discount", it.min()) }
+                                .map { b.queryParam("discount", it.min().getOrElse { 0 }) }
                                 .getOrElse { b }
                     }
                     def filteredByBottler = { UriBuilder b ->
