@@ -1,5 +1,6 @@
 package bff.bridge.data
 
+import wabi2b.sdk.regional.BranchOfficeConfiguration
 import wabi2b.sdk.regional.ContactInformation
 import wabi2b.sdk.regional.Country
 import wabi2b.sdk.regional.CountryServiceResponse
@@ -51,7 +52,8 @@ abstract class CountryGatewayBridgeImplTestData {
                     ),
                     new WabipayConfiguration(true, true, true),
                     new Geolocation(new Double(-38.416097), new Double(-63.616672)),
-                    new ShoppingConfiguration(true)
+                    new ShoppingConfiguration(true),
+                    new BranchOfficeConfiguration(false)
             )
 
     protected static Country regionalCountryAr =
@@ -79,7 +81,8 @@ abstract class CountryGatewayBridgeImplTestData {
                     ),
                     new WabipayConfiguration(true, true, true),
                     new Geolocation(new Double(-38.416097), new Double(-63.616672)),
-                    new ShoppingConfiguration(true)
+                    new ShoppingConfiguration(true),
+                    new BranchOfficeConfiguration(false)
             )
 
     protected static List<Country> homeCountriesResponse =
@@ -112,7 +115,8 @@ abstract class CountryGatewayBridgeImplTestData {
                             ),
                             new WabipayConfiguration(true, true, true),
                             new Geolocation(new Double(-38.416097), new Double(-63.616672)),
-                            new ShoppingConfiguration(true)
+                            new ShoppingConfiguration(true),
+                            new BranchOfficeConfiguration(false)
                     ),
                     new Country(
                             "ph",
@@ -134,7 +138,8 @@ abstract class CountryGatewayBridgeImplTestData {
                             ),
                             new WabipayConfiguration(true, true, true),
                             new Geolocation(new Double(-38.416097), new Double(-63.616672)),
-                            new ShoppingConfiguration(true)
+                            new ShoppingConfiguration(true),
+                            new BranchOfficeConfiguration(false)
                     ),
                     new Country(
                             "ma",
@@ -156,7 +161,8 @@ abstract class CountryGatewayBridgeImplTestData {
                             ),
                             new WabipayConfiguration(true, true, true),
                             new Geolocation(new Double(-38.416097), new Double(-63.616672)),
-                            new ShoppingConfiguration(true)
+                            new ShoppingConfiguration(true),
+                            new BranchOfficeConfiguration(false)
                     )
             ]
 
@@ -186,6 +192,7 @@ abstract class CountryGatewayBridgeImplTestData {
                     ),
                     new WabipayConfiguration(true, true, true),
                     new Geolocation(new Double(-38.416097), new Double(-63.616672)),
-                    new ShoppingConfiguration(true)
+                    new ShoppingConfiguration(true),
+                    new BranchOfficeConfiguration(false)
             )
 }

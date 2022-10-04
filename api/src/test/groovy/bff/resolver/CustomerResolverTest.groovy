@@ -6,6 +6,7 @@ import bff.bridge.CountryBridge
 import bff.bridge.CustomerBridge
 import bff.bridge.ThirdPartyBridge
 import bff.model.BnPlCustomerStatus
+import bff.model.Country
 import bff.model.Customer
 import bff.model.CustomerStatus
 import bff.service.bnpl.BnplProvidersService
@@ -46,6 +47,8 @@ class CustomerResolverTest implements GraphQLResolver<Customer> {
     private BnplProvidersService bnplProvidersService
     @Mock
     private BnplBridge bnplBridge
+    @Mock
+    private CountryBridge countryGatewayBridgeImpl
 
     private CustomerResolver sut
     def indianCustomer = anyCustomerWithIdAndAccessToken("in")
@@ -61,6 +64,7 @@ class CustomerResolverTest implements GraphQLResolver<Customer> {
                 bnplBridge: bnplBridge
         )
         when(featureFlagsSdk.isActiveForCountry(Mockito.any(), Mockito.any())).thenReturn(false)
+        when(countryBridge.getCountry(Mockito.any())).thenReturn(new Country(id: "ar",customerBranchesEnabled: false))
     }
 
     @Test

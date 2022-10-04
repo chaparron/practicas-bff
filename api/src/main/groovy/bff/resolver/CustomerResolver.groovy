@@ -30,8 +30,6 @@ class CustomerResolver implements GraphQLResolver<Customer> {
     BnplProvidersService bnplProvidersService
     @Autowired
     BnplBridge bnplBridge
-    @Autowired
-    CountryGatewayBridgeImpl countryGatewayBridgeImpl
 
     List<VerificationDocument> verificationDocuments(Customer customer) {
         customer.verificationDocuments ?: customerBridge.findVerificationDocs(customer.accessToken)
@@ -68,7 +66,7 @@ class CustomerResolver implements GraphQLResolver<Customer> {
             }
         }
 
-        if (countryGatewayBridgeImpl.getCountry(customer.country_id).customerBranchesEnabled
+        if (countryBridge.getCountry(customer.country_id).customerBranchesEnabled
                 && customer.storeType == StoreType.MAIN_OFFICE) {
             ps.push(new ProfileSection(id: "BRANCH_OFFICE"))
         } else {

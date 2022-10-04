@@ -17,6 +17,7 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.context.MessageSource
+import wabi2b.sdk.regional.BranchOfficeConfiguration
 import wabi2b.sdk.regional.ContactInformation
 import wabi2b.sdk.regional.Country
 import wabi2b.sdk.regional.CurrencyInformation
@@ -88,7 +89,8 @@ class CountryMapperTest {
                         true
                 ),
                 new Geolocation(new Double(-38.416097), new Double(-63.616672)),
-                new ShoppingConfiguration(true)
+                new ShoppingConfiguration(true),
+                new BranchOfficeConfiguration(false)
         )
 
         def country = mapper.buildCountry(regionalConfigCountry)
