@@ -25,6 +25,9 @@ type SuperMoneyCreditLine implements CreditLine {
   approvedLimit: Money!
   toRepay: Money!
   remaining: Money!
+  approvedLimitTooltip(languageTag: String!): String
+  toRepayTooltip(languageTag: String!): String
+  remainingTooltip(languageTag: String!): String
 }
 
 union CreditLinesResult = CreditLines
