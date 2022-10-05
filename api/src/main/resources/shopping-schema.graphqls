@@ -11,6 +11,7 @@ enum OverlayPosition {
 }
 
 type Badge {
+  id: ID!
   image(size: BadgeImageSize): String
   tooltip(languageTag: LanguageTag!): String
   overlayPosition: OverlayPosition

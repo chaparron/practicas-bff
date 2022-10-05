@@ -397,7 +397,17 @@ class Cms {
                     badges: [
                             toJava(brand.discount())
                                     .filter { it == true }
-                                    .map { DiscountBadge.create(messageSource) }
+                                    .map {
+                                        DiscountBadge.create(
+                                                { Locale locale ->
+                                                    messageSource.getMessage(
+                                                            "brand.badges.DISCOUNT",
+                                                            [].toArray(),
+                                                            locale
+                                                    )
+                                                }
+                                        )
+                                    }
                                     .orElse(null)
                     ].findResults { it }
             )
@@ -411,7 +421,17 @@ class Cms {
                     badges: [
                             toJava(supplier.discount())
                                     .filter { it == true }
-                                    .map { DiscountBadge.create(messageSource) }
+                                    .map {
+                                        DiscountBadge.create(
+                                                { Locale locale ->
+                                                    messageSource.getMessage(
+                                                            "supplier.badges.DISCOUNT",
+                                                            [].toArray(),
+                                                            locale
+                                                    )
+                                                }
+                                        )
+                                    }
                                     .orElse(null)
                     ].findResults { it }
             )
