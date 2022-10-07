@@ -59,7 +59,7 @@ class CommercialPromotionApplicationModeTest {
     }
 
     @Test
-    void 'lineal should not apply if minimum products quantity is satisfied'() {
+    void 'lineal should not apply if minimum products quantity is satisfied for the reached step'() {
         assertFalse(
                 LINEAL.appliesTo(
                         [anyStep(10, 15, Map.of(3, 2))],
@@ -118,7 +118,7 @@ class CommercialPromotionApplicationModeTest {
     }
 
     @Test
-    void 'lineal global should not apply if minimum products quantity is satisfied'() {
+    void 'lineal global should not apply if minimum products quantity is satisfied for the reached step'() {
         assertFalse(
                 LINEAL_GLOBAL.appliesTo(
                         [anyStep(10, 15, Map.of(3, 2))],
@@ -136,6 +136,16 @@ class CommercialPromotionApplicationModeTest {
                 PROGRESSIVE.appliesTo(
                         [anyStep(1, 5, Map.of())],
                         [anyProductCart(3, 1, 1)]
+                )
+        )
+    }
+
+    @Test
+    void 'progressive should apply when min step lower bound is reached by a single product selection'() {
+        assertTrue(
+                PROGRESSIVE.appliesTo(
+                        [anyStep(1, 5, Map.of())],
+                        [anyProductCart(3, 1, 10)]
                 )
         )
     }
@@ -177,7 +187,7 @@ class CommercialPromotionApplicationModeTest {
     }
 
     @Test
-    void 'progressive should not apply if minimum products quantity is satisfied'() {
+    void 'progressive should not apply if minimum products quantity is satisfied for the reached step'() {
         assertFalse(
                 PROGRESSIVE.appliesTo(
                         [anyStep(10, 15, Map.of(3, 2))],
@@ -195,6 +205,16 @@ class CommercialPromotionApplicationModeTest {
                 PROGRESSIVE_GLOBAL.appliesTo(
                         [anyStep(10, 15, Map.of())],
                         [anyProductCart(3, 5, 2)]
+                )
+        )
+    }
+
+    @Test
+    void 'progressive global should apply when min step lower bound is reached by a single product selection'() {
+        assertTrue(
+                PROGRESSIVE_GLOBAL.appliesTo(
+                        [anyStep(10, 15, Map.of())],
+                        [anyProductCart(3, 5, 4)]
                 )
         )
     }
@@ -236,7 +256,7 @@ class CommercialPromotionApplicationModeTest {
     }
 
     @Test
-    void 'progressive global should not apply if minimum products quantity is satisfied'() {
+    void 'progressive global should not apply if minimum products quantity is satisfied for the reached step'() {
         assertFalse(
                 PROGRESSIVE_GLOBAL.appliesTo(
                         [anyStep(10, 15, Map.of(3, 2))],
@@ -295,7 +315,7 @@ class CommercialPromotionApplicationModeTest {
     }
 
     @Test
-    void 'slabbed should not apply if minimum products quantity is satisfied'() {
+    void 'slabbed should not apply if minimum products quantity is satisfied for the reached step'() {
         assertFalse(
                 SLABBED.appliesTo(
                         [anyStep(5, 15, Map.of(3, 2))],
@@ -354,7 +374,7 @@ class CommercialPromotionApplicationModeTest {
     }
 
     @Test
-    void 'slabbed global should not apply if minimum products quantity is satisfied'() {
+    void 'slabbed global should not apply if minimum products quantity is satisfied for the reached step'() {
         assertFalse(
                 SLABBED_GLOBAL.appliesTo(
                         [anyStep(5, 15, Map.of(3, 2))],

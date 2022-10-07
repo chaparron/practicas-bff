@@ -216,7 +216,12 @@ class ApplicationModeUtils {
                         }
                 ).isPresent()
             }
-    static final Closure<Boolean> linealOrProgressiveValidator =
+    static final Closure<Boolean> progressiveValidator =
+            { List<RewardsStep> steps, Closure<Integer> quantifier ->
+                ofNullable(steps.find { quantifier(it) >= it.from })
+                        .isPresent()
+            }
+    static final Closure<Boolean> linealValidator =
             { List<RewardsStep> steps, Closure<Integer> quantifier ->
                 ofNullable(
                         steps.find {
@@ -232,10 +237,10 @@ enum ApplicationMode {
 
     SLABBED(simpleQuantifier, slabbedValidator),
     SLABBED_GLOBAL(quantityByUnitsQuantifier, slabbedValidator),
-    PROGRESSIVE(simpleQuantifier, linealOrProgressiveValidator),
-    PROGRESSIVE_GLOBAL(quantityByUnitsQuantifier, linealOrProgressiveValidator),
-    LINEAL(simpleQuantifier, linealOrProgressiveValidator),
-    LINEAL_GLOBAL(quantityByUnitsQuantifier, linealOrProgressiveValidator)
+    PROGRESSIVE(simpleQuantifier, progressiveValidator),
+    PROGRESSIVE_GLOBAL(quantityByUnitsQuantifier, progressiveValidator),
+    LINEAL(simpleQuantifier, linealValidator),
+    LINEAL_GLOBAL(quantityByUnitsQuantifier, linealValidator)
 
     private final Closure<Closure<Integer>> quantifier
     private final Closure<Boolean> validator
