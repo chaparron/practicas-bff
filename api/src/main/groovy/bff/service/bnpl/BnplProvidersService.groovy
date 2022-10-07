@@ -64,7 +64,7 @@ class BnplProvidersService {
 
         new BnplCreditLineProvidersProcess()
                 .nextCondition { enabledCountries.contains(country) }
-                .nextCondition { [OrderStatus.PENDING, OrderStatus.IN_PROGRESS].contains(order.status) }
+                .nextCondition { supplierOrder.isPayable() }
                 .nextCondition { supplierOrder.payment_pending >= bnplBridge.supportedMinimumAmount(country, accessToken).amount }
                 .nextCondition { bnplBridge.customerStatus(accessToken).active }
                 .nextCondition { supplierHasBnplWallet(suppliers, accessToken, supplierId) }

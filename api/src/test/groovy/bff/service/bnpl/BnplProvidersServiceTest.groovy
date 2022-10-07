@@ -167,7 +167,7 @@ class BnplProvidersServiceTest {
     @Test
     void 'bnpl provider is null for user without wallet by supplier and order'() {
         when(walletBridge.getSupportedProvidersBetween(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(checkEmptyProvidersSupportedResponse)
-        def supplierOrder = new SupplierOrder(id: 1L, order: TestExtensions.anyOrder(PENDING, emptyList()), accessToken: indianToken, payment_pending: ONE)
+        def supplierOrder = new SupplierOrder(id: 1L, order: TestExtensions.anyOrder(PENDING, emptyList()), accessToken: indianToken, payment_pending: ONE, status: SupplierOrderStatus.CONFIRMED)
         when(supplierOrderBridge.getOrderBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplierOrder.order)
         when(supplierOrderBridge.getSupplierBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplier)
         when(bnplBridge.customerStatus(Mockito.any())).thenReturn(new BnPlCustomerStatus(1, true))
@@ -180,10 +180,11 @@ class BnplProvidersServiceTest {
     }
 
     @Test
-    void 'bnpl provider is supermoney for user with wallet by supplier and pending order'() {
+    void 'bnpl provider is supermoney for user with wallet by supplier with confirmed supplier order'() {
         when(walletBridge.getSupportedProvidersBetween(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(checkProvidersSupportedResponse)
         def supplierOrder = new SupplierOrder(id: 1L, order: TestExtensions.anyOrder(PENDING,
-                [new SupplierOrder(id: 1L, order: TestExtensions.anyOrder(PENDING, emptyList()), accessToken: indianToken, payment_pending: ONE)]), accessToken: indianToken, payment_pending: ONE)
+                [new SupplierOrder(id: 1L, order: TestExtensions.anyOrder(PENDING, emptyList()), accessToken: indianToken, payment_pending: ONE)]), accessToken: indianToken, payment_pending: ONE,
+        status: SupplierOrderStatus.CONFIRMED)
         when(supplierOrderBridge.getOrderBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplierOrder.order)
         when(supplierOrderBridge.getSupplierBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplier)
         when(orderBridge.getSupplierOrders(indianToken, supplierOrder.order)).thenReturn(singletonList(supplierOrder))
@@ -201,7 +202,7 @@ class BnplProvidersServiceTest {
     void 'bnpl provider is null if the supplier has not bnpl wallet'() {
         when(walletBridge.getSupportedProvidersBetween(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new CheckSupportedProvidersResponse(bnplCustomerWallet, emptyList()))
         def supplierOrder = new SupplierOrder(id: 1L, order: TestExtensions.anyOrder(PENDING,
-                [new SupplierOrder(id: 1L, order: TestExtensions.anyOrder(PENDING, emptyList()), accessToken: indianToken, payment_pending: ONE)]), accessToken: indianToken, payment_pending: ONE)
+                [new SupplierOrder(id: 1L, order: TestExtensions.anyOrder(PENDING, emptyList()), accessToken: indianToken, payment_pending: ONE)]), accessToken: indianToken, payment_pending: ONE, status: SupplierOrderStatus.CONFIRMED)
         when(supplierOrderBridge.getOrderBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplierOrder.order)
         when(supplierOrderBridge.getSupplierBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplier)
         when(orderBridge.getSupplierOrders(indianToken, supplierOrder.order)).thenReturn(singletonList(supplierOrder))
@@ -216,11 +217,26 @@ class BnplProvidersServiceTest {
     }
 
     @Test
-    void 'bnpl provider is supermoney for user with wallet by supplier and in progress order'() {
+    void 'bnpl provider is null if supplier order status is not confirmed'() {
+        when(walletBridge.getSupportedProvidersBetween(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new CheckSupportedProvidersResponse(bnplCustomerWallet, emptyList()))
+        def supplierOrder = new SupplierOrder(id: 1L, order: TestExtensions.anyOrder(PENDING,
+                [new SupplierOrder(id: 1L, order: TestExtensions.anyOrder(PENDING, emptyList()), accessToken: indianToken, payment_pending: ONE)]), accessToken: indianToken, payment_pending: ONE,
+                status: SupplierOrderStatus.PENDING)
+        when(supplierOrderBridge.getOrderBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplierOrder.order)
+        when(supplierOrderBridge.getSupplierBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplier)
+        when(orderBridge.getSupplierOrders(indianToken, supplierOrder.order)).thenReturn(singletonList(supplierOrder))
+
+        assert sut.creditLineProvidersFor(supplierOrder) == null
+
+        verifyNoMoreInteractions(walletBridge)
+    }
+
+    @Test
+    void 'bnpl provider is supermoney for user with wallet by supplier and in progress order with confirmed supplier order'() {
         when(walletBridge.getSupportedProvidersBetween(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(checkProvidersSupportedResponse)
         def supplierOrder = new SupplierOrder(id: 1L, order: TestExtensions.anyOrder(IN_PROGRESS,
                 [new SupplierOrder(id: 1L, order: TestExtensions.anyOrder(IN_PROGRESS, []), accessToken: indianToken, payment_pending: ONE)]),
-                accessToken: indianToken, payment_pending: ONE)
+                accessToken: indianToken, payment_pending: ONE, status: SupplierOrderStatus.CONFIRMED)
         when(supplierOrderBridge.getOrderBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplierOrder.order)
         when(supplierOrderBridge.getSupplierBySupplierOrderId(indianToken, supplierOrder.id)).thenReturn(supplier)
         when(orderBridge.getSupplierOrders(indianToken, supplierOrder.order)).thenReturn(singletonList(supplierOrder))

@@ -133,6 +133,7 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
     }
 
     SimpleTextButton payLaterButton(SupplierOrder supplierOrder) {
+
         def countryId = JwtToken.countryFromString(supplierOrder.accessToken)
         def minAllowedBySM = enabledCountries.contains(countryId) ? bnplBridge.supportedMinimumAmount(countryId, supplierOrder.accessToken).amount : BigDecimal.ZERO
         def textKey = "bnpl.textButton"
@@ -151,7 +152,7 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
 
     SimpleTextButton paymentButton(SupplierOrder supplierOrder) {
         if (!supplierOrder.isPayable()) {
-          return   SimpleTextButton.hidden()
+          return SimpleTextButton.hidden()
         }
 
         SimpleTextButtonBuilder.buildFrom(
