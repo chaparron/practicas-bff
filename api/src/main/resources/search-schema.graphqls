@@ -149,6 +149,7 @@ type SuggestedBrand {
   id: Int!
   name: NonEmptyString!
   logo: NonEmptyString
+  badges: [Badge!]!
 }
 
 type SuggestedCategory {
@@ -160,6 +161,7 @@ type SuggestedSupplier {
   id: Int!
   name: NonEmptyString!
   avatar: NonEmptyString
+  badges: [Badge!]!
 }
 
 type MostSearchedTerm {

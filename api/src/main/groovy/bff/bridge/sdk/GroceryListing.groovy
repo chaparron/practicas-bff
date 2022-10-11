@@ -1679,7 +1679,7 @@ class GroceryListing {
 
     private class SuggestionsMapper {
 
-        static Suggestions map(SuggestionQueryResponse response) {
+        Suggestions map(SuggestionQueryResponse response) {
             new Suggestions(
                     products: asJava(response.products()).collect {
                         new SuggestedProduct(
@@ -1691,7 +1691,23 @@ class GroceryListing {
                         new SuggestedBrand(
                                 id: it.id().toInteger(),
                                 name: it.name().defaultEntry(),
-                                logo: toJava(it.logo()).orElse("08103094-1f10-11ed-861d-0242ac120002.svg")
+                                logo: toJava(it.logo()).orElse("08103094-1f10-11ed-861d-0242ac120002.svg"),
+                                badges: [
+                                        toJava(it.discount())
+                                                .filter { it == true }
+                                                .map {
+                                                    DiscountBadge.create(
+                                                            { Locale locale ->
+                                                                messageSource.getMessage(
+                                                                        "brand.badges.DISCOUNT",
+                                                                        [].toArray(),
+                                                                        locale
+                                                                )
+                                                            }
+                                                    )
+                                                }
+                                                .orElse(null)
+                                ].findResults { it }
                         )
                     },
                     categories: asJava(response.categories()).collect {
@@ -1704,7 +1720,23 @@ class GroceryListing {
                         new SuggestedSupplier(
                                 id: it.id().toInteger(),
                                 name: it.name(),
-                                avatar: toJava(it.avatar()).orElse(null)
+                                avatar: toJava(it.avatar()).orElse(null),
+                                badges: [
+                                        toJava(it.discount())
+                                                .filter { it == true }
+                                                .map {
+                                                    DiscountBadge.create(
+                                                            { Locale locale ->
+                                                                messageSource.getMessage(
+                                                                        "supplier.badges.DISCOUNT",
+                                                                        [].toArray(),
+                                                                        locale
+                                                                )
+                                                            }
+                                                    )
+                                                }
+                                                .orElse(null)
+                                ].findResults { it }
                         )
                     }
             )

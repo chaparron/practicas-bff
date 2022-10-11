@@ -85,6 +85,7 @@ class SuggestedBrand {
     Integer id
     String name
     String logo
+    List<Badge> badges
 }
 
 class SuggestedCategory {
@@ -96,6 +97,7 @@ class SuggestedSupplier {
     Integer id
     String name
     String avatar
+    List<Badge> badges
 }
 
 class PreviewSearchResultMapper {
