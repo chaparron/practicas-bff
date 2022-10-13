@@ -85,7 +85,25 @@ class GroceryListing {
     SearchResult search(SearchInput input) {
         def page = new Page(input)
         def request =
-                [new ProductQueryRequestFilteringBuilder(input), new ProductQueryRequestSortingBuilder(input)]
+                [
+                        new ProductQueryRequestFilteringBuilder(input),
+                        new ProductQueryRequestSortingBuilder(input),
+                        new ProductQueryRequestBuilder() {
+                            ProductQueryRequest apply(ProductQueryRequest request) {
+                                ofNullable(input.facets)
+                                        .filter { !it }
+                                        .map { request }
+                                        .orElse(
+                                                request
+                                                        .aggregatedByBrands(10)
+                                                        .aggregatedByCategories(1, true)
+                                                        .aggregatedBySuppliers(10)
+                                                        .aggregatedByFeatures()
+                                                        .aggregatedByDiscounts(5)
+                                        )
+                            }
+                        }
+                ]
                         .inject(
                                 ofNullable(input.similarTo)
                                         .map {
@@ -100,11 +118,6 @@ class GroceryListing {
                                         .orElse(
                                                 availableProductsForCustomer(input.accessToken)
                                                         .sized(page.size)
-                                                        .aggregatedByBrands(10)
-                                                        .aggregatedByCategories(1, true)
-                                                        .aggregatedBySuppliers(10)
-                                                        .aggregatedByFeatures()
-                                                        .aggregatedByDiscounts(5)
                                                         .fetchingOptions(50, Option.empty())
                                         ),
                                 { req, builder -> builder.apply(req) }
@@ -121,7 +134,24 @@ class GroceryListing {
     PreviewSearchResult search(PreviewSearchInput input) {
         def page = new Page(input)
         def request =
-                [new ProductQueryRequestFilteringBuilder(input), new ProductQueryRequestSortingBuilder(input)]
+                [
+                        new ProductQueryRequestFilteringBuilder(input),
+                        new ProductQueryRequestSortingBuilder(input),
+                        new ProductQueryRequestBuilder() {
+                            ProductQueryRequest apply(ProductQueryRequest request) {
+                                ofNullable(input.facets)
+                                        .filter { !it }
+                                        .map { request }
+                                        .orElse(
+                                                request
+                                                        .aggregatedByBrands(10)
+                                                        .aggregatedByCategories(1, true)
+                                                        .aggregatedByFeatures()
+                                                        .aggregatedByDiscounts(5)
+                                        )
+                            }
+                        }
+                ]
                         .inject(
                                 ofNullable(input.similarTo)
                                         .map {
@@ -139,10 +169,6 @@ class GroceryListing {
                                                         Option.apply(input.countryId)
                                                 )
                                                         .sized(page.size)
-                                                        .aggregatedByBrands(10)
-                                                        .aggregatedByCategories(1, true)
-                                                        .aggregatedByFeatures()
-                                                        .aggregatedByDiscounts(5)
                                                         .fetchingOptions(50, Option.empty())
                                         ),
                                 { request, builder -> builder.apply(request) }

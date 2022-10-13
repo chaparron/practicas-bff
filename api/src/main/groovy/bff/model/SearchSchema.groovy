@@ -164,6 +164,7 @@ class PreviewSearchInput {
     Integer bottler
     Integer manufacturer
     Boolean freeProduct
+    Boolean facets
 }
 
 @ToString(excludes = ["accessToken"])
@@ -190,6 +191,7 @@ class SearchInput {
     Integer bottler
     Integer manufacturer
     Boolean freeProduct
+    Boolean facets
 }
 
 @ToString(excludes = ["accessToken"])

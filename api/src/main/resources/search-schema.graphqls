@@ -21,6 +21,7 @@ input SearchInput {
   bottler: Int
   manufacturer: Int
   freeProduct: Boolean
+  facets: Boolean
 }
 
 input SearchScrollInput {
@@ -50,6 +51,7 @@ input PreviewSearchInput {
   bottler: Int
   manufacturer: Int
   freeProduct: Boolean
+  facets: Boolean
 }
 
 input PreviewSearchScrollInput {
