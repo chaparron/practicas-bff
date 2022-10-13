@@ -30,6 +30,6 @@ type DigitalPayment {
 }
 
 type DigitalPaymentFailed {
-  responseCode: String!
+  text(languageTag: String!): String!
   message: String!
 }
