@@ -406,6 +406,8 @@ class OrderBridgeImpl implements OrderBridge {
                     units: error.units,
                     prevValue: error.prevValue,
                     actualValue: error.actualValue,
+                    prevTotalPrice: error.prevTotalPrice,
+                    actualTotalPrice: error.actualTotalPrice,
                     priority: error.priority
             )
         }

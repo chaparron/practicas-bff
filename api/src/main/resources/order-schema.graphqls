@@ -746,6 +746,8 @@ type OrderErrorV1 {
   actualValue: Float
   actualValueMoney: Money
   priority: OrderErrorPriorityType!
+  prevTotalPrice: Float
+  actualTotalPrice: Float
 }
 
 enum OrderErrorPriorityType {
