@@ -328,7 +328,7 @@ class PaginatedNotificationResult {
 class NotificationResult {
     String id
     String url
-    String creationDate
+    Long creationDate
     Boolean isRead
     String templateId
     List<NotificationParams> params
