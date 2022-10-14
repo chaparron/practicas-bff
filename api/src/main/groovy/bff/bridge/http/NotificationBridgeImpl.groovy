@@ -7,6 +7,7 @@ import bff.model.NotificationParams
 import bff.model.NotificationResult
 import bff.model.PaginatedNotificationResult
 import bff.model.ReadNotificationInput
+import bff.model.TimestampOutput
 import bff.model.UnreadNotificationsInput
 import bff.model.UnreadNotificationsResult
 import com.wabi2b.notifications.common.PaginatedNotificationResponse
@@ -46,7 +47,7 @@ class NotificationBridgeImpl implements NotificationBridge {
         return new NotificationResult(
                 id: notification.getId(),
                 url: notification.getUrl(),
-                creationDate: notification.getCreationDate(),
+                creationDate: new TimestampOutput(new Date(notification.getCreationDate()).toInstant().toString()),
                 isRead: notification.isRead(),
                 templateId: notification.getTemplateId(),
                 params: toMap(notification.getParams()),

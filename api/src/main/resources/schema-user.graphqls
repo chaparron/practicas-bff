@@ -295,7 +295,7 @@ type PaginatedNotificationResult {
 type NotificationResult {
   id: String
   url: String
-  creationDate: Long
+  creationDate: TimestampOutput
   isRead: Boolean
   templateId: String
   params: [NotificationParams]
