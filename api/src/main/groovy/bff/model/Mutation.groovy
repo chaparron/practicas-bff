@@ -44,6 +44,9 @@ class Mutation implements GraphQLMutationResolver {
     @Autowired
     PreSignUpRegister preSignUpRegistry
 
+    @Autowired
+    NotificationBridge notificationBridge
+
     @Value('${environment:}')
     String environment
 
@@ -387,6 +390,10 @@ class Mutation implements GraphQLMutationResolver {
 
     Customer updateBranchOfficeProfile(UpdateBranchOfficeProfileInput input) {
         customerBridge.updateBranchOfficeProfile(input)
+    }
+
+    Void readAllNotifications(AccessTokenInput input){
+        notificationBridge.readAllNotification(input)
     }
 
     private LoginResult resolveCredentialsResponse(Credentials credentials, Boolean deviceSupportLegacy) {

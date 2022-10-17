@@ -397,6 +397,10 @@ class Query implements GraphQLQueryResolver {
     UnreadNotificationsResult unreadNotifications(UnreadNotificationsInput input) {
         notificationBridge.unreadNotifications(input)
     }
+
+    Void unreadAllNotifications(AccessTokenInput accessTokenInput){
+        notificationBridge.unread
+    }
 }
 
 

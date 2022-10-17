@@ -1,6 +1,7 @@
 package bff.bridge.http
 
 import bff.bridge.NotificationBridge
+import bff.model.AccessTokenInput
 import bff.model.GetMyNotificationsInput
 import bff.model.NotificationMessage
 import bff.model.NotificationParams
@@ -10,6 +11,7 @@ import bff.model.ReadNotificationInput
 import bff.model.TimestampOutput
 import bff.model.UnreadNotificationsInput
 import bff.model.UnreadNotificationsResult
+import bff.model.Void
 import com.wabi2b.notifications.common.PaginatedNotificationResponse
 import com.wabi2b.notifications.sdk.NotificationClient
 import com.wabi2b.notifications.sdk.NotificationHttpClient
@@ -42,6 +44,13 @@ class NotificationBridgeImpl implements NotificationBridge {
     UnreadNotificationsResult unreadNotifications(UnreadNotificationsInput input) {
         return new UnreadNotificationsResult(unread: client.unreadNotification(input.getAccessToken()).unread)
     }
+
+    @Override
+    Void readAllNotification(AccessTokenInput input) {
+        client.readAllNotification(input.getAccessToken())
+        Void.SUCCESS
+    }
+
 
     private NotificationResult mapNotification(com.wabi2b.notifications.common.NotificationResponse notification) {
         return new NotificationResult(
