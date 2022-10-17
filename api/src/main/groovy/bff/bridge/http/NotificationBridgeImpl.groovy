@@ -26,7 +26,7 @@ class NotificationBridgeImpl implements NotificationBridge {
 
     @Override
     PaginatedNotificationResult getAllMyNotifications(GetMyNotificationsInput input) {
-        PaginatedNotificationResponse notifications = client.getAllNotifications(input.getPageSize(), input.getCursor(), input.getAccessToken())
+        PaginatedNotificationResponse notifications = client.getAllNotifications(input.getPageSize(), input.getCursor(), input.getAccessToken(), input.getLanguage())
         List<NotificationResult> resultList = notifications.content?.collect() {
             mapNotification(it)
         }

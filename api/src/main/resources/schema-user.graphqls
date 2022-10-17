@@ -285,6 +285,7 @@ input GetMyNotificationsInput {
   cursor: String
   pageSize: String
   accessToken: String!
+  language: String
 }
 
 type PaginatedNotificationResult {

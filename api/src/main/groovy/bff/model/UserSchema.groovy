@@ -313,6 +313,7 @@ class GetMyNotificationsInput {
     String cursor
     String pageSize
     String accessToken
+    String language
 }
 
 class ReadNotificationInput {
