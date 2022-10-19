@@ -277,6 +277,11 @@ type Mutation {
 
 }
 
+type MessageBox {
+  title(languageTag: String!): String
+  description(languageTag: String!): String
+}
+
 scalar NonEmptyString
 scalar LanguageTag
 scalar PosIntEqualsOrLessThan10

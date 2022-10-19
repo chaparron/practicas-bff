@@ -1,15 +1,19 @@
 package bff.resolver
 
+import bff.bridge.BnplBridge
 import bff.bridge.OrderBridge
+import bff.bridge.SupplierOrderBridge
 import bff.model.*
 import bff.service.MoneyService
+import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-import static bff.TestExtensions.anyOrder
-import static bff.TestExtensions.anySupplierOrder
+
+import static bff.TestExtensions.*
+import static org.mockito.ArgumentMatchers.any
 import static org.mockito.Mockito.*
 
 @RunWith(MockitoJUnitRunner)
@@ -20,15 +24,21 @@ class OrderResolverTest {
     private MoneyService moneyService
     @Mock
     private SupplierOrderResolver supplierOrderResolver
+    @Mock
+    private SupplierOrderBridge supplierOrderBridge
+    @Mock
+    private BnplBridge bnplBridge
 
     private OrderResolver sut
 
     @Before
     void setup() {
         sut = new OrderResolver(
-                orderBridge: orderBridge,
-                moneyService: moneyService,
-                supplierOrderResolver: supplierOrderResolver
+                orderBridge,
+                supplierOrderBridge,
+                moneyService,
+                supplierOrderResolver,
+                bnplBridge
         )
     }
 
@@ -102,10 +112,66 @@ class OrderResolverTest {
 
     void testPaymentMode(List<PaymentModeType> paymentModeTypes, List<SupplierOrder> supplierOrders, Order order) {
         def expected = []
-        paymentModeTypes.forEach {expected.add(new PaymentMode(it)) }
+        paymentModeTypes.forEach { expected.add(new PaymentMode(it)) }
         def result = sut.paymentMode(order)
         assert result.size() == expected.size()
         assert result.containsAll(expected)
         verify(supplierOrderResolver, times(1)).supportedPaymentProviders(supplierOrders.first())
+    }
+
+    @Test
+    void 'should return null as long as customer has already BnPL support'() {
+        def order = givenAnOrderForACustomerWithBNPLSupport()
+
+        def box = sut.payLaterMessageBox(order)
+
+        Assertions.assertThat(box).isNull()
+    }
+
+    private Order givenAnOrderForACustomerWithBNPLSupport() {
+        doReturn(new BnPlCustomerStatus(1, true)).when(bnplBridge).customerStatus(any())
+        def order = anyOrder(OrderStatus.PENDING, [])
+
+        return order
+    }
+
+    @Test
+    void 'should return payLaterMessageBox as long as customer do not have BnPL support but provider has it'() {
+        def order = givenAnOrderWithoutBNPLSupportDueToCustomer()
+
+        def box = sut.payLaterMessageBox(order)
+
+        Assertions.assertThat(box).isEqualTo(new MessageBox("anIcon", "order.bnpl.messageBoxInfo.title", "order.bnpl.messageBoxInfo.description"))
+    }
+
+    private Order givenAnOrderWithoutBNPLSupportDueToCustomer() {
+        doReturn(new BnPlCustomerStatus(1, false)).when(bnplBridge).customerStatus(any())
+        def supplierOrder = anySupplierOrder()
+        def supplierOrders = [supplierOrder]
+        doReturn(anySupplier()).when(supplierOrderBridge).getSupplierBySupplierOrderId(any(), any())
+        doReturn(true).when(bnplBridge).isSupplierOnboarded(any(), any())
+        def order = anyOrder(OrderStatus.PENDING, supplierOrders)
+
+        return order
+    }
+
+    @Test
+    void 'should return null as long as neither customer nor provider has BnPL support'() {
+        def order = givenAnOrderWithoutBNPLSupportDueToSupplier()
+
+        def box = sut.payLaterMessageBox(order)
+
+        Assertions.assertThat(box).isNull()
+    }
+
+    private Order givenAnOrderWithoutBNPLSupportDueToSupplier() {
+        doReturn(new BnPlCustomerStatus(1, false)).when(bnplBridge).customerStatus(any())
+        def supplierOrder = anySupplierOrder()
+        def supplierOrders = [supplierOrder]
+        doReturn(anySupplier()).when(supplierOrderBridge).getSupplierBySupplierOrderId(any(), any())
+        doReturn(false).when(bnplBridge).isSupplierOnboarded(any(), any())
+        def order = anyOrder(OrderStatus.PENDING, supplierOrders)
+
+        return order
     }
 }

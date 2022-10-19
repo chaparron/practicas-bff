@@ -740,7 +740,7 @@ enum PaymentProviderType {
     PAY_LATER
 }
 
-enum PaymentProviderLogoSize implements ImageSizeEnum{
+enum PaymentProviderLogoSize implements ImageSizeEnum {
     SIZE_30x20
 
     @Override
