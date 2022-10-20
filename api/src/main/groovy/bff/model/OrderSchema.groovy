@@ -885,7 +885,9 @@ class OrderErrorV1 {
     BigDecimal actualValue
     Money actualValueMoney
     BigDecimal prevTotalPrice
+    Money prevTotalPriceMoney
     BigDecimal actualTotalPrice
+    Money actualTotalPriceMoney
     OrderErrorPriorityType priority
 }
 
