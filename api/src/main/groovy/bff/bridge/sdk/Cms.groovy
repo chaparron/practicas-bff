@@ -21,6 +21,7 @@ import wabi2b.cms.sdk.Supplier as CmsSupplier
 import static groovy.lang.Closure.IDENTITY
 import static java.util.Optional.*
 import static scala.jdk.javaapi.CollectionConverters.asJava
+import static scala.jdk.javaapi.CollectionConverters.asScala
 import static scala.jdk.javaapi.OptionConverters.toJava
 import static wabi2b.cms.sdk.BuildModulePiecesQuery.piecesOf
 import static wabi2b.cms.sdk.FindModulesQuery.homeModulesIn
@@ -56,7 +57,11 @@ class Cms {
         def filteredByBrand =
                 ofNullable(input.brand)
                         .map { it.toString() }
-                        .map { { FindListingModulesQuery query -> query.filteredByBrand(it) } }
+                        .map {
+                            { FindListingModulesQuery query ->
+                                query.filteredByBrand(it, asScala([] as List<String>).toSeq())
+                            }
+                        }
                         .orElse(IDENTITY)
         def filteredByCategory =
                 ofNullable(input.category)
@@ -210,7 +215,7 @@ class Cms {
                     }
                     def filteredByBrand = { UriBuilder b ->
                         request.filtering().byBrand()
-                                .map { b.queryParam("brand", it.id()) }
+                                .map { b.queryParam("brand", it.values().head()) }
                                 .getOrElse { b }
                     }
                     def filteredByPromotion = { UriBuilder b ->

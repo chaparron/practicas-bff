@@ -63,8 +63,12 @@ class CmsTest {
 
     @Test
     void 'listing modules can be filtered by brand'() {
-        when(sdk.query(listingModulesIn("ar", Option.empty()).filteredByBrand("5")))
-                .thenReturn(asScala([] as List<CmsModule>).toList())
+        when(
+                sdk.query(
+                        listingModulesIn("ar", Option.empty())
+                                .filteredByBrand("5", asScala([] as List<String>).toSeq())
+                )
+        ).thenReturn(asScala([] as List<CmsModule>).toList())
 
         assertTrue(cms.find(new ListingInput(country: "ar", brand: 5)).isEmpty())
     }
