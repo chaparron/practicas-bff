@@ -28,6 +28,8 @@ Mappings:
       UpiLogoId: 'b47a777d-e6a4-4538-94f7-d7fe5d9ed38a.png'
       DpLogoId: '6da1c9dc-cd9b-414a-b5b9-097945537b97.png'
       BnplLogoId: '1bfd3538-1bd6-4f03-aba0-282c4b249ea6.png'
+      GraphiQL: true
+      GraphQLIntrospection: true
     prod:
       MinPoolSize: '2'
       MaxPoolSize: '4'
@@ -49,6 +51,8 @@ Mappings:
       UpiLogoId: 'b47a777d-e6a4-4538-94f7-d7fe5d9ed38a.png'
       DpLogoId: '6da1c9dc-cd9b-414a-b5b9-097945537b97.png'
       BnplLogoId: '1bfd3538-1bd6-4f03-aba0-282c4b249ea6.png'
+      GraphiQL: false
+      GraphQLIntrospection: false
 
 Resources:
   Wabi2bCertificate:
@@ -404,6 +408,14 @@ Resources:
         - Namespace: aws:elasticbeanstalk:application:environment
           OptionName: ssm
           Value: !Sub "${EnvironmentStackName}"
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: graphiql_enabled
+          Value:  !FindInMap [ Config, !Ref EnvironmentStackName, GraphiQL ]
+
+        - Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: graphql_tools_introspection_enabled
+          Value:  !FindInMap [ Config, !Ref EnvironmentStackName, GraphQLIntrospection ]
 
   ElasticBeanstalkInstanceProfile:
     Type: AWS::IAM::InstanceProfile
