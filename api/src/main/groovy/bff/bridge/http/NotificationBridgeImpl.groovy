@@ -60,7 +60,9 @@ class NotificationBridgeImpl implements NotificationBridge {
                 isRead: notification.isRead(),
                 templateId: notification.getTemplateId(),
                 params: toMap(notification.getParams()),
-                message: mapNotificationMessage(notification.getMessage())
+                message: mapNotificationMessage(notification.getMessage(),
+                type: notification.type,
+                group: notification.group)
         )
     }
 

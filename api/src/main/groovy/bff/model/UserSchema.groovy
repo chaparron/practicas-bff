@@ -334,6 +334,8 @@ class NotificationResult {
     String templateId
     List<NotificationParams> params
     NotificationMessage message
+    String type
+    String group
 }
 
 class NotificationMessage {
