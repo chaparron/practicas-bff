@@ -301,6 +301,8 @@ type NotificationResult {
   templateId: String
   params: [NotificationParams]
   message: NotificationMessage
+  type: String
+  group: String
 }
 
 type NotificationMessage {
