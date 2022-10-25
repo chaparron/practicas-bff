@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component
 
 import static bff.support.GraphQlUtils.*
 import static java.lang.Math.max
+import static java.util.Optional.empty
 import static java.util.Optional.ofNullable
 
 @Component
@@ -26,10 +27,10 @@ class SearchQuery implements GraphQLQueryResolver {
     }
 
     SearchResponse searchV2(SearchInput input, DataFetchingEnvironment environment) {
-        def facets = facets(environment)
+        def faceting = faceting(environment)
         Closure<Closure<SearchInput>> facet = { String name, Closure<SearchInput> builder ->
             { SearchInput i ->
-                ofNullable(facets.find { it.name == name })
+                ofNullable(faceting.find { it.name == name })
                         .map { builder(i, it) }
                         .orElse(i)
             }
@@ -82,7 +83,18 @@ class SearchQuery implements GraphQLQueryResolver {
                             builder.facetingByDiscounts(
                                     intArgumentValue(field, "interval", environment)
                             )
-                        })
+                        }),
+                        // TODO remove this after migration
+                        { SearchInput i ->
+                            if ((faceting.isEmpty()) && facets(environment).isPresent())
+                                i
+                                        .facetingByCategories(1, false)
+                                        .facetingByBrands(10, empty())
+                                        .facetingBySuppliers(10, empty())
+                                        .facetingByFeatures(10, empty(), Set.of())
+                                        .facetingByDiscounts(5)
+                            else i
+                        }
                 ].inject(input, { SearchInput i, it -> it(i) })
         )
     }
@@ -92,10 +104,10 @@ class SearchQuery implements GraphQLQueryResolver {
     }
 
     SearchResponse previewSearch(PreviewSearchInput input, DataFetchingEnvironment environment) {
-        def facets = facets(environment)
+        def faceting = faceting(environment)
         Closure<Closure<PreviewSearchInput>> facet = { String name, Closure<PreviewSearchInput> builder ->
             { PreviewSearchInput i ->
-                ofNullable(facets.find { it.name == name })
+                ofNullable(faceting.find { it.name == name })
                         .map { builder(i, it) }
                         .orElse(i)
             }
@@ -141,7 +153,17 @@ class SearchQuery implements GraphQLQueryResolver {
                             builder.facetingByDiscounts(
                                     intArgumentValue(field, "interval", environment)
                             )
-                        })
+                        }),
+                        // TODO remove this after migration
+                        { PreviewSearchInput i ->
+                            if ((faceting.isEmpty()) && facets(environment).isPresent())
+                                i
+                                        .facetingByCategories(1, false)
+                                        .facetingByBrands(10, empty())
+                                        .facetingByFeatures(10, empty(), Set.of())
+                                        .facetingByDiscounts(5)
+                            else i
+                        }
                 ].inject(input, { PreviewSearchInput i, it -> it(i) })
         )
     }
@@ -198,10 +220,32 @@ class SearchQuery implements GraphQLQueryResolver {
                     (it.field.getSelectionSet().getSelections().head() as InlineFragment)
                             .getSelectionSet()
                             .getSelections()
+                            .findResults { if (it instanceof Field) it else null }
                             .findResult {
-                                def field = it as Field
-                                if ((field.name == "faceting") && shouldInclude(field, environment))
-                                    field.getSelectionSet().getSelections().collect { it as Field }
+                                if (
+                                        (it.name == "facets") &&
+                                                shouldInclude(it, environment) &&
+                                                ofNullable((
+                                                        environment.variables.get("input") as Map<String, Object>)
+                                                        .get("facets")
+                                                ).map { it as Boolean }.orElse(true)
+                                ) it
+                                else null
+                            }
+                }
+    }
+
+    private static def faceting(DataFetchingEnvironment environment) {
+        ofNullable(environment)
+                .map {
+                    (it.field.getSelectionSet().getSelections().head() as InlineFragment)
+                            .getSelectionSet()
+                            .getSelections()
+                            .findResults { if (it instanceof Field) it else null }
+                            .findResult {
+                                if ((it.name == "faceting") && shouldInclude(it, environment))
+                                    it.getSelectionSet().getSelections()
+                                            .findResults { if (it instanceof Field) it else null }
                                 else null
                             }
                 }
