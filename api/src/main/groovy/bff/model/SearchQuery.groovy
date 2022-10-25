@@ -102,7 +102,7 @@ class SearchQuery implements GraphQLQueryResolver {
         }
         groceryListing.search(
                 [
-                        facet("categories", { SearchInput builder, Field field ->
+                        facet("categories", { PreviewSearchInput builder, Field field ->
                             def count
                             count = { Field it, Integer acc ->
                                 ofNullable(
@@ -117,14 +117,14 @@ class SearchQuery implements GraphQLQueryResolver {
                                     boolArgumentValue(field, "flattened", environment)
                             )
                         }),
-                        facet("brands", { SearchInput builder, Field field ->
+                        facet("brands", { PreviewSearchInput builder, Field field ->
                             builder.facetingByBrands(
                                     intArgumentValue(field, "size", environment),
                                     ofNullable(enumArgumentValue(field, "sorting", environment))
                                             .map { BrandFacetSorting.valueOf(it) }
                             )
                         }),
-                        facet("features", { SearchInput builder, Field field ->
+                        facet("features", { PreviewSearchInput builder, Field field ->
                             builder.facetingByFeatures(
                                     intArgumentValue(field, "size", environment),
                                     ofNullable(enumArgumentValue(field, "sorting", environment))
@@ -137,7 +137,7 @@ class SearchQuery implements GraphQLQueryResolver {
                                     ).toSet()
                             )
                         }),
-                        facet("discounts", { SearchInput builder, Field field ->
+                        facet("discounts", { PreviewSearchInput builder, Field field ->
                             builder.facetingByDiscounts(
                                     intArgumentValue(field, "interval", environment)
                             )

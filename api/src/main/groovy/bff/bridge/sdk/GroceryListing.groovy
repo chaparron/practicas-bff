@@ -1725,6 +1725,7 @@ class GroceryListing {
                                                 }
                         )
                     }
+                    .sort { it.name() }
         }
 
         protected Optional<Facet> brandsFacet(ProductQueryResponse response) {
