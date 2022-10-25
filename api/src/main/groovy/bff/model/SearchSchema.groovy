@@ -35,6 +35,7 @@ class SearchResult implements SearchResponse {
     List<Filter> filters
     List<ProductSearch> products
     List<Facet> facets
+    Faceting faceting
 }
 
 class PreviewSearchResult implements SearchResponse {
@@ -44,6 +45,7 @@ class PreviewSearchResult implements SearchResponse {
     List<Filter> filters
     List<PreviewProductSearch> products
     List<Facet> facets
+    Faceting faceting
 }
 
 class ScrollableSearchResult {
@@ -151,7 +153,9 @@ class PreviewSearchInput {
     Integer page
     Integer size
     Integer brand
+    Set<String> brands
     Integer supplier
+    Set<String> suppliers
     String tag
     List<FeatureInput> features
     BigDecimal lat
@@ -165,6 +169,56 @@ class PreviewSearchInput {
     Integer manufacturer
     Boolean freeProduct
     Boolean facets
+    Optional<CategoryFaceting> categoryFaceting = empty()
+    Optional<BrandFaceting> brandFaceting = empty()
+    Optional<FeatureFaceting> featureFaceting = empty()
+    Optional<DiscountFaceting> discountFaceting = empty()
+
+    def facetingByCategories(Integer depth, Boolean flattened) {
+        categoryFaceting = of(new CategoryFaceting(depth: depth, flattened: flattened))
+        this
+    }
+
+    def facetingByBrands(Integer size, Optional<BrandFacetSorting> sorting) {
+        brandFaceting = of(new BrandFaceting(size: size, sorting: sorting))
+        this
+    }
+
+    def facetingByFeatures(Integer size, Optional<FeatureFacetSorting> sorting, Set<String> features) {
+        featureFaceting = of(new FeatureFaceting(size: size, sorting: sorting, features: features))
+        this
+    }
+
+    def facetingByDiscounts(Integer interval) {
+        discountFaceting = of(new DiscountFaceting(interval: interval))
+        this
+    }
+
+}
+
+class CategoryFaceting {
+    Integer depth
+    Boolean flattened
+}
+
+class BrandFaceting {
+    Integer size
+    Optional<BrandFacetSorting> sorting
+}
+
+class SupplierFaceting {
+    Integer size
+    Optional<SupplierFacetSorting> sorting
+}
+
+class DiscountFaceting {
+    Integer interval
+}
+
+class FeatureFaceting {
+    Integer size
+    Optional<FeatureFacetSorting> sorting
+    Set<String> features
 }
 
 @ToString(excludes = ["accessToken"])
@@ -178,7 +232,9 @@ class SearchInput {
     Integer page
     Integer size
     Integer brand
+    Set<String> brands
     Integer supplier
+    Set<String> suppliers
     String tag
     List<FeatureInput> features
     Boolean favourites
@@ -192,6 +248,37 @@ class SearchInput {
     Integer manufacturer
     Boolean freeProduct
     Boolean facets
+    Optional<CategoryFaceting> categoryFaceting = empty()
+    Optional<BrandFaceting> brandFaceting = empty()
+    Optional<SupplierFaceting> supplierFaceting = empty()
+    Optional<FeatureFaceting> featureFaceting = empty()
+    Optional<DiscountFaceting> discountFaceting = empty()
+
+    def facetingByCategories(Integer depth, Boolean flattened) {
+        categoryFaceting = of(new CategoryFaceting(depth: depth, flattened: flattened))
+        this
+    }
+
+    def facetingByBrands(Integer size, Optional<BrandFacetSorting> sorting) {
+        brandFaceting = of(new BrandFaceting(size: size, sorting: sorting))
+        this
+    }
+
+    def facetingBySuppliers(Integer size, Optional<SupplierFacetSorting> sorting) {
+        supplierFaceting = of(new SupplierFaceting(size: size, sorting: sorting))
+        this
+    }
+
+    def facetingByFeatures(Integer size, Optional<FeatureFacetSorting> sorting, Set<String> features) {
+        featureFaceting = of(new FeatureFaceting(size: size, sorting: sorting, features: features))
+        this
+    }
+
+    def facetingByDiscounts(Integer interval) {
+        discountFaceting = of(new DiscountFaceting(interval: interval))
+        this
+    }
+
 }
 
 @ToString(excludes = ["accessToken"])
@@ -788,6 +875,93 @@ enum PreviewHomeSupplierFailedReason {
         return new PreviewHomeSupplierFailed(reason: this)
     }
 }
+
+enum BrandFacetSorting {
+    BY_FREQUENCY,
+    ALPHABETICALLY
+}
+
+enum SupplierFacetSorting {
+    BY_FREQUENCY,
+    ALPHABETICALLY
+}
+
+enum FeatureFacetSorting {
+    BY_FREQUENCY,
+    ALPHABETICALLY
+}
+
+class Faceting {
+    Optional<CategoryFacet> categories
+    Optional<BrandFacet> brands
+    Optional<SupplierFacet> suppliers
+    List<FeatureFacet> features
+    Optional<DiscountFacet> discounts
+}
+
+class CategoryFacet {
+    List<CategorySlice> slices
+}
+
+class CategorySlice {
+    String id
+    Closure<String> name
+    Integer frequency
+    List<CategorySlice> slices
+}
+
+class BrandFacet {
+    Integer cardinality
+    List<BrandSlice> slices
+}
+
+class BrandSlice {
+    String id
+    Closure<String> name
+    String logo
+    List<Badge> badges
+    Integer frequency
+    Boolean selected
+}
+
+class SupplierFacet {
+    Integer cardinality
+    List<SupplierSlice> slices
+}
+
+class SupplierSlice {
+    String id
+    String name
+    String avatar
+    List<Badge> badges
+    Integer frequency
+    Boolean selected
+}
+
+class FeatureFacet {
+    String id
+    Closure<String> name
+    Integer cardinality
+    List<FeatureSlice> slices
+}
+
+class FeatureSlice {
+    String id
+    Closure<String> label
+    Integer frequency
+    Boolean selected
+}
+
+class DiscountFacet {
+    List<DiscountSlice> slices
+}
+
+class DiscountSlice {
+    Integer value
+    Closure<String> label
+    Integer frequency
+}
+
 
 
 

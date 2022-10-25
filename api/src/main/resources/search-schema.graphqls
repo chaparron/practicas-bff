@@ -8,9 +8,11 @@ input SearchInput {
   page: Int,
   size: Int,
   brand: Int,
+  brands: [ID!],
   tag: String,
   features: [FeatureInput]
   supplier: Int,
+  suppliers: [ID!],
   favourites: Boolean
   similarTo: Int
   promoted: Boolean
@@ -37,7 +39,9 @@ input PreviewSearchInput {
   page: Int,
   size: Int,
   brand: Int,
+  brands: [ID!],
   supplier: Int,
+  suppliers: [ID!],
   tag: String,
   features: [FeatureInput]
   lat: Float!,
@@ -119,6 +123,7 @@ type SearchResult {
   filters: [Filter]
   products: [ProductSearch]
   facets: [Facet]
+  faceting: Faceting!
 }
 
 type ScrollableSearchResult {
@@ -133,6 +138,93 @@ type PreviewSearchResult {
   filters: [Filter]
   products: [PreviewProductSearch]
   facets: [Facet]
+  faceting: Faceting!
+}
+
+type Faceting {
+  categories(flattened: Boolean!): CategoryFacet
+  brands(size: Int!, sorting: BrandFacetSorting): BrandFacet
+  suppliers(size: Int!, sorting: SupplierFacetSorting): SupplierFacet
+  features(size: Int!, sorting: FeatureFacetSorting, filtered: [ID!]!): [FeatureFacet!]
+  discounts(interval: Int!): DiscountFacet
+}
+
+enum BrandFacetSorting {
+  BY_FREQUENCY,
+  ALPHABETICALLY
+}
+
+type CategoryFacet {
+  slices: [CategorySlice!]!
+}
+
+type CategorySlice {
+  id: ID
+  name(languageTag: LanguageTag): NonEmptyString!
+  frequency: Int!
+  slices: [CategorySlice!]!
+}
+
+type BrandFacet {
+  cardinality: Int!
+  slices: [BrandSlice!]!
+}
+
+type BrandSlice {
+  id: ID
+  name(languageTag: LanguageTag): NonEmptyString!
+  logo(size: BrandLogoSize!): NonEmptyString
+  badges: [Badge!]!
+  frequency: Int!
+  selected: Boolean!
+}
+
+enum SupplierFacetSorting {
+  BY_FREQUENCY,
+  ALPHABETICALLY
+}
+
+type SupplierFacet {
+  cardinality: Int!
+  slices: [SupplierSlice!]!
+}
+
+type SupplierSlice {
+  id: ID
+  name: NonEmptyString!
+  avatar(size: SupplierAvatarSize!): NonEmptyString
+  badges: [Badge!]!
+  frequency: Int!
+  selected: Boolean!
+}
+
+enum FeatureFacetSorting {
+  BY_FREQUENCY,
+  ALPHABETICALLY
+}
+
+type FeatureFacet {
+  id: ID
+  name(languageTag: LanguageTag): NonEmptyString!
+  cardinality: Int!
+  slices: [FeatureSlice!]!
+}
+
+type FeatureSlice {
+  id: ID
+  label(languageTag: LanguageTag): NonEmptyString!
+  frequency: Int!
+  selected: Boolean!
+}
+
+type DiscountFacet {
+  slices: [DiscountSlice!]!
+}
+
+type DiscountSlice {
+  value: Int!
+  label(languageTag: LanguageTag): NonEmptyString!
+  frequency: Int!
 }
 
 type Suggestions {

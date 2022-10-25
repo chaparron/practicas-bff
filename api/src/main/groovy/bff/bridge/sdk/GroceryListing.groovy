@@ -7,12 +7,11 @@ import bff.configuration.EntityNotFoundException
 import bff.model.*
 import groovy.util.logging.Slf4j
 import org.springframework.context.MessageSource
+import reactor.core.publisher.Mono
 import scala.Option
 import scala.math.BigDecimal
 import sun.util.locale.LanguageTag
 import wabi2b.grocery.listing.sdk.*
-
-import reactor.core.publisher.Mono
 
 import java.time.OffsetDateTime
 
@@ -88,21 +87,7 @@ class GroceryListing {
                 [
                         new ProductQueryRequestFilteringBuilder(input),
                         new ProductQueryRequestSortingBuilder(input),
-                        new ProductQueryRequestBuilder() {
-                            ProductQueryRequest apply(ProductQueryRequest request) {
-                                ofNullable(input.facets)
-                                        .filter { !it }
-                                        .map { request }
-                                        .orElse(
-                                                request
-                                                        .aggregatedByBrands(10)
-                                                        .aggregatedByCategories(1, true)
-                                                        .aggregatedBySuppliers(10)
-                                                        .aggregatedByFeatures()
-                                                        .aggregatedByDiscounts(5)
-                                        )
-                            }
-                        }
+                        new ProductQueryRequestAggregatingBuilder(input)
                 ]
                         .inject(
                                 ofNullable(input.similarTo)
@@ -137,20 +122,7 @@ class GroceryListing {
                 [
                         new ProductQueryRequestFilteringBuilder(input),
                         new ProductQueryRequestSortingBuilder(input),
-                        new ProductQueryRequestBuilder() {
-                            ProductQueryRequest apply(ProductQueryRequest request) {
-                                ofNullable(input.facets)
-                                        .filter { !it }
-                                        .map { request }
-                                        .orElse(
-                                                request
-                                                        .aggregatedByBrands(10)
-                                                        .aggregatedByCategories(1, true)
-                                                        .aggregatedByFeatures()
-                                                        .aggregatedByDiscounts(5)
-                                        )
-                            }
-                        }
+                        new ProductQueryRequestAggregatingBuilder(input)
                 ]
                         .inject(
                                 ofNullable(input.similarTo)
@@ -522,8 +494,8 @@ class GroceryListing {
 
         Optional<String> maybeKeyword
         Optional<Integer> maybeCategory
-        Optional<Integer> maybeBrand
-        Optional<Integer> maybeSupplier
+        Optional<Set<String>> maybeBrands
+        Optional<Set<String>> maybeSuppliers
         Optional<String> maybePromotion
         List<FeatureInput> features
         Optional<Boolean> maybeFavourites
@@ -540,8 +512,10 @@ class GroceryListing {
             this(
                     input.keyword,
                     input.category,
-                    input.brand,
-                    input.supplier,
+                    (ofNullable(input.brands) | { ofNullable(input.brand).map { [it].toSet() } })
+                            .orElse(null),
+                    (ofNullable(input.suppliers) | { ofNullable(input.supplier).map { [it].toSet() } })
+                            .orElse(null),
                     input.tag,
                     input.features,
                     input.favourites,
@@ -560,8 +534,10 @@ class GroceryListing {
             this(
                     input.keyword,
                     input.category,
-                    input.brand,
-                    input.supplier,
+                    (ofNullable(input.brands) | { ofNullable(input.brand).map { [it].toSet() } })
+                            .orElse(null),
+                    (ofNullable(input.suppliers) | { ofNullable(input.supplier).map { [it].toSet() } })
+                            .orElse(null),
                     input.tag,
                     input.features,
                     null,
@@ -578,8 +554,8 @@ class GroceryListing {
 
         private ProductQueryRequestFilteringBuilder(String keyword,
                                                     Integer category,
-                                                    Integer brand,
-                                                    Integer supplier,
+                                                    Set<String> brands,
+                                                    Set<String> suppliers,
                                                     String promotion,
                                                     List<FeatureInput> features,
                                                     Boolean favourites,
@@ -593,8 +569,8 @@ class GroceryListing {
                                                     Boolean freeProduct) {
             this.maybeKeyword = ofNullable(keyword).filter { !it.isEmpty() }
             this.maybeCategory = ofNullable(category)
-            this.maybeBrand = ofNullable(brand)
-            this.maybeSupplier = ofNullable(supplier)
+            this.maybeBrands = ofNullable(brands).filter { !it.isEmpty() }
+            this.maybeSuppliers = ofNullable(suppliers).filter { !it.isEmpty() }
             this.maybePromotion = ofNullable(promotion).filter { !it.isEmpty() }
             this.features = features
             this.maybeFavourites = ofNullable(favourites).filter { it }
@@ -655,12 +631,12 @@ class GroceryListing {
         }
 
         private Closure<ProductQueryRequest> brandFiltering() {
-            maybeBrand
-                    .map { brand ->
+            maybeBrands
+                    .map { brands ->
                         { ProductQueryRequest r ->
                             r.filteredByBrand(
-                                    brand.toString(),
-                                    asScala([] as List<String>).toSeq()
+                                    brands.head(),
+                                    asScala(brands.tail()).toSeq()
                             ) as ProductQueryRequest
                         }
                     }
@@ -668,12 +644,12 @@ class GroceryListing {
         }
 
         private Closure<ProductQueryRequest> supplierFiltering() {
-            maybeSupplier
-                    .map { supplier ->
+            maybeSuppliers
+                    .map { suppliers ->
                         { ProductQueryRequest r ->
                             r.filteredBySupplier(
-                                    supplier.toString(),
-                                    asScala([] as List<String>).toSeq()
+                                    suppliers.head(),
+                                    asScala(suppliers.tail()).toSeq()
                             ) as ProductQueryRequest
                         }
                     }
@@ -912,6 +888,114 @@ class GroceryListing {
 
         private static ProductQueryRequest sortedByTotalSalesInLast15Days(ProductQueryRequest request) {
             request.sortedByTotalSalesInLast15Days()
+        }
+
+    }
+
+    private class ProductQueryRequestAggregatingBuilder implements ProductQueryRequestBuilder {
+
+        Optional<CategoryFaceting> maybeCategoriesFaceting
+        Optional<BrandFaceting> maybeBrandsFaceting
+        Optional<SupplierFaceting> maybeSuppliersFaceting
+        Optional<FeatureFaceting> maybeFeaturesFaceting
+        Optional<DiscountFaceting> maybeDiscountFaceting
+
+        ProductQueryRequestAggregatingBuilder(SearchInput input) {
+            this(
+                    input.categoryFaceting,
+                    input.brandFaceting,
+                    input.supplierFaceting,
+                    input.featureFaceting,
+                    input.discountFaceting
+            )
+        }
+
+        ProductQueryRequestAggregatingBuilder(PreviewSearchInput input) {
+            this(
+                    input.categoryFaceting,
+                    input.brandFaceting,
+                    empty(),
+                    input.featureFaceting,
+                    input.discountFaceting
+            )
+        }
+
+        private ProductQueryRequestAggregatingBuilder(Optional<CategoryFaceting> maybeCategoriesFaceting,
+                                                      Optional<BrandFaceting> maybeBrandsFaceting,
+                                                      Optional<SupplierFaceting> maybeSuppliersFaceting,
+                                                      Optional<FeatureFaceting> maybeFeaturesFaceting,
+                                                      Optional<DiscountFaceting> maybeDiscountFaceting) {
+            this.maybeCategoriesFaceting = maybeCategoriesFaceting
+            this.maybeBrandsFaceting = maybeBrandsFaceting
+            this.maybeSuppliersFaceting = maybeSuppliersFaceting
+            this.maybeFeaturesFaceting = maybeFeaturesFaceting
+            this.maybeDiscountFaceting = maybeDiscountFaceting
+        }
+
+        ProductQueryRequest apply(ProductQueryRequest request) {
+            [
+                    categoryAggregating(),
+                    brandAggregating(),
+                    supplierAggregating(),
+                    featuresAggregating(),
+                    discountAggregating()
+            ].inject(request, { acc, filter -> filter(acc) })
+        }
+
+        private def identity = { ProductQueryRequest r -> r }
+
+        private Closure<ProductQueryRequest> categoryAggregating() {
+            maybeCategoriesFaceting
+                    .map {
+                        { ProductQueryRequest r ->
+                            r.aggregatedByCategories(it.depth, it.flattened) as ProductQueryRequest
+                        }
+                    }
+                    .orElse(identity)
+        }
+
+        private Closure<ProductQueryRequest> brandAggregating() {
+            maybeBrandsFaceting
+                    .map {
+                        { ProductQueryRequest r ->
+                            r.aggregatedByBrands(
+                                    it.size
+                            ) as ProductQueryRequest
+                        }
+                    }
+                    .orElse(identity)
+        }
+
+        private Closure<ProductQueryRequest> supplierAggregating() {
+            maybeSuppliersFaceting
+                    .map {
+                        { ProductQueryRequest r ->
+                            r.aggregatedBySuppliers(
+                                    it.size
+                            ) as ProductQueryRequest
+                        }
+                    }
+                    .orElse(identity)
+        }
+
+        private Closure<ProductQueryRequest> featuresAggregating() {
+            maybeFeaturesFaceting
+                    .map {
+                        { ProductQueryRequest r ->
+                            r.aggregatedByFeatures() as ProductQueryRequest
+                        }
+                    }
+                    .orElse(identity)
+        }
+
+        private Closure<ProductQueryRequest> discountAggregating() {
+            maybeDiscountFaceting
+                    .map {
+                        { ProductQueryRequest r ->
+                            r.aggregatedByDiscounts(it.interval) as ProductQueryRequest
+                        }
+                    }
+                    .orElse(identity)
         }
 
     }
@@ -1274,17 +1358,17 @@ class GroceryListing {
                                         .orElse([])
                                         .findAll { filtered.contains(it.id()) }
                         ).map {
-                            it.collect {
-                                new Filter(
-                                        key: "brand",
-                                        values: [
+                            [
+                                    new Filter(
+                                            key: "brand",
+                                            values: it.collect {
                                                 new FilterItem(
                                                         id: it.id() as Integer,
                                                         name: { LanguageTag languageTag -> it.name().defaultEntry() }
                                                 )
-                                        ]
-                                )
-                            }
+                                            }
+                                    )
+                            ]
                         }
                     }
                     .orElse([])
@@ -1330,17 +1414,17 @@ class GroceryListing {
                                         .orElse([])
                                         .findAll { filtered.contains(it.id()) }
                         ).map {
-                            it.collect {
-                                new Filter(
-                                        key: "supplier",
-                                        values: [
+                            [
+                                    new Filter(
+                                            key: "supplier",
+                                            values: it.collect {
                                                 new FilterItem(
                                                         id: it.id() as Integer,
                                                         name: { LanguageTag languageTag -> it.name() }
                                                 )
-                                        ]
-                                )
-                            }
+                                            }
+                                    )
+                            ]
                         }
                     }
                     .orElse([])
@@ -1488,6 +1572,16 @@ class GroceryListing {
                     featuresFacet(response)
         }
 
+        protected Faceting faceting(ProductQueryResponse response) {
+            new Faceting(
+                    categories: categoriesFaceting(response),
+                    brands: brandsFaceting(response),
+                    suppliers: suppliersFaceting(response),
+                    features: featuresFaceting(response),
+                    discounts: discountFaceting(response)
+            )
+        }
+
         protected Optional<Facet> suppliersFacet(ProductQueryResponse response) {
             toJava(response.aggregations().suppliers())
                     .filter { request.filtering().bySupplier().isEmpty() }
@@ -1503,6 +1597,28 @@ class GroceryListing {
                                                     name: { LanguageTag languageTag -> it._1().name() },
                                                     key: it._1().id()
                                             )
+                                    )
+                                }
+                        )
+                    }
+        }
+
+        protected Optional<SupplierFacet> suppliersFaceting(ProductQueryResponse response) {
+            toJava(response.aggregations().suppliers())
+                    .map {
+                        new SupplierFacet(
+                                cardinality: it.total(),
+                                slices: asJava(it.hits()).collect {
+                                    new SupplierSlice(
+                                            id: it._1().id(),
+                                            name: it._1().name(),
+                                            avatar: it._1().avatar(),
+                                            frequency: it._2() as Long,
+                                            selected:
+                                                    toJava(request.filtering().bySupplier())
+                                                            .map { asJava(it.values()) }
+                                                            .orElse([] as Set<String>)
+                                                            .contains(it._1().id())
                                     )
                                 }
                         )
@@ -1538,6 +1654,30 @@ class GroceryListing {
                     }
         }
 
+        protected Optional<DiscountFacet> discountFaceting(ProductQueryResponse response) {
+            toJava(response.aggregations().discounts())
+                    .map {
+                        new DiscountFacet(
+                                slices: asJava(it.ranges()).collect {
+                                    new DiscountSlice(
+                                            value: it._1() as Integer,
+                                            label: { LanguageTag languageTag ->
+                                                messageSource.getMessage(
+                                                        "search.DISCOUNT_SLICE",
+                                                        [it._1()].toArray(),
+                                                        forLanguageTag(
+                                                                ofNullable(languageTag.toString()).
+                                                                        orElse("en")
+                                                        )
+                                                )
+                                            },
+                                            frequency: it._2() as Integer
+                                    )
+                                }
+                        )
+                    }
+        }
+
         protected List<Facet> featuresFacet(ProductQueryResponse response) {
             toJava(response.aggregations().features().map { asJava(it.features().toList()) })
                     .orElse([])
@@ -1556,6 +1696,37 @@ class GroceryListing {
                     .sort { it.name }
         }
 
+        protected List<FeatureFacet> featuresFaceting(ProductQueryResponse response) {
+            toJava(response.aggregations().features().map { asJava(it.features().toList()) })
+                    .orElse([])
+                    .collect { feature ->
+                        new FeatureFacet(
+                                id: "feature_" + feature._1(),
+                                name: { LanguageTag languageTag -> feature._2().name().defaultEntry() },
+                                cardinality: feature._2().total(),
+                                slices:
+                                        asJava(feature._2().hits())
+                                                .collect { slice(it) }
+                                                .findAll { it.isPresent() }
+                                                .collect { it.get() }
+                                                .collect {
+                                                    new FeatureSlice(
+                                                            id: it.obj.id,
+                                                            label: it.obj.name,
+                                                            frequency: it.size,
+                                                            selected:
+                                                                    request.filtering().byFeatures().exists { filter ->
+                                                                        toJava(filter.values().get(feature._1()))
+                                                                                .map { asJava(it) }
+                                                                                .orElse([] as Set<String>)
+                                                                                .contains(it.obj.id)
+                                                                    }
+                                                    )
+                                                }
+                        )
+                    }
+        }
+
         protected Optional<Facet> brandsFacet(ProductQueryResponse response) {
             toJava(response.aggregations().brands())
                     .filter { request.filtering().byBrand().isEmpty() }
@@ -1571,6 +1742,28 @@ class GroceryListing {
                                                     name: { LanguageTag languageTag -> it._1().name().defaultEntry() },
                                                     key: it._1().id()
                                             )
+                                    )
+                                }
+                        )
+                    }
+        }
+
+        protected Optional<BrandFacet> brandsFaceting(ProductQueryResponse response) {
+            toJava(response.aggregations().brands())
+                    .map {
+                        new BrandFacet(
+                                cardinality: it.total(),
+                                slices: asJava(it.hits()).collect {
+                                    new BrandSlice(
+                                            id: it._1().id(),
+                                            name: { LanguageTag languageTag -> it._1().name().defaultEntry() },
+                                            logo: it._1().logo(),
+                                            frequency: it._2() as Long,
+                                            selected:
+                                                    toJava(request.filtering().byBrand())
+                                                            .map { asJava(it.values()) }
+                                                            .orElse([] as Set<String>)
+                                                            .contains(it._1().id())
                                     )
                                 }
                         )
@@ -1595,6 +1788,24 @@ class GroceryListing {
                                 }
                         )
                     }
+        }
+
+        protected Optional<CategoryFacet> categoriesFaceting(ProductQueryResponse response) {
+            def slices
+            slices = { AvailableCategories it ->
+                asJava(it.hits()).collect {
+                    new CategorySlice(
+                            id: it._1().id(),
+                            name: { LanguageTag languageTag -> it._1().name().defaultEntry() },
+                            frequency: it._2() as Long,
+                            slices: toJava(it._3())
+                                    .map { slices(it) }
+                                    .orElse([])
+                    )
+                }
+            }
+            toJava(response.aggregations().categories())
+                    .map { new CategoryFacet(slices: slices(it)) }
         }
 
         protected static slice(scala.Tuple2<SingleValue, Object> value) {
@@ -1648,6 +1859,7 @@ class GroceryListing {
                     breadcrumb: breadCrumb(response),
                     filters: filters(response),
                     facets: facets(response),
+                    faceting: faceting(response),
                     products: products(response)
             )
         }
@@ -1675,6 +1887,7 @@ class GroceryListing {
                     breadcrumb: breadCrumb(response),
                     filters: filters(response),
                     facets: facets(response),
+                    faceting: faceting(response),
                     products: products(response).collect { new PreviewProductSearch(it) }
             )
         }

@@ -2,6 +2,10 @@ package bff.model
 
 import bff.bridge.SearchBridge
 import bff.bridge.sdk.GroceryListing
+import graphql.execution.MergedField
+import graphql.language.Field
+import graphql.schema.DataFetchingEnvironment
+import graphql.schema.DataFetchingEnvironmentImpl
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
@@ -39,7 +43,7 @@ class SearchQueryTest {
 
         when(groceryListing.search(input)).thenReturn(result)
 
-        assertEquals(result, query.searchV2(input))
+        assertEquals(result, query.searchV2(input, null))
         verify(searchBridge, never()).searchV2(input)
     }
 
@@ -50,7 +54,8 @@ class SearchQueryTest {
 
         when(groceryListing.search(input)).thenReturn(result)
 
-        assertEquals(result, query.previewSearch(input))
+
+        assertEquals(result, query.previewSearch(input, null))
         verify(searchBridge, never()).previewSearch(input)
     }
 
