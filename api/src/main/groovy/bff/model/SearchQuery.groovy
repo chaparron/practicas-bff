@@ -217,7 +217,9 @@ class SearchQuery implements GraphQLQueryResolver {
     private static def facets(DataFetchingEnvironment environment) {
         ofNullable(environment)
                 .map {
-                    (it.field.getSelectionSet().getSelections().head() as InlineFragment)
+                    it.field.getSelectionSet().getSelections()
+                            .findResults { if (it instanceof InlineFragment) it else null }
+                            .find { it.typeCondition.name == "SearchResult" }
                             .getSelectionSet()
                             .getSelections()
                             .findResults { if (it instanceof Field) it else null }
@@ -238,7 +240,9 @@ class SearchQuery implements GraphQLQueryResolver {
     private static def faceting(DataFetchingEnvironment environment) {
         ofNullable(environment)
                 .map {
-                    (it.field.getSelectionSet().getSelections().head() as InlineFragment)
+                    it.field.getSelectionSet().getSelections()
+                            .findResults { if (it instanceof InlineFragment) it else null }
+                            .find { it.typeCondition.name == "SearchResult" }
                             .getSelectionSet()
                             .getSelections()
                             .findResults { if (it instanceof Field) it else null }
