@@ -219,7 +219,10 @@ class SearchQuery implements GraphQLQueryResolver {
                 .map {
                     it.field.getSelectionSet().getSelections()
                             .findResults { if (it instanceof InlineFragment) it else null }
-                            .find { it.typeCondition.name == "SearchResult" }
+                            .find {
+                                (it.typeCondition.name == "SearchResult") ||
+                                        (it.typeCondition.name == "PreviewSearchResult")
+                            }
                             .getSelectionSet()
                             .getSelections()
                             .findResults { if (it instanceof Field) it else null }
@@ -242,7 +245,10 @@ class SearchQuery implements GraphQLQueryResolver {
                 .map {
                     it.field.getSelectionSet().getSelections()
                             .findResults { if (it instanceof InlineFragment) it else null }
-                            .find { it.typeCondition.name == "SearchResult" }
+                            .find {
+                                (it.typeCondition.name == "SearchResult") ||
+                                        (it.typeCondition.name == "PreviewSearchResult")
+                            }
                             .getSelectionSet()
                             .getSelections()
                             .findResults { if (it instanceof Field) it else null }
