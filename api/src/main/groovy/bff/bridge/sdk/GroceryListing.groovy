@@ -536,9 +536,11 @@ class GroceryListing {
             this(
                     input.keyword,
                     input.category,
-                    (ofNullable(input.brands) | { ofNullable(input.brand).map { [it].toSet() } })
+                    (ofNullable(input.brands) |
+                            { ofNullable(input.brand).map { Set.of(it.toString()) } })
                             .orElse(null),
-                    (ofNullable(input.suppliers) | { ofNullable(input.supplier).map { [it].toSet() } })
+                    (ofNullable(input.suppliers) |
+                            { ofNullable(input.supplier).map { Set.of(it.toString()) } })
                             .orElse(null),
                     input.tag,
                     input.features,
@@ -1615,6 +1617,7 @@ class GroceryListing {
                                             id: it._1().id(),
                                             name: it._1().name(),
                                             avatar: it._1().avatar(),
+                                            badges: [],
                                             frequency: it._2() as Long,
                                             selected:
                                                     toJava(request.filtering().bySupplier())
@@ -1761,6 +1764,7 @@ class GroceryListing {
                                             id: it._1().id(),
                                             name: { LanguageTag languageTag -> it._1().name().defaultEntry() },
                                             logo: it._1().logo(),
+                                            badges: [],
                                             frequency: it._2() as Long,
                                             selected:
                                                     toJava(request.filtering().byBrand())
