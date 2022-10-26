@@ -918,7 +918,7 @@ class BrandFacet {
 class BrandSlice {
     String id
     Closure<String> name
-    String logo
+    Optional<String> logo
     List<Badge> badges
     Integer frequency
     Boolean selected
@@ -932,7 +932,7 @@ class SupplierFacet {
 class SupplierSlice {
     String id
     String name
-    String avatar
+    Optional<String> avatar
     List<Badge> badges
     Integer frequency
     Boolean selected

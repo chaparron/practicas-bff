@@ -24,7 +24,7 @@ class BrandSliceResolver implements GraphQLResolver<BrandSlice> {
     }
 
     String logo(BrandSlice brand, BannerLogoSize size) {
-        ofNullable(brand.logo)
+        brand.logo
                 .map { logo ->
                     ofNullable(size).map { imageService.url(logo, it) }.orElse(logo)
                 }

@@ -19,7 +19,7 @@ class SupplierSliceResolver implements GraphQLResolver<SupplierSlice> {
     ImageService imageService
 
     String avatar(SupplierSlice supplier, SupplierAvatarSize size) {
-        ofNullable(supplier.avatar)
+        supplier.avatar
                 .map { avatar ->
                     ofNullable(size).map { imageService.url(avatar, it) }.orElse(avatar)
                 }

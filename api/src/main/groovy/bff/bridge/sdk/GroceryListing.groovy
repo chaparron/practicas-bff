@@ -1616,7 +1616,7 @@ class GroceryListing {
                                     new SupplierSlice(
                                             id: it._1().id(),
                                             name: it._1().name(),
-                                            avatar: it._1().avatar(),
+                                            avatar: toJava(it._1().avatar()),
                                             badges: [],
                                             frequency: it._2() as Long,
                                             selected:
@@ -1763,7 +1763,7 @@ class GroceryListing {
                                     new BrandSlice(
                                             id: it._1().id(),
                                             name: { LanguageTag languageTag -> it._1().name().defaultEntry() },
-                                            logo: it._1().logo(),
+                                            logo: toJava(it._1().logo()),
                                             badges: [],
                                             frequency: it._2() as Long,
                                             selected:
