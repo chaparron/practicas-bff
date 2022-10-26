@@ -14,6 +14,7 @@ import org.mockito.junit.MockitoJUnitRunner
 
 import static bff.TestExtensions.*
 import static org.mockito.ArgumentMatchers.any
+import static org.mockito.ArgumentMatchers.eq
 import static org.mockito.Mockito.*
 
 @RunWith(MockitoJUnitRunner)
@@ -146,11 +147,21 @@ class OrderResolverTest {
 
     private Order givenAnOrderWithoutBNPLSupportDueToCustomer() {
         doReturn(new BnPlCustomerStatus(1, false)).when(bnplBridge).customerStatus(any())
-        def supplierOrder = anySupplierOrder()
-        def supplierOrders = [supplierOrder]
-        doReturn(anySupplier()).when(supplierOrderBridge).getSupplierBySupplierOrderId(any(), any())
-        doReturn(true).when(bnplBridge).isSupplierOnboarded(any(), any())
+        def supplierOrder1 = anySupplierOrder()
+        def supplierOrder2 = anySupplierOrder()
+        def supplier1 = anySupplier()
+        def supplier2 = anySupplier()
+        supplierOrder1.id = 1
+        supplierOrder2.id = 2
+        supplier1.id = 1
+        supplier2.id = 2
+        def supplierOrders = [supplierOrder1, supplierOrder2]
         def order = anyOrder(OrderStatus.PENDING, supplierOrders)
+        doReturn(supplierOrders).when(orderBridge).getSupplierOrders(any(), eq(order))
+        doReturn(supplier1).when(supplierOrderBridge).getSupplierBySupplierOrderId(any(), eq(supplierOrder1.id))
+        doReturn(supplier2).when(supplierOrderBridge).getSupplierBySupplierOrderId(any(), eq(supplierOrder2.id))
+        doReturn(true).when(bnplBridge).isSupplierOnboarded(eq(supplier1.id), any())
+        doReturn(false).when(bnplBridge).isSupplierOnboarded(eq(supplier2.id), any())
 
         return order
     }

@@ -91,10 +91,11 @@ class OrderResolver implements GraphQLResolver<Order> {
 
     MessageBox payLaterMessageBox(Order order) {
         def status = bnplBridge.customerStatus(order.accessToken)
+        def supplierOrders = orderBridge.getSupplierOrders(order.accessToken, order)
         if (status.active) {
             return null
         } else {
-            def atLeastOneSupplierSupportBnPl = order.supplierOrders.any {
+            def atLeastOneSupplierSupportBnPl = supplierOrders.any {
                 def supplier = supplierOrderBridge.getSupplierBySupplierOrderId(it.accessToken, it.id)
                 bnplBridge.isSupplierOnboarded(supplier.id, it.accessToken)
             }
