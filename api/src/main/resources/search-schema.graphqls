@@ -159,7 +159,7 @@ type CategoryFacet {
 }
 
 type CategorySlice {
-  id: ID
+  id: ID!
   name(languageTag: LanguageTag): NonEmptyString!
   frequency: Int!
   slices: [CategorySlice!]!
@@ -171,7 +171,7 @@ type BrandFacet {
 }
 
 type BrandSlice {
-  id: ID
+  id: ID!
   name(languageTag: LanguageTag): NonEmptyString!
   logo(size: BrandLogoSize!): NonEmptyString
   badges: [Badge!]!
@@ -190,7 +190,7 @@ type SupplierFacet {
 }
 
 type SupplierSlice {
-  id: ID
+  id: ID!
   name: NonEmptyString!
   avatar(size: SupplierAvatarSize!): NonEmptyString
   badges: [Badge!]!
@@ -204,14 +204,14 @@ enum FeatureFacetSorting {
 }
 
 type FeatureFacet {
-  id: ID
+  id: ID!
   name(languageTag: LanguageTag): NonEmptyString!
   cardinality: Int!
   slices: [FeatureSlice!]!
 }
 
 type FeatureSlice {
-  id: ID
+  id: ID!
   label(languageTag: LanguageTag): NonEmptyString!
   frequency: Int!
   selected: Boolean!
