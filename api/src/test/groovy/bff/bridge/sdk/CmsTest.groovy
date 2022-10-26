@@ -74,11 +74,47 @@ class CmsTest {
     }
 
     @Test
+    void 'listing modules can be filtered by multiple brands'() {
+        when(
+                sdk.query(
+                        listingModulesIn("ar", Option.empty())
+                                .filteredByBrand("5", asScala(["6", "7"]).toSeq())
+                )
+        ).thenReturn(asScala([] as List<CmsModule>).toList())
+
+        assertTrue(cms.find(new ListingInput(country: "ar", brands: ["5", "6", "7"])).isEmpty())
+    }
+
+    @Test
     void 'listing modules can be filtered by category'() {
         when(sdk.query(listingModulesIn("ar", Option.empty()).filteredByCategory("1")))
                 .thenReturn(asScala([] as List<CmsModule>).toList())
 
         assertTrue(cms.find(new ListingInput(country: "ar", category: 1)).isEmpty())
+    }
+
+    @Test
+    void 'listing modules can be filtered by supplier'() {
+        when(
+                sdk.query(
+                        listingModulesIn("ar", Option.empty())
+                                .filteredBySupplier("5", asScala([] as List<String>).toSeq())
+                )
+        ).thenReturn(asScala([] as List<CmsModule>).toList())
+
+        assertTrue(cms.find(new ListingInput(country: "ar", supplier: 5)).isEmpty())
+    }
+
+    @Test
+    void 'listing modules can be filtered by multiple suppliers'() {
+        when(
+                sdk.query(
+                        listingModulesIn("ar", Option.empty())
+                                .filteredBySupplier("5", asScala(["6", "7"]).toSeq())
+                )
+        ).thenReturn(asScala([] as List<CmsModule>).toList())
+
+        assertTrue(cms.find(new ListingInput(country: "ar", suppliers: ["5", "6", "7"])).isEmpty())
     }
 
     @Test

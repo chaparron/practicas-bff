@@ -17,8 +17,11 @@ class ListingInput {
     Set<String> tags
     Integer category
     Integer brand
+    Set<String> brands
     String keyword
     String tag
+    Integer supplier
+    Set<String> suppliers
     Boolean favourites
     Boolean promoted
     String accessToken

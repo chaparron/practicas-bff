@@ -55,11 +55,11 @@ class Cms {
 
     List<Module> find(ListingInput input) {
         def filteredByBrand =
-                ofNullable(input.brand)
-                        .map { it.toString() }
+                ofNullable(input.brand).map { Set.of(it.toString()) }
+                        .or { ofNullable(input.brands).filter { !it.isEmpty() } }
                         .map {
                             { FindListingModulesQuery query ->
-                                query.filteredByBrand(it, asScala([] as List<String>).toSeq())
+                                query.filteredByBrand(it.head(), asScala(it.tail()).toSeq())
                             }
                         }
                         .orElse(IDENTITY)
@@ -67,6 +67,15 @@ class Cms {
                 ofNullable(input.category)
                         .map { it.toString() }
                         .map { { FindListingModulesQuery query -> query.filteredByCategory(it) } }
+                        .orElse(IDENTITY)
+        def filteredBySupplier =
+                ofNullable(input.supplier).map { Set.of(it.toString()) }
+                        .or { ofNullable(input.suppliers).filter { !it.isEmpty() } }
+                        .map {
+                            { FindListingModulesQuery query ->
+                                query.filteredBySupplier(it.head(), asScala(it.tail()).toSeq())
+                            }
+                        }
                         .orElse(IDENTITY)
         def filteredByTerm =
                 ofNullable(input.keyword)
@@ -98,6 +107,7 @@ class Cms {
                         tagged(input.tags),
                         filteredByBrand,
                         filteredByCategory,
+                        filteredBySupplier,
                         filteredByTerm,
                         filteredByPromotion,
                         filteredByFavourite

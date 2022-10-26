@@ -11,8 +11,10 @@ input ListingInput {
   keyword: String,
   category: Int,
   brand: Int,
+  brands: [ID!]
   tag: String,
   supplier: Int,
+  suppliers: [ID!]
   favourites: Boolean
   promoted: Boolean
   accessToken: String
