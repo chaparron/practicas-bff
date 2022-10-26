@@ -512,9 +512,11 @@ class GroceryListing {
             this(
                     input.keyword,
                     input.category,
-                    (ofNullable(input.brands) | { ofNullable(input.brand).map { [it].toSet() } })
+                    (ofNullable(input.brands) |
+                            { ofNullable(input.brand).map { Set.of(it.toString()) } })
                             .orElse(null),
-                    (ofNullable(input.suppliers) | { ofNullable(input.supplier).map { [it].toSet() } })
+                    (ofNullable(input.suppliers) |
+                            { ofNullable(input.supplier).map { Set.of(it.toString()) } })
                             .orElse(null),
                     input.tag,
                     input.features,
@@ -1617,7 +1619,7 @@ class GroceryListing {
                                             selected:
                                                     toJava(request.filtering().bySupplier())
                                                             .map { asJava(it.values()) }
-                                                            .orElse([] as Set<String>)
+                                                            .orElse(Set.of())
                                                             .contains(it._1().id())
                                     )
                                 }
@@ -1718,7 +1720,7 @@ class GroceryListing {
                                                                     request.filtering().byFeatures().exists { filter ->
                                                                         toJava(filter.values().get(feature._1()))
                                                                                 .map { asJava(it) }
-                                                                                .orElse([] as Set<String>)
+                                                                                .orElse(Set.of())
                                                                                 .contains(it.obj.id)
                                                                     }
                                                     )
@@ -1763,7 +1765,7 @@ class GroceryListing {
                                             selected:
                                                     toJava(request.filtering().byBrand())
                                                             .map { asJava(it.values()) }
-                                                            .orElse([] as Set<String>)
+                                                            .orElse(Set.of())
                                                             .contains(it._1().id())
                                     )
                                 }
