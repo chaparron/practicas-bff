@@ -44,7 +44,7 @@ class BnplMutationTest {
         def loanResponse = new LoanResponse("externalId", loanCreated)
         def invoiceResponse = new InvoiceResponse("code")
 
-        def sdkResponse = anyPaymentResponse(666L,supplierOrderId, 2456, 5624,
+        def sdkResponse = anyPaymentResponse(666L, supplierOrderId, 2456, 5624,
                 moneyResponse, loanResponse, invoiceResponse)
 
         def sdkRequest = anyPaymentRequest(
@@ -98,7 +98,7 @@ class BnplMutationTest {
                 sdkRequest.invoiceFileId,
                 sdkRequest.amount)).get()
 
-        assert response == INVALID_SUPPLIER_ORDER_ID.build(sdkException.error.detail)
+        assert response == INVALID_SUPPLIER_ORDER_ID.build(sdkException.error.reason)
     }
 
     @Test
@@ -131,6 +131,6 @@ class BnplMutationTest {
                 sdkRequest.invoiceFileId,
                 sdkRequest.amount)).get()
 
-        assert response == UNKNOWN.build(sdkException.error.detail)
+        assert response == UNKNOWN.build(sdkException.error.reason)
     }
 }
