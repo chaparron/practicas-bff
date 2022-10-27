@@ -40,9 +40,11 @@ class Language {
 }
 
 class ContactInfo {
-    String whatsappNumber
+    @Deprecated String whatsappNumber
     String phoneNumber
+    String whatsAppNumber
     String zaloNumber
+    String lineUserId
 }
 
 class Currency {

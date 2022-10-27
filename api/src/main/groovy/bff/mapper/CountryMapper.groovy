@@ -36,7 +36,7 @@ class CountryMapper {
                 legalUrls: buildLegalUrls(country.language.locale, country.links),
                 detail: buildDetail(country),
                 language: buildLanguage(country.language),
-                contactInfo: buildContactInfo(country.contactInformation),
+                contactInfo: buildContactInfo(country),
                 currency: buildCurrency(country.currencyInformation),
                 fee: buildFee(country.feeConfiguration),
                 wabiPay: buildWabiPay(country.wabipayConfiguration),
@@ -58,7 +58,7 @@ class CountryMapper {
                 legalUrls: buildLegalUrls(locale, country.links),
                 detail: buildDetail(country),
                 language: buildLanguage(country.language),
-                contactInfo: buildContactInfo(country.contactInformation),
+                contactInfo: buildContactInfo(country),
                 currency: buildCurrency(country.currencyInformation),
                 fee: buildFee(country.feeConfiguration),
                 wabiPay: buildWabiPay(country.wabipayConfiguration),
@@ -89,11 +89,21 @@ class CountryMapper {
         return new Currency(code: currencyInformation.code, symbol: currencyInformation.symbol)
     }
 
-    private static ContactInfo buildContactInfo(ContactInformation contactInformation) {
+    private static ContactInfo buildContactInfo(wabi2b.sdk.regional.Country country) {
+        // THIS IS A PSEUDO-MOCK
+        ContactInformation contactInformation = country.contactInformation
+        String whatsAppNumber = contactInformation.whatsapp
+        String lineUserId = null
+        if (country.code == "th"){
+            whatsAppNumber = null
+            lineUserId = "@526bgvnk"
+        }
         return new ContactInfo(
                 whatsappNumber: contactInformation.whatsapp,
                 phoneNumber: contactInformation.phone,
-                zaloNumber: contactInformation.zalo
+                whatsAppNumber: whatsAppNumber,
+                zaloNumber: contactInformation.zalo,
+                lineUserId: lineUserId
         )
     }
 

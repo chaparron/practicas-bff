@@ -37,8 +37,11 @@ type Language{
 
 type ContactInfo {
   whatsappNumber:String!
+  @deprecated(reason: "Use whatsAppNumber instead")
   phoneNumber:String!
+  whatsAppNumber:String
   zaloNumber:String
+  lineUserId:String
 }
 
 type Currency {
