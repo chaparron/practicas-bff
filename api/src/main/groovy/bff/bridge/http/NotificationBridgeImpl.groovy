@@ -56,7 +56,7 @@ class NotificationBridgeImpl implements NotificationBridge {
         return new NotificationResult(
                 id: notification.getId(),
                 url: notification.getUrl(),
-                creationDate: new TimestampOutput(new Date(notification.getCreationDate()).toInstant().toString()),
+                creationDate: new TimestampOutput(new Date(notification.getCreationDate()*1000).toInstant().toString()),
                 isRead: notification.isRead(),
                 templateId: notification.getTemplateId(),
                 params: toMap(notification.getParams()),
