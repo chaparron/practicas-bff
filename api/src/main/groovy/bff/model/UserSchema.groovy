@@ -355,4 +355,5 @@ class UnreadNotificationsInput {
 
 class UnreadNotificationsResult {
     Boolean unread
+    Integer total
 }

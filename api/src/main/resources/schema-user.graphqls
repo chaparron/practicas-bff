@@ -322,6 +322,7 @@ input UnreadNotificationsInput {
 
 type UnreadNotificationsResult {
   unread: Boolean
+  total: Int
 }
 
 union ChangePasswordResult = ChangePasswordFailed | Void

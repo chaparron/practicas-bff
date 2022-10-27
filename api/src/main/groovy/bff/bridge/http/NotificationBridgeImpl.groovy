@@ -13,6 +13,7 @@ import bff.model.UnreadNotificationsInput
 import bff.model.UnreadNotificationsResult
 import bff.model.Void
 import com.wabi2b.notifications.common.PaginatedNotificationResponse
+import com.wabi2b.notifications.common.UnreadNotificationResponse
 import com.wabi2b.notifications.sdk.NotificationClient
 import com.wabi2b.notifications.sdk.NotificationHttpClient
 import groovy.util.logging.Slf4j
@@ -42,7 +43,11 @@ class NotificationBridgeImpl implements NotificationBridge {
 
     @Override
     UnreadNotificationsResult unreadNotifications(UnreadNotificationsInput input) {
-        return new UnreadNotificationsResult(unread: client.unreadNotification(input.getAccessToken()).unread)
+        UnreadNotificationResponse unreadNotificationResponse = client.unreadNotification(input.getAccessToken())
+        return new UnreadNotificationsResult(
+                unread: unreadNotificationResponse.unread,
+                total: unreadNotificationResponse.total
+        )
     }
 
     @Override
