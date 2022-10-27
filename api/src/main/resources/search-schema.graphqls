@@ -145,7 +145,7 @@ type Faceting {
   categories(flattened: Boolean!): CategoryFacet
   brands(size: Int!, sorting: BrandFacetSorting): BrandFacet
   suppliers(size: Int!, sorting: SupplierFacetSorting): SupplierFacet
-  features(size: Int!, sorting: FeatureFacetSorting, filtered: [ID!]!): [FeatureFacet!]
+  features(size: Int!, sorting: FeatureFacetSorting, filtered: [ID!]): [FeatureFacet!]
   discounts(interval: Int!): DiscountFacet
 }
 

@@ -14,6 +14,8 @@ class GraphQlUtils {
             if (it.name == argument) {
                 def value = it.value
                 switch (value) {
+                    case { value instanceof NullValue }:
+                        return null
                     case { value instanceof VariableReference }:
                         return environment.getVariables().get((value as VariableReference).name) as T
                     default: mapper(value)

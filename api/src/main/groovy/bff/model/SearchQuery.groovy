@@ -71,12 +71,14 @@ class SearchQuery implements GraphQLQueryResolver {
                                     intArgumentValue(field, "size", environment),
                                     ofNullable(enumArgumentValue(field, "sorting", environment))
                                             .map { FeatureFacetSorting.valueOf(it) },
-                                    arrayArgumentValue(
-                                            field,
-                                            "filtered",
-                                            environment,
-                                            { (it as StringValue).value }
-                                    ).toSet()
+                                    ofNullable(
+                                            arrayArgumentValue(
+                                                    field,
+                                                    "filtered",
+                                                    environment,
+                                                    { (it as StringValue).value }
+                                            )
+                                    ).map { it.toSet() }.orElse(Set.of())
                             )
                         }),
                         facet("discounts", { SearchInput builder, Field field ->
@@ -84,7 +86,7 @@ class SearchQuery implements GraphQLQueryResolver {
                                     intArgumentValue(field, "interval", environment)
                             )
                         }),
-                        // TODO remove this after migration
+                        // TODO remove this when 'facets' deprecated
                         { SearchInput i ->
                             if ((faceting.isEmpty()) && facets(environment).isPresent())
                                 i
@@ -141,12 +143,14 @@ class SearchQuery implements GraphQLQueryResolver {
                                     intArgumentValue(field, "size", environment),
                                     ofNullable(enumArgumentValue(field, "sorting", environment))
                                             .map { FeatureFacetSorting.valueOf(it) },
-                                    arrayArgumentValue(
-                                            field,
-                                            "filtered",
-                                            environment,
-                                            { (it as StringValue).value }
-                                    ).toSet()
+                                    ofNullable(
+                                            arrayArgumentValue(
+                                                    field,
+                                                    "filtered",
+                                                    environment,
+                                                    { (it as StringValue).value }
+                                            )
+                                    ).map { it.toSet() }.orElse(Set.of())
                             )
                         }),
                         facet("discounts", { PreviewSearchInput builder, Field field ->
@@ -154,7 +158,7 @@ class SearchQuery implements GraphQLQueryResolver {
                                     intArgumentValue(field, "interval", environment)
                             )
                         }),
-                        // TODO remove this after migration
+                        // TODO remove this when 'facets' deprecated
                         { PreviewSearchInput i ->
                             if ((faceting.isEmpty()) && facets(environment).isPresent())
                                 i
