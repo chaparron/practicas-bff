@@ -42,7 +42,8 @@ class CountryMapper {
                 wabiPay: buildWabiPay(country.wabipayConfiguration),
                 legalDocumentInformation: buildLegalDocumentInformation(country.legalDocumentInformation),
                 geolocation: buildGeolocation(country.geolocation),
-                customerBranchesEnabled: country.branchOfficeConfiguration.enabled
+                customerBranchesEnabled: country.branchOfficeConfiguration.enabled,
+                channels: buildChannels(country)
         )
     }
 
@@ -64,7 +65,8 @@ class CountryMapper {
                 wabiPay: buildWabiPay(country.wabipayConfiguration),
                 legalDocumentInformation: buildLegalDocumentInformation(country.legalDocumentInformation),
                 geolocation: buildGeolocation(country.geolocation),
-                customerBranchesEnabled: country.branchOfficeConfiguration.enabled
+                customerBranchesEnabled: country.branchOfficeConfiguration.enabled,
+                channels: buildChannels(country)
         )
     }
 
@@ -125,6 +127,18 @@ class CountryMapper {
 
     private static Geolocation buildGeolocation(wabi2b.sdk.regional.Geolocation geoLocation) {
         return new Geolocation(lat: geoLocation.lat, lng: geoLocation.lng)
+    }
+
+    private static Channels buildChannels(wabi2b.sdk.regional.Country country) {
+        List<ChannelType> defaultChannels = [ChannelType.SMS, ChannelType.WHATSAPP]
+        List<ChannelType> otp = defaultChannels
+        if (country.code == "th"){
+            otp = [ChannelType.SMS]
+        }
+        return new Channels(
+                notifications: defaultChannels,
+                otp: otp
+        )
     }
 
     private static Detail buildDetail(wabi2b.sdk.regional.Country country) {

@@ -25,6 +25,7 @@ class Country {
     LegalDocumentInformation legalDocumentInformation
     Geolocation geolocation
     Boolean customerBranchesEnabled
+    Channels channels
 }
 
 class Detail {
@@ -99,6 +100,11 @@ class CountryHomeInput {
 class Geolocation{
     Double lat
     Double lng
+}
+
+class Channels{
+    List<ChannelType> notifications
+    List<ChannelType> otp
 }
 
 enum LegalUrlType {

@@ -21,6 +21,7 @@ type Country {
   legalDocumentInformation:LegalDocumentInformation!
   geolocation: Geolocation!
   customerBranchesEnabled: Boolean!
+  channels: Channels!
 }
 
 type Detail {
@@ -89,6 +90,11 @@ type LegalDocumentFile{
 type Geolocation{
   lat: Float!
   lng: Float!
+}
+
+type Channels{
+  notifications: [ChannelType!]!
+  otp: [ChannelType!]!
 }
 
 enum LegalUrlType {
