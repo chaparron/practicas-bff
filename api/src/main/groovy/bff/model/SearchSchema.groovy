@@ -900,6 +900,7 @@ class Faceting {
 }
 
 class CategoryFacet {
+    Closure<String> label
     List<CategorySlice> slices
 }
 
@@ -911,6 +912,7 @@ class CategorySlice {
 }
 
 class BrandFacet {
+    Closure<String> label
     Integer cardinality
     List<BrandSlice> slices
 }
@@ -925,6 +927,7 @@ class BrandSlice {
 }
 
 class SupplierFacet {
+    Closure<String> label
     Integer cardinality
     List<SupplierSlice> slices
 }
@@ -940,7 +943,7 @@ class SupplierSlice {
 
 class FeatureFacet {
     String id
-    Closure<String> name
+    Closure<String> label
     Integer cardinality
     List<FeatureSlice> slices
 }
@@ -953,6 +956,7 @@ class FeatureSlice {
 }
 
 class DiscountFacet {
+    Closure<String> label
     List<DiscountSlice> slices
 }
 
