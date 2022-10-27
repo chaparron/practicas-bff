@@ -1362,16 +1362,15 @@ class GroceryListing {
                                         .orElse([])
                                         .findAll { filtered.contains(it.id()) }
                         ).map {
+                            def values = it.collect {
+                                new FilterItem(
+                                        id: it.id() as Integer,
+                                        name: { LanguageTag languageTag -> it.name().defaultEntry() }
+                                )
+                            }
                             [
-                                    new Filter(
-                                            key: "brand",
-                                            values: it.collect {
-                                                new FilterItem(
-                                                        id: it.id() as Integer,
-                                                        name: { LanguageTag languageTag -> it.name().defaultEntry() }
-                                                )
-                                            }
-                                    )
+                                    new Filter(key: "brand", values: values.take(1)),
+                                    new Filter(key: "brands", values: values)
                             ]
                         }
                     }
@@ -1418,16 +1417,15 @@ class GroceryListing {
                                         .orElse([])
                                         .findAll { filtered.contains(it.id()) }
                         ).map {
+                            def values = it.collect {
+                                new FilterItem(
+                                        id: it.id() as Integer,
+                                        name: { LanguageTag languageTag -> it.name() }
+                                )
+                            }
                             [
-                                    new Filter(
-                                            key: "supplier",
-                                            values: it.collect {
-                                                new FilterItem(
-                                                        id: it.id() as Integer,
-                                                        name: { LanguageTag languageTag -> it.name() }
-                                                )
-                                            }
-                                    )
+                                    new Filter(key: "supplier", values: values.take(1)),
+                                    new Filter(key: "suppliers", values: values)
                             ]
                         }
                     }
