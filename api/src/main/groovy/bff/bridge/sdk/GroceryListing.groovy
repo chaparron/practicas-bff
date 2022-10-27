@@ -1611,6 +1611,15 @@ class GroceryListing {
             toJava(response.aggregations().suppliers())
                     .map {
                         new SupplierFacet(
+                                label: { languageTag ->
+                                    def locale =
+                                            forLanguageTag(ofNullable(languageTag.toString()).orElse("en"))
+                                    messageSource.getMessage(
+                                            "search.facets.SUPPLIER_LABEL",
+                                            [].toArray(),
+                                            locale
+                                    )
+                                },
                                 cardinality: it.total(),
                                 slices: asJava(it.hits()).collect {
                                     new SupplierSlice(
@@ -1663,6 +1672,15 @@ class GroceryListing {
             toJava(response.aggregations().discounts())
                     .map {
                         new DiscountFacet(
+                                label: { languageTag ->
+                                    def locale =
+                                            forLanguageTag(ofNullable(languageTag.toString()).orElse("en"))
+                                    messageSource.getMessage(
+                                            "search.facets.DISCOUNT_LABEL",
+                                            [].toArray(),
+                                            locale
+                                    )
+                                },
                                 slices: asJava(it.ranges()).collect {
                                     new DiscountSlice(
                                             value: it._1() as Integer,
@@ -1707,7 +1725,7 @@ class GroceryListing {
                     .collect { feature ->
                         new FeatureFacet(
                                 id: "feature_" + feature._1(),
-                                name: { LanguageTag languageTag -> feature._2().name().defaultEntry() },
+                                label: { LanguageTag languageTag -> feature._2().name().defaultEntry() },
                                 cardinality: feature._2().total(),
                                 slices:
                                         asJava(feature._2().hits())
@@ -1730,7 +1748,7 @@ class GroceryListing {
                                                 }
                         )
                     }
-                    .sort { it.name() }
+                    .sort { it.label() }
         }
 
         protected Optional<Facet> brandsFacet(ProductQueryResponse response) {
@@ -1758,6 +1776,15 @@ class GroceryListing {
             toJava(response.aggregations().brands())
                     .map {
                         new BrandFacet(
+                                label: { languageTag ->
+                                    def locale =
+                                            forLanguageTag(ofNullable(languageTag.toString()).orElse("en"))
+                                    messageSource.getMessage(
+                                            "search.facets.BRAND_LABEL",
+                                            [].toArray(),
+                                            locale
+                                    )
+                                },
                                 cardinality: it.total(),
                                 slices: asJava(it.hits()).collect {
                                     new BrandSlice(
@@ -1812,7 +1839,20 @@ class GroceryListing {
                 }
             }
             toJava(response.aggregations().categories())
-                    .map { new CategoryFacet(slices: slices(it)) }
+                    .map {
+                        new CategoryFacet(
+                                label: { languageTag ->
+                                    def locale =
+                                            forLanguageTag(ofNullable(languageTag.toString()).orElse("en"))
+                                    messageSource.getMessage(
+                                            "search.facets.CATEGORY_LABEL",
+                                            [].toArray(),
+                                            locale
+                                    )
+                                },
+                                slices: slices(it)
+                        )
+                    }
         }
 
         protected static slice(scala.Tuple2<SingleValue, Object> value) {

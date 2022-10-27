@@ -1,6 +1,7 @@
 package bff.resolver
 
-import bff.model.FeatureFacet
+
+import bff.model.BrandFacet
 import com.coxautodev.graphql.tools.GraphQLResolver
 import groovy.util.logging.Slf4j
 import org.springframework.stereotype.Component
@@ -8,10 +9,10 @@ import sun.util.locale.LanguageTag
 
 @Component
 @Slf4j
-class FeatureFacetResolver implements GraphQLResolver<FeatureFacet> {
+class BrandFacetResolver implements GraphQLResolver<BrandFacet> {
 
-    String label(FeatureFacet feature, LanguageTag languageTag) {
-        feature.label.call(languageTag)
+    String label(BrandFacet facet, LanguageTag languageTag) {
+        facet.label.call(languageTag)
     }
 
 }

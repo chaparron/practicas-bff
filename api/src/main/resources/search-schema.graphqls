@@ -155,6 +155,7 @@ enum BrandFacetSorting {
 }
 
 type CategoryFacet {
+  label(languageTag: LanguageTag): NonEmptyString!
   slices: [CategorySlice!]!
 }
 
@@ -166,6 +167,7 @@ type CategorySlice {
 }
 
 type BrandFacet {
+  label(languageTag: LanguageTag): NonEmptyString!
   cardinality: Int!
   slices: [BrandSlice!]!
 }
@@ -185,6 +187,7 @@ enum SupplierFacetSorting {
 }
 
 type SupplierFacet {
+  label(languageTag: LanguageTag): NonEmptyString!
   cardinality: Int!
   slices: [SupplierSlice!]!
 }
@@ -205,7 +208,7 @@ enum FeatureFacetSorting {
 
 type FeatureFacet {
   id: ID!
-  name(languageTag: LanguageTag): NonEmptyString!
+  label(languageTag: LanguageTag): NonEmptyString!
   cardinality: Int!
   slices: [FeatureSlice!]!
 }
@@ -218,6 +221,7 @@ type FeatureSlice {
 }
 
 type DiscountFacet {
+  label(languageTag: LanguageTag): NonEmptyString!
   slices: [DiscountSlice!]!
 }
 
