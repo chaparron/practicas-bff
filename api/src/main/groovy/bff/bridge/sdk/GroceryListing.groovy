@@ -1632,7 +1632,8 @@ class GroceryListing {
                                                             .orElse(Set.of())
                                                             .contains(it._1().id())
                                     )
-                                }
+                                },
+                                order: 3
                         )
                     }
         }
@@ -1694,7 +1695,8 @@ class GroceryListing {
                                             },
                                             frequency: it._2() as Integer
                                     )
-                                }
+                                },
+                                order: 4
                         )
                     }
         }
@@ -1747,6 +1749,7 @@ class GroceryListing {
                         )
                     }
                     .sort { it.label() }
+                    .eachWithIndex { FeatureFacet facet, int i -> facet.ordered(5 + i) }
         }
 
         protected Optional<Facet> brandsFacet(ProductQueryResponse response) {
@@ -1797,7 +1800,8 @@ class GroceryListing {
                                                             .orElse(Set.of())
                                                             .contains(it._1().id())
                                     )
-                                }
+                                },
+                                order: 2
                         )
                     }
         }
@@ -1848,7 +1852,8 @@ class GroceryListing {
                                             locale
                                     )
                                 },
-                                slices: slices(it)
+                                slices: slices(it),
+                                order: 1
                         )
                     }
         }

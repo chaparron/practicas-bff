@@ -902,6 +902,7 @@ class Faceting {
 class CategoryFacet {
     Closure<String> label
     List<CategorySlice> slices
+    Integer order
 }
 
 class CategorySlice {
@@ -915,6 +916,7 @@ class BrandFacet {
     Closure<String> label
     Integer cardinality
     List<BrandSlice> slices
+    Integer order
 }
 
 class BrandSlice {
@@ -930,6 +932,7 @@ class SupplierFacet {
     Closure<String> label
     Integer cardinality
     List<SupplierSlice> slices
+    Integer order
 }
 
 class SupplierSlice {
@@ -946,6 +949,12 @@ class FeatureFacet {
     Closure<String> label
     Integer cardinality
     List<FeatureSlice> slices
+    Integer order
+
+    def ordered(Integer n) {
+        this.order = n
+        this
+    }
 }
 
 class FeatureSlice {
@@ -958,6 +967,7 @@ class FeatureSlice {
 class DiscountFacet {
     Closure<String> label
     List<DiscountSlice> slices
+    Integer order
 }
 
 class DiscountSlice {
