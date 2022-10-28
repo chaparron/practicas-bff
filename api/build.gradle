@@ -21,7 +21,7 @@ dependencies {
     implementation "wabi2b.sdk:cms:1002-9ceb0f7ea0fb5722dbebac26363fc74fb38d25fe"
     implementation "wabi2b:regional-config:1010-d00ffb892380e4d25f95ab3039b6fe97db2e05ef"
     implementation "com.wabi2b:phone-notifier-sdk:10144-76744096d3a1c81c01910dfeb44eff235aa2f690"
-    implementation "com.wabi2b:notifications-sdk:1172-dc72fc0b0b2d592e802b84ee120b0d84f98639ab"
+    implementation "com.wabi2b:notifications-sdk:1178-a8c4effed81b4ed7ff5c96ec0767997c20e1cc60"
     implementation "wabi2b.sdk:wabi2b-api-sdk:1959-e12cbc005dc532f26157749159e9835369511a45"
     implementation "com.wabi2b:customers-sdk:1160-8d83dca52d5945f9807bf8c46d37bfad44460cba"
     implementation "wabi2b:payments-sdk:1391-fd740d94626ccdfddd886fdc60eb2c6d8fe71e7c"
