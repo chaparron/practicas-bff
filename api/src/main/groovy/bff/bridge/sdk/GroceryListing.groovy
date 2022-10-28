@@ -1920,7 +1920,21 @@ class GroceryListing {
                     ),
                     sort: sort(),
                     breadcrumb: breadCrumb(response),
-                    filters: filters(response),
+                    // TODO remove this after brand and supplier inputs deprecated
+                    filters: filters(response).findResults {
+                        switch (it) {
+                            case { (it.key == "brand") && (input.brands != null) }:
+                                return null
+                            case { it.key == "brands" && input.brand != null }:
+                                return null
+                            case { (it.key == "supplier") && (input.suppliers != null) }:
+                                return null
+                            case { it.key == "suppliers" && input.supplier != null }:
+                                return null
+                            default:
+                                return it
+                        }
+                    },
                     facets: facets(response),
                     faceting: faceting(response),
                     products: products(response)
@@ -1948,7 +1962,21 @@ class GroceryListing {
                     ),
                     sort: sort(),
                     breadcrumb: breadCrumb(response),
-                    filters: filters(response),
+                    // TODO remove this after brand and supplier inputs deprecated
+                    filters: filters(response).findResults {
+                        switch (it) {
+                            case { (it.key == "brand") && (input.brands != null) }:
+                                return null
+                            case { it.key == "brands" && input.brand != null }:
+                                return null
+                            case { (it.key == "supplier") && (input.suppliers != null) }:
+                                return null
+                            case { it.key == "suppliers" && input.supplier != null }:
+                                return null
+                            default:
+                                return it
+                        }
+                    },
                     facets: facets(response),
                     faceting: faceting(response),
                     products: products(response).collect { new PreviewProductSearch(it) }
