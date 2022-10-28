@@ -963,7 +963,20 @@ class GroceryListing {
                     .map {
                         { ProductQueryRequest r ->
                             r.aggregatedByBrands(
-                                    it.size
+                                    it.size,
+                                    toScala(
+                                            it.sorting.flatMap {
+                                                switch (it) {
+                                                    case BrandFacetSorting.BY_FREQUENCY:
+                                                        of(ByFrequency$.MODULE$)
+                                                        break
+                                                    case BrandFacetSorting.ALPHABETICALLY:
+                                                        of(new Alphabetically(Option.empty(), true))
+                                                        break
+                                                    default: empty()
+                                                }
+                                            }
+                                    )
                             ) as ProductQueryRequest
                         }
                     }
