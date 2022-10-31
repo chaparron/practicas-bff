@@ -130,13 +130,13 @@ class CountryMapper {
     }
 
     private static Channels buildChannels(wabi2b.sdk.regional.Country country) {
-        List<ChannelType> defaultChannels = [ChannelType.SMS, ChannelType.WHATSAPP]
-        List<ChannelType> otp = defaultChannels
+        List<ChannelType> notifications = country.notifications.channels.collect {ChannelType.valueOf(it)}
+        List<ChannelType> otp = notifications
         if (country.code == "th"){
             otp = [ChannelType.SMS]
         }
         return new Channels(
-                notifications: defaultChannels,
+                notifications: notifications,
                 otp: otp
         )
     }

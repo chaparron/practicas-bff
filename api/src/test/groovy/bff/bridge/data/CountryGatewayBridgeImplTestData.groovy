@@ -12,6 +12,7 @@ import wabi2b.sdk.regional.Language
 import wabi2b.sdk.regional.LegalDocumentFile
 import wabi2b.sdk.regional.LegalDocumentInformation
 import wabi2b.sdk.regional.LegalLink
+import wabi2b.sdk.regional.Notifications
 import wabi2b.sdk.regional.ShoppingConfiguration
 import wabi2b.sdk.regional.Translation
 import wabi2b.sdk.regional.WabipayConfiguration
@@ -53,7 +54,8 @@ abstract class CountryGatewayBridgeImplTestData {
                     new WabipayConfiguration(true, true, true),
                     new Geolocation(new Double(-38.416097), new Double(-63.616672)),
                     new ShoppingConfiguration(true),
-                    new BranchOfficeConfiguration(false)
+                    new BranchOfficeConfiguration(false),
+                    new Notifications(["SMS", "WHATSAPP"].toSet())
             )
 
     protected static Country regionalCountryAr =
@@ -82,7 +84,8 @@ abstract class CountryGatewayBridgeImplTestData {
                     new WabipayConfiguration(true, true, true),
                     new Geolocation(new Double(-38.416097), new Double(-63.616672)),
                     new ShoppingConfiguration(true),
-                    new BranchOfficeConfiguration(false)
+                    new BranchOfficeConfiguration(false),
+                    new Notifications(["SMS", "WHATSAPP"].toSet())
             )
 
     protected static List<Country> homeCountriesResponse =
@@ -116,7 +119,8 @@ abstract class CountryGatewayBridgeImplTestData {
                             new WabipayConfiguration(true, true, true),
                             new Geolocation(new Double(-38.416097), new Double(-63.616672)),
                             new ShoppingConfiguration(true),
-                            new BranchOfficeConfiguration(false)
+                            new BranchOfficeConfiguration(false),
+                            new Notifications(["SMS", "WHATSAPP"].toSet())
                     ),
                     new Country(
                             "ph",
@@ -139,7 +143,8 @@ abstract class CountryGatewayBridgeImplTestData {
                             new WabipayConfiguration(true, true, true),
                             new Geolocation(new Double(-38.416097), new Double(-63.616672)),
                             new ShoppingConfiguration(true),
-                            new BranchOfficeConfiguration(false)
+                            new BranchOfficeConfiguration(false),
+                            new Notifications(["SMS", "WHATSAPP"].toSet())
                     ),
                     new Country(
                             "ma",
@@ -162,7 +167,8 @@ abstract class CountryGatewayBridgeImplTestData {
                             new WabipayConfiguration(true, true, true),
                             new Geolocation(new Double(-38.416097), new Double(-63.616672)),
                             new ShoppingConfiguration(true),
-                            new BranchOfficeConfiguration(false)
+                            new BranchOfficeConfiguration(false),
+                            new Notifications(["SMS", "WHATSAPP"].toSet())
                     )
             ]
 
@@ -193,6 +199,7 @@ abstract class CountryGatewayBridgeImplTestData {
                     new WabipayConfiguration(true, true, true),
                     new Geolocation(new Double(-38.416097), new Double(-63.616672)),
                     new ShoppingConfiguration(true),
-                    new BranchOfficeConfiguration(false)
+                    new BranchOfficeConfiguration(false),
+                    new Notifications(["SMS", "WHATSAPP"].toSet())
             )
 }
