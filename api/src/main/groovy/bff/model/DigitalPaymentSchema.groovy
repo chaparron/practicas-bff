@@ -103,3 +103,34 @@ enum DigitalPaymentFailedReason {
         new DigitalPaymentFailed(reason: this, message: message)
     }
 }
+
+class GetSupplierPaymentOptionInput {
+    Long supplierId
+    String accessToken
+}
+
+class UpsertSupplierPaymentOptionInput {
+    Long supplierId
+    Set<PaymentOption> paymentOptions
+    String accessToken
+}
+
+interface SupplierPaymentOptionResult {}
+
+
+@EqualsAndHashCode
+class SupplierPaymentOption implements SupplierPaymentOptionResult {
+    Long supplierId
+    Set<PaymentOption> paymentOptions
+
+    static SupplierPaymentOption fromSdk(digitalpayments.sdk.model.SupplierPaymentOption supplierPaymentOption) {
+        new SupplierPaymentOption(
+                supplierId: supplierPaymentOption.supplierId,
+                paymentOptions: supplierPaymentOption.paymentOptions.collect { po -> PaymentOption.valueOf(po.name())}
+        )
+    }
+}
+
+enum PaymentOption {
+    UPI, ISG_DIGITAL_PAYMENT;
+}

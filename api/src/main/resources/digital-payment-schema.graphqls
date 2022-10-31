@@ -33,3 +33,25 @@ type DigitalPaymentFailed {
   text(languageTag: String!): String!
   message: String!
 }
+
+type GetSupplierPaymentOptionInput {
+  supplierId: Long!
+  accessToken: String!
+}
+
+type UpsertSupplierPaymentOptionInput {
+  supplierId: Long!
+  paymentOptions: [PaymentOption]!
+  accessToken: String!
+}
+
+union SupplierPaymentOptionResult = GetSupplierPaymentOption | DigitalPaymentFailed
+
+type GetSupplierPaymentOption {
+  supplierId: Long!
+  paymentOptions: [PaymentOption]!
+}
+
+enum PaymentOption {
+  UPI, ISG_DIGITAL_PAYMENT
+}
