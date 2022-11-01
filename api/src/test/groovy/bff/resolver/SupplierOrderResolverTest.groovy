@@ -110,12 +110,11 @@ class SupplierOrderResolverTest {
     }
 
     @Test
-    void 'Should return JPMorgan and Supermoney providers'() {
+    void 'Should return proper JPMorgan providers despite any failure with credit line providers'() {
         def expectedSupportedPaymentProviders =
-                [new JPMorganMainPaymentProvider(), new JPMorganUPIPaymentProvider(), new SupermoneyPaymentProvider()]
+                [new JPMorganMainPaymentProvider(), new JPMorganUPIPaymentProvider()]
         def someSupplier = anySupplier()
-        def creditLineProvider = new CreditLineProvider(provider: CreditProvider.SUPERMONEY)
-        when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([creditLineProvider])
+        when(bnplProvidersService.creditLineProvidersFor(any())).thenThrow(new RuntimeException())
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)
         List<PO> paymentOptions = [PO.ISG_DIGITAL_PAYMENT, PO.UPI]
         when(digitalPaymentsBridge.getPaymentMethods(any(), any())).thenReturn(paymentOptions)

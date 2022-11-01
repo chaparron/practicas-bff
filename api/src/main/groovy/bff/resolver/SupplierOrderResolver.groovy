@@ -6,6 +6,8 @@ import bff.model.*
 import bff.service.MoneyService
 import bff.service.bnpl.BnplProvidersService
 import com.coxautodev.graphql.tools.GraphQLResolver
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -37,6 +39,8 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
 
     @Value('${bnpl.enabled.countries:[]}')
     private List<String> enabledCountries
+
+    private Logger logger = LoggerFactory.getLogger(SupplierOrderResolver.class)
 
     Supplier supplier(SupplierOrder supplierOrder) {
         supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
@@ -113,8 +117,12 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
     List<SupportedPaymentProvider> supportedPaymentProviders(SupplierOrder supplierOrder) {
         List<SupportedPaymentProvider> result = getDigitalPaymentSupportedProviders(supplierOrder.id, supplierOrder.accessToken)
 
-        if (ofNullable(creditLineProviders(supplierOrder)).map { !it.isEmpty() }.orElse(false)) {
-            result.add(new SupermoneyPaymentProvider())
+        try {
+            if (ofNullable(creditLineProviders(supplierOrder)).map { !it.isEmpty() }.orElse(false)) {
+                result.add(new SupermoneyPaymentProvider())
+            }
+        } catch(Exception ex) {
+            logger.error("There was an error retrieving credit line providers for supplier order ${supplierOrder.id}", ex)
         }
 
         return result

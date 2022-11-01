@@ -11,7 +11,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import reactor.core.publisher.Mono
-import wabi2b.sdk.featureflags.FeatureFlagsSdk
 
 import static bff.TestExtensions.*
 import static org.mockito.Mockito.*
@@ -25,13 +24,8 @@ class DigitalPaymentsBridgeTest {
     @Mock
     DigitalPaymentsSdk digitalPaymentsSdk
 
-    @Mock
-    FeatureFlagsSdk featureFlagsSdk
-
     @InjectMocks
     DigitalPaymentsBridge digitalPaymentsBridge = new DigitalPaymentsBridgeImpl()
-
-    private static String JPMC_ENABLED_FEATURE_FLAG_KEY = "JPMC_ENABLED"
 
     @Before
     void init() {
@@ -45,7 +39,6 @@ class DigitalPaymentsBridgeTest {
         def accessToken = validAccessToken()
         def paymentOptions = [PaymentOption.ISG_DIGITAL_PAYMENT]
 
-        when(featureFlagsSdk.isActive(JPMC_ENABLED_FEATURE_FLAG_KEY)).thenReturn(true)
         when(digitalPaymentsSdk.getPaymentMethods(anySupplierId, accessToken)).thenReturn(Mono.just(paymentOptions))
 
         def actual = digitalPaymentsBridge.getPaymentMethods(anySupplierId, accessToken)
@@ -54,7 +47,6 @@ class DigitalPaymentsBridgeTest {
         assert otherActual == actual
         assert actual == paymentOptions.toList()
 
-        verify(featureFlagsSdk, times(2)).isActive(JPMC_ENABLED_FEATURE_FLAG_KEY)
         verify(digitalPaymentsSdk).getPaymentMethods(anySupplierId, accessToken)
     }
 
@@ -67,7 +59,6 @@ class DigitalPaymentsBridgeTest {
         def paymentOptions = [PaymentOption.ISG_DIGITAL_PAYMENT]
         def anotherPaymentOptions = []
 
-        when(featureFlagsSdk.isActive(JPMC_ENABLED_FEATURE_FLAG_KEY)).thenReturn(true)
         when(digitalPaymentsSdk.getPaymentMethods(anySupplierId, accessToken)).thenReturn(Mono.just(paymentOptions))
         when(digitalPaymentsSdk.getPaymentMethods(anotherSupplierId, accessToken)).thenReturn(Mono.just(anotherPaymentOptions))
 
@@ -77,7 +68,6 @@ class DigitalPaymentsBridgeTest {
         assert otherActual == anotherPaymentOptions
         assert actual == paymentOptions.toList()
 
-        verify(featureFlagsSdk, times(2)).isActive(JPMC_ENABLED_FEATURE_FLAG_KEY)
         verify(digitalPaymentsSdk).getPaymentMethods(anySupplierId, accessToken)
         verify(digitalPaymentsSdk).getPaymentMethods(anotherSupplierId, accessToken)
     }
@@ -91,7 +81,6 @@ class DigitalPaymentsBridgeTest {
         def paymentOptions = [PaymentOption.ISG_DIGITAL_PAYMENT]
         def anotherPaymentOptions = []
 
-        when(featureFlagsSdk.isActive(JPMC_ENABLED_FEATURE_FLAG_KEY)).thenReturn(true)
         when(digitalPaymentsSdk.getPaymentMethods(anySupplierId, accessToken)).thenReturn(Mono.just(paymentOptions))
         when(digitalPaymentsSdk.getPaymentMethods(anySupplierId, anotherAccessToken)).thenReturn(Mono.just(anotherPaymentOptions))
 
@@ -101,22 +90,7 @@ class DigitalPaymentsBridgeTest {
         assert otherActual == anotherPaymentOptions
         assert actual == paymentOptions.toList()
 
-        verify(featureFlagsSdk, times(2)).isActive(JPMC_ENABLED_FEATURE_FLAG_KEY)
         verify(digitalPaymentsSdk).getPaymentMethods(anySupplierId, accessToken)
         verify(digitalPaymentsSdk).getPaymentMethods(anySupplierId, anotherAccessToken)
-    }
-
-    @Test
-    void 'when feature flag is disabled then return empty list'() {
-        def anySupplierId = randomString()
-        def accessToken = validAccessToken()
-
-        when(featureFlagsSdk.isActive(JPMC_ENABLED_FEATURE_FLAG_KEY)).thenReturn(false)
-
-        def result = digitalPaymentsBridge.getPaymentMethods(anySupplierId, accessToken)
-        assert result.isEmpty()
-
-        verify(featureFlagsSdk).isActive(JPMC_ENABLED_FEATURE_FLAG_KEY)
-        verifyZeroInteractions(digitalPaymentsSdk)
     }
 }
