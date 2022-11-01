@@ -4,6 +4,8 @@ type Query {
 
   listingModules(input: ListingInput!): [Module!]!
 
+  landingModules(input: LandingInput!): [Module!]!
+
   # Find Customer by Id
   myProfile(input: CustomerInput!): Customer!
 

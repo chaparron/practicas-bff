@@ -20,12 +20,19 @@ input ListingInput {
   accessToken: String
 }
 
+input LandingInput {
+  country: String!
+  id: ID!
+  tags: [String!]
+  accessToken: String
+}
+
 input ContextInput {
   accessToken: String
   coordinates: CoordinatesInput
 }
 
-union Piece = AdBanner | ProductSearch | PreviewProductSearch | Brand | PreviewSupplier
+union Piece = AdBanner | ProductSearch | PreviewProductSearch | Brand | PreviewSupplier | CmsPromo
 
 enum AdBannerImageSize {
   SIZE_1920x314, SIZE_320x162, SIZE_315x135
@@ -37,6 +44,31 @@ type AdBanner {
   desktop(size: AdBannerImageSize!): String!
   mobile(size: AdBannerImageSize!): String!
   link: String
+}
+
+enum CmsPromoImageSize {
+  SIZE_1920x314, SIZE_320x162, SIZE_315x135
+}
+
+union CmsCallToAction = CmsLink | CmsButton
+
+type CmsButton {
+  label(languageTag: LanguageTag!): NonEmptyString!,
+  link: NonEmptyString!
+}
+
+type CmsLink {
+  url: NonEmptyString!
+}
+
+type CmsPromo {
+  id: NonEmptyString!
+  desktop(size: CmsPromoImageSize!): NonEmptyString!
+  mobile(size: CmsPromoImageSize!): NonEmptyString!
+  title(languageTag: LanguageTag!): NonEmptyString,
+  epigraph(languageTag: LanguageTag!): NonEmptyString,
+  label(languageTag: LanguageTag!): NonEmptyString
+  callToAction: CmsCallToAction
 }
 
 enum TitleIconSize {

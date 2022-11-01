@@ -2,6 +2,7 @@ package bff.bridge.sdk
 
 import bff.bridge.CustomerBridge
 import bff.model.HomeInput
+import bff.model.LandingInput
 import bff.model.ListingInput
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,6 +18,7 @@ import static org.junit.Assert.assertTrue
 import static org.mockito.Mockito.when
 import static scala.jdk.javaapi.CollectionConverters.asScala
 import static wabi2b.cms.sdk.FindModulesQuery.homeModulesIn
+import static wabi2b.cms.sdk.FindModulesQuery.landingModulesIn
 import static wabi2b.cms.sdk.FindModulesQuery.listingModulesIn
 
 @RunWith(MockitoJUnitRunner.class)
@@ -43,6 +45,22 @@ class CmsTest {
                 .thenReturn(asScala([] as List<CmsModule>).toList())
 
         assertTrue(cms.find(new HomeInput(country: "ar", tags: ["tag_1", "tag_2"])).isEmpty())
+    }
+
+    @Test
+    void 'landing modules should be fetched for the given country and id'() {
+        when(sdk.query(landingModulesIn("ar", "promotions", Option.empty())))
+                .thenReturn(asScala([] as List<CmsModule>).toList())
+
+        assertTrue(cms.find(new LandingInput(country: "ar", id: "promotions")).isEmpty())
+    }
+
+    @Test
+    void 'landing modules can be filtered by tag'() {
+        when(sdk.query(landingModulesIn("ar", "promotions", Option.empty()).tagged("tag_1").tagged("tag_2")))
+                .thenReturn(asScala([] as List<CmsModule>).toList())
+
+        assertTrue(cms.find(new LandingInput(country: "ar", id: "promotions", tags: ["tag_1", "tag_2"])).isEmpty())
     }
 
     @Test

@@ -122,6 +122,9 @@ class Main {
                 .add(BuyNowPayLaterPaymentMethod.class)
                 .add(DefaultPaymentMethod.class)
                 .add(WalletPayLaterFailure.class)
+                .add(CmsLink.class)
+                .add(CmsButton.class)
+                .add(CmsPromo.class)
     }
 
     /**

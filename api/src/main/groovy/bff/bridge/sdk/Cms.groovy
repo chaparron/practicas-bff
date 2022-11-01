@@ -25,6 +25,7 @@ import static scala.jdk.javaapi.CollectionConverters.asScala
 import static scala.jdk.javaapi.OptionConverters.toJava
 import static wabi2b.cms.sdk.BuildModulePiecesQuery.piecesOf
 import static wabi2b.cms.sdk.FindModulesQuery.homeModulesIn
+import static wabi2b.cms.sdk.FindModulesQuery.landingModulesIn
 import static wabi2b.cms.sdk.FindModulesQuery.listingModulesIn
 
 @Slf4j
@@ -126,6 +127,25 @@ class Cms {
             throw ex
         }
     }
+
+    List<Module> find(LandingInput input) {
+        def request =
+                [tagged(input.tags)]
+                        .inject(
+                                landingModulesIn(input.country, input.id, Option.empty()),
+                                { query, builder ->
+                                    builder(query) as FindLandingModulesQuery
+                                }
+                        )
+        try {
+            def response = sdk.query(request)
+            new FindModulesQueryResponseMapper().map(response)
+        } catch (Exception ex) {
+            log.error("Error finding modules for request {}", request, ex)
+            throw ex
+        }
+    }
+
 
     List<Piece> build(Module module, ContextInput context, Optional<Integer> maybeSize) {
         def maybeCustomer =
@@ -348,6 +368,8 @@ class Cms {
             switch (piece) {
                 case { it instanceof CmsBanner }:
                     return of(banner(piece as CmsBanner))
+                case { it instanceof Promo }:
+                    return of(promo(piece as Promo))
                 case { it instanceof CmsProduct }:
                     return of(
                             accessToken
@@ -369,6 +391,41 @@ class Cms {
                     desktop: asJava(banner.images()).get("desktop"),
                     mobile: asJava(banner.images()).get("mobile"),
                     link: toJava(banner.link())
+            )
+        }
+
+        private static CmsPromo promo(Promo promo) {
+            new CmsPromo(
+                    id: promo.id(),
+                    desktop: asJava(promo.images()).get("desktop"),
+                    mobile: asJava(promo.images()).get("mobile"),
+                    title: toJava(promo.title())
+                            .map { new I18N(entries: asJava(it.entries()), defaultEntry: it.defaultEntry()) },
+                    epigraph: toJava(promo.epigraph())
+                            .map { new I18N(entries: asJava(it.entries()), defaultEntry: it.defaultEntry()) },
+                    label: toJava(promo.label())
+                            .map { new I18N(entries: asJava(it.entries()), defaultEntry: it.defaultEntry()) },
+                    callToAction: toJava(promo.callToAction()).flatMap {
+                        switch (it) {
+                            case { it instanceof Button }:
+                                def button = it as Button
+                                of(
+                                        new CmsButton(
+                                                label: new I18N(
+                                                        entries: asJava(button.label().entries()),
+                                                        defaultEntry: button.label().defaultEntry()
+                                                ),
+                                                link: button.link()
+                                        )
+                                )
+                                break
+                            case { it instanceof Link }:
+                                of(new CmsLink(url: (it as Link).url()))
+                                break
+                            default:
+                                empty()
+                        }
+                    }
             )
         }
 

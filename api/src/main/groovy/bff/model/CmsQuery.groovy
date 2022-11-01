@@ -21,6 +21,10 @@ class CmsQuery implements GraphQLQueryResolver {
         cms.find(input)
     }
 
+    List<Module> landingModules(LandingInput input) {
+        cms.find(input)
+    }
+
 }
 
 

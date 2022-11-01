@@ -27,6 +27,14 @@ class ListingInput {
     String accessToken
 }
 
+@ToString
+class LandingInput {
+    String country
+    String id
+    Set<String> tags
+    String accessToken
+}
+
 @ToString(excludes = ["accessToken"])
 class ContextInput {
     String accessToken
@@ -72,4 +80,38 @@ class AdBanner implements Piece {
     String desktop
     String mobile
     Optional<String> link
+}
+
+enum CmsPromoImageSize implements ImageSizeEnum {
+    SIZE_1920x314, SIZE_320x162, SIZE_315x135
+
+    @Override
+    String value() {
+        name().substring("SIZE_".length())
+    }
+
+}
+
+interface CmsCallToAction {}
+
+@ToString
+class CmsLink implements CmsCallToAction {
+    String url
+}
+
+@ToString
+class CmsButton implements CmsCallToAction {
+    I18N label
+    String link
+}
+
+@ToString
+class CmsPromo implements Piece {
+    String id
+    String desktop
+    String mobile
+    Optional<I18N> title
+    Optional<I18N> epigraph
+    Optional<I18N> label
+    Optional<CmsCallToAction> callToAction
 }
