@@ -69,7 +69,7 @@ class CustomerResolver implements GraphQLResolver<Customer> {
         if (countryBridge.getCountry(customer.country_id).customerBranchesEnabled
                 && customer.storeType == StoreType.MAIN_OFFICE) {
             ps.push(new ProfileSection(id: "BRANCH_OFFICE"))
-        } else {
+        } else if (customer.storeType == StoreType.MAIN_OFFICE) {
             ps.push(new ProfileSection(id: "MY_ADDRESSES"))
         }
         if (customer.country_id == 'my') {
