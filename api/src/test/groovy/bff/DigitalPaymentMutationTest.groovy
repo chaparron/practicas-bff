@@ -42,7 +42,7 @@ class DigitalPaymentMutationTest {
         def invoiceId = randomString()
         def accessToken = validAccessToken()
         def sdkResponse = anyCreatePaymentResponse()
-        def sdkRequest = new CreatePaymentRequest(supplierOrderId, amount, invoiceId)
+        def sdkRequest = new CreatePaymentRequest(supplierOrderId, amount, invoiceId, PaymentOption.ISG_DIGITAL_PAYMENT)
 
         def expectedResponse = JpMorganCreateDigitalPayment.fromSdk(sdkResponse)
 
@@ -62,7 +62,7 @@ class DigitalPaymentMutationTest {
         def amount = randomBigDecimal()
         def invoiceId = randomString()
         def accessToken = validAccessToken()
-        def sdkRequest = new CreatePaymentRequest(supplierOrderId, amount, invoiceId)
+        def sdkRequest = new CreatePaymentRequest(supplierOrderId, amount, invoiceId, PaymentOption.ISG_DIGITAL_PAYMENT)
 
         def sdkException = new CustomSdkException(new DetailedError(randomString(), randomString()))
 

@@ -704,9 +704,12 @@ enum SummaryFailedReason {
 class SupportedPaymentProvider {
     URI avatar
     PaymentProviderType code
-
+    PaymentOption paymentOption
     String getClassName() {
         this.getClass().getSimpleName()
+    }
+    Boolean support(List<digitalpayments.sdk.model.PaymentOption> paymentOptions) {
+        paymentOptions.any {this.paymentOption == PaymentOption.valueOf(it.name()) }
     }
 }
 
@@ -715,6 +718,7 @@ class JPMorganMainPaymentProvider extends SupportedPaymentProvider {
     JPMorganMainPaymentProvider() {
         this.avatar = URI.create("")
         this.code = PaymentProviderType.PAY_NOW
+        this.paymentOption = PaymentOption.ISG_DIGITAL_PAYMENT
     }
 }
 
@@ -724,6 +728,8 @@ class SupermoneyPaymentProvider extends SupportedPaymentProvider {
     SupermoneyPaymentProvider() {
         this.avatar = URI.create("")
         this.code = PaymentProviderType.PAY_LATER
+        this.paymentOption = PaymentOption.BNPL
+
     }
 }
 
@@ -732,6 +738,7 @@ class JPMorganUPIPaymentProvider extends SupportedPaymentProvider {
     JPMorganUPIPaymentProvider() {
         this.avatar = URI.create("")
         this.code = PaymentProviderType.PAY_NOW
+        this.paymentOption = PaymentOption.UPI
     }
 }
 

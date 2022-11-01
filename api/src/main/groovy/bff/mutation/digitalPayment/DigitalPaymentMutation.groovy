@@ -29,7 +29,7 @@ class DigitalPaymentMutation implements GraphQLMutationResolver {
     private DigitalPaymentsSdk digitalPaymentsSdk
 
     CompletableFuture<CreateDigitalPaymentResult> createDigitalPayment(CreateDigitalPaymentInput input) {
-        def request = new CreatePaymentRequest(input.supplierOrderId, input.amount, input.invoiceId)
+        def request = new CreatePaymentRequest(input.supplierOrderId, input.amount, input.invoiceId, PaymentOption.valueOf(input.paymentOption.name()))
         digitalPaymentsSdk.createPayment(request, input.accessToken)
                 .map {response ->
                     JpMorganCreateDigitalPayment.fromSdk(response)

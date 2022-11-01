@@ -3,6 +3,7 @@ input CreateDigitalPaymentInput {
   supplierOrderId: String!
   amount: Float!
   invoiceId: String!
+  paymentOption: PaymentOption!
 }
 
 union CreateDigitalPaymentResult = JpMorganCreateDigitalPayment | DigitalPaymentFailed
@@ -53,5 +54,5 @@ type GetSupplierPaymentOption {
 }
 
 enum PaymentOption {
-  UPI, ISG_DIGITAL_PAYMENT
+  UPI, ISG_DIGITAL_PAYMENT, BNPL;
 }
