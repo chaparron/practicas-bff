@@ -280,8 +280,8 @@ type Mutation {
 }
 
 type MessageBox {
-  title(languageTag: String!): String
-  description(languageTag: String!): String
+  title(languageTag: String!): String!
+  description(languageTag: String!): String!
 }
 
 scalar NonEmptyString

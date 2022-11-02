@@ -18,18 +18,18 @@ class MessageBoxResolver implements GraphQLResolver<MessageBox> {
     }
 
     CompletableFuture<String> title(MessageBox box, String languageTag) {
-        textOrNull(box.titleKey, languageTag)
+        textOrWarningMessage(box.titleKey, languageTag)
     }
 
     CompletableFuture<String> description(MessageBox box, String languageTag) {
-        textOrNull(box.descriptionKey, languageTag)
+        textOrWarningMessage(box.descriptionKey, languageTag)
     }
 
-    private CompletableFuture<String> textOrNull(String key, String languageTag) {
+    private CompletableFuture<String> textOrWarningMessage(String key, String languageTag) {
         if (key != null) {
-            Mono.just(messageSource.getMessage(key, null, null, Locale.forLanguageTag(languageTag))).toFuture()
+            Mono.just(messageSource.getMessage(key, null, "!!$key!!", Locale.forLanguageTag(languageTag))).toFuture()
         } else {
-            Mono.<String> just(null).toFuture()
+            Mono.<String> just("").toFuture()
         }
     }
 
