@@ -131,9 +131,8 @@ class CountryMapper {
 
     private static Channels buildChannels(wabi2b.sdk.regional.Country country) {
         List<ChannelType> notifications = country.notifications.channels.collect {ChannelType.valueOf(it)}
-        List<ChannelType> otp = notifications
-        if (country.code == "th"){
-            otp = [ChannelType.SMS]
+        List<ChannelType> otp = notifications.findAll {
+            it != ChannelType.ZALO && it != ChannelType.LINE
         }
         return new Channels(
                 notifications: notifications,
