@@ -6,12 +6,11 @@ import bff.configuration.CacheConfigurationProperties
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import digitalpayments.sdk.DigitalPaymentsSdk
-import digitalpayments.sdk.model.Provider
+import digitalpayments.sdk.model.PaymentOption
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.Immutable
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
-import wabi2b.sdk.featureflags.FeatureFlagsSdk
 
 import javax.annotation.PostConstruct
 import java.util.concurrent.TimeUnit
@@ -25,38 +24,29 @@ class DigitalPaymentsBridgeImpl implements  DigitalPaymentsBridge {
     @Autowired
     private DigitalPaymentsSdk digitalPaymentsSdk
 
-    @Autowired
-    private FeatureFlagsSdk featureFlagsSdk
-
-    private Cache<PaymentProviderListKey, List<Provider>> providersCache
-
-    private static String JPMC_ENABLED_FEATURE_FLAG_KEY = "JPMC_ENABLED"
+    private Cache<PaymentOptionListKey, List<PaymentOption>> paymentOptionCache
 
     @PostConstruct
     void init() {
-        providersCache = Caffeine
+        paymentOptionCache = Caffeine
                 .newBuilder()
                 .expireAfterWrite(cacheConfiguration.providers, TimeUnit.MINUTES)
                 .build()
     }
 
     @Override
-    List<Provider> getPaymentProviders(String supplierId, String accessToken) {
-        if(!featureFlagsSdk.isActive(JPMC_ENABLED_FEATURE_FLAG_KEY))
-            return []
-
+    List<PaymentOption> getPaymentMethods(String supplierId, String accessToken) {
         def userIdFromToken = JwtToken.userIdFromToken(accessToken)
-        log.trace("getting paymentProviders for supplierId=$supplierId, userIdFromToken=$userIdFromToken")
-        providersCache.get(new PaymentProviderListKey(supplierId: supplierId, customerUserId: userIdFromToken)) {
-            return digitalPaymentsSdk.getPaymentProviders(it.supplierId, accessToken).block()
+        log.trace("getting payment options for supplierId=$supplierId, userIdFromToken=$userIdFromToken")
+        paymentOptionCache.get(new PaymentOptionListKey(supplierId: supplierId, customerUserId: userIdFromToken)) {
+            return digitalPaymentsSdk.getPaymentMethods(it.supplierId, accessToken).block()
         }
-
     }
 }
 
 @Immutable
 @EqualsAndHashCode
-class PaymentProviderListKey{
+class PaymentOptionListKey {
     String supplierId
     String customerUserId
 }

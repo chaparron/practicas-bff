@@ -8,7 +8,6 @@ import bff.model.*
 import bff.service.bnpl.BnplProvidersService
 import bnpl.sdk.model.SupportedMinimumAmountResponse
 import com.google.common.collect.Lists
-import digitalpayments.sdk.model.Provider
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,6 +17,7 @@ import wabi2b.payments.common.model.dto.type.PaymentMethod
 import wabi2b.payments.common.model.request.GetSupplierOrderPaymentRequest
 import wabi2b.payments.common.model.response.GetSupplierOrderPaymentResponse
 import wabi2b.payments.common.model.response.SupplierOrderPaymentResponse
+import digitalpayments.sdk.model.PaymentOption as PO
 
 import static bff.TestExtensions.*
 import static org.mockito.ArgumentMatchers.any
@@ -61,8 +61,8 @@ class SupplierOrderResolverTest {
         def someSupplier = anySupplier()
         when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([])
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)
-        List<Provider> jpMorganPaymentProvider = [Provider.JP_MORGAN]
-        when(digitalPaymentsBridge.getPaymentProviders(any(), any())).thenReturn(jpMorganPaymentProvider)
+        List<PO> paymentOptions = [PO.ISG_DIGITAL_PAYMENT, PO.UPI]
+        when(digitalPaymentsBridge.getPaymentMethods(any(), any())).thenReturn(paymentOptions)
 
         def result = sut.supportedPaymentProviders(anySupplierOrder())
 
@@ -70,7 +70,25 @@ class SupplierOrderResolverTest {
 
         verify(bnplProvidersService).creditLineProvidersFor(any())
         verify(supplierOrderBridge).getSupplierBySupplierOrderId(any(), any())
-        verify(digitalPaymentsBridge).getPaymentProviders(any(), any())
+        verify(digitalPaymentsBridge).getPaymentMethods(any(), any())
+    }
+
+    @Test
+    void 'Should return only supported JPMorgan provider'() {
+        def expectedSupportedPaymentProviders = [new JPMorganUPIPaymentProvider()]
+        def someSupplier = anySupplier()
+        when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([])
+        when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)
+        List<PO> paymentOptions = [PO.UPI]
+        when(digitalPaymentsBridge.getPaymentMethods(any(), any())).thenReturn(paymentOptions)
+
+        def result = sut.supportedPaymentProviders(anySupplierOrder())
+
+        assert expectedSupportedPaymentProviders == result
+
+        verify(bnplProvidersService).creditLineProvidersFor(any())
+        verify(supplierOrderBridge).getSupplierBySupplierOrderId(any(), any())
+        verify(digitalPaymentsBridge).getPaymentMethods(any(), any())
     }
 
     @Test
@@ -80,7 +98,7 @@ class SupplierOrderResolverTest {
         def someSupplier = anySupplier()
         when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([creditLineProvider])
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)
-        when(digitalPaymentsBridge.getPaymentProviders(any(), any())).thenReturn([])
+        when(digitalPaymentsBridge.getPaymentMethods(any(), any())).thenReturn([])
 
         def result = sut.supportedPaymentProviders(anySupplierOrder())
 
@@ -88,19 +106,18 @@ class SupplierOrderResolverTest {
 
         verify(bnplProvidersService).creditLineProvidersFor(any())
         verify(supplierOrderBridge).getSupplierBySupplierOrderId(any(), any())
-        verify(digitalPaymentsBridge).getPaymentProviders(any(), any())
+        verify(digitalPaymentsBridge).getPaymentMethods(any(), any())
     }
 
     @Test
-    void 'Should return JPMorgan and Supermoney providers'() {
+    void 'Should return proper JPMorgan providers despite any failure with credit line providers'() {
         def expectedSupportedPaymentProviders =
-                [new JPMorganMainPaymentProvider(), new JPMorganUPIPaymentProvider(), new SupermoneyPaymentProvider()]
+                [new JPMorganMainPaymentProvider(), new JPMorganUPIPaymentProvider()]
         def someSupplier = anySupplier()
-        def creditLineProvider = new CreditLineProvider(provider: CreditProvider.SUPERMONEY)
-        when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([creditLineProvider])
+        when(bnplProvidersService.creditLineProvidersFor(any())).thenThrow(new RuntimeException())
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)
-        List<Provider> jpMorganPaymentProvider = [Provider.JP_MORGAN]
-        when(digitalPaymentsBridge.getPaymentProviders(any(), any())).thenReturn(jpMorganPaymentProvider)
+        List<PO> paymentOptions = [PO.ISG_DIGITAL_PAYMENT, PO.UPI]
+        when(digitalPaymentsBridge.getPaymentMethods(any(), any())).thenReturn(paymentOptions)
 
         def result = sut.supportedPaymentProviders(anySupplierOrder())
 
@@ -108,7 +125,7 @@ class SupplierOrderResolverTest {
 
         verify(bnplProvidersService).creditLineProvidersFor(any())
         verify(supplierOrderBridge).getSupplierBySupplierOrderId(any(), any())
-        verify(digitalPaymentsBridge).getPaymentProviders(any(), any())
+        verify(digitalPaymentsBridge).getPaymentMethods(any(), any())
     }
 
     @Test
@@ -117,8 +134,8 @@ class SupplierOrderResolverTest {
         def someSupplier = anySupplier()
         when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn(null)
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)
-        List<Provider> jpMorganPaymentProvider = []
-        when(digitalPaymentsBridge.getPaymentProviders(any(), any())).thenReturn(jpMorganPaymentProvider)
+        List<PO> jpMorganPaymentProvider = []
+        when(digitalPaymentsBridge.getPaymentMethods(any(), any())).thenReturn(jpMorganPaymentProvider)
 
         def result = sut.supportedPaymentProviders(anySupplierOrder())
 
@@ -126,7 +143,7 @@ class SupplierOrderResolverTest {
 
         verify(bnplProvidersService).creditLineProvidersFor(any())
         verify(supplierOrderBridge).getSupplierBySupplierOrderId(any(), any())
-        verify(digitalPaymentsBridge).getPaymentProviders(any(), any())
+        verify(digitalPaymentsBridge).getPaymentMethods(any(), any())
     }
 
     @Test
@@ -140,8 +157,8 @@ class SupplierOrderResolverTest {
 
         when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([creditLineProvider])
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)
-        List<Provider> jpMorganPaymentProvider = [Provider.JP_MORGAN]
-        when(digitalPaymentsBridge.getPaymentProviders(any(), any())).thenReturn(jpMorganPaymentProvider)
+        List<PO> paymentOptions = [PO.ISG_DIGITAL_PAYMENT, PO.UPI]
+        when(digitalPaymentsBridge.getPaymentMethods(any(), any())).thenReturn(paymentOptions)
         when(paymentBridge.getSupplierOrderPayments(request, anySupplierOrder.accessToken)).thenReturn(supplierOrderPayments)
 
         def expected = new SimpleTextButton(SimpleTextButtonBehavior.VISIBLE, PAYMENT_BUTTON_PREFIX + PaymentStatus.UNPAID.name())
@@ -164,8 +181,8 @@ class SupplierOrderResolverTest {
 
         when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([creditLineProvider])
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)
-        List<Provider> jpMorganPaymentProvider = [Provider.JP_MORGAN]
-        when(digitalPaymentsBridge.getPaymentProviders(any(), any())).thenReturn(jpMorganPaymentProvider)
+        List<PO> paymentOptions = [PO.ISG_DIGITAL_PAYMENT, PO.UPI]
+        when(digitalPaymentsBridge.getPaymentMethods(any(), any())).thenReturn(paymentOptions)
         when(paymentBridge.getSupplierOrderPayments(request, anySupplierOrder.accessToken)).thenReturn(supplierOrderPayments)
 
         def expected = new SimpleTextButton(SimpleTextButtonBehavior.VISIBLE, PAYMENT_BUTTON_PREFIX + PaymentStatus.PARTIALLY_PAID.name())
@@ -187,8 +204,8 @@ class SupplierOrderResolverTest {
 
         when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([])
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)
-        List<Provider> jpMorganPaymentProvider = [Provider.JP_MORGAN]
-        when(digitalPaymentsBridge.getPaymentProviders(any(), any())).thenReturn(jpMorganPaymentProvider)
+        List<PO> paymentOptions = [PO.ISG_DIGITAL_PAYMENT, PO.UPI]
+        when(digitalPaymentsBridge.getPaymentMethods(any(), any())).thenReturn(paymentOptions)
         when(paymentBridge.getSupplierOrderPayments(request, anySupplierOrder.accessToken)).thenReturn(supplierOrderPayments)
 
         def expected = new SimpleTextButton(SimpleTextButtonBehavior.VISIBLE, PAYMENT_BUTTON_PREFIX + PaymentStatus.PARTIALLY_PAID.name())
@@ -209,8 +226,8 @@ class SupplierOrderResolverTest {
 
         when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([])
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)
-        List<Provider> jpMorganPaymentProvider = [Provider.JP_MORGAN]
-        when(digitalPaymentsBridge.getPaymentProviders(any(), any())).thenReturn(jpMorganPaymentProvider)
+        List<PO> paymentOptions = [PO.ISG_DIGITAL_PAYMENT, PO.UPI]
+        when(digitalPaymentsBridge.getPaymentMethods(any(), any())).thenReturn(paymentOptions)
         when(paymentBridge.getSupplierOrderPayments(request, anySupplierOrder.accessToken)).thenReturn(supplierOrderPayments)
 
         def expected = new SimpleTextButton(SimpleTextButtonBehavior.HIDDEN, PAYMENT_BUTTON_PREFIX + PaymentStatus.TOTALLY_PAID.name())
@@ -229,7 +246,7 @@ class SupplierOrderResolverTest {
 
         when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([creditLineProvider])
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)
-        when(digitalPaymentsBridge.getPaymentProviders(any(), any())).thenReturn([])
+        when(digitalPaymentsBridge.getPaymentMethods(any(), any())).thenReturn([])
         when(paymentBridge.getSupplierOrderPayments(request, anySupplierOrder.accessToken)).thenReturn(supplierOrderPayments)
 
         def expected = new SimpleTextButton(SimpleTextButtonBehavior.VISIBLE, PAYMENT_BUTTON_PREFIX + PaymentStatus.UNPAID.name())
@@ -250,7 +267,7 @@ class SupplierOrderResolverTest {
 
         when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([creditLineProvider])
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)
-        when(digitalPaymentsBridge.getPaymentProviders(any(), any())).thenReturn([])
+        when(digitalPaymentsBridge.getPaymentMethods(any(), any())).thenReturn([])
         when(paymentBridge.getSupplierOrderPayments(request, anySupplierOrder.accessToken)).thenReturn(supplierOrderPayments)
 
         def expected = new SimpleTextButton(SimpleTextButtonBehavior.HIDDEN, PAYMENT_BUTTON_PREFIX + PaymentStatus.PARTIALLY_PAID.name())
@@ -267,8 +284,8 @@ class SupplierOrderResolverTest {
 
         when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([])
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)
-        List<Provider> jpMorganPaymentProvider = [Provider.JP_MORGAN]
-        when(digitalPaymentsBridge.getPaymentProviders(any(), any())).thenReturn(jpMorganPaymentProvider)
+        List<PO> paymentOptions = [PO.ISG_DIGITAL_PAYMENT, PO.UPI]
+        when(digitalPaymentsBridge.getPaymentMethods(any(), any())).thenReturn(paymentOptions)
         when(paymentBridge.getSupplierOrderPayments(request, anySupplierOrder.accessToken)).thenReturn(supplierOrderPayments)
 
         def expected = new SimpleTextButton(SimpleTextButtonBehavior.VISIBLE, PAYMENT_BUTTON_PREFIX + PaymentStatus.UNPAID.name())
@@ -285,8 +302,8 @@ class SupplierOrderResolverTest {
 
         when(bnplProvidersService.creditLineProvidersFor(any())).thenReturn([])
         when(supplierOrderBridge.getSupplierBySupplierOrderId(any(), any())).thenReturn(someSupplier)
-        List<Provider> jpMorganPaymentProvider = [Provider.JP_MORGAN]
-        when(digitalPaymentsBridge.getPaymentProviders(any(), any())).thenReturn(jpMorganPaymentProvider)
+        List<PO> paymentOptions = [PO.ISG_DIGITAL_PAYMENT, PO.UPI]
+        when(digitalPaymentsBridge.getPaymentMethods(any(), any())).thenReturn(paymentOptions)
         when(paymentBridge.getSupplierOrderPayments(request, anySupplierOrder.accessToken)).thenReturn(supplierOrderPayments)
 
         def expected = new SimpleTextButton(SimpleTextButtonBehavior.HIDDEN, "")

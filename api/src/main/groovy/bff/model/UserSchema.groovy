@@ -90,7 +90,8 @@ class ChallengeDemandInput {
 enum ChannelType {
     SMS,
     WHATSAPP,
-    ZALO
+    ZALO,
+    LINE
 }
 
 class ChallengeAnswer {

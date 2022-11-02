@@ -1,8 +1,7 @@
 package bff.bridge
 
-import digitalpayments.sdk.model.Provider
-import reactor.core.publisher.Mono
+import digitalpayments.sdk.model.PaymentOption
 
 interface DigitalPaymentsBridge {
-    List<Provider> getPaymentProviders(String supplierId, String accessToken)
+    List<PaymentOption> getPaymentMethods(String supplierId, String accessToken)
 }

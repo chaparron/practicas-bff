@@ -24,6 +24,7 @@ import wabi2b.sdk.regional.CurrencyInformation
 import wabi2b.sdk.regional.FeeConfiguration
 import wabi2b.sdk.regional.Geolocation
 import wabi2b.sdk.regional.LegalLink
+import wabi2b.sdk.regional.Notifications
 import wabi2b.sdk.regional.ShoppingConfiguration
 import wabi2b.sdk.regional.Translation
 import wabi2b.sdk.regional.WabipayConfiguration
@@ -90,7 +91,8 @@ class CountryMapperTest {
                 ),
                 new Geolocation(new Double(-38.416097), new Double(-63.616672)),
                 new ShoppingConfiguration(true),
-                new BranchOfficeConfiguration(false)
+                new BranchOfficeConfiguration(false),
+                new Notifications(["SMS", "WHATSAPP"].toSet())
         )
 
         def country = mapper.buildCountry(regionalConfigCountry)

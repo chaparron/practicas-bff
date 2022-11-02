@@ -9,6 +9,7 @@ class CreateDigitalPaymentInput {
     Long supplierOrderId
     BigDecimal amount
     String invoiceId
+    PaymentOption paymentOption
 }
 
 interface CreateDigitalPaymentResult {}
@@ -132,5 +133,5 @@ class SupplierPaymentOption implements SupplierPaymentOptionResult {
 }
 
 enum PaymentOption {
-    UPI, ISG_DIGITAL_PAYMENT;
+    UPI, ISG_DIGITAL_PAYMENT, BNPL;
 }
