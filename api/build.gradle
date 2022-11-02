@@ -18,7 +18,7 @@ dependencies {
     implementation "com.github.ben-manes.caffeine:caffeine:2.9.2"
     implementation "wabi2b.sdk:grocery-listing:1319-daa91266552d4056864daf1bbf737256548079a3"
     implementation "wabi2b.sdk:supplier-credits:10013-5b3ebcb2efd390ddb0fffcc003762f30b7f16055"
-    implementation "wabi2b.sdk:cms:1002-0df658ae350ac75aaeb753fd8a6694cbe054632b"
+    implementation "wabi2b.sdk:cms:1164-0df658ae350ac75aaeb753fd8a6694cbe054632b"
     implementation "wabi2b:regional-config:1013-db6f404a0919119af001561f4ffeea9dadac01ae"
     implementation "com.wabi2b:phone-notifier-sdk:10144-76744096d3a1c81c01910dfeb44eff235aa2f690"
     implementation "com.wabi2b:notifications-sdk:1178-a8c4effed81b4ed7ff5c96ec0767997c20e1cc60"
@@ -29,7 +29,7 @@ dependencies {
     implementation "wabi2b:feature-flags:10037-dcc43a1b3566323e441c71e972a670640a0b1480"
     implementation "wabi2b:bnpl-credits-sdk:1121-2d83a3cdabf12a94abb523cb3a9faee4c8e8642a"
     implementation "com.wabi2b:external-orders-sdk:1056-1d382fd21e481ac5b4cc8d830fb00631b7f48b22"
-    implementation "wabi2b:digital-payments-sdk:1243-f2b698c8633597c6f3a4aafa252e2fdac8677328"
+    implementation "wabi2b:digital-payments-sdk:1002-40c9561da620a00349606bc9d284a1afcc2c6ada"
     implementation "yopdev.wabi:sdk:1012-6fd962f54addb379fd5ee0e497a1b39ce67fe00a"
 
     implementation "io.ktor:ktor-client-cio:1.6.5"

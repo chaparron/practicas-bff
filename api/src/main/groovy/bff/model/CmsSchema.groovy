@@ -83,7 +83,12 @@ class AdBanner implements Piece {
 }
 
 enum CmsPromoImageSize implements ImageSizeEnum {
-    SIZE_1920x314, SIZE_320x162, SIZE_315x135
+    SIZE_3840x2160,
+    SIZE_1440x1912,
+    SIZE_1300x732,
+    SIZE_1312x368,
+    SIZE_1792x596,
+    SIZE_656x656
 
     @Override
     String value() {
