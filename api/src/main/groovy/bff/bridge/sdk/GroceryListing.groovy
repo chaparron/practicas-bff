@@ -691,9 +691,12 @@ class GroceryListing {
         private List<Closure<ProductQueryRequest>> featuresFiltering() {
             features.collect { feature ->
                 { ProductQueryRequest r ->
+                    def values = ofNullable(feature.values)
+                            .filter { !it.isEmpty() }
+                            .orElse(Set.of(feature.value))
                     r.filteredByFeature(
                             feature.id,
-                            feature.value, asScala([] as List<String>).toSeq()
+                            values.head(), asScala(values.tail()).toSeq()
                     ) as ProductQueryRequest
                 }
             }
@@ -1467,24 +1470,22 @@ class GroceryListing {
                                     .flatMap {
                                         toJava(it.features().get(t._1()))
                                                 .map {
-                                                    asJava(it.hits())
-                                                            .findAll { value ->
-                                                                asJava(t._2()).any { it == value._1().id() }
-                                                            }
-                                                            .collect { slice(it) }
-                                                            .findAll { it.isPresent() }
-                                                            .collect { it.get() }
-                                                            .collect {
-                                                                new Filter(
-                                                                        key: "feature_" + t._1(),
-                                                                        values: [
-                                                                                new FilterItem(
-                                                                                        id: it.obj.id as Integer,
-                                                                                        name: it.obj.name
-                                                                                )
-                                                                        ]
-                                                                )
-                                                            }
+                                                    new Filter(
+                                                            key: "feature_" + t._1(),
+                                                            values: asJava(it.hits())
+                                                                    .findAll { value ->
+                                                                        asJava(t._2()).any { it == value._1().id() }
+                                                                    }
+                                                                    .collect { slice(it) }
+                                                                    .findAll { it.isPresent() }
+                                                                    .collect { it.get() }
+                                                                    .collect {
+                                                                        new FilterItem(
+                                                                                id: it.obj.id as Integer,
+                                                                                name: it.obj.name
+                                                                        )
+                                                                    }
+                                                    )
                                                 }
                                     }
                                     .orElse([])

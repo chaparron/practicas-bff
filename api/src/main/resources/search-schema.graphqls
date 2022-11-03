@@ -93,6 +93,7 @@ input PreviewMostSearchedTermsInput {
 input FeatureInput {
   id: String,
   value: String
+  values: [String!]
 }
 
 enum SortInput {

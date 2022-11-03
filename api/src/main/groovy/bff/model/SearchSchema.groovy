@@ -385,6 +385,7 @@ class MostSearchedTerm {
 class FeatureInput {
     String id
     String value
+    Set<String> values
 }
 
 enum SortInput {
