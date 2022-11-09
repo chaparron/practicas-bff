@@ -42,6 +42,10 @@ class SupplierOrderResolver implements GraphQLResolver<SupplierOrder> {
 
     private Logger logger = LoggerFactory.getLogger(SupplierOrderResolver.class)
 
+    Boolean delay(SupplierOrder supplierOrder) {
+        digitalPaymentsBridge.isDelayed(supplierOrder.id.toString(), supplierOrder.accessToken)
+    }
+
     Supplier supplier(SupplierOrder supplierOrder) {
         supplierOrderBridge.getSupplierBySupplierOrderId(supplierOrder.accessToken, supplierOrder.id)
     }

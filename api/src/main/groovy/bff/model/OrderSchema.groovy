@@ -250,6 +250,23 @@ class Order {
     List<SupplierOrder> supplierOrders
 }
 
+class WabiUser {
+     String name
+     Long userId
+     String mail
+     String country
+     Boolean active
+     String phone
+     Role role
+     String createdAt
+     String lastLogin
+     List<String> orders
+}
+
+enum Role {
+    ADMIN, USER, SUPPLIER, TEST
+}
+
 class SupplierOrder implements SupplierOrderResponse {
     String accessToken
     Long id

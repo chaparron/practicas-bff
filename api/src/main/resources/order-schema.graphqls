@@ -229,8 +229,25 @@ type SupplierOrder {
   paymentButton: Button!
   payments: [SupplierOrderPaymentV2]!
   defaultPaymentAmount: Float!
+  delay: Boolean!
 }
 
+type WabiUser {
+  name: String,
+  userId: Long,
+  mail: String,
+  country: String,
+  active: Boolean,
+  phone: String,
+  role: Role,
+  createdAt: String,
+  lastLogin: String,
+  orders: [String]
+}
+
+enum Role {
+  ADMIN,  USER,  SUPPLIER,  TEST
+}
 union Button = SimpleTextButton
 
 type SimpleTextButton {
